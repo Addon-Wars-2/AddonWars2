@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net7.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<StartupObject>AddonWars2.App.App</StartupObject>
+
+	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
+	<BaseOutputPath>..\..\bld\</BaseOutputPath>
+	<GenerateDocumentationFile>False</GenerateDocumentationFile>
+	<SignAssembly>False</SignAssembly>
+	<Configurations>Debug;Release</Configurations>
+	<NeutralLanguage>en</NeutralLanguage>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+
+	<Title>Addon Wars 2</Title>
+	<Description></Description>
+	<Version>$(VersionPrefix)$(VersionSuffix)</Version>
+	<Authors>RindCode</Authors>
+	<Company>RindCode</Company>
+	<Copyright>Copyright $(Company) © 2022</Copyright>
+	<VersionPrefix>1.0.0.0</VersionPrefix>
+	<VersionSuffix>alpha</VersionSuffix>
+	<AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
+	<FileVersion>$(VersionPrefix)</FileVersion>
+	<RepositoryUrl></RepositoryUrl>
+	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+	<AssemblyName>AddonWars2</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Styles\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+
+</Project>
