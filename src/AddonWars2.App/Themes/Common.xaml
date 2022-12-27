@@ -1,0 +1,19 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Geometry x:Key="Geometry.Icon.Minimize">M 0,0 L 10,0</Geometry>
+    <Path x:Key="Path.Icon.Minimize" x:Shared="False" Stretch="None" Data="{DynamicResource Geometry.Icon.Minimize}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}" StrokeThickness="1.5"/>
+
+    <Geometry x:Key="Geometry.Icon.Close">M 0,0 L 8,8 M 0,8 L 8,0</Geometry>
+    <Path x:Key="Path.Icon.Close" x:Shared="False" Stretch="None" Data="{DynamicResource Geometry.Icon.Close}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}" StrokeThickness="1.5"/>
+
+    <Geometry x:Key="Geometry.Icon.ArrowDown">M 0,5 L 5,10 M 10,5 L 5,10</Geometry>
+    <Path x:Key="Path.Icon.ArrowDown" x:Shared="False" Stretch="Uniform" Data="{DynamicResource Geometry.Icon.ArrowDown}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}" StrokeThickness="1.0"/>
+
+    <Geometry x:Key="Geometry.Icon.ScrollBar.Horizontal.Left">M 4 0 L 4 8 L 0 4 Z</Geometry>
+    <Geometry x:Key="Geometry.Icon.ScrollBar.Horizontal.Right">M 0 0 L 4 4 L 0 8 Z</Geometry>
+    <Geometry x:Key="Geometry.Icon.ScrollBar.Horizontal.Top">M 0 4 L 8 4 L 4 0 Z</Geometry>
+    <Geometry x:Key="Geometry.Icon.ScrollBar.Horizontal.Bottom">M 0 0 L 4 4 L 8 0 Z</Geometry>
+    
+</ResourceDictionary>

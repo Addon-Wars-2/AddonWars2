@@ -1,0 +1,27 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Application -->
+    <s:String x:Key="S.Application.Title">Addon Wars 2</s:String>
+
+    <!-- MainWindow | Header -->
+    <s:String x:Key="S.MainWindow.Header.Menu.Language">Язык</s:String>
+    <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™ Неофициальный Менеджер Аддонов</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">НАЧАЛО РАБОТЫ</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Wiki">GW2 ВИКИ</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">ПОМОЩЬ</s:String>
+
+    <!-- MainWindow | Tab Menu -->
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Главная</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Logging">Логи</s:String>
+
+    <!-- Logging Page -->
+    <s:String x:Key="S.LoggingPage.Description">Логирование ведется автоматически</s:String>
+
+    <!-- Controls | Common -->
+    <s:String x:Key="S.Controls.ComboBox.Placeholder">пусто...</s:String>
+
+</ResourceDictionary>

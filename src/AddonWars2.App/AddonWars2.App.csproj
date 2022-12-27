@@ -4,7 +4,7 @@
 	<OutputType>WinExe</OutputType>
 	<TargetFramework>net7.0-windows</TargetFramework>
 	<UseWPF>true</UseWPF>
-	<StartupObject>AddonWars2.App.App</StartupObject>
+	<StartupObject>AddonWars2.App.AW2Application</StartupObject>
 
 	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
 	<BaseOutputPath>..\..\bld\</BaseOutputPath>
@@ -20,13 +20,13 @@
 	<Description></Description>
 	<Version>$(VersionPrefix)$(VersionSuffix)</Version>
 	<Authors>RindCode</Authors>
-	<Company>RindCode</Company>
+	<Company>Addon-Wars-2 </Company>
 	<Copyright>Copyright $(Company) © 2022</Copyright>
 	<VersionPrefix>1.0.0.0</VersionPrefix>
 	<VersionSuffix>alpha</VersionSuffix>
 	<AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
 	<FileVersion>$(VersionPrefix)</FileVersion>
-	<RepositoryUrl></RepositoryUrl>
+	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
 	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 	<AssemblyName>AddonWars2</AssemblyName>
   </PropertyGroup>
@@ -40,9 +40,72 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Styles\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+    <Page Remove="bin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\aw2_bg_main.png" />
+    <None Remove="Assets\Fonts\GWTwoFont.ttf" />
+    <None Remove="Assets\Fonts\Lato-Black.ttf" />
+    <None Remove="Assets\Fonts\Lato-BlackItalic.ttf" />
+    <None Remove="Assets\Fonts\Lato-Bold.ttf" />
+    <None Remove="Assets\Fonts\Lato-BoldItalic.ttf" />
+    <None Remove="Assets\Fonts\Lato-Italic.ttf" />
+    <None Remove="Assets\Fonts\Lato-Light.ttf" />
+    <None Remove="Assets\Fonts\Lato-LightItalic.ttf" />
+    <None Remove="Assets\Fonts\Lato-Regular.ttf" />
+    <None Remove="Assets\Fonts\Lato-Thin.ttf" />
+    <None Remove="Assets\Fonts\Lato-ThinItalic.ttf" />
+    <None Remove="Assets\Images\aw2_bg_default_mask.png" />
+    <None Remove="Resources\NLog.config" />
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="AW2Application.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="AW2Application.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\GWTwoFont.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Black.ttf" />
+    <Resource Include="Assets\Fonts\Lato-BlackItalic.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Bold.ttf" />
+    <Resource Include="Assets\Fonts\Lato-BoldItalic.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Italic.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Light.ttf" />
+    <Resource Include="Assets\Fonts\Lato-LightItalic.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Regular.ttf" />
+    <Resource Include="Assets\Fonts\Lato-Thin.ttf" />
+    <Resource Include="Assets\Fonts\Lato-ThinItalic.ttf" />
+    <Resource Include="Assets\Images\aw2_bg_default.png" />
+    <Resource Include="Assets\Images\aw2_bg_default_mask.png" />
+    <EmbeddedResource Include="Resources\NLog.config" />
   </ItemGroup>
 
 </Project>

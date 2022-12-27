@@ -1,0 +1,38 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Primary Colors Palette-->
+    <Color x:Key="Color.PrimaryPalette.Level0">#161616</Color>
+    <Color x:Key="Color.PrimaryPalette.Level1">#343434</Color>
+    <Color x:Key="Color.PrimaryPalette.Level2">#646464</Color>
+    <Color x:Key="Color.PrimaryPalette.Level3">#8B8B8B</Color>
+    <Color x:Key="Color.PrimaryPalette.Level4">#DDDDDD</Color>
+    <Color x:Key="Color.PrimaryPalette.Level5">#FAFAFA</Color>
+
+    <!-- Accent Colors Palette -->
+    <Color x:Key="Color.AccentPalette.Accent01">#CE2029</Color>
+    <Color x:Key="Color.AccentPalette.Accent02">#4682B4</Color>
+    <Color x:Key="Color.AccentPalette.Accent02a">#6CA6CD</Color>
+
+    <!-- Solid Color Brushes -->
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level0" Color="{StaticResource Color.PrimaryPalette.Level0}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level1" Color="{StaticResource Color.PrimaryPalette.Level1}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level2" Color="{StaticResource Color.PrimaryPalette.Level2}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level3" Color="{StaticResource Color.PrimaryPalette.Level3}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level4" Color="{StaticResource Color.PrimaryPalette.Level4}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level5" Color="{StaticResource Color.PrimaryPalette.Level5}"/>
+
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent01" Color="{StaticResource Color.AccentPalette.Accent01}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent02" Color="{StaticResource Color.AccentPalette.Accent02}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent02a" Color="{StaticResource Color.AccentPalette.Accent02a}"/>
+
+    <!-- Accent Colors Gradient Brushes -->
+    <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Level4to5"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level4}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level5}" Offset="0"/>
+    </LinearGradientBrush>
+
+</ResourceDictionary>

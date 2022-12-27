@@ -1,0 +1,112 @@
+﻿// ==================================================================================================
+// <copyright file="WindowBaseViewModel.cs" company="Addon-Wars-2">
+// Copyright (c) Addon-Wars-2. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// ==================================================================================================
+
+namespace AddonWars2.App.ViewModels
+{
+    using System.Windows;
+    using CommunityToolkit.Mvvm.Input;
+    using NLog;
+
+    /// <summary>
+    /// A base view model used by all application windows.
+    /// Provides basic commands such as minimize, maximize, restore down and close.
+    /// </summary>
+    public class WindowBaseViewModel : BaseViewModel
+    {
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowBaseViewModel"/> class.
+        /// </summary>
+        public WindowBaseViewModel()
+        {
+            // Commands.
+            MinimizeWindowCommand = new RelayCommand<Window>(ExecuteMinimizeWindow);
+            MaximizeWindowCommand = new RelayCommand<Window>(ExecuteMaximizeWindow);
+            RestoreWindowCommand = new RelayCommand<Window>(ExecuteRestoreWindow);
+            CloseWindowCommand = new RelayCommand<Window>(ExecuteCloseWindow);
+            DragMoveWindowCommand = new RelayCommand<Window>(ExecuteDragMoveWindow);
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        // Gets the current logger instance.
+        private static Logger Logger => LogManager.GetCurrentClassLogger();
+
+        #endregion Properties
+
+        #region Commands
+
+        /// <summary>
+        /// Gets a command which minimizes the window.
+        /// </summary>
+        public RelayCommand<Window> MinimizeWindowCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command which maximizes the window.
+        /// </summary>
+        public RelayCommand<Window> MaximizeWindowCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command which restores the window.
+        /// </summary>
+        public RelayCommand<Window> RestoreWindowCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command which closes the window.
+        /// </summary>
+        public RelayCommand<Window> CloseWindowCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command which drags and moves the window.
+        /// </summary>
+        public RelayCommand<Window> DragMoveWindowCommand { get; private set; }
+
+        #endregion Commands
+
+        #region Commands Logic
+
+        // MinimizeWindowCommand command logic.
+        private void ExecuteMinimizeWindow(Window window)
+        {
+            Logger.Debug("Executing command.");
+            SystemCommands.MinimizeWindow(window);
+        }
+
+        // MaximizeWindowCommand command logic.
+        private void ExecuteMaximizeWindow(Window window)
+        {
+            Logger.Debug("Executing command.");
+            SystemCommands.MaximizeWindow(window);
+        }
+
+        // RestoreWindowCommand command logic.
+        private void ExecuteRestoreWindow(Window window)
+        {
+            Logger.Debug("Executing command.");
+            SystemCommands.RestoreWindow(window);
+        }
+
+        // CloseWindowCommand command logic.
+        private void ExecuteCloseWindow(Window window)
+        {
+            Logger.Debug("Executing command.");
+            SystemCommands.CloseWindow(window);
+        }
+
+        // Performs Drag and Move on a given window.
+        private void ExecuteDragMoveWindow(Window window)
+        {
+            Logger.Debug("Executing command.");
+            window?.DragMove();
+        }
+
+        #endregion Commands Logic
+    }
+}

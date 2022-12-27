@@ -1,0 +1,27 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Application -->
+    <s:String x:Key="S.Application.Title">Addon Wars 2</s:String>
+
+    <!-- MainWindow | Header -->
+    <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
+    <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™ Unofficial Add-On Manager</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">GETTING STARTED</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Wiki">GW2 WIKI</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">SUPPORT</s:String>
+
+    <!-- MainWindow | Tab Menu -->
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Logging">Logs</s:String>
+
+    <!-- Logging Page -->
+    <s:String x:Key="S.LoggingPage.Description">Logging is performed automatically</s:String>
+
+    <!-- Controls | Common -->
+    <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>
+
+</ResourceDictionary>
