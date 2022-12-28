@@ -29,10 +29,46 @@
 
     <!-- Accent Colors Gradient Brushes -->
     <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Level0to1"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level0}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level1}" Offset="0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Level1to2"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level1}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level2}" Offset="0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Level2to3"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level2}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level3}" Offset="0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Level3to4"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level3}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.PrimaryPalette.Level4}" Offset="0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush
         x:Key="LinearGradient.PrimaryPalette.Level4to5"
         StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="{StaticResource Color.PrimaryPalette.Level4}" Offset="1"/>
         <GradientStop Color="{StaticResource Color.PrimaryPalette.Level5}" Offset="0"/>
+    </LinearGradientBrush>
+
+
+    <LinearGradientBrush
+        x:Key="LinearGradient.PrimaryPalette.Accent02to02a"
+        StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Color.AccentPalette.Accent02}" Offset="1"/>
+        <GradientStop Color="{StaticResource Color.AccentPalette.Accent02a}" Offset="0"/>
     </LinearGradientBrush>
 
 </ResourceDictionary>

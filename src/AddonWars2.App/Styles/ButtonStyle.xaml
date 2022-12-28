@@ -114,4 +114,82 @@
         </Setter>
     </Style>
 
+    <Style x:Key="MajorButtonAccentBackgroundStyle" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource FlatButtonStyle}">
+        <Setter Property="attached:AccentColorExtension.AccentColor" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Grid>
+                        <Border
+                            x:Name="MainBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding attached:CornerRadiusExtension.CornerRadius}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                        </Border>
+                        <Border
+                            x:Name="AccentBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding attached:AccentColorExtension.AccentColor}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding attached:CornerRadiusExtension.CornerRadius}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Visibility="Hidden">
+                        </Border>
+                        <Grid>
+                            <Image
+                                Source="/Assets/Masks/btn/btn_bg_01.png"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Stretch="Uniform"
+                                RenderOptions.BitmapScalingMode="Fant"
+                                Opacity="0.1"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}">
+                                <ContentPresenter
+                                    x:Name="ContentElement"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ContentSource="Content">
+                                    <ContentPresenter.Effect>
+                                        <DropShadowEffect
+                                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                                            ShadowDepth="1"
+                                            Direction="-90"
+                                            BlurRadius="1"
+                                            Opacity="1.0"/>
+                                    </ContentPresenter.Effect>
+                                </ContentPresenter>
+                            </Border>
+                            <Border
+                                Name="DisabledOverlayBorder"
+                                Background="Black"
+                                Opacity="0.5"
+                                Visibility="Hidden"
+                                BorderBrush="Transparent"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding attached:CornerRadiusExtension.CornerRadius}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                            </Border>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="AccentBorder" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="DisabledOverlayBorder" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

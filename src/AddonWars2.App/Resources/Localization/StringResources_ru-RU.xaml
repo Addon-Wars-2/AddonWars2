@@ -21,13 +21,25 @@
     <!-- Home Page -->
     <s:String x:Key="S.HomePage.Welcome.Message_01">Отлично, куда мы направимся в этот раз?</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_02">И где же я оставил свою чак-инфузию?</s:String>
-    <s:String x:Key="S.HomePage.Welcome.Message_03">Я всегда говорю: "Цветы лучше пуль".</s:String>
-    <s:String x:Key="S.HomePage.Welcome.Message_04">Да наставит тебя чойя на пусть истинный.</s:String>
+    <s:String x:Key="S.HomePage.Welcome.Message_03">Цветы лучше пуль.</s:String>
+    <s:String x:Key="S.HomePage.Welcome.Message_04">...ни один смертный не будет настолько ТУПЫМ, чтобы уничтожить дракона...</s:String>
+    <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
+    <s:String x:Key="S.HomePage.Footer.CreatedBy">создано:</s:String>
+    <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Description">Логирование ведется автоматически.</s:String>
 
-    <!-- Controls | Common -->
+    <!-- Controls -->
     <s:String x:Key="S.Controls.ComboBox.Placeholder">пусто...</s:String>
+    <s:String x:Key="S.Controls.TextBox.SelectGW2ExePlaceholder">Укажите путь до gw2-64.exe...</s:String>
+
+    <!-- Common | Validation Messages -->
+    <s:String x:Key="S.Common.ValidationText.NotEmptyField">Поле не должно быть пустым.</s:String>
+    <s:String x:Key="S.Common.ValidationText.ValidFileName">Путь должен указывать на существующий файл.</s:String>
+    <s:String x:Key="S.Common.ValidationText.ValidPath">Путь не является допустимым.</s:String>
+    <s:String x:Key="S.Common.ValidationText.DirectoryExists">Путь должен указывать на существующую директорию.</s:String>
+    <s:String x:Key="S.Common.ValidationText.FileExists">Путь должен указывать на существующий файл.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на существующий файл gw2-64.exe.</s:String>
 
 </ResourceDictionary>

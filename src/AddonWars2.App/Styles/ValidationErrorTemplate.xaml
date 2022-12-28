@@ -1,0 +1,42 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties">
+
+    <ControlTemplate x:Key="TextBoxValidationErrorTemplate">
+        <StackPanel Orientation="Vertical">
+            <Border
+                x:Name="ValidationBorder"
+                Margin="0,0,0,0"
+                Visibility="Visible">
+                <TextBlock
+                    x:Name="BorderText"
+                    FontSize="10"
+                    RenderOptions.ClearTypeHint="Enabled"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding ElementName=Placeholder, Path=AdornedElement.(Validation.Errors)/ErrorContent}">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                            BlurRadius="0"
+                            ShadowDepth="0.5"
+                            Opacity="1.0"
+                            Direction="-90"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Border>
+            <Border>
+                <AdornedElementPlaceholder x:Name="Placeholder">
+                    <Border
+                        Margin="0,2,0,2"
+                        BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                        BorderThickness="1"
+                        CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}"/>
+                </AdornedElementPlaceholder>
+            </Border>
+        </StackPanel>
+    </ControlTemplate>
+
+</ResourceDictionary>

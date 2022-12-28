@@ -17,7 +17,7 @@ This project is a pet-project which was started to improve the author's practica
 ##### General
 - [x] A unique look for the background image.
 - [ ] Different themes support including the background.
-- [ ] Animated appearance in Guild Wars 2 UI style (animated opacity mask?).
+- [x] Animated appearance in Guild Wars 2 UI style.
 ##### Control Styles
 ###### ScrollViewer and ScrollBar
 - [ ] Show on mouse move and make visible and thicker on hover.
@@ -30,6 +30,7 @@ This project is a pet-project which was started to improve the author's practica
 - [x] Support different languages.
 - [x] Logging and wiriting logs locally.
   - [ ] Debug mode through EXE args => different logging levels.
+  - [ ] Provide a setting for the automatic clean-up of old logs to avoid disk pollution.
 - [x] Application configuration stored locally. Using another application version of starting a different .exe won't break anything since it will look for the same directory anyway and load the configuration from there.
 - [ ] Searching for GW2 installation directory and /addons sub-directory automatically rather than selecting it manually.
 - [ ] A list of approved add-ons available for installation.

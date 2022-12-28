@@ -73,11 +73,13 @@ namespace AddonWars2.App.Helpers
             // the setter will be used to populate the property value.
 
             var xmlSerializer = new XmlSerializer(typeof(T));
+            var xns = new XmlSerializerNamespaces();
+            xns.Add(string.Empty, string.Empty);  // omit namespaces
             var stringWriter = new StringWriter();
 
             using (var writer = XmlWriter.Create(stringWriter))
             {
-                xmlSerializer.Serialize(writer, obj);
+                xmlSerializer.Serialize(writer, obj, xns);
                 stringWriter.Flush();  // to ensure data is written before the writer gets disposed
                 return stringWriter.ToString();
             }

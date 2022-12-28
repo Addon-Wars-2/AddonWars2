@@ -12,6 +12,7 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
+    xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     mc:Ignorable="d" 
     DataContext="{markupex:DISource Type=vm:HomeViewModel}"
     Title="MainPage"
@@ -21,15 +22,120 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock
-            Grid.Row="0"
-            Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}}"/>
-        <i:Interaction.Triggers>
-            <i:EventTrigger EventName="Loaded">
-                <i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>
+        <Grid Grid.Row="0">
+            <TextBlock
+                Grid.Row="0"
+                Margin="20,0,0,0"
+                FontFamily="{DynamicResource Lato}"
+                FontWeight="Light"
+                FontStyle="Italic"
+                FontSize="16"
+                Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Grid>
+        <Grid
+            Grid.Row="2"
+            Margin="0,0,0,00">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="GameLocationTextBox"
+                Grid.Column="0"
+                Width="500"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Focusable="True"
+                IsTabStop="False"
+                IsReadOnly="False"
+                assist:HintAssist.Hint="{StaticResource S.Controls.TextBox.SelectGW2ExePlaceholder}"
+                Style="{DynamicResource TextBoxStyle}">
+                <Binding
+                    Path="DataContext.GW2DirectoryLocation"
+                    RelativeSource="{RelativeSource AncestorType=Page}"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validation:NotEmptyFieldRule ValidatesOnTargetUpdated="True"/>
+                        <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
+                        <validation:GW2ExeRule ValidatesOnTargetUpdated="True"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox>
+            <Button
+                x:Name="SelectLocation"
+                Grid.Column="1"
+                Margin="20,0,0,0"
+                Height="30"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Focusable="False"
+                IsTabStop="False"
+                Cursor="Hand"
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                BorderThickness="1"
+                Background="{DynamicResource LinearGradient.PrimaryPalette.Level2to3}"
+                attached:AccentColorExtension.AccentColor="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
+                Style="{DynamicResource MajorButtonAccentBackgroundStyle}">
+                <Button.Content>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        FontFamily="PT Serif"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                        Text="{DynamicResource S.HomePage.GameLocation.SelectButton}"/>
+                </Button.Content>
+            </Button>
+            <StackPanel
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom">
+                <TextBlock
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                    FontFamily="{DynamicResource Lato}"
+                    FontWeight="Light"
+                    FontSize="9"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Run Text="{Binding Path=DataContext.PackageVersionWithSuffix, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, StringFormat='{}build {0}'}"/>
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                            ShadowDepth="1"
+                            Direction="-45"
+                            BlurRadius="0"
+                            Opacity="1.0"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                <TextBlock
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                    FontFamily="{DynamicResource Lato}"
+                    FontWeight="Light"
+                    FontSize="9"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>
+                    <Run Text="{DynamicResource S.HomePage.Footer.CreatedByAuthor}"/>
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                            ShadowDepth="1"
+                            Direction="-45"
+                            BlurRadius="0"
+                            Opacity="1.0"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
     </Grid>
 
 </Page>

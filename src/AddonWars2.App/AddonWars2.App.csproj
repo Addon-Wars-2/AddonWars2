@@ -59,6 +59,10 @@
     <None Remove="Assets\Fonts\Lato-Regular.ttf" />
     <None Remove="Assets\Fonts\Lato-Thin.ttf" />
     <None Remove="Assets\Fonts\Lato-ThinItalic.ttf" />
+    <None Remove="Assets\Fonts\PTSerif-Bold.ttf" />
+    <None Remove="Assets\Fonts\PTSerif-BoldItalic.ttf" />
+    <None Remove="Assets\Fonts\PTSerif-Italic.ttf" />
+    <None Remove="Assets\Fonts\PTSerif-Regular.ttf" />
     <None Remove="Assets\Images\aw2_bg_default_mask.png" />
     <None Remove="Assets\Images\aw2_bg_opacity_mask_01.png" />
     <None Remove="Assets\Images\aw2_bg_opacity_mask_02.png" />
@@ -72,6 +76,7 @@
     <None Remove="Assets\Images\aw2_bg_opacity_mask_10.png" />
     <None Remove="Assets\Images\aw2_bg_opacity_mask_11.png" />
     <None Remove="Assets\Images\aw2_bg_opacity_mask_12.png" />
+    <None Remove="Assets\Masks\btn\btn_bg_01.png" />
     <None Remove="Resources\NLog.config" />
     <None Remove="stylecop.json" />
   </ItemGroup>
@@ -115,19 +120,24 @@
     <Resource Include="Assets\Fonts\Lato-Regular.ttf" />
     <Resource Include="Assets\Fonts\Lato-Thin.ttf" />
     <Resource Include="Assets\Fonts\Lato-ThinItalic.ttf" />
+    <Resource Include="Assets\Fonts\PTSerif-Bold.ttf" />
+    <Resource Include="Assets\Fonts\PTSerif-BoldItalic.ttf" />
+    <Resource Include="Assets\Fonts\PTSerif-Italic.ttf" />
+    <Resource Include="Assets\Fonts\PTSerif-Regular.ttf" />
     <Resource Include="Assets\Images\aw2_bg_default.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_01.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_02.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_03.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_04.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_05.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_06.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_07.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_08.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_09.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_10.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_11.png" />
-    <Resource Include="Assets\Images\aw2_bg_opacity_mask_12.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_01.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_02.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_03.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_04.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_05.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_06.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_07.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_08.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_09.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_10.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_11.png" />
+    <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_12.png" />
+    <Resource Include="Assets\Masks\btn\btn_bg_01.png" />
     <EmbeddedResource Include="Resources\NLog.config" />
   </ItemGroup>
 

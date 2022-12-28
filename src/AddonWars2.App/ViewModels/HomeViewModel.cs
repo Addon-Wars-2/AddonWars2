@@ -9,8 +9,11 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Reflection;
+    using System.Windows;
     using AddonWars2.App.Utils.Helpers;
     using CommunityToolkit.Mvvm.Input;
+    using NLog;
 
     /// <summary>
     /// View model used by home view.
@@ -21,6 +24,7 @@ namespace AddonWars2.App.ViewModels
 
         private static readonly Random _random = new Random();
         private string _displayedWelcomeMessage;
+        private string _GW2DirectoryLocation;
 
         #endregion Fields
 
@@ -49,8 +53,25 @@ namespace AddonWars2.App.ViewModels
             private set => SetProperty(ref _displayedWelcomeMessage, value);
         }
 
+        /// <summary>
+        /// Gets the package version with suffix included.
+        /// </summary>
+        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+        /// <summary>
+        /// Gets or sets GW2 executable file location.
+        /// </summary>
+        public string GW2DirectoryLocation
+        {
+            get => _GW2DirectoryLocation;
+            set => SetProperty(ref _GW2DirectoryLocation, value);
+        }
+
         // Holds a collection of welcome message displayed randomly on window update (Loaded event).
         private ObservableCollection<string> WelcomeMessages { get; set; }
+
+        // Gets the current logger instance.
+        private static Logger Logger => LogManager.GetCurrentClassLogger();
 
         #endregion Properties
 
@@ -70,6 +91,8 @@ namespace AddonWars2.App.ViewModels
         // OpenUrlCommand command logic.
         private void ExecuteUpdateWelcomeMessage()
         {
+            Logger.Debug("Executing command.");
+
             ResetWelcomeMessagesOnLoad();
 
             // Should not happen normally.

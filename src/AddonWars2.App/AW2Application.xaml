@@ -20,6 +20,7 @@
                 <ResourceDictionary>
                     <FontFamily x:Key="GWTwoFont">pack://application:,,,/Assets/Fonts/#GWTwoFont</FontFamily>
                     <FontFamily x:Key="Lato">pack://application:,,,/Assets/Fonts/#Lato</FontFamily>
+                    <FontFamily x:Key="PTSerif">pack://application:,,,/Assets/Fonts/#PTSerif</FontFamily>
                 </ResourceDictionary>
 
                 <!-- Themes (the default theme must always be the last one) -->
@@ -32,6 +33,8 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/TabControlStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/ScrollBarStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/ScrollViewerStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/ValidationErrorTemplate.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
             
