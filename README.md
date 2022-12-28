@@ -31,7 +31,7 @@ This project is a pet-project which was started to improve the author's practica
 - [x] Logging and wiriting logs locally.
   - [ ] Debug mode through EXE args => different logging levels.
 - [x] Application configuration stored locally. Using another application version of starting a different .exe won't break anything since it will look for the same directory anyway and load the configuration from there.
-- [ ] Looking for GW2 installation directory and /addons sub-directory automatically rather than selecting it manually.
+- [ ] Searching for GW2 installation directory and /addons sub-directory automatically rather than selecting it manually.
 - [ ] A list of approved add-ons available for installation.
 - [ ] Download and install the selected add-ons automatically.
 - [ ] Storing and tracking the installed add-ons files dependencies. Required for clean install/uninstall and not breaking other add-ons if any of them was uninstalled.
