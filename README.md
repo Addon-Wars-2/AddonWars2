@@ -28,7 +28,6 @@ This project is a pet-project which was started to improve the author's practica
 - [ ] Add a fancy transfer when moving from one tab to abother.
 #### Features
 - [x] Support different languages.
-- [x] [BETA] "Hot-reload" on language change without restarting the application.
 - [x] Logging and wiriting logs locally.
   - [ ] Debug mode through EXE args => different logging levels.
 - [x] Application configuration stored locally. Using another application version of starting a different .exe won't break anything since it will look for the same directory anyway and load the configuration from there.

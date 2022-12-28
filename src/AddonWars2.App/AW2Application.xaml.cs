@@ -85,28 +85,28 @@ namespace AddonWars2.App
             Current.Shutdown();
         }
 
-        /// <summary>
-        /// Forces <see cref="MainWindow"/> to redraw itself without shutting the application down.
-        /// </summary>
-        /// <remarks>
-        /// This method allows to "hot-reload" the main window without closing the whole application,
-        /// and by doing so - keep logging up. The existing DataContext will be re-attached to a new window.
-        /// </remarks>
-        public void ReloadMainWindow()
-        {
-            Logger.Debug("Closing the main window.");
-            Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            MainWindowInstance.Close();
-            Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+        /////// <summary>
+        /////// Forces <see cref="MainWindow"/> to redraw itself without shutting the application down.
+        /////// </summary>
+        /////// <remarks>
+        /////// This method allows to "hot-reload" the main window without closing the whole application,
+        /////// and by doing so - keep logging up. The existing DataContext will be re-attached to a new window.
+        /////// </remarks>
+        ////public void ReloadMainWindow()
+        ////{
+        ////    Logger.Debug("Closing the main window.");
+        ////    Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        ////    MainWindowInstance.Close();
+        ////    Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
-            var mainViewModel = Services.GetRequiredService<MainWindowViewModel>();
-            MainWindowInstance = new () { DataContext = mainViewModel };
-            MainWindowInstance.Show();
+        ////    var mainViewModel = Services.GetRequiredService<MainWindowViewModel>();
+        ////    MainWindowInstance = new () { DataContext = mainViewModel };
+        ////    MainWindowInstance.Show();
 
-            AW2App_SetupLocalization();
+        ////    AW2App_SetupLocalization();
 
-            Logger.Info("Main window reload complete.");
-        }
+        ////    Logger.Info("Main window reload complete.");
+        ////}
 
         /// <inheritdoc/>
         protected override void OnStartup(StartupEventArgs e)

@@ -130,7 +130,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
-            AW2Application.Current.ReloadMainWindow();
+            AW2Application.Restart();
         }
 
         #endregion Commands Logic
