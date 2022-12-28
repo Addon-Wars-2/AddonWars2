@@ -76,11 +76,12 @@ namespace AddonWars2.App
         public static void Restart()
         {
             Logger.Debug("Restarting the application.");
-            var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
 
+            var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
             Process.Start(currExecPath);
 
             LogManager.Shutdown();
+
             Current.Shutdown();
         }
 
@@ -93,7 +94,6 @@ namespace AddonWars2.App
         /// </remarks>
         public void ReloadMainWindow()
         {
-            // To prevent the app from closing we set SM to OnExplicitShutdown.
             Logger.Debug("Closing the main window.");
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             MainWindowInstance.Close();
@@ -111,11 +111,9 @@ namespace AddonWars2.App
         /// <inheritdoc/>
         protected override void OnStartup(StartupEventArgs e)
         {
-            // Save the startup date and time.
             ApplicationGlobal.StartupDateTime = DateTime.Now;
             base.OnStartup(e);
 
-            // Configure DI services and logging.
             Services = AW2ServiceProvider.ConfigureServices();
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
@@ -146,6 +144,7 @@ namespace AddonWars2.App
 
             // Workaround details:
             // https://github.com/NLog/NLog/wiki/Dependency-injection-with-NLog
+
             var defautCtor = ConfigurationItemFactory.Default.CreateInstance;
             ConfigurationItemFactory.Default.CreateInstance = type =>
             {
@@ -161,7 +160,7 @@ namespace AddonWars2.App
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
 
-            // Find AppData application dir.
+            // Locate AppData\Roaming application dir.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
             {
@@ -171,7 +170,7 @@ namespace AddonWars2.App
             ApplicationGlobal.AppDataDir = appDataDir;
             Logger.Info($"Using AppData directory: {appDataDir}");
 
-            // Find the logs dir.
+            // Locate the logs dir.
             var logCfg = LogManager.Configuration;
             var logsDir = Path.Join(appDataDir, "logs");
             if (!Directory.Exists(logsDir))
@@ -202,29 +201,29 @@ namespace AddonWars2.App
             ApplicationGlobal.AppConfig = ApplicationConfig.Default;
             var cfg = ApplicationGlobal.AppConfig;  // default
 
-            // Try to get application settings from the AppData dir.
+            // Try to get application settings from the AppData\Roaming dir.
             var cfgPath = ApplicationGlobal.ConfigFilePath;
             if (!File.Exists(cfgPath))
             {
                 // Create a new one with default settings.
-                var serializedString = IOHelper.Serialize(cfg);
-                IOHelper.WriteXml(serializedString, cfgPath);
+                IOHelper.SerializeXml(cfg, cfgPath);
                 Logger.Info($"Created a new application config file: {cfgPath}");
             }
             else
             {
-                // Try to load it.
-                cfg = IOHelper.Deserialize<ApplicationConfig>(cfgPath);
+                // Try to load it and check if it's valid since serializer
+                // will either return incorrect data (i.e. some properties are missing)
+                // or will thron an exception and thus return default(T).
+                cfg = IOHelper.DeserializeXml<ApplicationConfig>(cfgPath);
                 if (!ApplicationConfig.IsValid(cfg))
                 {
                     // Delete the corrupted file (since this name is reserved for the app config).
                     Logger.Info($"The given config file is not valid. Creating a new one.");
                     File.Delete(cfgPath);
 
-                    // Create a new default config.
+                    // Replace with a new default config.
                     cfg = ApplicationConfig.Default;
-                    var serializedString = IOHelper.Serialize(cfg);
-                    IOHelper.WriteXml(serializedString, cfgPath);
+                    IOHelper.SerializeXml(cfg, cfgPath);
                     Logger.Info($"Created a new application config file: {cfgPath}");
                 }
             }
@@ -240,6 +239,7 @@ namespace AddonWars2.App
             var culture = cfg.SelectedCulture;
             var selected = LocalizationHelper.SelectCulture(culture);
             cfg.SelectedCulture = cfg.AvailableCultures.FirstOrDefault(x => x.Culture == selected);
+
             Logger.Info($"Culture selected: {selected}");
         }
 

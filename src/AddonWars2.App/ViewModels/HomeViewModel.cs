@@ -7,11 +7,23 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using AddonWars2.App.Utils.Helpers;
+    using CommunityToolkit.Mvvm.Input;
+
     /// <summary>
     /// View model used by home view.
     /// </summary>
     public class HomeViewModel : BaseViewModel
     {
+        #region Fields
+
+        private static readonly Random _random = new Random();
+        private string _displayedWelcomeMessage;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
@@ -19,9 +31,74 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public HomeViewModel()
         {
-            // Blank.
+            ResetWelcomeMessagesOnLoad();
+
+            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage);
         }
 
         #endregion Constructors
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the displayed welcome message.
+        /// </summary>
+        public string DisplayedWelcomeMessage
+        {
+            get => _displayedWelcomeMessage;
+            private set => SetProperty(ref _displayedWelcomeMessage, value);
+        }
+
+        // Holds a collection of welcome message displayed randomly on window update (Loaded event).
+        private ObservableCollection<string> WelcomeMessages { get; set; }
+
+        #endregion Properties
+
+        #region Commands
+
+        /// <summary>
+        /// Gets a command which is invoked when the parent page is loaded.
+        /// Updates welcome message by replacing it with a random one taken from a
+        /// list of pre-defined strings.
+        /// </summary>
+        public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
+
+        #endregion Commands
+
+        #region Commands Logic
+
+        // OpenUrlCommand command logic.
+        private void ExecuteUpdateWelcomeMessage()
+        {
+            ResetWelcomeMessagesOnLoad();
+
+            // Should not happen normally.
+            if (WelcomeMessages == null || WelcomeMessages.Count == 0)
+            {
+                DisplayedWelcomeMessage = string.Empty;
+                return;
+            }
+
+            int i = _random.Next(0, WelcomeMessages.Count);
+            DisplayedWelcomeMessage = WelcomeMessages[i];
+        }
+
+        #endregion Commands Logic
+
+        #region Methods
+
+        // We need to refresh the list on ResourceDictionary changes.
+        private void ResetWelcomeMessagesOnLoad()
+        {
+            WelcomeMessages = new ObservableCollection<string>()
+            {
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
+            };
+        }
+
+        #endregion Methods
     }
 }

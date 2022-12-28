@@ -18,8 +18,14 @@
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logging">Logs</s:String>
 
+    <!-- Home Page -->
+    <s:String x:Key="S.HomePage.Welcome.Message_01">Alright, where are we heading today?</s:String>
+    <s:String x:Key="S.HomePage.Welcome.Message_02">Where did I leave my chak infusion?</s:String>
+    <s:String x:Key="S.HomePage.Welcome.Message_03">More violets I say, less violence.</s:String>
+    <s:String x:Key="S.HomePage.Welcome.Message_04">May the choya guide you.</s:String>
+
     <!-- Logging Page -->
-    <s:String x:Key="S.LoggingPage.Description">Logging is performed automatically</s:String>
+    <s:String x:Key="S.LoggingPage.Description">Logging is performed automatically.</s:String>
 
     <!-- Controls | Common -->
     <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>

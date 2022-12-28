@@ -218,7 +218,7 @@
                     ItemContainerStyle="{DynamicResource MainWindowTabItemStyle}">
                     <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}">
                         <Frame
-                            Source="MainPage.xaml"
+                            Source="HomePage.xaml"
                             FocusVisualStyle="{x:Null}"/>
                     </TabItem>
                     <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Logging}">

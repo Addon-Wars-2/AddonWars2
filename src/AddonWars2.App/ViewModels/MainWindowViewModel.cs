@@ -129,8 +129,7 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            var serializedString = IOHelper.Serialize(ApplicationGlobal.AppConfig);
-            IOHelper.WriteXml(serializedString, ApplicationGlobal.ConfigFilePath);
+            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
             AW2Application.Current.ReloadMainWindow();
         }
 
