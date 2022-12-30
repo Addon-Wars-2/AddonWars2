@@ -19,7 +19,7 @@ namespace AddonWars2.App.Utils.Validation
     /// <remarks>
     /// This rule merely checks the GW2 file name, product name and file description.
     /// </remarks>
-    public class GW2ExeRule : ValidationRule
+    public class Gw2ExeRule : ValidationRule
     {
         #region Fields
 

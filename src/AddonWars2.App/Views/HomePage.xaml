@@ -20,6 +20,15 @@
     Title="HomePage"
     ShowsNavigationUI="False">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:ChangePropertyAction
+                PropertyName="DataContext.ActuallyLoaded"
+                TargetName="{Binding RelativeSource={RelativeSource Self}}"
+                Value="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -61,13 +70,13 @@
                 assist:HintAssist.Hint="{StaticResource S.Controls.TextBox.SelectGW2ExePlaceholder}"
                 Style="{DynamicResource TextBoxStyle}">
                 <Binding
-                    Path="DataContext.GW2ExecPath"
+                    Path="DataContext.Gw2ExecPath"
                     RelativeSource="{RelativeSource AncestorType=Page}"
                     Mode="TwoWay"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
                         <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
-                        <validation:GW2ExeRule ValidatesOnTargetUpdated="True"/>
+                        <validation:Gw2ExeRule ValidatesOnTargetUpdated="True"/>
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox>

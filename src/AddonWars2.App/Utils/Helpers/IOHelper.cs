@@ -9,9 +9,11 @@ namespace AddonWars2.App.Helpers
 {
     using System;
     using System.IO;
+    using System.Security;
     using System.Xml;
     using System.Xml.Serialization;
     using AddonWars2.App.Models.Application;
+    using Microsoft.Win32;
     using NLog.Config;
 
     /// <summary>
@@ -56,6 +58,32 @@ namespace AddonWars2.App.Helpers
 
             var cfg = XmlLoggingConfiguration.CreateFromXmlString(xml);
             return cfg;
+        }
+
+        public static string TryFindGw2Exe()
+        {
+            string displayName = ApplicationGlobal.AppConfig.GW2ExecInfo.ProductName;
+            RegistryKey parentKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall");
+            string[] subKeyNames = parentKey.GetSubKeyNames();
+            foreach (var item in subKeyNames)
+            {
+                var key = parentKey.OpenSubKey(item);
+                try
+                {
+                    if (key.GetValue("DisplayName").ToString() == displayName)
+                    {
+                        // Apparently GW2 doesn't have "InstallLocation string.
+                        var gw2exe = key.GetValue("DisplayIcon").ToString();
+                        return gw2exe;
+                    }
+                }
+                catch (Exception)
+                {
+                    return string.Empty;
+                }
+            }
+
+            return string.Empty;
         }
 
         /// <summary>

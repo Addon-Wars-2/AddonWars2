@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Windows;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
@@ -24,6 +25,7 @@ namespace AddonWars2.App.ViewModels
         #region Fields
 
         private static readonly Random _random = new Random();
+        private bool _actuallyLoaded = false;
         private string _displayedWelcomeMessage;
         private string _gw2ExecPath;
 
@@ -36,11 +38,18 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public HomeViewModel()
         {
-            ResetWelcomeMessagesOnLoad();
+            WelcomeMessages = new ObservableCollection<string>()
+            {
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
+            };
 
-            PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, "GW2ExecPath");
+            PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
 
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage);
+            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe);
         }
 
         #endregion Constructors
@@ -59,7 +68,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets GW2 executable location.
         /// </summary>
-        public string GW2ExecPath
+        public string Gw2ExecPath
         {
             get => _gw2ExecPath;
             set
@@ -67,6 +76,27 @@ namespace AddonWars2.App.ViewModels
                 ApplicationGlobal.AppConfig.GW2ExecInfo.FilePath = value;
                 Logger.Info($"Selected the GW2 executable location: {value}");
                 SetProperty(ref _gw2ExecPath, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the current view model was loaded or not.
+        /// </summary>
+        /// <remarks>
+        /// This property is used to check if the view model is loaded already, since
+        /// the <see cref="FrameworkElement.Loaded"/> event fires every time a tab
+        /// becomes selected. Thus we can't bind to this event for single-time actions.
+        /// </remarks>
+        public bool ActuallyLoaded
+        {
+            get => _actuallyLoaded;
+            set
+            {
+                if (_actuallyLoaded == false)
+                {
+                    Logger.Info($"View model is loaded for the first time.");
+                    SetProperty(ref _actuallyLoaded, value);
+                }
             }
         }
 
@@ -87,6 +117,12 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command which is invoked when the parent page is loaded.
+        /// This command will try to locate gw2 executable and set it as a <see cref="Gw2ExecPath"/>.
+        /// </summary>
+        public RelayCommand TryFindGw2ExeCommand { get; private set; }
+
         #endregion Commands
 
         #region Commands Logic
@@ -95,8 +131,6 @@ namespace AddonWars2.App.ViewModels
         private void ExecuteUpdateWelcomeMessage()
         {
             Logger.Debug("Executing command.");
-
-            ResetWelcomeMessagesOnLoad();
 
             // Should not happen normally.
             if (WelcomeMessages == null || WelcomeMessages.Count == 0)
@@ -109,21 +143,25 @@ namespace AddonWars2.App.ViewModels
             DisplayedWelcomeMessage = WelcomeMessages[i];
         }
 
+        // TryFindGw2ExeCommand command logic.
+        private void ExecuteTryFindGw2Exe()
+        {
+            Logger.Debug("Executing command.");
+
+            // First try to get the file location from the registry.
+            var gw2exe = IOHelper.TryFindGw2Exe();
+            if (string.IsNullOrEmpty(gw2exe))
+            {
+                Logger.Debug("Couldn't find GW2 string in the registry.");
+                return;
+            }
+
+            Gw2ExecPath = gw2exe;
+        }
+
         #endregion Commands Logic
 
         #region Methods
-
-        // We need to refresh the list on ResourceDictionary changes.
-        private void ResetWelcomeMessagesOnLoad()
-        {
-            WelcomeMessages = new ObservableCollection<string>()
-            {
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
-            };
-        }
 
         // Updates config if a property specified in ctor was changed.
         private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)

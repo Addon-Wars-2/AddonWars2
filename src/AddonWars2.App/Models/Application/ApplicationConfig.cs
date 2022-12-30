@@ -80,7 +80,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the information about GW2 executable.
         /// </summary>
         [XmlElement("gw2execinfo")]
-        public GW2ExecInfo GW2ExecInfo { get; set; } = new GW2ExecInfo();
+        public Gw2ExecInfo GW2ExecInfo { get; set; } = new Gw2ExecInfo();
 
         /// <summary>
         /// Gets or sets <see cref="IServiceProvider"/> provider reference.
@@ -137,7 +137,7 @@ namespace AddonWars2.App.Models.Application
 
             internal static CultureInfo SelectedCulture => new CultureInfo("en-US", "EN", "English");
 
-            internal static GW2ExecInfo GW2ExecInfo => new GW2ExecInfo();
+            internal static Gw2ExecInfo GW2ExecInfo => new Gw2ExecInfo();
         }
 
         #endregion Inner Classes
