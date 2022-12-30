@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="NLogCustomTarget.cs" company="Addon-Wars-2">
+// <copyright file="NLogLoggingManagerTarget.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -15,25 +15,24 @@ namespace AddonWars2.App.Models.Logging
     /// A custom NLog target that writes to <see cref="LogEntry"/> object and then
     /// adds it to a collection specified in <see cref="LoggingManager"/>.
     /// </summary>
-    [Target("NLogCustomTarget")]
-    public sealed class NLogCustomTarget : TargetWithLayout
+    [Target("NLogLoggingManagerTarget")]
+    public sealed class NLogLoggingManagerTarget : TargetWithLayout
     {
         #region Constructors
 
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="NLogCustomTarget"/> class.
+        /// Initializes a new instance of the <see cref="NLogLoggingManagerTarget"/> class.
         /// </summary>
         /// <param name="loggingManager">A rerefence to a <see cref="LoggingManager"/> object.</param>
-        public NLogCustomTarget(LoggingManager loggingManager)
+        public NLogLoggingManagerTarget(LoggingManager loggingManager)
         {
             LoggingManagerInstance = loggingManager;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NLogCustomTarget"/> class.
+        /// Initializes a new instance of the <see cref="NLogLoggingManagerTarget"/> class.
         /// </summary>
-        public NLogCustomTarget()
+        public NLogLoggingManagerTarget()
         {
             // Blank.
         }

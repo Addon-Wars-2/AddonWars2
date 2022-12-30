@@ -16,7 +16,8 @@
 
     <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Главная</s:String>
-    <s:String x:Key="S.MainWindow.TabMenu.Header.Logging">Логи</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.News">Новости</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Логи</s:String>
 
     <!-- Home Page -->
     <s:String x:Key="S.HomePage.Welcome.Message_01">Отлично, куда мы направимся в этот раз?</s:String>
@@ -24,7 +25,7 @@
     <s:String x:Key="S.HomePage.Welcome.Message_03">Цветы лучше пуль.</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_04">...ни один смертный не будет настолько ТУПЫМ, чтобы уничтожить дракона...</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedBy">создано:</s:String>
+    <s:String x:Key="S.HomePage.Footer.CreatedBy">создано</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String>
 
     <!-- Logging Page -->
@@ -40,6 +41,6 @@
     <s:String x:Key="S.Common.ValidationText.ValidPath">Путь не является допустимым.</s:String>
     <s:String x:Key="S.Common.ValidationText.DirectoryExists">Путь должен указывать на существующую директорию.</s:String>
     <s:String x:Key="S.Common.ValidationText.FileExists">Путь должен указывать на существующий файл.</s:String>
-    <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на существующий файл gw2-64.exe.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на исполняемый файл Guild Wars 2.</s:String>
 
 </ResourceDictionary>

@@ -9,22 +9,28 @@
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>  <!-- NO TRANSLATION -->
-    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Unofficial Add-On Manager</s:String> <!-- NO TRANSLATION FOR THE GAME NAME AND TM -->
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Unofficial Add-On Manager</s:String> <!-- NO TRANSLATION FOR "Guild Wars 2™" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">GETTING STARTED</s:String>
-    <s:String x:Key="S.MainWindow.Header.Hyperlink.Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR THE GAME NAME -->
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">SUPPORT</s:String>
 
     <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
-    <s:String x:Key="S.MainWindow.TabMenu.Header.Logging">Logs</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.News">News</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
 
     <!-- Home Page -->
+    <!--
+    If one struggles with a literal translation of welcome messages, it's acceptable to use a suitable
+    adaptation with a similar or close to the original meaning. Proverbs, idioms are the best candidates for it.
+    If a string contains a wordplay, it is highly recommended to find a "localized" wordplay as well.
+    -->
     <s:String x:Key="S.HomePage.Welcome.Message_01">Alright, where are we heading today?</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_02">Where did I leave my chak infusion?</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_03">More violets I say, less violence.</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_04">...no mortal would be so monumentally STUPID as to destroy a dragon...</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedBy">created by:</s:String>
+    <s:String x:Key="S.HomePage.Footer.CreatedBy">created by</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String> <!-- NO TRANSLATION -->
 
     <!-- Logging Page -->
@@ -40,6 +46,6 @@
     <s:String x:Key="S.Common.ValidationText.ValidPath">Must be a valid Windows path.</s:String>
     <s:String x:Key="S.Common.ValidationText.DirectoryExists">Must be a valid Windows directory.</s:String>
     <s:String x:Key="S.Common.ValidationText.FileExists">Must be an existing file.</s:String>
-    <s:String x:Key="S.Common.ValidationText.GW2Exe">Must be gw2-64.exe file.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GW2Exe">Must be a Guild Wars 2 executable.</s:String>
 
 </ResourceDictionary>

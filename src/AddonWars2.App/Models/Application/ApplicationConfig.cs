@@ -10,13 +10,14 @@ namespace AddonWars2.App.Models.Application
     using System;
     using System.Collections.ObjectModel;
     using System.Xml.Serialization;
+    using AddonWars2.App.Models.GuildWars2;
     using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Holds user settings used by the application.
     /// </summary>
     [Serializable]
-    [XmlRoot("ApplicationConfig")]
+    [XmlRoot("config")]
     public class ApplicationConfig
     {
         #region Constructors
@@ -27,6 +28,16 @@ namespace AddonWars2.App.Models.Application
         public ApplicationConfig()
         {
             // Blank.
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationConfig"/> class.
+        /// </summary>
+        /// <param name="serviceProvider">A reference to a <see cref="IServiceProvider"/> instance.</param>
+        public ApplicationConfig(IServiceProvider serviceProvider)
+        {
+            Services = serviceProvider;
+            SetDefaultValues();
         }
 
         #endregion Constructors
@@ -50,20 +61,26 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets a list of available cultures.
         /// </summary>
-        [XmlArray("AvailableCultures")]
+        [XmlArray("cultures")]
         public ObservableCollection<CultureInfo> AvailableCultures { get; set; }
 
         /// <summary>
         /// Gets or sets the default application culture.
         /// </summary>
-        [XmlElement("DefaultCulture")]
+        [XmlElement("default")]
         public CultureInfo DefaultCulture { get; set; }
 
         /// <summary>
         /// Gets or sets the selected application culture.
         /// </summary>
-        [XmlElement("SelectedCulture")]
+        [XmlElement("selected")]
         public CultureInfo SelectedCulture { get; set; }
+
+        /// <summary>
+        /// Gets or sets the information about GW2 executable.
+        /// </summary>
+        [XmlElement("gw2execinfo")]
+        public GW2ExecInfo GW2ExecInfo { get; set; } = new GW2ExecInfo();
 
         /// <summary>
         /// Gets or sets <see cref="IServiceProvider"/> provider reference.
@@ -82,21 +99,25 @@ namespace AddonWars2.App.Models.Application
         /// <returns><see langword="true"/> if valid, otherwise <see langword="false"/>.</returns>
         public static bool IsValid(ApplicationConfig cfg)
         {
+            // TODO: Implement through attributes maybe?
+            //       Otherwise eventually we'll end up with a looooong and ugly method call.
+
             return
                 cfg != null &&
                 cfg.AvailableCultures != null &&
                 cfg.AvailableCultures.Count > 0 &&
                 cfg.SelectedCulture != null &&
-                cfg.DefaultCulture != null;
+                cfg.DefaultCulture != null &&
+                cfg.GW2ExecInfo != null;
         }
 
-        // Serializer calls default ctor, so we want to avoid setting anything in there
-        // to prevent setting data incorrectly.
+        // Serializer calls default ctor, so we want to avoid setting anything in there.
         private void SetDefaultValues()
         {
             AvailableCultures = ApplicationConfigDefaultState.AvailableCultures;
             DefaultCulture = ApplicationConfigDefaultState.DefaultCulture;
             SelectedCulture = ApplicationConfigDefaultState.SelectedCulture;
+            GW2ExecInfo = ApplicationConfigDefaultState.GW2ExecInfo;
         }
 
         #endregion Methods
@@ -106,15 +127,17 @@ namespace AddonWars2.App.Models.Application
         // Encapsulates the default state of the class. It simply maps the main class.
         private static class ApplicationConfigDefaultState
         {
-            internal static ObservableCollection<CultureInfo> AvailableCultures { get; set; } = new ObservableCollection<CultureInfo>()
+            internal static ObservableCollection<CultureInfo> AvailableCultures => new ObservableCollection<CultureInfo>()
             {
                 new CultureInfo("en-US", "EN", "English"),
                 new CultureInfo("ru-RU", "RU", "Russian"),
             };
 
-            internal static CultureInfo DefaultCulture { get; set; } = new CultureInfo("en-US", "EN", "English");
+            internal static CultureInfo DefaultCulture => new CultureInfo("en-US", "EN", "English");
 
-            internal static CultureInfo SelectedCulture { get; set; } = new CultureInfo("en-US", "EN", "English");
+            internal static CultureInfo SelectedCulture => new CultureInfo("en-US", "EN", "English");
+
+            internal static GW2ExecInfo GW2ExecInfo => new GW2ExecInfo();
         }
 
         #endregion Inner Classes

@@ -18,8 +18,14 @@ namespace AddonWars2.App.Utils.Validation
     /// </summary>
     public class NotEmptyFieldRule : ValidationRule
     {
+        #region Fields
+
         // Backing field for the validation error message.
         private readonly string _errorMessage = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.NotEmptyField");
+
+        #endregion Fields
+
+        #region Methods
 
         /// <inheritdoc/>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
@@ -33,5 +39,7 @@ namespace AddonWars2.App.Utils.Validation
 
             return ValidationResult.ValidResult;
         }
+
+        #endregion Methods
     }
 }

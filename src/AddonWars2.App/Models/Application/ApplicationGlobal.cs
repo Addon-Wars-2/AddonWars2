@@ -11,7 +11,7 @@ namespace AddonWars2.App.Models.Application
     using System.IO;
 
     /// <summary>
-    /// Holds some global application information.
+    /// Holds some globally available application information.
     /// </summary>
     public static class ApplicationGlobal
     {

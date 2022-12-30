@@ -1,5 +1,5 @@
 ﻿<Page 
-    x:Class="AddonWars2.App.Views.MainPage"
+    x:Class="AddonWars2.App.Views.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,9 +13,11 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
-    mc:Ignorable="d" 
+    xmlns:services="clr-namespace:AddonWars2.App.Services"
+    mc:Ignorable="d"
     DataContext="{markupex:DISource Type=vm:HomeViewModel}"
-    Title="MainPage"
+    assist:DialogAssist.DialogService="{markupex:DISource Type=services:DialogService}"
+    Title="HomePage"
     ShowsNavigationUI="False">
 
     <Grid>
@@ -40,17 +42,17 @@
             </i:Interaction.Triggers>
         </Grid>
         <Grid
-            Grid.Row="2"
-            Margin="0,0,0,00">
+            Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBox
-                x:Name="GameLocationTextBox"
+                x:Name="GW2ExecTextBox"
+                Margin="0,0,0,20"
                 Grid.Column="0"
-                Width="500"
+                Width="500" Height="30"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Focusable="True"
@@ -59,11 +61,11 @@
                 assist:HintAssist.Hint="{StaticResource S.Controls.TextBox.SelectGW2ExePlaceholder}"
                 Style="{DynamicResource TextBoxStyle}">
                 <Binding
-                    Path="DataContext.GW2DirectoryLocation"
+                    Path="DataContext.GW2ExecPath"
                     RelativeSource="{RelativeSource AncestorType=Page}"
+                    Mode="TwoWay"
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <validation:NotEmptyFieldRule ValidatesOnTargetUpdated="True"/>
                         <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
                         <validation:GW2ExeRule ValidatesOnTargetUpdated="True"/>
                     </Binding.ValidationRules>
@@ -72,7 +74,7 @@
             <Button
                 x:Name="SelectLocation"
                 Grid.Column="1"
-                Margin="20,0,0,0"
+                Margin="20,0,0,20"
                 Height="30"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
@@ -84,57 +86,28 @@
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level2to3}"
                 attached:AccentColorExtension.AccentColor="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
                 Style="{DynamicResource MajorButtonAccentBackgroundStyle}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction
+                            TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Page}}"
+                            MethodName="OpenFileDialog_OnClick"/>
+                        <i:ChangePropertyAction
+                            TargetName="GW2ExecTextBox"
+                            PropertyName="Text"
+                            Value="{Binding Path=(assist:DialogAssist.SelectedPaths)[0], RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Button.Content>
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontSize="18"
-                        FontWeight="Bold"
-                        FontFamily="PT Serif"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                        FontSize="16"
+                        FontWeight="Regular"
+                        FontFamily="{DynamicResource Lato}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level4}"
                         Text="{DynamicResource S.HomePage.GameLocation.SelectButton}"/>
                 </Button.Content>
             </Button>
-            <StackPanel
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom">
-                <TextBlock
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                    FontFamily="{DynamicResource Lato}"
-                    FontWeight="Light"
-                    FontSize="9"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <Run Text="{Binding Path=DataContext.PackageVersionWithSuffix, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, StringFormat='{}build {0}'}"/>
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
-                            ShadowDepth="1"
-                            Direction="-45"
-                            BlurRadius="0"
-                            Opacity="1.0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                    FontFamily="{DynamicResource Lato}"
-                    FontWeight="Light"
-                    FontSize="9"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>
-                    <Run Text="{DynamicResource S.HomePage.Footer.CreatedByAuthor}"/>
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
-                            ShadowDepth="1"
-                            Direction="-45"
-                            BlurRadius="0"
-                            Opacity="1.0"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-            </StackPanel>
         </Grid>
     </Grid>
 

@@ -77,36 +77,18 @@ namespace AddonWars2.App
         {
             Logger.Debug("Restarting the application.");
 
+            // Save app/user data first.
+            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
+
+            // Start a new process.
             var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
             Process.Start(currExecPath);
 
+            // Now close the currrent one.
             LogManager.Shutdown();
 
             Current.Shutdown();
         }
-
-        /////// <summary>
-        /////// Forces <see cref="MainWindow"/> to redraw itself without shutting the application down.
-        /////// </summary>
-        /////// <remarks>
-        /////// This method allows to "hot-reload" the main window without closing the whole application,
-        /////// and by doing so - keep logging up. The existing DataContext will be re-attached to a new window.
-        /////// </remarks>
-        ////public void ReloadMainWindow()
-        ////{
-        ////    Logger.Debug("Closing the main window.");
-        ////    Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        ////    MainWindowInstance.Close();
-        ////    Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-
-        ////    var mainViewModel = Services.GetRequiredService<MainWindowViewModel>();
-        ////    MainWindowInstance = new () { DataContext = mainViewModel };
-        ////    MainWindowInstance.Show();
-
-        ////    AW2App_SetupLocalization();
-
-        ////    Logger.Info("Main window reload complete.");
-        ////}
 
         /// <inheritdoc/>
         protected override void OnStartup(StartupEventArgs e)
@@ -140,7 +122,7 @@ namespace AddonWars2.App
         // Setups logger.
         private void AW2App_SetupLogger()
         {
-            Target.Register<NLogCustomTarget>("NLogCustomTarget");
+            Target.Register<NLogLoggingManagerTarget>("NLogLoggingManagerTarget");
 
             // Workaround details:
             // https://github.com/NLog/NLog/wiki/Dependency-injection-with-NLog
@@ -148,9 +130,9 @@ namespace AddonWars2.App
             var defautCtor = ConfigurationItemFactory.Default.CreateInstance;
             ConfigurationItemFactory.Default.CreateInstance = type =>
             {
-                if (type == typeof(NLogCustomTarget))
+                if (type == typeof(NLogLoggingManagerTarget))
                 {
-                    return new NLogCustomTarget(Services.GetRequiredService<LoggingManager>());
+                    return new NLogLoggingManagerTarget(Services.GetRequiredService<LoggingManager>());
                 }
 
                 return defautCtor(type);
@@ -168,6 +150,7 @@ namespace AddonWars2.App
             }
 
             ApplicationGlobal.AppDataDir = appDataDir;
+
             Logger.Info($"Using AppData directory: {appDataDir}");
 
             // Locate the logs dir.
@@ -197,8 +180,8 @@ namespace AddonWars2.App
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            ApplicationConfig.Services = Services;  // TODO: Very dirty solution! We do it only once to init static property.
-            ApplicationGlobal.AppConfig = ApplicationConfig.Default;
+            var appCfg = new ApplicationConfig(Services);
+            ApplicationGlobal.AppConfig = appCfg;
             var cfg = ApplicationGlobal.AppConfig;  // default
 
             // Try to get application settings from the AppData\Roaming dir.
@@ -207,6 +190,7 @@ namespace AddonWars2.App
             {
                 // Create a new one with default settings.
                 IOHelper.SerializeXml(cfg, cfgPath);
+
                 Logger.Info($"Created a new application config file: {cfgPath}");
             }
             else
@@ -217,18 +201,20 @@ namespace AddonWars2.App
                 cfg = IOHelper.DeserializeXml<ApplicationConfig>(cfgPath);
                 if (!ApplicationConfig.IsValid(cfg))
                 {
-                    // Delete the corrupted file (since this name is reserved for the app config).
                     Logger.Info($"The given config file is not valid. Creating a new one.");
-                    File.Delete(cfgPath);
 
-                    // Replace with a new default config.
+                    // Delete the corrupted file (since this name is reserved for the app config)
+                    // and replace it with a default one.
+                    File.Delete(cfgPath);
                     cfg = ApplicationConfig.Default;
                     IOHelper.SerializeXml(cfg, cfgPath);
+
                     Logger.Info($"Created a new application config file: {cfgPath}");
                 }
             }
 
             ApplicationGlobal.AppConfig = cfg;
+
             Logger.Info($"Using the existing application config file: {cfgPath}");
         }
 

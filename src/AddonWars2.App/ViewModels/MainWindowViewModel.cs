@@ -8,11 +8,9 @@
 namespace AddonWars2.App.ViewModels
 {
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
+    using System.Reflection;
     using System.Windows.Controls;
-    using System.Windows.Navigation;
     using AddonWars2.App.Commands;
-    using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using CommunityToolkit.Mvvm.Input;
     using NLog;
@@ -43,7 +41,6 @@ namespace AddonWars2.App.ViewModels
             HomeViewModel = homeViewModel;
             LoggingViewModel = loggingViewModel;
 
-            OpenUrlCommand = new RelayCommand<RequestNavigateEventArgs>(ExecuteOpenUrlCommand);
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
         }
 
@@ -83,17 +80,17 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the package version with suffix included.
+        /// </summary>
+        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
         // Gets the current logger instance.
         private static Logger Logger => LogManager.GetCurrentClassLogger();
 
         #endregion Properties
 
         #region Commands
-
-        /// <summary>
-        /// Gets a command which is invoked when a hyperlink item is clicked.
-        /// </summary>
-        public RelayCommand<RequestNavigateEventArgs> OpenUrlCommand { get; private set; }
 
         /// <summary>
         /// Gets a command which is invoked after another language is selected.
@@ -104,20 +101,12 @@ namespace AddonWars2.App.ViewModels
 
         #region Commands Logic
 
-        // OpenUrlCommand command logic.
-        private void ExecuteOpenUrlCommand(RequestNavigateEventArgs e)
-        {
-            Logger.Debug("Executing command.");
-
-            // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#change-description
-            // UseShellExecute = false is a default behavior for .NET Core and on, while it's set to true for .NET Framework.
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
-
         // ChangeLanguageCommand command logic.
         private void ExecuteChangeLanguageCommand(SelectionChangedEventArgs e)
         {
+            // TODO: Doesn't really belong to VM since it does nothing with data (models).
+            //       More naturally to put it to a code-behind.
+
             Logger.Debug("Executing command.");
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
@@ -129,7 +118,6 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
             AW2Application.Restart();
         }
 

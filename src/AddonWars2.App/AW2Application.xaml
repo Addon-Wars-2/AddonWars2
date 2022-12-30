@@ -36,6 +36,9 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/ValidationErrorTemplate.xaml"/>
 
+                <!-- Animation -->
+                <ResourceDictionary Source="pack://application:,,,/Styles/Animation/BgOpacityMaskDiscreteAnimation.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>

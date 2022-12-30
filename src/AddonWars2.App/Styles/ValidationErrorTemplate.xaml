@@ -7,11 +7,12 @@
         <StackPanel Orientation="Vertical">
             <Border
                 x:Name="ValidationBorder"
-                Margin="0,0,0,0"
                 Visibility="Visible">
                 <TextBlock
                     x:Name="BorderText"
-                    FontSize="10"
+                    Margin="0,0,0,2"
+                    FontSize="12"
+                    FontWeight="Light"
                     RenderOptions.ClearTypeHint="Enabled"
                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
                     HorizontalAlignment="Left"
@@ -30,9 +31,9 @@
             <Border>
                 <AdornedElementPlaceholder x:Name="Placeholder">
                     <Border
-                        Margin="0,2,0,2"
+                        Margin="0,0,0,0"
                         BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                        BorderThickness="1"
+                        BorderThickness="0,0,0,2"
                         CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}"/>
                 </AdornedElementPlaceholder>
             </Border>

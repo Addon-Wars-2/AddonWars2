@@ -1,0 +1,135 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+    A trick called "twos" or "2s", that came from traditional animation, is used here.
+    Duplicating frames effectively keeps the required frame rate with less unique frames.
+    In instance, animating on 2s with 24 fps requires to produce only 12 frames,
+    with exceptions related to motion speed and acceleration.
+    -->
+    
+    <ObjectKeyFrameCollection x:Key="BgOpacityMaskDiscreteAnimation">
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_02.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_02.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_03.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_03.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_04.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_04.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_05.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_05.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_06.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_06.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_07.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_07.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_08.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_08.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_09.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_09.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_10.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_10.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_11.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_11.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_12.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+        <DiscreteObjectKeyFrame>
+            <DiscreteObjectKeyFrame.Value>
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_12.png"/>
+            </DiscreteObjectKeyFrame.Value>
+        </DiscreteObjectKeyFrame>
+    </ObjectKeyFrameCollection>
+
+</ResourceDictionary>

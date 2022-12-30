@@ -9,6 +9,7 @@ namespace AddonWars2.App.ViewModels
 {
     using System.Windows;
     using CommunityToolkit.Mvvm.Input;
+    using Microsoft.Win32;
     using NLog;
 
     /// <summary>
@@ -42,6 +43,13 @@ namespace AddonWars2.App.ViewModels
         #endregion Properties
 
         #region Commands
+
+        // TODO: These commands belong to UI logic only and don't deal with data.
+        //       However it's also desired to avoid code duplication, i.e. put it
+        //       to a code-behind for every Window. Probably a custom Window
+        //       control with this logic implemented in there would be better.
+        //       That would also eliminate the need of deriving all Window VM from
+        //       this class.
 
         /// <summary>
         /// Gets a command which minimizes the window.

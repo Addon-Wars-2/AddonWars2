@@ -40,12 +40,13 @@ namespace AddonWars2.App.Services
             // Commands.
             services.AddSingleton<CommonCommands>();
 
-            // Managers.
+            // Services.
             services.AddSingleton<LoggingManager>();
+            services.AddSingleton<DialogService>();  // TODO: Factory? Can't use interface in markup.
 
             // Models.
             // TODO: factories?
-            services.AddSingleton<NLogCustomTarget>();
+            services.AddSingleton<NLogLoggingManagerTarget>();
             services.AddTransient<ApplicationConfig>();
 
             // Configure logger here as per NLog GitHub guide.

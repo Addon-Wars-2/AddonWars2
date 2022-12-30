@@ -18,16 +18,20 @@ namespace AddonWars2.App.Utils.Validation
     /// </summary>
     public class DirectoryExistsRule : ValidationRule
     {
+        #region Fields
+
         // Backing field for the validation error message.
         private readonly string _errorMessage = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.DirectoryExists");
+
+        #endregion Fields
+
+        #region Methods
 
         /// <inheritdoc/>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var stringValue = Convert.ToString(value);
 
-            // TODO: "    .txt" is okay, while "    " is an illegal file path.
-            //       Change to IsNullOrWhiteSpace?
             if (string.IsNullOrEmpty(stringValue) || !Directory.Exists(stringValue))
             {
                 return new ValidationResult(false, _errorMessage);
@@ -35,5 +39,7 @@ namespace AddonWars2.App.Utils.Validation
 
             return ValidationResult.ValidResult;
         }
+
+        #endregion Methods
     }
 }

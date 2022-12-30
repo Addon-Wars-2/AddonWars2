@@ -23,7 +23,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Grid Margin="0,2,0,2">
+                    <Grid>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>

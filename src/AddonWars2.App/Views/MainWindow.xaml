@@ -43,70 +43,8 @@
                         <ObjectAnimationUsingKeyFrames
                             Storyboard.TargetName="BackgroundImage"
                             Storyboard.TargetProperty="OpacityMask"
-                            RepeatBehavior="1x" Duration="00:00:0.35">
-                            <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_02.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_03.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_04.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_05.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_06.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_07.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_08.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_09.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_10.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_11.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame>
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_12.png"/>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames.KeyFrames>
-                        </ObjectAnimationUsingKeyFrames>
+                            RepeatBehavior="1x" Duration="00:00:0.4"
+                            KeyFrames="{StaticResource BgOpacityMaskDiscreteAnimation}"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
@@ -294,18 +232,69 @@
                     Style="{DynamicResource MainTabControlStyle}"
                     ItemContainerStyle="{DynamicResource MainWindowTabItemStyle}">
                     <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}">
-                        <Frame
-                            Source="HomePage.xaml"
-                            FocusVisualStyle="{x:Null}"/>
+                        <AdornerDecorator>
+                            <Frame
+                                Source="HomePage.xaml"
+                                FocusVisualStyle="{x:Null}"/>
+                        </AdornerDecorator>
                     </TabItem>
-                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Logging}">
-                        <Frame
-                            Source="LoggingPage.xaml"
-                            FocusVisualStyle="{x:Null}"/>
+                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.News}">
+                        <AdornerDecorator>
+                            <Frame
+                                Source="NewsPage.xaml"
+                                FocusVisualStyle="{x:Null}"/>
+                        </AdornerDecorator>
+                    </TabItem>
+                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}">
+                        <AdornerDecorator>
+                            <Frame
+                                Source="LoggingPage.xaml"
+                                FocusVisualStyle="{x:Null}"/>
+                        </AdornerDecorator>
                     </TabItem>
                 </TabControl>
             </Grid>
         </Border>
+        <StackPanel
+            Margin="0,0,60,35"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom">
+            <TextBlock
+                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                FontFamily="{DynamicResource Lato}"
+                FontWeight="Light"
+                FontSize="9"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center">
+                <Run Text="{Binding Path=DataContext.PackageVersionWithSuffix, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, StringFormat='{}build {0}'}"/>
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                        ShadowDepth="1"
+                        Direction="-45"
+                        BlurRadius="0"
+                        Opacity="1.0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock
+                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                FontFamily="{DynamicResource Lato}"
+                FontWeight="Light"
+                FontSize="9"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center">
+                <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>
+                <Run Text="{DynamicResource S.HomePage.Footer.CreatedByAuthor}"/>
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                        ShadowDepth="1"
+                        Direction="-45"
+                        BlurRadius="0"
+                        Opacity="1.0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
     </Grid>
 
 </Window>

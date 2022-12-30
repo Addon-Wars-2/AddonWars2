@@ -14,6 +14,8 @@ namespace AddonWars2.App.Services
     /// </summary>
     public static class MessageBoxService
     {
+        // TODO: Move to interface, remove static and inject through DI container?
+
         /// <summary>
         /// Displays a native message box with specified text, caption, and style.
         /// </summary>

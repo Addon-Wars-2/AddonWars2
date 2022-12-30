@@ -51,19 +51,19 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets culture string in a standard format, i.e. "en-US".
         /// </summary>
-        [XmlElement("Culture")]
+        [XmlElement("culture")]
         public string Culture { get; set; }
 
         /// <summary>
         /// Gets or sets culture short name.
         /// </summary>
-        [XmlElement("ShortName")]
+        [XmlElement("short")]
         public string ShortName { get; set; }
 
         /// <summary>
         /// Gets or sets culture full name.
         /// </summary>
-        [XmlElement("FullName")]
+        [XmlElement("full")]
         public string FullName { get; set; }
 
         #endregion Properties

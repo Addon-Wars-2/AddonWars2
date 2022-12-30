@@ -9,8 +9,9 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.Reflection;
-    using System.Windows;
+    using System.ComponentModel;
+    using AddonWars2.App.Helpers;
+    using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
     using CommunityToolkit.Mvvm.Input;
     using NLog;
@@ -24,7 +25,7 @@ namespace AddonWars2.App.ViewModels
 
         private static readonly Random _random = new Random();
         private string _displayedWelcomeMessage;
-        private string _GW2DirectoryLocation;
+        private string _gw2ExecPath;
 
         #endregion Fields
 
@@ -36,6 +37,8 @@ namespace AddonWars2.App.ViewModels
         public HomeViewModel()
         {
             ResetWelcomeMessagesOnLoad();
+
+            PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, "GW2ExecPath");
 
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage);
         }
@@ -54,17 +57,17 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
-        /// Gets the package version with suffix included.
+        /// Gets or sets GW2 executable location.
         /// </summary>
-        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-
-        /// <summary>
-        /// Gets or sets GW2 executable file location.
-        /// </summary>
-        public string GW2DirectoryLocation
+        public string GW2ExecPath
         {
-            get => _GW2DirectoryLocation;
-            set => SetProperty(ref _GW2DirectoryLocation, value);
+            get => _gw2ExecPath;
+            set
+            {
+                ApplicationGlobal.AppConfig.GW2ExecInfo.FilePath = value;
+                Logger.Info($"Selected the GW2 executable location: {value}");
+                SetProperty(ref _gw2ExecPath, value);
+            }
         }
 
         // Holds a collection of welcome message displayed randomly on window update (Loaded event).
@@ -120,6 +123,13 @@ namespace AddonWars2.App.ViewModels
                 ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
                 ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
             };
+        }
+
+        // Updates config if a property specified in ctor was changed.
+        private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
+            Logger.Debug($"Config file updated.");
         }
 
         #endregion Methods
