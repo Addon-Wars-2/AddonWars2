@@ -73,12 +73,12 @@ namespace AddonWars2.App
         /// <summary>
         /// Immediately restarts the application.
         /// </summary>
-        public static void Restart()
+        public void Restart()
         {
             Logger.Debug("Restarting the application.");
 
             // Save app/user data first.
-            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
+            IOHelper.SerializeXml(Services.GetRequiredService<ApplicationConfig>().UserData, Services.GetRequiredService<ApplicationConfig>().ConfigFilePath);
 
             // Start a new process.
             var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
@@ -93,10 +93,11 @@ namespace AddonWars2.App
         /// <inheritdoc/>
         protected override void OnStartup(StartupEventArgs e)
         {
-            ApplicationGlobal.StartupDateTime = DateTime.Now;
             base.OnStartup(e);
 
             Services = AW2ServiceProvider.ConfigureServices();
+            Services.GetRequiredService<ApplicationConfig>().StartupDateTime = DateTime.Now;
+
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
             AW2App_SetupLocalization();
@@ -149,7 +150,7 @@ namespace AddonWars2.App
                 Directory.CreateDirectory(appDataDir);
             }
 
-            ApplicationGlobal.AppDataDir = appDataDir;
+            Services.GetRequiredService<ApplicationConfig>().AppDataDir = appDataDir;
 
             Logger.Info($"Using AppData directory: {appDataDir}");
 
@@ -163,7 +164,7 @@ namespace AddonWars2.App
 
             // Setup logger config.
             var date = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var logPath = Path.Join(logsDir, $"{ApplicationGlobal.LogPrefix}{date}.txt");
+            var logPath = Path.Join(logsDir, $"{Services.GetRequiredService<ApplicationConfig>().LogPrefix}{date}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "logTarget",
@@ -180,12 +181,12 @@ namespace AddonWars2.App
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            var appCfg = new ApplicationConfig(Services);
-            ApplicationGlobal.AppConfig = appCfg;
-            var cfg = ApplicationGlobal.AppConfig;  // default
+            var appCfg = new UserData(Services);
+            Services.GetRequiredService<ApplicationConfig>().UserData = appCfg;
+            var cfg = Services.GetRequiredService<ApplicationConfig>().UserData;  // default
 
             // Try to get application settings from the AppData\Roaming dir.
-            var cfgPath = ApplicationGlobal.ConfigFilePath;
+            var cfgPath = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
             if (!File.Exists(cfgPath))
             {
                 // Create a new one with default settings.
@@ -198,22 +199,22 @@ namespace AddonWars2.App
                 // Try to load it and check if it's valid since serializer
                 // will either return incorrect data (i.e. some properties are missing)
                 // or will thron an exception and thus return default(T).
-                cfg = IOHelper.DeserializeXml<ApplicationConfig>(cfgPath);
-                if (!ApplicationConfig.IsValid(cfg))
+                cfg = IOHelper.DeserializeXml<UserData>(cfgPath);
+                if (!UserData.IsValid(cfg))
                 {
                     Logger.Info($"The given config file is not valid. Creating a new one.");
 
                     // Delete the corrupted file (since this name is reserved for the app config)
                     // and replace it with a default one.
                     File.Delete(cfgPath);
-                    cfg = ApplicationConfig.Default;
+                    cfg = UserData.Default;
                     IOHelper.SerializeXml(cfg, cfgPath);
 
                     Logger.Info($"Created a new application config file: {cfgPath}");
                 }
             }
 
-            ApplicationGlobal.AppConfig = cfg;
+            Services.GetRequiredService<ApplicationConfig>().UserData = cfg;
 
             Logger.Info($"Using the existing application config file: {cfgPath}");
         }
@@ -221,7 +222,7 @@ namespace AddonWars2.App
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var cfg = ApplicationGlobal.AppConfig;
+            var cfg = Services.GetRequiredService<ApplicationConfig>().UserData;
             var culture = cfg.SelectedCulture;
             var selected = LocalizationHelper.SelectCulture(culture);
             cfg.SelectedCulture = cfg.AvailableCultures.FirstOrDefault(x => x.Culture == selected);

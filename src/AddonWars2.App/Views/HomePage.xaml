@@ -20,11 +20,19 @@
     Title="HomePage"
     ShowsNavigationUI="False">
 
+    <Page.Resources>
+        <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
+    </Page.Resources>
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction
+                Command="{Binding Path=DataContext.TryFindGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:InvokeCommandAction
+                Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
             <i:ChangePropertyAction
-                PropertyName="DataContext.ActuallyLoaded"
-                TargetName="{Binding RelativeSource={RelativeSource Self}}"
+                TargetObject="{Binding}"
+                PropertyName="IsActuallyLoaded"
                 Value="True"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
@@ -44,11 +52,6 @@
                 FontStyle="Italic"
                 FontSize="16"
                 Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Loaded">
-                    <i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </Grid>
         <Grid
             Grid.Row="2">
@@ -76,7 +79,14 @@
                     UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
                         <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
-                        <validation:Gw2ExeRule ValidatesOnTargetUpdated="True"/>
+                        <validation:Gw2ExecRule ValidatesOnTargetUpdated="True">
+                            <validation:Gw2ExecRule.ParamsWrapper>
+                                <validation:Gw2ExeRuleParams
+                                    FileExtension="{Binding Path=Data.Gw2FileExtension, Source={StaticResource DataContextProxy}}"
+                                    ProductName="{Binding Path=Data.Gw2ProductName, Source={StaticResource DataContextProxy}}"
+                                    FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}}"/>
+                            </validation:Gw2ExecRule.ParamsWrapper>
+                        </validation:Gw2ExecRule>
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox>

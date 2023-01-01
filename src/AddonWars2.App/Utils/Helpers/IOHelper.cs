@@ -8,13 +8,24 @@
 namespace AddonWars2.App.Helpers
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
-    using System.Security;
+    using System.Windows;
     using System.Xml;
     using System.Xml.Serialization;
-    using AddonWars2.App.Models.Application;
     using Microsoft.Win32;
     using NLog.Config;
+
+    /// <summary>
+    /// Windows registry name types.
+    /// </summary>
+    public enum RegValType
+    {
+        REG_SZ,
+        REG_BINARY,
+        REG_DWORD,
+        REG_QWORD,
+    }
 
     /// <summary>
     /// Provides various methods to handle application data IO flow.
@@ -60,30 +71,34 @@ namespace AddonWars2.App.Helpers
             return cfg;
         }
 
-        public static string TryFindGw2Exe()
+        /// <summary>
+        /// Performs a registry search for a given <see cref="name"/> within the specified
+        /// <paramref name="keyname"/> using the local machine data.
+        /// </summary>
+        /// <remarks>
+        /// A returned value must be checked for <see langword="null"/>.
+        /// </remarks>
+        /// <param name="keyname">Key (directory) to search in.</param>
+        /// <param name="name">Value name to search for.</param>
+        /// <returns>A found value boxed inside an <see cref="object"/> if found. Otherwise - <see langword="null"/>.</returns>
+        public static object SearchRegistryKey(string keyname, string name)
         {
-            string displayName = ApplicationGlobal.AppConfig.GW2ExecInfo.ProductName;
-            RegistryKey parentKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall");
-            string[] subKeyNames = parentKey.GetSubKeyNames();
-            foreach (var item in subKeyNames)
+            if (keyname == null || name == null)
             {
-                var key = parentKey.OpenSubKey(item);
-                try
-                {
-                    if (key.GetValue("DisplayName").ToString() == displayName)
-                    {
-                        // Apparently GW2 doesn't have "InstallLocation string.
-                        var gw2exe = key.GetValue("DisplayIcon").ToString();
-                        return gw2exe;
-                    }
-                }
-                catch (Exception)
-                {
-                    return string.Empty;
-                }
+                return null;
             }
 
-            return string.Empty;
+            RegistryKey parent = Registry.LocalMachine.OpenSubKey(keyname);
+
+            try
+            {
+                var foundValue = parent.GetValue(name);
+                return foundValue;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -98,7 +113,7 @@ namespace AddonWars2.App.Helpers
 
             // Setter will be used when deserializing a string into an object,
             // because an instance of the object needs to be created and then
-            // the setter will be used to populate the property value.
+            // the setter will be used to populate the property name.
 
             var xmlSerializer = new XmlSerializer(typeof(T));
             var xns = new XmlSerializerNamespaces();

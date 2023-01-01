@@ -29,14 +29,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
+        /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
         /// <param name="homeViewModel">A reference to <see cref="ViewModels.HomeViewModel"/>.</param>
         /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
         public MainWindowViewModel(
+            ApplicationConfig appConfig,
             CommonCommands commonCommands,
             HomeViewModel homeViewModel,
             LoggingViewModel loggingViewModel)
         {
+            AppConfig = appConfig;
             CommonCommands = commonCommands;
             HomeViewModel = homeViewModel;
             LoggingViewModel = loggingViewModel;
@@ -47,6 +50,11 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a reference to the application config.
+        /// </summary>
+        public ApplicationConfig AppConfig { get; private set; }
 
         /// <summary>
         /// Gets a reference to a common commands class.
@@ -66,17 +74,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a list of available cultures.
         /// </summary>
-        public ObservableCollection<CultureInfo> AvailableCultures => ApplicationGlobal.AppConfig.AvailableCultures;
+        public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.UserData.AvailableCultures;
 
         /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
         public CultureInfo SelectedCulture
         {
-            get => ApplicationGlobal.AppConfig.SelectedCulture;
+            get => AppConfig.UserData.SelectedCulture;
             set
             {
-                SetProperty(ApplicationGlobal.AppConfig.SelectedCulture, value, ApplicationGlobal.AppConfig, (model, selected) => model.SelectedCulture = selected);
+                SetProperty(AppConfig.UserData.SelectedCulture, value, AppConfig.UserData, (model, selected) => model.SelectedCulture = selected);
             }
         }
 
@@ -118,7 +126,7 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            AW2Application.Restart();
+            AW2Application.Current.Restart();
         }
 
         #endregion Commands Logic

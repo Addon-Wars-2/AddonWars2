@@ -25,7 +25,7 @@ namespace AddonWars2.App.ViewModels
         #region Fields
 
         private static readonly Random _random = new Random();
-        private bool _actuallyLoaded = false;
+        private bool _isActuallyLoaded = false;
         private string _displayedWelcomeMessage;
         private string _gw2ExecPath;
 
@@ -36,20 +36,16 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
         /// </summary>
-        public HomeViewModel()
+        /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
+        public HomeViewModel(
+            ApplicationConfig appConfig)
         {
-            WelcomeMessages = new ObservableCollection<string>()
-            {
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
-            };
+            AppConfig = appConfig;
 
             PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
 
-            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage);
-            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe);
+            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => _isActuallyLoaded == false);
+            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => _isActuallyLoaded == false);
         }
 
         #endregion Constructors
@@ -57,12 +53,21 @@ namespace AddonWars2.App.ViewModels
         #region Properties
 
         /// <summary>
+        /// Gets a reference to the application config.
+        /// </summary>
+        public ApplicationConfig AppConfig { get; private set; }
+
+        /// <summary>
         /// Gets the displayed welcome message.
         /// </summary>
         public string DisplayedWelcomeMessage
         {
             get => _displayedWelcomeMessage;
-            private set => SetProperty(ref _displayedWelcomeMessage, value);
+            private set
+            {
+                SetProperty(ref _displayedWelcomeMessage, value);
+                Logger.Debug($"Property set: {value}");
+            }
         }
 
         /// <summary>
@@ -73,11 +78,26 @@ namespace AddonWars2.App.ViewModels
             get => _gw2ExecPath;
             set
             {
-                ApplicationGlobal.AppConfig.GW2ExecInfo.FilePath = value;
-                Logger.Info($"Selected the GW2 executable location: {value}");
+                AppConfig.UserData.Gw2ExecInfo.FilePath = value;
                 SetProperty(ref _gw2ExecPath, value);
+                Logger.Debug($"Property set: {value}");
             }
         }
+
+        /// <summary>
+        /// Gets the GW2 exe file extension from the config object.
+        /// </summary>
+        public string Gw2FileExtension => AppConfig.UserData.Gw2ExecInfo.FileExtension;
+
+        /// <summary>
+        /// Gets the GW2 exe product name from the config object.
+        /// </summary>
+        public string Gw2ProductName => AppConfig.UserData.Gw2ExecInfo.ProductName;
+
+        /// <summary>
+        /// Gets the GW2 exe file description from the config object.
+        /// </summary>
+        public string Gw2FileDescription => AppConfig.UserData.Gw2ExecInfo.FileDescription;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -87,15 +107,15 @@ namespace AddonWars2.App.ViewModels
         /// the <see cref="FrameworkElement.Loaded"/> event fires every time a tab
         /// becomes selected. Thus we can't bind to this event for single-time actions.
         /// </remarks>
-        public bool ActuallyLoaded
+        public bool IsActuallyLoaded
         {
-            get => _actuallyLoaded;
+            get => _isActuallyLoaded;
             set
             {
-                if (_actuallyLoaded == false)
+                if (_isActuallyLoaded == false)
                 {
-                    Logger.Info($"View model is loaded for the first time.");
-                    SetProperty(ref _actuallyLoaded, value);
+                    SetProperty(ref _isActuallyLoaded, value);
+                    Logger.Debug($"Property set: {value}");
                 }
             }
         }
@@ -111,37 +131,18 @@ namespace AddonWars2.App.ViewModels
         #region Commands
 
         /// <summary>
-        /// Gets a command which is invoked when the parent page is loaded.
-        /// Updates welcome message by replacing it with a random one taken from a
-        /// list of pre-defined strings.
-        /// </summary>
-        public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command which is invoked when the parent page is loaded.
-        /// This command will try to locate gw2 executable and set it as a <see cref="Gw2ExecPath"/>.
+        /// Gets a command that will try to locate GW2 executable and set it as a <see cref="Gw2ExecPath"/>.
         /// </summary>
         public RelayCommand TryFindGw2ExeCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that updates a welcome message.
+        /// </summary>
+        public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
 
         #endregion Commands
 
         #region Commands Logic
-
-        // OpenUrlCommand command logic.
-        private void ExecuteUpdateWelcomeMessage()
-        {
-            Logger.Debug("Executing command.");
-
-            // Should not happen normally.
-            if (WelcomeMessages == null || WelcomeMessages.Count == 0)
-            {
-                DisplayedWelcomeMessage = string.Empty;
-                return;
-            }
-
-            int i = _random.Next(0, WelcomeMessages.Count);
-            DisplayedWelcomeMessage = WelcomeMessages[i];
-        }
 
         // TryFindGw2ExeCommand command logic.
         private void ExecuteTryFindGw2Exe()
@@ -149,7 +150,8 @@ namespace AddonWars2.App.ViewModels
             Logger.Debug("Executing command.");
 
             // First try to get the file location from the registry.
-            var gw2exe = IOHelper.TryFindGw2Exe();
+            var regDir = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Guild Wars 2";
+            var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
                 Logger.Debug("Couldn't find GW2 string in the registry.");
@@ -159,6 +161,31 @@ namespace AddonWars2.App.ViewModels
             Gw2ExecPath = gw2exe;
         }
 
+        // UpdateWelcomeMessageCommand command logic.
+        private void ExecuteUpdateWelcomeMessage()
+        {
+            Logger.Debug("Executing command.");
+
+            var messages = new ObservableCollection<string>()
+            {
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
+                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
+            };
+
+            // Should not happen normally.
+            if (messages == null || messages.Count == 0)
+            {
+                Logger.Warn($"No welcome message found.");
+                DisplayedWelcomeMessage = string.Empty;
+                return;
+            }
+
+            int i = _random.Next(0, messages.Count);
+            DisplayedWelcomeMessage = messages[i];
+        }
+
         #endregion Commands Logic
 
         #region Methods
@@ -166,7 +193,7 @@ namespace AddonWars2.App.ViewModels
         // Updates config if a property specified in ctor was changed.
         private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            IOHelper.SerializeXml(ApplicationGlobal.AppConfig, ApplicationGlobal.ConfigFilePath);
+            IOHelper.SerializeXml(AppConfig.UserData, AppConfig.ConfigFilePath);
             Logger.Debug($"Config file updated.");
         }
 

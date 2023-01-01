@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="GW2ExeRule.cs" company="Addon-Wars-2">
+// <copyright file="Gw2ExecRule.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,9 +8,9 @@
 namespace AddonWars2.App.Utils.Validation
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Windows.Controls;
-    using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace AddonWars2.App.Utils.Validation
     /// <remarks>
     /// This rule merely checks the GW2 file name, product name and file description.
     /// </remarks>
-    public class Gw2ExeRule : ValidationRule
+    public class Gw2ExecRule : ValidationRule
     {
         #region Fields
 
@@ -27,6 +27,19 @@ namespace AddonWars2.App.Utils.Validation
         private readonly string _errorMessage = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.GW2Exe");
 
         #endregion Fields
+
+        #region Constructors
+
+        #endregion Constructors
+
+        #region Property
+
+        /// <summary>
+        /// Gets or sets <see cref="Gw2ExecRule"/> parameters wrapper to enable binding.
+        /// </summary>
+        public Gw2ExeRuleParams ParamsWrapper { get; set; } = new Gw2ExeRuleParams();
+
+        #endregion Property
 
         #region Methods
 
@@ -36,10 +49,13 @@ namespace AddonWars2.App.Utils.Validation
             var stringValue = Convert.ToString(value);
 
             if (string.IsNullOrEmpty(stringValue) ||
-                !(Path.GetExtension(stringValue) == ApplicationGlobal.AppConfig.GW2ExecInfo.FileExtension) ||
-                !(System.Diagnostics.FileVersionInfo.GetVersionInfo(stringValue).ProductName.ToString() == ApplicationGlobal.AppConfig.GW2ExecInfo.ProductName) ||
-                !(System.Diagnostics.FileVersionInfo.GetVersionInfo(stringValue).FileDescription.ToString() == ApplicationGlobal.AppConfig.GW2ExecInfo.FileDescription))
+                !(Path.GetExtension(stringValue) == ParamsWrapper.FileExtension) ||
+                !(FileVersionInfo.GetVersionInfo(stringValue).ProductName.ToString() == ParamsWrapper.ProductName) ||
+                !(FileVersionInfo.GetVersionInfo(stringValue).FileDescription.ToString() == ParamsWrapper.FileDescription))
             {
+                Debug.WriteLine(ParamsWrapper.FileExtension);
+                Debug.WriteLine(ParamsWrapper.ProductName);
+                Debug.WriteLine(ParamsWrapper.FileDescription);
                 return new ValidationResult(false, _errorMessage);
             }
 

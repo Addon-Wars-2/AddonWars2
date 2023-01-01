@@ -47,7 +47,8 @@ namespace AddonWars2.App.Services
             // Models.
             // TODO: factories?
             services.AddSingleton<NLogLoggingManagerTarget>();
-            services.AddTransient<ApplicationConfig>();
+            services.AddSingleton<ApplicationConfig>();
+            services.AddTransient<UserData>();
 
             // Configure logger here as per NLog GitHub guide.
             var cfg = IOHelper.GetLoggerConfigurationNLog();
