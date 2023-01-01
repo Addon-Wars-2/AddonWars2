@@ -37,7 +37,7 @@ namespace AddonWars2.App.Utils.Validation
         /// <summary>
         /// Gets or sets <see cref="Gw2ExecRule"/> parameters wrapper to enable binding.
         /// </summary>
-        public Gw2ExeRuleParams ParamsWrapper { get; set; } = new Gw2ExeRuleParams();
+        public Gw2ExecRuleParams ParamsWrapper { get; set; } = new Gw2ExecRuleParams();
 
         #endregion Property
 
@@ -53,9 +53,6 @@ namespace AddonWars2.App.Utils.Validation
                 !(FileVersionInfo.GetVersionInfo(stringValue).ProductName.ToString() == ParamsWrapper.ProductName) ||
                 !(FileVersionInfo.GetVersionInfo(stringValue).FileDescription.ToString() == ParamsWrapper.FileDescription))
             {
-                Debug.WriteLine(ParamsWrapper.FileExtension);
-                Debug.WriteLine(ParamsWrapper.ProductName);
-                Debug.WriteLine(ParamsWrapper.FileDescription);
                 return new ValidationResult(false, _errorMessage);
             }
 

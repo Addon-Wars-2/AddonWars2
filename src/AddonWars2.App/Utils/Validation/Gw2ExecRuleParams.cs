@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="Gw2ExeRuleParams.cs" company="Addon-Wars-2">
+// <copyright file="Gw2ExecRuleParams.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -12,7 +12,7 @@ namespace AddonWars2.App.Utils.Validation
     /// <summary>
     /// Wraps <see cref="Gw2ExecRule"/> parameters to allow to bind them as <see cref="DependencyProperty"/>.
     /// </summary>
-    public class Gw2ExeRuleParams : FrameworkElement
+    public class Gw2ExecRuleParams : FrameworkElement
     {
         #region Dependency Properties
 
@@ -23,7 +23,7 @@ namespace AddonWars2.App.Utils.Validation
             DependencyProperty.Register(
                 "FileExtension",
                 typeof(string),
-                typeof(Gw2ExeRuleParams),
+                typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AddonWars2.App.Utils.Validation
             DependencyProperty.Register(
                 "ProductName",
                 typeof(string),
-                typeof(Gw2ExeRuleParams),
+                typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace AddonWars2.App.Utils.Validation
             DependencyProperty.Register(
                 "FileDescription",
                 typeof(string),
-                typeof(Gw2ExeRuleParams),
+                typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
 
         #endregion Dependency Properties

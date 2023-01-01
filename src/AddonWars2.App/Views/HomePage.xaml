@@ -26,10 +26,8 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction
-                Command="{Binding Path=DataContext.TryFindGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-            <i:InvokeCommandAction
-                Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:InvokeCommandAction  Command="{Binding Path=DataContext.TryFindGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
             <i:ChangePropertyAction
                 TargetObject="{Binding}"
                 PropertyName="IsActuallyLoaded"
@@ -81,7 +79,7 @@
                         <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
                         <validation:Gw2ExecRule ValidatesOnTargetUpdated="True">
                             <validation:Gw2ExecRule.ParamsWrapper>
-                                <validation:Gw2ExeRuleParams
+                                <validation:Gw2ExecRuleParams
                                     FileExtension="{Binding Path=Data.Gw2FileExtension, Source={StaticResource DataContextProxy}}"
                                     ProductName="{Binding Path=Data.Gw2ProductName, Source={StaticResource DataContextProxy}}"
                                     FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}}"/>
@@ -89,6 +87,19 @@
                         </validation:Gw2ExecRule>
                     </Binding.ValidationRules>
                 </Binding>
+                <!--
+                TODO: find out the root of the problem and why this workaround works.
+                This is a stupid workaround (need to test though) to resolve Error Template visual problem (idk why it works).
+                It turned out that for some reason if Gw2ExecRule validation passed, only text error was removed, but not the red border.
+                Switching between tabs didn't help, neither playing around with Loaded event and binding.
+                Somehow forcing the text box to update its layout again when THERE ARE ERRORS resolved the issue.
+                Maybe the problem is in adorner layers. Maybe there is some racing inside the framework. Maybe I'm just missing something (likely).
+                -->
+                <i:Interaction.Triggers>
+                    <i:DataTrigger Binding="{Binding ElementName=GW2ExecTextBox, Mode=OneWay, Path=(Validation.HasError)}" Value="True">
+                        <i:CallMethodAction MethodName="UpdateLayout" TargetObject="{Binding ElementName=GW2ExecTextBox}"/>
+                    </i:DataTrigger>
+                </i:Interaction.Triggers>
             </TextBox>
             <Button
                 x:Name="SelectLocation"

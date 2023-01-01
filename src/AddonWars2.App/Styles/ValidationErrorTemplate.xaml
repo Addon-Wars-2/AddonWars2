@@ -5,7 +5,7 @@
 
     <ControlTemplate x:Key="TextBoxValidationErrorTemplate">
         <StackPanel Orientation="Vertical">
-            <Border
+            <Grid
                 x:Name="ValidationBorder"
                 Visibility="Visible">
                 <TextBlock
@@ -27,15 +27,12 @@
                             Direction="-90"/>
                     </TextBlock.Effect>
                 </TextBlock>
-            </Border>
-            <Border>
-                <AdornedElementPlaceholder x:Name="Placeholder">
-                    <Border
-                        Margin="0,0,0,0"
-                        BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                        BorderThickness="0,0,0,2"
-                        CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}"/>
-                </AdornedElementPlaceholder>
+            </Grid>
+            <Border
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                BorderThickness="0,0,0,2"
+                CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}">
+                <AdornedElementPlaceholder x:Name="Placeholder"/>
             </Border>
         </StackPanel>
     </ControlTemplate>

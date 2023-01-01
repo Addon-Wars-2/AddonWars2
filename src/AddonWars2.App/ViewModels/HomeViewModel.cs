@@ -120,9 +120,6 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
-        // Holds a collection of welcome message displayed randomly on window update (Loaded event).
-        private ObservableCollection<string> WelcomeMessages { get; set; }
-
         // Gets the current logger instance.
         private static Logger Logger => LogManager.GetCurrentClassLogger();
 
@@ -155,7 +152,7 @@ namespace AddonWars2.App.ViewModels
             if (string.IsNullOrEmpty(gw2exe))
             {
                 Logger.Debug("Couldn't find GW2 string in the registry.");
-                return;
+                gw2exe = string.Empty;
             }
 
             Gw2ExecPath = gw2exe;
