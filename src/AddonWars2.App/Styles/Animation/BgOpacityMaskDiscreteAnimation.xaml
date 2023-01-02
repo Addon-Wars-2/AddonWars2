@@ -8,7 +8,7 @@
     In instance, animating on 2s with 24 fps requires to produce only 12 frames,
     with exceptions related to motion speed and acceleration.
     -->
-    
+
     <ObjectKeyFrameCollection x:Key="BgOpacityMaskDiscreteAnimation">
         <DiscreteObjectKeyFrame>
             <DiscreteObjectKeyFrame.Value>

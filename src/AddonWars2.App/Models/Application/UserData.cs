@@ -79,8 +79,14 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the information about GW2 executable.
         /// </summary>
-        [XmlElement("gw2execinfo")]
+        [XmlElement("gw2execsign")]
         public Gw2ExecSignature Gw2ExecInfo { get; set; } = new Gw2ExecSignature();
+
+        /// <summary>
+        /// Gets or sets the information about GW2 web services.
+        /// </summary>
+        [XmlElement("gw2webinfo")]
+        public Gw2WebInfo Gw2WebInfo { get; set; } = new Gw2WebInfo();
 
         /// <summary>
         /// Gets or sets <see cref="IServiceProvider"/> provider reference.

@@ -77,6 +77,11 @@ namespace AddonWars2.App.ViewModels
         public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.UserData.AvailableCultures;
 
         /// <summary>
+        /// Gets the GW2 wiki URL.
+        /// </summary>
+        public string Gw2WikiLink => AppConfig.UserData.Gw2WebInfo.Gw2WikiHome;
+
+        /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
         public CultureInfo SelectedCulture

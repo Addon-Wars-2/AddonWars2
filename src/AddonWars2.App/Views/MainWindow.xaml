@@ -28,22 +28,20 @@
     WindowStyle="None"
     KeyboardNavigation.TabNavigation="None">
 
-    <!--<Window.Resources>
-        <convert:ValueConverterGroup x:Key="VisibilityToInvertedBoolConverter">
-            <convert:VisibilityToBooleanConverter/>
-            <convert:InverseBooleanConverter/>
-        </convert:ValueConverterGroup>
-    </Window.Resources>-->
-
     <Grid>
         <Grid.Triggers>
             <EventTrigger RoutedEvent="Loaded">
                 <BeginStoryboard>
                     <Storyboard>
+                        <DoubleAnimation
+                            From="0" To="1"
+                            BeginTime="00:00:00" Duration="00:00:0.6"
+                            RepeatBehavior="1x"
+                            Storyboard.TargetProperty="Opacity"/>
                         <ObjectAnimationUsingKeyFrames
                             Storyboard.TargetName="BackgroundImage"
                             Storyboard.TargetProperty="OpacityMask"
-                            RepeatBehavior="1x" Duration="00:00:0.4"
+                            RepeatBehavior="1x" Duration="00:00:0.6"
                             KeyFrames="{StaticResource BgOpacityMaskDiscreteAnimation}"/>
                     </Storyboard>
                 </BeginStoryboard>
@@ -51,7 +49,8 @@
         </Grid.Triggers>
         <Image x:Name="BackgroundImage" Source="/Assets/Images/aw2_bg_default.png">
             <Image.OpacityMask>
-                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png"/>
+                <!-- Opacity="0.0" is important: setting it to 1.0 causes a visible lag on appearance. -->
+                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png" Opacity="0.0"/>
             </Image.OpacityMask>
         </Image>
         <Border>
@@ -141,7 +140,7 @@
                             </Hyperlink>
                             <TextBlock Text="｜"/>
                             <Hyperlink
-                                NavigateUri="https://wiki.guildwars2.com/wiki/Main_Page"
+                                NavigateUri="{Binding Path=DataContext.Gw2WikiLink, RelativeSource={RelativeSource AncestorType=Window}}"
                                 TextDecorations="None"
                                 FocusVisualStyle="{x:Null}">
                                 <i:Interaction.Triggers>
