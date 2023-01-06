@@ -40,7 +40,7 @@ namespace AddonWars2.App.Models.GuildWars2
         /// Gets or sets the GW2 homepage URL.
         /// </summary>
         [XmlElement("gw2home")]
-        public string Gw2Home { get; set; } = "https://guildwars2.com";
+        public string Gw2Home { get; set; } = "https://guildwars2.com/en";
 
         /// <summary>
         /// Gets or sets the GW2 wiki homepage URL.
@@ -49,16 +49,28 @@ namespace AddonWars2.App.Models.GuildWars2
         public string Gw2WikiHome { get; set; } = "https://wiki.guildwars2.com/wiki/Main_Page";
 
         /// <summary>
-        /// Gets or sets the GW2 RSS feed url.
+        /// Gets or sets the GW2 RSS feed URL.
         /// </summary>
         [XmlElement("gw2rss")]
         public string Gw2Rss { get; set; } = "https://www.guildwars2.com/en/feed";
 
         /// <summary>
-        /// Gets or sets the GW2 APIv2 endpoint url.
+        /// Gets or sets the GW2 APIv2 endpoint URL.
         /// </summary>
         [XmlElement("gw2api2")]
         public string Gw2Api2 { get; set; } = "https://api.guildwars2.com/v2";
+
+        /// <summary>
+        /// Gets the GW2 homepage URL template.
+        /// </summary>
+        [XmlIgnore]
+        internal string Gw2HomeTemplate => "https://www.guildwars2.com/{0}";
+
+        /// <summary>
+        /// Gets the GW2 RSS feed URL template.
+        /// </summary>
+        [XmlIgnore]
+        internal string Gw2RssTemplate => "https://www.guildwars2.com/{0}/feed";
 
         #endregion Properties
     }

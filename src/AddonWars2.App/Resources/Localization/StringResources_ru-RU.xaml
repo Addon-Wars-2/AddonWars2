@@ -28,6 +28,11 @@
     <s:String x:Key="S.HomePage.Footer.CreatedBy">создано</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String>
 
+    <!-- News Page -->
+    <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.UpdatingNewsPlaceholder">Обновление...</s:String>
+    <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
+
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Description">Логирование ведется автоматически.</s:String>
 

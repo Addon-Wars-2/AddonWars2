@@ -41,7 +41,7 @@ namespace AddonWars2.App.Utils.Converters
             throw new NotImplementedException();
         }
 
-        [GeneratedRegex("(?<!\\\\),")]
+        [GeneratedRegex(@"(?<!\\),")]
         private static partial Regex ParamsRegex();
 
         private string GetParameter(IValueConverter converter)

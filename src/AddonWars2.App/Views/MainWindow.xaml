@@ -109,8 +109,12 @@
                             assist:HintAssist.Hint="{DynamicResource S.MainWindow.Header.Menu.Language}"
                             ItemsSource="{Binding Path=DataContext.AvailableCultures, RelativeSource={RelativeSource AncestorType=Window}}"
                             SelectedValue="{Binding Path=DataContext.SelectedCulture, RelativeSource={RelativeSource AncestorType=Window}}"
-                            DisplayMemberPath="ShortName"
                             Style="{DynamicResource ComboBoxLanguageStyle}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=ShortName}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
                                     <i:InvokeCommandAction

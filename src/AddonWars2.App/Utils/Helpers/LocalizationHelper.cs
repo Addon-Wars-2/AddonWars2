@@ -7,8 +7,6 @@
 
 namespace AddonWars2.App.Helpers
 {
-    using System;
-    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using AddonWars2.App.Models.Application;
@@ -18,28 +16,21 @@ namespace AddonWars2.App.Helpers
     /// </summary>
     public static class LocalizationHelper
     {
-        #region Properties
-
-        #endregion Properties
-
         #region Methods
 
         /// <summary>
         /// Sets the application culture.
         /// </summary>
-        /// <param name="culture">The culture string to be set.</param>
+        /// <param name="culture">The culture to be set.</param>
         /// <param name="fallback">Fallback culture string.</param>
         /// <returns>The actually selected culture.</returns>
         public static string SelectCulture(CultureInfo culture, string fallback = "en-US")
         {
-            // TODO: This is very bad. We need to either inject app settings instance
+            // TODO: We need to either inject app settings instance
             //       to access default culture value, or move away from static approach.
 
-            // See for some details.
-            // https://github.com/NickeManarin/ScreenToGif/blob/867c5f6ebc2044bd9ea4da4ed4905c3d832982b5/ScreenToGif.Util/LocalizationHelper.cs
-
             // Fallback to the default culture in none is set.
-            var cultureString = string.Empty;
+            string cultureString;
             if (culture == null)
             {
                 cultureString = fallback;
@@ -49,6 +40,34 @@ namespace AddonWars2.App.Helpers
                 cultureString = culture.Culture;
             }
 
+            return SelectCultureInternal(cultureString, fallback);
+        }
+
+        /// <summary>
+        /// Sets the application culture.
+        /// </summary>
+        /// <param name="culture">The culture string to be set.</param>
+        /// <param name="fallback">Fallback culture string.</param>
+        /// <returns>The actually selected culture.</returns>
+        public static string SelectCulture(string culture, string fallback = "en-US")
+        {
+            // Fallback to the default culture in none is set.
+            string cultureString;
+            if (string.IsNullOrEmpty(culture))
+            {
+                cultureString = fallback;
+            }
+            else
+            {
+                cultureString = culture;
+            }
+
+            return SelectCultureInternal(cultureString, fallback);
+        }
+
+        // Performs the actual selection of a culture.
+        private static string SelectCultureInternal(string cultureString, string fallback = "en-US")
+        {
             // Copy all merged dictionaries to a temp list (TODO: memory footprint?).
             var dictionaryList = AW2Application.Current.Resources.MergedDictionaries.ToList();
             var requestedCulture = $"pack://application:,,,/Resources/Localization/StringResources_{cultureString}.xaml";

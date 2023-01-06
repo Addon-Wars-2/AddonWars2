@@ -32,9 +32,15 @@ namespace AddonWars2.App.Services
         {
             var services = new ServiceCollection();
 
+            // Models.
+            // TODO: factories?
+            services.AddSingleton<NLogLoggingManagerTarget>();
+            services.AddSingleton<ApplicationConfig>();
+
             // View models.
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeViewModel>();
+            services.AddSingleton<NewsViewModel>();
             services.AddSingleton<LoggingViewModel>();
 
             // Commands.
@@ -42,13 +48,8 @@ namespace AddonWars2.App.Services
 
             // Services.
             services.AddSingleton<LoggingManager>();
-            services.AddSingleton<DialogService>();  // TODO: Factory? Can't use interface in markup.
-
-            // Models.
-            // TODO: factories?
-            services.AddSingleton<NLogLoggingManagerTarget>();
-            services.AddSingleton<ApplicationConfig>();
-            services.AddTransient<UserData>();
+            services.AddSingleton<DialogService>();
+            services.AddSingleton<MessageBoxService>();
 
             // Configure logger here as per NLog GitHub guide.
             var cfg = IOHelper.GetLoggerConfigurationNLog();

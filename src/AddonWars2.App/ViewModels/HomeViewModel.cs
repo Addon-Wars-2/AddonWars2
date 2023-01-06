@@ -27,7 +27,6 @@ namespace AddonWars2.App.ViewModels
         private static readonly Random _random = new Random();
         private bool _isActuallyLoaded = false;
         private string _displayedWelcomeMessage;
-        private string _gw2ExecPath;
 
         #endregion Fields
 
@@ -37,15 +36,14 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
         /// </summary>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
-        public HomeViewModel(
-            ApplicationConfig appConfig)
+        public HomeViewModel(ApplicationConfig appConfig)
         {
             AppConfig = appConfig;
 
             PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
 
-            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => _isActuallyLoaded == false);
-            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => _isActuallyLoaded == false);
+            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
+            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
         }
 
         #endregion Constructors
@@ -75,11 +73,10 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public string Gw2ExecPath
         {
-            get => _gw2ExecPath;
+            get => AppConfig.LocalData.Gw2FilePath;
             set
             {
-                AppConfig.UserData.Gw2ExecInfo.FilePath = value;
-                SetProperty(ref _gw2ExecPath, value);
+                SetProperty(AppConfig.LocalData.Gw2FilePath, value, AppConfig.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
                 Logger.Debug($"Property set: {value}");
             }
         }
@@ -87,17 +84,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 exe file extension from the config object.
         /// </summary>
-        public string Gw2FileExtension => AppConfig.UserData.Gw2ExecInfo.FileExtension;
+        public string Gw2FileExtension => AppConfig.LocalData.Gw2FileExtension;
 
         /// <summary>
         /// Gets the GW2 exe product name from the config object.
         /// </summary>
-        public string Gw2ProductName => AppConfig.UserData.Gw2ExecInfo.ProductName;
+        public string Gw2ProductName => AppConfig.LocalData.Gw2ProductName;
 
         /// <summary>
         /// Gets the GW2 exe file description from the config object.
         /// </summary>
-        public string Gw2FileDescription => AppConfig.UserData.Gw2ExecInfo.FileDescription;
+        public string Gw2FileDescription => AppConfig.LocalData.Gw2FileDescription;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -151,11 +148,13 @@ namespace AddonWars2.App.ViewModels
             var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
-                Logger.Debug("Couldn't find GW2 string in the registry.");
+                Logger.Warn("Couldn't find GW2 string in the registry.");
                 gw2exe = string.Empty;
             }
 
             Gw2ExecPath = gw2exe;
+
+            Logger.Info("GW2 executable location was set automatically.");
         }
 
         // UpdateWelcomeMessageCommand command logic.
@@ -181,16 +180,21 @@ namespace AddonWars2.App.ViewModels
 
             int i = _random.Next(0, messages.Count);
             DisplayedWelcomeMessage = messages[i];
+
+            Logger.Debug("Display messages loaded.");
         }
 
         #endregion Commands Logic
 
         #region Methods
 
-        // Updates config if a property specified in ctor was changed.
+        // Updates config if a property specified in the even manager params was changed.
         private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            IOHelper.SerializeXml(AppConfig.UserData, AppConfig.ConfigFilePath);
+            Logger.Debug("Executing method.");
+
+            IOHelper.SerializeXml(AppConfig.LocalData, AppConfig.ConfigFilePath);
+
             Logger.Debug($"Config file updated.");
         }
 

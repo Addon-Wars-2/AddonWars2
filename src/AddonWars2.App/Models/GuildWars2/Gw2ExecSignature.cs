@@ -40,19 +40,19 @@ namespace AddonWars2.App.Models.GuildWars2
         /// Gets or sets the extension of GW2 executable.
         /// </summary>
         [XmlElement("extension")]
-        public string FileExtension { get; set; } = ".exe";
+        public string FileExtension => ".exe";
 
         /// <summary>
         /// Gets or sets the product name of GW2 executable.
         /// </summary>
         [XmlElement("prodname")]
-        public string ProductName { get; set; } = "Guild Wars 2";
+        public string ProductName => "Guild Wars 2";
 
         /// <summary>
         /// Gets or sets the file description of GW2 executable.
         /// </summary>
         [XmlElement("filedesc")]
-        public string FileDescription { get; set; } = "Guild Wars 2 Game Client";
+        public string FileDescription => "Guild Wars 2 Game Client";
 
         #endregion Properties
     }

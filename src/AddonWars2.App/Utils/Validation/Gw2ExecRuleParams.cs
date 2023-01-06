@@ -17,31 +17,31 @@ namespace AddonWars2.App.Utils.Validation
         #region Dependency Properties
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="FileExtension"/>.
+        /// <see cref="DependencyProperty"/> for <see cref="Gw2FileExtension"/>.
         /// </summary>
-        public static readonly DependencyProperty FileExtensionProperty =
+        public static readonly DependencyProperty Gw2FileExtensionProperty =
             DependencyProperty.Register(
-                "FileExtension",
+                "Gw2FileExtension",
                 typeof(string),
                 typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="ProductName"/>.
+        /// <see cref="DependencyProperty"/> for <see cref="Gw2ProductName"/>.
         /// </summary>
-        public static readonly DependencyProperty ProductNameProperty =
+        public static readonly DependencyProperty Gw2ProductNameProperty =
             DependencyProperty.Register(
-                "ProductName",
+                "Gw2ProductName",
                 typeof(string),
                 typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="FileDescription"/>.
+        /// <see cref="DependencyProperty"/> for <see cref="Gw2FileDescription"/>.
         /// </summary>
-        public static readonly DependencyProperty FileDescriptionProperty =
+        public static readonly DependencyProperty Gw2FileDescriptionProperty =
             DependencyProperty.Register(
-                "FileDescription",
+                "Gw2FileDescription",
                 typeof(string),
                 typeof(Gw2ExecRuleParams),
                 new PropertyMetadata(default));
@@ -53,28 +53,28 @@ namespace AddonWars2.App.Utils.Validation
         /// <summary>
         /// Gets or sets gw2 file extension.
         /// </summary>
-        public string FileExtension
+        public string Gw2FileExtension
         {
-            get { return (string)GetValue(FileExtensionProperty); }
-            set { SetValue(FileExtensionProperty, value); }
+            get { return (string)GetValue(Gw2FileExtensionProperty); }
+            set { SetValue(Gw2FileExtensionProperty, value); }
         }
 
         /// <summary>
         /// Gets or sets product name.
         /// </summary>
-        public string ProductName
+        public string Gw2ProductName
         {
-            get { return (string)GetValue(ProductNameProperty); }
-            set { SetValue(ProductNameProperty, value); }
+            get { return (string)GetValue(Gw2ProductNameProperty); }
+            set { SetValue(Gw2ProductNameProperty, value); }
         }
 
         /// <summary>
         /// Gets or sets file description.
         /// </summary>
-        public string FileDescription
+        public string Gw2FileDescription
         {
-            get { return (string)GetValue(FileDescriptionProperty); }
-            set { SetValue(FileDescriptionProperty, value); }
+            get { return (string)GetValue(Gw2FileDescriptionProperty); }
+            set { SetValue(Gw2FileDescriptionProperty, value); }
         }
 
         #endregion Properties

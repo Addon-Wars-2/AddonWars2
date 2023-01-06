@@ -78,7 +78,9 @@ namespace AddonWars2.App
             Logger.Debug("Restarting the application.");
 
             // Save app/user data first.
-            IOHelper.SerializeXml(Services.GetRequiredService<ApplicationConfig>().UserData, Services.GetRequiredService<ApplicationConfig>().ConfigFilePath);
+            var data = Services.GetRequiredService<ApplicationConfig>().LocalData;
+            var path = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
+            ApplicationConfig.WriteLocalDataAsXml(path, data);
 
             // Start a new process.
             var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
@@ -105,8 +107,7 @@ namespace AddonWars2.App
             // To set DataContext directly in markup.
             DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
 
-            var mainViewModel = Services.GetRequiredService<MainWindowViewModel>();
-            MainWindowInstance = new () { DataContext = mainViewModel };
+            MainWindowInstance = new ();
             MainWindowInstance.Show();
 
             Logger.Info("Application loaded and ready.");
@@ -181,69 +182,74 @@ namespace AddonWars2.App
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            var appCfg = new UserData(Services);
-            Services.GetRequiredService<ApplicationConfig>().UserData = appCfg;
-            var cfg = Services.GetRequiredService<ApplicationConfig>().UserData;  // default
+            var appConfig = Services.GetRequiredService<ApplicationConfig>();
+            appConfig.LocalData = LocalData.Default;
+            var localdata = appConfig.LocalData;  // default
 
             // Try to get application settings from the AppData\Roaming dir.
-            var cfgPath = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
-            if (!File.Exists(cfgPath))
+            var path = appConfig.ConfigFilePath;
+
+            // File not found.
+            if (!File.Exists(path))
             {
                 // Create a new one with default settings.
-                IOHelper.SerializeXml(cfg, cfgPath);
+                ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                Logger.Info($"Created a new application config file: {cfgPath}");
+                Logger.Info($"Created a new application config file: {path}");
             }
             else
             {
                 // Try to load it and check if it's valid since serializer
                 // will either return incorrect data (i.e. some properties are missing)
                 // or will thron an exception and thus return default(T).
-                cfg = IOHelper.DeserializeXml<UserData>(cfgPath);
-                if (!UserData.IsValid(cfg))
+                localdata = ApplicationConfig.LoadLocalDataFromXml(path);
+                if (!LocalData.IsValid(localdata))
                 {
-                    Logger.Info($"The given config file is not valid. Creating a new one.");
+                    Logger.Warn($"The given config file is not valid.");
 
                     // Delete the corrupted file (since this name is reserved for the app config)
                     // and replace it with a default one.
-                    File.Delete(cfgPath);
-                    cfg = UserData.Default;
-                    IOHelper.SerializeXml(cfg, cfgPath);
+                    File.Delete(path);
+                    localdata = LocalData.Default;
+                    ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                    Logger.Info($"Created a new application config file: {cfgPath}");
+                    Logger.Info($"Created a new application config file: {path}");
                 }
             }
 
-            Services.GetRequiredService<ApplicationConfig>().UserData = cfg;
+            appConfig.LocalData = localdata;
 
-            Logger.Info($"Using the existing application config file: {cfgPath}");
+            Logger.Info($"Using the application config file: {path}");
         }
 
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var cfg = Services.GetRequiredService<ApplicationConfig>().UserData;
-            var culture = cfg.SelectedCulture;
-            var selected = LocalizationHelper.SelectCulture(culture);
-            cfg.SelectedCulture = cfg.AvailableCultures.FirstOrDefault(x => x.Culture == selected);
+            var config = Services.GetRequiredService<ApplicationConfig>();
+            var culture = config.LocalData.SelectedCultureString;
+            var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
-            Logger.Info($"Culture selected: {selected}");
+            // Now we should replace it in both places since config file may contain invalid culture string.
+            config.SelectedCulture = config.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, config.DefaultCulture);
+            config.LocalData.SelectedCultureString = config.SelectedCulture.Culture;
+
+            Logger.Info($"Culture selected: {actuallySelected}");
         }
 
         // Shows a popup message if an unhandled exception occured.
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            // TODO: A custom and more discriptive dialog would be nice.
+        ////private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        ////{
+        ////    // TODO: A custom and more discriptive dialog would be nice.
 
-            ////var fullMessage = $"Source: {e.Exception.Source}\n\n{e.Exception.Message}";
-            ////var exTitle = (string)Current.Resources["S.MessageBox.SDocument.UnhandledEx"];
+        ////    var fullMessage = $"Source: {e.Exception.Source}\n\n{e.Exception.Message}";
+        ////    var exTitle = (string)Current.Resources["S.MessageBox.SDocument.UnhandledEx"];
 
-            ////MessageBoxService.Show(fullMessage, exTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+        ////    MessageBoxService.Show(fullMessage, exTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
-            ////e.Handled = true;
+        ////    e.Handled = true;
 
-            Logger.Fatal(e.Exception, "AN UNHANDLED EXCEPTION OCCURED.");
-        }
+        ////    Logger.Fatal(e.Exception, "AN UNHANDLED EXCEPTION OCCURED.");
+        ////}
 
         #endregion Methods
     }

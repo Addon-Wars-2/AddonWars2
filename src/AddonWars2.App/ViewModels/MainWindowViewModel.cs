@@ -74,22 +74,28 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a list of available cultures.
         /// </summary>
-        public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.UserData.AvailableCultures;
+        public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.AvailableCultures;
 
         /// <summary>
         /// Gets the GW2 wiki URL.
         /// </summary>
-        public string Gw2WikiLink => AppConfig.UserData.Gw2WebInfo.Gw2WikiHome;
+        public string Gw2WikiLink => AppConfig.LocalData.Gw2WikiHome;
 
         /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
         public CultureInfo SelectedCulture
         {
-            get => AppConfig.UserData.SelectedCulture;
+            get
+            {
+                return AppConfig.SelectedCulture;
+            }
+
             set
             {
-                SetProperty(AppConfig.UserData.SelectedCulture, value, AppConfig.UserData, (model, selected) => model.SelectedCulture = selected);
+                SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
+                AppConfig.LocalData.SelectedCultureString = value.Culture;
+                Logger.Debug($"Property set: {value}");
             }
         }
 
@@ -123,8 +129,7 @@ namespace AddonWars2.App.ViewModels
             Logger.Debug("Executing command.");
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
-            // and we edit its value. That leads that window redraws itself twice once
-            // we select another language. So we just ignore the first call until it's loaded completely.
+            // and we edit its value. So we just ignore the first call until it's loaded completely.
             ComboBox comboBox = (ComboBox)e.Source;
             if (!comboBox.IsLoaded)
             {

@@ -8,24 +8,11 @@
 namespace AddonWars2.App.Helpers
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
-    using System.Windows;
     using System.Xml;
     using System.Xml.Serialization;
     using Microsoft.Win32;
     using NLog.Config;
-
-    /// <summary>
-    /// Windows registry name types.
-    /// </summary>
-    public enum RegValType
-    {
-        REG_SZ,
-        REG_BINARY,
-        REG_DWORD,
-        REG_QWORD,
-    }
 
     /// <summary>
     /// Provides various methods to handle application data IO flow.
@@ -49,6 +36,8 @@ namespace AddonWars2.App.Helpers
             var appDir = Path.Join(appDataDir, appName);
             return appDir;
         }
+
+        // TODO: This method is not good, because it relies on application state inside a static class.
 
         /// <summary>
         /// Loads and return NLog logger configuration from the embedded config file.

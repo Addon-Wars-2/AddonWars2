@@ -2,6 +2,7 @@
     x:Class="AddonWars2.App.Views.NewsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:AddonWars2.App.Views"
@@ -14,29 +15,80 @@
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     mc:Ignorable="d" 
-    Title="NewsPage">
+    Title="NewsPage"
+    DataContext="{markupex:DISource Type=vm:NewsViewModel}">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+    </Page.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.ReloadNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:CallMethodAction MethodName="GenerateGw2RssWithCulture" TargetObject="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:ChangePropertyAction
+                TargetObject="{Binding}"
+                PropertyName="IsActuallyLoaded"
+                Value="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid>
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Row="0" Grid.Column="0"
+                Margin="0,0,0,0"
+                FontFamily="{DynamicResource Lato}"
+                FontWeight="Light"
+                FontStyle="Italic"
+                FontSize="16"
+                Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
             <Border
                 x:Name="RssFeedBorder"
-                Grid.Column="0"
-                Margin="0,0,5,0"
+                Grid.Row="1" Grid.Column="0"
+                Margin="0,0,0,0"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Focusable="False">
                 <Border.Background>
                     <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level4}" Opacity="0.9"/>
                 </Border.Background>
+                <Grid>
+                    <Border>
+                        <TextBlock
+                            Visibility="{Binding Path=DataContext.IsUpdating, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource BoolToVisConverter}}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            FontSize="16"
+                            FontWeight="Light"
+                            FontStyle="Italic"
+                            FontFamily="{DynamicResource Lato}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                            Text="{DynamicResource S.NewsPage.NewsList.UpdatingNewsPlaceholder}"/>
+                    </Border>
+                </Grid>
             </Border>
+            <TextBlock
+                Grid.Row="0" Grid.Column="2"
+                Margin="0,0,0,0"
+                FontFamily="{DynamicResource Lato}"
+                FontWeight="Light"
+                FontStyle="Italic"
+                FontSize="16"
+                Text="{DynamicResource S.NewsPage.NewsDesc.Header}"/>
             <Border
                 x:Name="ItemWebView"
-                Grid.Column="1"
-                Margin="5,0,0,0"
+                Grid.Row="1" Grid.Column="2"
+                Margin="0,0,0,0"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Focusable="False">

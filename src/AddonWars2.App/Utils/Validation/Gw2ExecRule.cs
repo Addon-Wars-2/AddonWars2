@@ -49,9 +49,9 @@ namespace AddonWars2.App.Utils.Validation
             var stringValue = Convert.ToString(value);
 
             if (string.IsNullOrEmpty(stringValue) ||
-                !(Path.GetExtension(stringValue) == ParamsWrapper.FileExtension) ||
-                !(FileVersionInfo.GetVersionInfo(stringValue).ProductName.ToString() == ParamsWrapper.ProductName) ||
-                !(FileVersionInfo.GetVersionInfo(stringValue).FileDescription.ToString() == ParamsWrapper.FileDescription))
+                !(Path.GetExtension(stringValue) == ParamsWrapper.Gw2FileExtension) ||
+                !(FileVersionInfo.GetVersionInfo(stringValue).ProductName.ToString() == ParamsWrapper.Gw2ProductName) ||
+                !(FileVersionInfo.GetVersionInfo(stringValue).FileDescription.ToString() == ParamsWrapper.Gw2FileDescription))
             {
                 return new ValidationResult(false, _errorMessage);
             }
