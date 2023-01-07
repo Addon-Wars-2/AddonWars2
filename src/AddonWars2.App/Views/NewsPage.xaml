@@ -13,7 +13,6 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     mc:Ignorable="d" 
@@ -242,7 +241,10 @@
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Focusable="False">
-                <wv2:WebView2 Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
+                <wv2:WebView2
+                    x:Name="WebView2Control"
+                    DefaultBackgroundColor="Transparent"
+                    Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:CallMethodAction MethodName="EnsureCoreWebView2Async"/>
