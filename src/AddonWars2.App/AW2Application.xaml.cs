@@ -158,15 +158,15 @@ namespace AddonWars2.App
 
             // Locate the logs dir.
             var logCfg = LogManager.Configuration;
-            var logsDir = Path.Join(appDataDir, "logs");
-            if (!Directory.Exists(logsDir))
+            var logsDirPath = Path.Join(appDataDir, Services.GetRequiredService<ApplicationConfig>().LogDirName);
+            if (!Directory.Exists(logsDirPath))
             {
-                Directory.CreateDirectory(logsDir);
+                Directory.CreateDirectory(logsDirPath);
             }
 
             // Setup logger config.
             var date = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var logPath = Path.Join(logsDir, $"{Services.GetRequiredService<ApplicationConfig>().LogPrefix}{date}.txt");
+            var logPath = Path.Join(logsDirPath, $"{Services.GetRequiredService<ApplicationConfig>().LogPrefix}{date}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "logTarget",

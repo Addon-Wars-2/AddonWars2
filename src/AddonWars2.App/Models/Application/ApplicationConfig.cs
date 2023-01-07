@@ -13,8 +13,9 @@ namespace AddonWars2.App.Models.Application
     using System.IO;
     using System.Linq;
     using AddonWars2.App.Helpers;
+    using AddonWars2.App.ViewModels;
     using CommunityToolkit.Mvvm.ComponentModel;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Holds some globally available application information.
@@ -35,13 +36,15 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationConfig"/> class.
         /// </summary>
-        public ApplicationConfig()
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        public ApplicationConfig(ILogger<MainWindowViewModel> logger)
         {
+            Logger = logger;
             SelectedCulture = DefaultCulture;
             LocalData = new LocalData();
 
-            // Empty string stands for "any property changed".
             PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
+            PropertyChangedEventManager.AddHandler(this, ApplicationConfig_LocalDataChanged, nameof(LocalData));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
         }
 
@@ -74,6 +77,11 @@ namespace AddonWars2.App.Models.Application
         }
 
         /// <summary>
+        /// Gets the application log directory name.
+        /// </summary>
+        public string LogDirName => "logs";
+
+        /// <summary>
         /// Gets the application log file prefix.
         /// </summary>
         public string LogPrefix => "aw2_log_";
@@ -87,6 +95,11 @@ namespace AddonWars2.App.Models.Application
         /// Gets the application config file path.
         /// </summary>
         public string ConfigFilePath => Path.Join(AppDataDir, ConfigFileName);
+
+        /// <summary>
+        /// Gets the directory name used to store GW2 RSS feed pages in HTML format.
+        /// </summary>
+        public string RssFeedDirName => "rss";
 
         /// <summary>
         /// Gets a list of available cultures.
@@ -137,8 +150,10 @@ namespace AddonWars2.App.Models.Application
             }
         }
 
-        // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// Gets the current logger instance.
+        /// </summary>
+        protected static ILogger Logger { get; private set; }
 
         #endregion Properties
 
@@ -187,7 +202,12 @@ namespace AddonWars2.App.Models.Application
         private void ApplicationConfig_LocalDataChanged(object sender, PropertyChangedEventArgs e)
         {
             WriteLocalDataAsXml(ConfigFilePath, LocalData);
-            Logger.Debug($"Config file updated.");
+            Logger.LogDebug($"Config file updated.");
+
+            // TODO: is it even legal?
+            PropertyChangedEventManager.RemoveHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
+            PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
+            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
         }
 
         #endregion Methods

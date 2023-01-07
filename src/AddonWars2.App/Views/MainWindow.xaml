@@ -136,8 +136,7 @@
                                     <i:EventTrigger EventName="RequestNavigate">
                                         <i:InvokeCommandAction
                                             Command="{Binding Path=DataContext.CommonCommands.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            PassEventArgsToCommand="True"
-                                            EventArgsParameterPath="Uri.AbsoluteUri"/>
+                                            PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.GettingStarted}"/>
@@ -151,8 +150,7 @@
                                     <i:EventTrigger EventName="RequestNavigate">
                                         <i:InvokeCommandAction
                                             Command="{Binding Path=DataContext.CommonCommands.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            PassEventArgsToCommand="True"
-                                            EventArgsParameterPath="Uri.AbsoluteUri"/>
+                                            PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.Wiki}"/>
@@ -166,8 +164,7 @@
                                     <i:EventTrigger EventName="RequestNavigate">
                                         <i:InvokeCommandAction
                                             Command="{Binding Path=DataContext.CommonCommands.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            PassEventArgsToCommand="True"
-                                            EventArgsParameterPath="Uri.AbsoluteUri"/>
+                                            PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.Support}"/>

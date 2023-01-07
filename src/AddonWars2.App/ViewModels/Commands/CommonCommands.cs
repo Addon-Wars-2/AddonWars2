@@ -8,6 +8,7 @@
 namespace AddonWars2.App.Commands
 {
     using System.Diagnostics;
+    using System.Windows.Navigation;
     using CommunityToolkit.Mvvm.Input;
     using NLog;
 
@@ -24,7 +25,7 @@ namespace AddonWars2.App.Commands
         /// </summary>
         public CommonCommands()
         {
-            OpenUrlCommand = new RelayCommand<string>(ExecuteOpenUrlCommand);
+            OpenUrlCommand = new RelayCommand<RequestNavigateEventArgs>(ExecuteOpenUrlCommand);
         }
 
         #endregion Properties
@@ -41,20 +42,25 @@ namespace AddonWars2.App.Commands
         /// <summary>
         /// Gets a command which is invoked directly after <see cref="Window.Close"/> is called.
         /// </summary>
-        public RelayCommand<string> OpenUrlCommand { get; private set; }
+        public RelayCommand<RequestNavigateEventArgs> OpenUrlCommand { get; private set; }
 
         #endregion Commands
 
         #region Commands Logic
 
         // OpenUrlCommand command logic.
-        private void ExecuteOpenUrlCommand(string url)
+        private void ExecuteOpenUrlCommand(RequestNavigateEventArgs e)
         {
             Logger.Debug("Executing command.");
 
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#change-description
             // UseShellExecute = false is a default behavior for .NET Core and on, while it's set to true for .NET Framework.
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)
+            {
+                UseShellExecute = true,
+            });
+
+            e.Handled = true;
         }
 
         #endregion Commands Logic

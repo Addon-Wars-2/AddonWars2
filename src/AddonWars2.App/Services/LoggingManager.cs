@@ -22,7 +22,7 @@ namespace AddonWars2.App.Services
         /// </summary>
         public LoggingManager()
         {
-            LogEntries = new ObservableCollection<LogEntry>();
+            // Blank.
         }
 
         #endregion Constructors
@@ -32,7 +32,7 @@ namespace AddonWars2.App.Services
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<LogEntry> LogEntries { get; private set; }
+        public ObservableCollection<LogEntry> LogEntries { get; private set; } = new ObservableCollection<LogEntry>();
 
         #endregion Properties
     }

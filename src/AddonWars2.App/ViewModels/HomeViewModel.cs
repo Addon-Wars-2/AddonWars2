@@ -42,10 +42,9 @@ namespace AddonWars2.App.ViewModels
             ApplicationConfig appConfig)
             : base(logger)
         {
-            Logger = logger;
             AppConfig = appConfig;
 
-            PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
+            ////PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
@@ -122,9 +121,6 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
-        // Gets the current logger instance.
-        private static ILogger Logger { get; set; }
-
         #endregion Properties
 
         #region Commands
@@ -193,15 +189,15 @@ namespace AddonWars2.App.ViewModels
 
         #region Methods
 
-        // Updates config if a property specified in the even manager params was changed.
-        private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            Logger.LogDebug("Executing method.");
+        ////// Updates config if a property specified in the even manager params was changed.
+        ////private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
+        ////{
+        ////    Logger.LogDebug("Executing method.");
 
-            IOHelper.SerializeXml(AppConfig.LocalData, AppConfig.ConfigFilePath);
+        ////    IOHelper.SerializeXml(AppConfig.LocalData, AppConfig.ConfigFilePath);
 
-            Logger.LogDebug($"Config file updated.");
-        }
+        ////    Logger.LogDebug($"Config file updated.");
+        ////}
 
         #endregion Methods
     }

@@ -10,7 +10,8 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     mc:Ignorable="d"
     Title="LoggingPage"
-    DataContext="{markupex:DISource Type=vm:LoggingViewModel}">
+    DataContext="{markupex:DISource Type=vm:LoggingViewModel}"
+    ShowsNavigationUI="False">
     
     <!-- Too bad we can't select logs with this approach... -->
 

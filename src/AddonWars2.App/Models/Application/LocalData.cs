@@ -245,7 +245,7 @@ namespace AddonWars2.App.Models.Application
 
             internal static string Gw2Home => string.Format(Gw2HomeTemplate, "en");
 
-            internal static string Gw2WikiHome => "https://wiki.guildwars2.com/wiki/Main_Page";
+            internal static string Gw2WikiHome => string.Format(Gw2WikiHomeTemplate, "en");
 
             internal static string Gw2Rss => string.Format(Gw2RssTemplate, "en");
 
