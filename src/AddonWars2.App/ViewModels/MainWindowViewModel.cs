@@ -13,7 +13,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Commands;
     using AddonWars2.App.Models.Application;
     using CommunityToolkit.Mvvm.Input;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// The main view model used by application main window.
@@ -29,15 +29,18 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
         /// <param name="homeViewModel">A reference to <see cref="ViewModels.HomeViewModel"/>.</param>
         /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
         public MainWindowViewModel(
+            ILogger<MainWindowViewModel> logger,
             ApplicationConfig appConfig,
             CommonCommands commonCommands,
             HomeViewModel homeViewModel,
             LoggingViewModel loggingViewModel)
+            : base(logger)
         {
             AppConfig = appConfig;
             CommonCommands = commonCommands;
@@ -95,7 +98,7 @@ namespace AddonWars2.App.ViewModels
             {
                 SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
                 AppConfig.LocalData.SelectedCultureString = value.Culture;
-                Logger.Debug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -103,9 +106,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets the package version with suffix included.
         /// </summary>
         public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-
-        // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
 
         #endregion Properties
 
@@ -126,7 +126,7 @@ namespace AddonWars2.App.ViewModels
             // TODO: Doesn't really belong to VM since it does nothing with data (models).
             //       More naturally to put it to a code-behind.
 
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
             // and we edit its value. So we just ignore the first call until it's loaded completely.

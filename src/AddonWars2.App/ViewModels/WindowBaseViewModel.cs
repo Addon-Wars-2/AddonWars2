@@ -9,8 +9,7 @@ namespace AddonWars2.App.ViewModels
 {
     using System.Windows;
     using CommunityToolkit.Mvvm.Input;
-    using Microsoft.Win32;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// A base view model used by all application windows.
@@ -23,7 +22,9 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowBaseViewModel"/> class.
         /// </summary>
-        public WindowBaseViewModel()
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        public WindowBaseViewModel(ILogger<WindowBaseViewModel> logger)
+            : base(logger)
         {
             // Commands.
             MinimizeWindowCommand = new RelayCommand<Window>(ExecuteMinimizeWindow);
@@ -36,9 +37,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
-
-        // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
 
         #endregion Properties
 
@@ -83,35 +81,35 @@ namespace AddonWars2.App.ViewModels
         // MinimizeWindowCommand command logic.
         private void ExecuteMinimizeWindow(Window window)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
             SystemCommands.MinimizeWindow(window);
         }
 
         // MaximizeWindowCommand command logic.
         private void ExecuteMaximizeWindow(Window window)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
             SystemCommands.MaximizeWindow(window);
         }
 
         // RestoreWindowCommand command logic.
         private void ExecuteRestoreWindow(Window window)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
             SystemCommands.RestoreWindow(window);
         }
 
         // CloseWindowCommand command logic.
         private void ExecuteCloseWindow(Window window)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
             SystemCommands.CloseWindow(window);
         }
 
         // Performs Drag and Move on a given window.
         private void ExecuteDragMoveWindow(Window window)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
             window?.DragMove();
         }
 

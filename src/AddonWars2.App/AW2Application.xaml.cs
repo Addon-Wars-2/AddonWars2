@@ -12,7 +12,6 @@ namespace AddonWars2.App
     using System.IO;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Threading;
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
@@ -20,6 +19,7 @@ namespace AddonWars2.App
     using AddonWars2.App.Services;
     using AddonWars2.App.ViewModels;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
@@ -141,6 +141,7 @@ namespace AddonWars2.App
             };
 
             // Replace the current configuration to "reset" it.
+            Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init logger? Doesn't work without.
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
 

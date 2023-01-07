@@ -15,7 +15,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
     using CommunityToolkit.Mvvm.Input;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// View model used by home view.
@@ -35,9 +35,14 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
         /// </summary>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
-        public HomeViewModel(ApplicationConfig appConfig)
+        public HomeViewModel(
+            ILogger<HomeViewModel> logger,
+            ApplicationConfig appConfig)
+            : base(logger)
         {
+            Logger = logger;
             AppConfig = appConfig;
 
             PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
@@ -64,7 +69,7 @@ namespace AddonWars2.App.ViewModels
             private set
             {
                 SetProperty(ref _displayedWelcomeMessage, value);
-                Logger.Debug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -77,7 +82,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig.LocalData.Gw2FilePath, value, AppConfig.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
-                Logger.Debug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -112,13 +117,13 @@ namespace AddonWars2.App.ViewModels
                 if (_isActuallyLoaded == false)
                 {
                     SetProperty(ref _isActuallyLoaded, value);
-                    Logger.Debug($"Property set: {value}");
+                    Logger.LogDebug($"Property set: {value}");
                 }
             }
         }
 
         // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
+        private static ILogger Logger { get; set; }
 
         #endregion Properties
 
@@ -141,26 +146,26 @@ namespace AddonWars2.App.ViewModels
         // TryFindGw2ExeCommand command logic.
         private void ExecuteTryFindGw2Exe()
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             // First try to get the file location from the registry.
             var regDir = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Guild Wars 2";
             var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
-                Logger.Warn("Couldn't find GW2 string in the registry.");
+                Logger.LogWarning("Couldn't find GW2 string in the registry.");
                 gw2exe = string.Empty;
             }
 
             Gw2ExecPath = gw2exe;
 
-            Logger.Info("GW2 executable location was set automatically.");
+            Logger.LogInformation("GW2 executable location was set automatically.");
         }
 
         // UpdateWelcomeMessageCommand command logic.
         private void ExecuteUpdateWelcomeMessage()
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             var messages = new ObservableCollection<string>()
             {
@@ -173,7 +178,7 @@ namespace AddonWars2.App.ViewModels
             // Should not happen normally.
             if (messages == null || messages.Count == 0)
             {
-                Logger.Warn($"No welcome message found.");
+                Logger.LogWarning($"No welcome message found.");
                 DisplayedWelcomeMessage = string.Empty;
                 return;
             }
@@ -181,7 +186,7 @@ namespace AddonWars2.App.ViewModels
             int i = _random.Next(0, messages.Count);
             DisplayedWelcomeMessage = messages[i];
 
-            Logger.Debug("Display messages loaded.");
+            Logger.LogDebug("Display messages loaded.");
         }
 
         #endregion Commands Logic
@@ -191,11 +196,11 @@ namespace AddonWars2.App.ViewModels
         // Updates config if a property specified in the even manager params was changed.
         private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Logger.Debug("Executing method.");
+            Logger.LogDebug("Executing method.");
 
             IOHelper.SerializeXml(AppConfig.LocalData, AppConfig.ConfigFilePath);
 
-            Logger.Debug($"Config file updated.");
+            Logger.LogDebug($"Config file updated.");
         }
 
         #endregion Methods

@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// View model used by logging view.
@@ -21,9 +22,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="LoggingViewModel"/> class.
         /// </summary>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="loggingManager">A rerefence to a <see cref="LoggingManager"/> object.</param>
         public LoggingViewModel(
+            ILogger<BaseViewModel> logger,
             LoggingManager loggingManager)
+            : base(logger)
         {
             LoggingManagerInstance = loggingManager;
         }

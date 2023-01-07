@@ -8,6 +8,7 @@
 namespace AddonWars2.App.ViewModels
 {
     using CommunityToolkit.Mvvm.ComponentModel;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// A base view model class all application view models should be derived from.
@@ -19,11 +20,21 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseViewModel"/> class.
         /// </summary>
-        public BaseViewModel()
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        public BaseViewModel(ILogger<BaseViewModel> logger)
         {
-            // Blank.
+            Logger = logger;
         }
 
         #endregion Constructors
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the current logger instance.
+        /// </summary>
+        protected static ILogger Logger { get; private set; }
+
+        #endregion Properties
     }
 }

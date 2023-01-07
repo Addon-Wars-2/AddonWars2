@@ -11,7 +11,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
     using CommunityToolkit.Mvvm.Input;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// View model used by news view.
@@ -30,9 +30,14 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsViewModel"/> class.
         /// </summary>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
-        public NewsViewModel(ApplicationConfig appConfig)
+        public NewsViewModel(
+            ILogger<NewsViewModel> logger,
+            ApplicationConfig appConfig)
+            : base(logger)
         {
+            Logger = logger;
             AppConfig = appConfig;
 
             PropertyChangedEventManager.AddHandler(this, NewsViewModel_ConfigPropertyChanged, nameof(Gw2RssWithCulture));
@@ -58,7 +63,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig.LocalData.Gw2Rss, value, AppConfig.LocalData, (model, rss) => model.Gw2Rss = rss);
-                Logger.Debug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -78,7 +83,7 @@ namespace AddonWars2.App.ViewModels
                 if (_isActuallyLoaded == false)
                 {
                     SetProperty(ref _isActuallyLoaded, value);
-                    Logger.Debug($"Property set: {value}");
+                    Logger.LogDebug($"Property set: {value}");
                 }
             }
         }
@@ -93,12 +98,12 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _isUpdating, value);
-                Logger.Debug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
         // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
+        private static ILogger Logger { get; set; }
 
         #endregion Properties
 
@@ -115,27 +120,27 @@ namespace AddonWars2.App.ViewModels
 
         private async void ExecuteReloadNewsAsync()
         {
-            Logger.Debug("Executing command.");
-            Logger.Info("Updating news feed.");
+            Logger.LogDebug("Executing command.");
+            Logger.LogInformation("Updating news feed.");
 
             IsUpdating = true;
 
             // GW2 RSS feed falls back to EN version if the selected culture is unknown.
-            Logger.Debug("Requesting RSS data.");
+            Logger.LogDebug("Requesting RSS data.");
             var response = await WebHelper.GetResponseAsync(Gw2RssWithCulture);
             if (!response.IsSuccessStatusCode)
             {
-                Logger.Warn($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
+                Logger.LogWarning($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
                 return;
             }
 
-            Logger.Debug("Parsing response data.");
+            Logger.LogDebug("Parsing response data.");
             var stream = await response.Content.ReadAsStreamAsync();
             var xml = await WebHelper.LoadXmlAsync(stream);
 
             IsUpdating = false;
 
-            Logger.Info("News list updated.");
+            Logger.LogInformation("News list updated.");
         }
 
         #endregion Commands Logic
@@ -147,7 +152,7 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public void GenerateGw2RssWithCulture()
         {
-            Logger.Debug("Executing method.");
+            Logger.LogDebug("Executing method.");
 
             //var culture = AppConfig.UserData.SelectedCultureString.ShortName.ToLower();
             //Gw2RssWithCulture = string.Format(AppConfig.UserData.Gw2RssTemplate, culture);
@@ -157,7 +162,7 @@ namespace AddonWars2.App.ViewModels
         private void NewsViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             ApplicationConfig.WriteLocalDataAsXml(AppConfig.ConfigFilePath, AppConfig.LocalData);
-            Logger.Debug($"Config file updated.");
+            Logger.LogDebug($"Config file updated.");
         }
 
         #endregion Methods
