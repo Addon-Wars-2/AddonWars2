@@ -48,7 +48,6 @@
             </Grid.ColumnDefinitions>
             <TextBlock
                 Grid.Row="0" Grid.Column="0"
-                Margin="0,0,0,0"
                 FontWeight="Light"
                 FontStyle="Normal"
                 FontSize="16"
@@ -56,7 +55,6 @@
             <Border
                 x:Name="RssFeedBorder"
                 Grid.Row="1" Grid.Column="0"
-                Margin="0,0,0,0"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Focusable="False">
@@ -158,7 +156,7 @@
                                     </Separator>
                                     <Grid
                                         x:Name="ItemRootGrid"
-                                        Margin="10">
+                                        Margin="10,10,0,10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="6*"/>
                                             <ColumnDefinition Width="1*"/>

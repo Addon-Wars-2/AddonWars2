@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Services
+namespace AddonWars2.App.Controllers
 {
     using System.Collections.ObjectModel;
     using AddonWars2.App.Models.Logging;

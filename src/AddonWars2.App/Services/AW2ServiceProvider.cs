@@ -9,6 +9,7 @@ namespace AddonWars2.App.Services
 {
     using System;
     using AddonWars2.App.Commands;
+    using AddonWars2.App.Controllers;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;

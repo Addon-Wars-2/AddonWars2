@@ -12,14 +12,13 @@ namespace AddonWars2.App.Models.Application
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.ViewModels;
     using CommunityToolkit.Mvvm.ComponentModel;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Holds some globally available application information.
+    /// Represents the application configuration and holds the local data.
     /// </summary>
     public class ApplicationConfig : ObservableObject
     {
@@ -134,6 +133,16 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the selected application culture.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Changes in this property will internally invoke a handling method, which in turn will update <see cref="LocalData"/> properties.
+        /// Any changes inside the <see cref="LocalData"/> will be automatically handled by another handling method and force the config file
+        /// to be updated. No explicit save required.
+        /// </para>
+        /// <para>
+        /// Handlers are re-attached automatically to ensure they keep a reference to the current property instance.
+        /// </para>
+        /// </remarks>
         public CultureInfo SelectedCulture
         {
             get => _selectedCulture;
@@ -147,6 +156,15 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the part of application data which is stored locally.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Changes in <see cref="LocalData"/> inner properties internally invoke a handling method,
+        /// which in turn will write <see cref="LocalData"/> to a local storage. No explicit save required.
+        /// </para>
+        /// <para>
+        /// Handlers are re-attached automatically to ensure they keep a reference to the current property instance.
+        /// </para>
+        /// </remarks>
         public LocalData LocalData
         {
             get => _localData;
@@ -189,7 +207,7 @@ namespace AddonWars2.App.Models.Application
             return data;
         }
 
-        // Is invoked whenever selected culture is changed.
+        // Is invoked whenever the selected culture property is changed.
         private void ApplicationConfig_SelectedCultureChanged(object sender, PropertyChangedEventArgs e)
         {
             // Set the requested culture string inside the local data.
@@ -209,20 +227,21 @@ namespace AddonWars2.App.Models.Application
             LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture.ShortName.ToLower());
             LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
 
+            // Re-attach handlers to keep a reference to the current property instance.
             PropertyChangedEventManager.RemoveHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
             Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
             Logger.LogDebug($"Handled.");
         }
 
-        // Is invoked whenever local data property is changed.
+        // Is invoked whenever the local data property is changed.
         private void ApplicationConfig_LocalDataInnerChanged(object sender, PropertyChangedEventArgs e)
         {
             WriteLocalDataAsXml(ConfigFilePath, LocalData);
             Logger.LogDebug($"Handled.");
         }
 
-        // Is invoked whenever local data is changed.
+        // Is invoked whenever a local data inner property is changed.
         private void ApplicationConfig_LocalDataChanged(object sender, PropertyChangedEventArgs e)
         {
             WriteLocalDataAsXml(ConfigFilePath, LocalData);

@@ -16,7 +16,7 @@ namespace AddonWars2.App.Utils.Helpers
     using System.Xml.Linq;
 
     /// <summary>
-    /// Provides various methods to handle web operations.
+    /// Provides various methods to manage web operations.
     /// </summary>
     public static class WebHelper
     {
@@ -40,8 +40,6 @@ namespace AddonWars2.App.Utils.Helpers
                 try
                 {
                     Debug.WriteLine(url);
-                    //var tokenSource = new CancellationTokenSource();
-                    //tokenSource.CancelAfter(TimeSpan.FromSeconds(10));
                     var response = await httpClient.GetAsync(url).ConfigureAwait(false);
                     Debug.WriteLine($"response: {response.StatusCode}");
                     return response;
@@ -50,10 +48,6 @@ namespace AddonWars2.App.Utils.Helpers
                 {
                     return new HttpResponseMessage(e.StatusCode.Value);
                 }
-                //catch (TaskCanceledException e)
-                //{
-                //    return new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout);
-                //}
             }
         }
 

@@ -8,8 +8,8 @@
 namespace AddonWars2.App.ViewModels
 {
     using System.Collections.ObjectModel;
+    using AddonWars2.App.Controllers;
     using AddonWars2.App.Models.Logging;
-    using AddonWars2.App.Services;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

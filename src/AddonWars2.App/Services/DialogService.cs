@@ -24,11 +24,14 @@ namespace AddonWars2.App.Services
             string filter = "",
             bool multiselect = false)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Title = title;
-            dialog.FileName = filename;
-            dialog.DefaultExt = defaultExt;
-            dialog.Filter = filter;
+            var dialog = new OpenFileDialog()
+            {
+                Title = title,
+                FileName = filename,
+                DefaultExt = defaultExt,
+                Filter = filter,
+                Multiselect = multiselect,
+            };
 
             var isOkClicked = dialog.ShowDialog();
             if (isOkClicked == true)

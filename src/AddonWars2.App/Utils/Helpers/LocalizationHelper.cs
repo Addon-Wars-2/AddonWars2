@@ -12,7 +12,7 @@ namespace AddonWars2.App.Helpers
     using AddonWars2.App.Models.Application;
 
     /// <summary>
-    /// Provides various methods to handle localization problems within the application.
+    /// Provides various methods to manage localization problems within the application.
     /// </summary>
     public static class LocalizationHelper
     {
@@ -26,9 +26,6 @@ namespace AddonWars2.App.Helpers
         /// <returns>The actually selected culture.</returns>
         public static string SelectCulture(CultureInfo culture, string fallback = "en-US")
         {
-            // TODO: We need to either inject app settings instance
-            //       to access default culture value, or move away from static approach.
-
             // Fallback to the default culture in none is set.
             string cultureString;
             if (culture == null)
@@ -68,6 +65,8 @@ namespace AddonWars2.App.Helpers
         // Performs the actual selection of a culture.
         private static string SelectCultureInternal(string cultureString, string fallback = "en-US")
         {
+            // Static class is dependent on application state, which is not good. Inject or move from static approach.
+
             // Copy all merged dictionaries to a temp list (TODO: memory footprint?).
             var dictionaryList = AW2Application.Current.Resources.MergedDictionaries.ToList();
             var requestedCulture = $"pack://application:,,,/Resources/Localization/StringResources_{cultureString}.xaml";

@@ -222,7 +222,7 @@
                 <TabControl
                     x:Name="MainTabControl"
                     Grid.Row="1"
-                    Margin="20,-15,60,30"
+                    Margin="20,-20,60,30"
                     Background="Transparent"
                     BorderBrush="Black"
                     BorderThickness="0"

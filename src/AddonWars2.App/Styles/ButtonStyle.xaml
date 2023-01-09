@@ -158,11 +158,11 @@
                                     ContentSource="Content">
                                     <ContentPresenter.Effect>
                                         <DropShadowEffect
-                                            Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                                            Color="{DynamicResource Color.PrimaryPalette.Level1}"
                                             ShadowDepth="2"
                                             Direction="-90"
                                             BlurRadius="5"
-                                            Opacity="1.0"/>
+                                            Opacity="0.8"/>
                                     </ContentPresenter.Effect>
                                 </ContentPresenter>
                             </Border>

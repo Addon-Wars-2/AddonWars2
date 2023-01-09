@@ -55,7 +55,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="ThumbGeometry" Property="Background" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"/>
-                            <Setter TargetName="ThumbGeometry" Property="CornerRadius" Value="4"/>
+                            <Setter TargetName="ThumbGeometry" Property="CornerRadius" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="ThumbGeometry" Property="Opacity" Value="0.5"/>
@@ -69,9 +69,9 @@
     <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MaxWidth="16"/>
+                <ColumnDefinition MaxWidth="12"/>
                 <ColumnDefinition Width="0.00001*"/>
-                <ColumnDefinition MaxWidth="16"/>
+                <ColumnDefinition MaxWidth="12"/>
             </Grid.ColumnDefinitions>
             <Border
                 x:Name="MainBorder"
@@ -84,7 +84,7 @@
                 x:Name="RepeatButtonLeft"
                 Grid.Column="0"
                 Style="{DynamicResource ScrollBarRepeatButton}"
-                Width="16"
+                Width="12"
                 Command="ScrollBar.LineLeftCommand"
                 Content="{DynamicResource Geometry.Icon.ScrollBar.Horizontal.Left}"/>
             <Track
@@ -110,7 +110,7 @@
                 x:Name="RepeatButtonRight"
                 Grid.Column="2"
                 Style="{DynamicResource ScrollBarRepeatButton}"
-                Width="16"
+                Width="12"
                 Command="ScrollBar.LineRightCommand"
                 Content="{DynamicResource Geometry.Icon.ScrollBar.Horizontal.Right}"/>
         </Grid>
@@ -125,9 +125,9 @@
     <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="16"/>
+                <RowDefinition MaxHeight="12"/>
                 <RowDefinition Height="0.00001*"/>
-                <RowDefinition MaxHeight="16"/>
+                <RowDefinition MaxHeight="12"/>
             </Grid.RowDefinitions>
             <Border
                 x:Name="MainBorder"
@@ -140,7 +140,7 @@
                 x:Name="RepeatButtonLeft"
                 Grid.Row="0"
                 Style="{DynamicResource ScrollBarRepeatButton}"
-                Height="16"
+                Height="12"
                 Command="ScrollBar.LineUpCommand"
                 Content="{DynamicResource Geometry.Icon.ScrollBar.Horizontal.Top}"/>
             <Track
@@ -166,7 +166,7 @@
                 x:Name="RepeatButtonRight"
                 Grid.Row="2"
                 Style="{DynamicResource ScrollBarRepeatButton}"
-                Height="16"
+                Height="12"
                 Command="ScrollBar.LineDownCommand"
                 Content="{DynamicResource Geometry.Icon.ScrollBar.Horizontal.Bottom}"/>
         </Grid>
@@ -184,11 +184,11 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto"/>
-                <Setter Property="Height" Value="16"/>
+                <Setter Property="Height" Value="12"/>
                 <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}"/>
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Width" Value="16"/>
+                <Setter Property="Width" Value="12"/>
                 <Setter Property="Height" Value="Auto"/>
                 <Setter Property="Template" Value="{StaticResource VerticalScrollBar}"/>
             </Trigger>

@@ -48,6 +48,10 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets a default instance version of <see cref="LocalData"/>.
         /// </summary>
+        /// <remarks>
+        /// The default version of <see cref="LocalData"/> will contain
+        /// pre-defined properties hardcoded internally.
+        /// </remarks>
         [XmlIgnore]
         public static LocalData Default
         {

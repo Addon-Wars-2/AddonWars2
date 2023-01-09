@@ -12,6 +12,7 @@ namespace AddonWars2.App
     using System.IO;
     using System.Linq;
     using System.Windows;
+    using AddonWars2.App.Controllers;
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
@@ -94,14 +95,15 @@ namespace AddonWars2.App
         {
             base.OnStartup(e);
 
+            var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
-            Services.GetRequiredService<ApplicationConfig>().StartupDateTime = DateTime.Now;
+            Services.GetRequiredService<ApplicationConfig>().StartupDateTime = startupDateTime;
 
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
             AW2App_SetupLocalization();
 
-            // To set DataContext directly in markup.
+            // To enable setting DataContext directly in markup.
             DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
 
             MainWindowInstance = new ();
@@ -118,7 +120,7 @@ namespace AddonWars2.App
             LogManager.Shutdown();
         }
 
-        // Setups logger.
+        // Setups logging.
         private void AW2App_SetupLogger()
         {
             Target.Register<NLogLoggingManagerTarget>("NLogLoggingManagerTarget");
@@ -141,49 +143,52 @@ namespace AddonWars2.App
             Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init logger? Doesn't work without.
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
+            Logger.Info($"Start logging.");
 
-            // Locate AppData\Roaming application dir.
+            // Locate AppData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
             {
                 Directory.CreateDirectory(appDataDir);
             }
 
-            Services.GetRequiredService<ApplicationConfig>().AppDataDir = appDataDir;
+            var appConfig = Services.GetRequiredService<ApplicationConfig>();
+            appConfig.AppDataDir = appDataDir;
 
             Logger.Info($"Using AppData directory: {appDataDir}");
 
-            // Locate the logs dir.
-            var logCfg = LogManager.Configuration;
-            var logsDirPath = Path.Join(appDataDir, Services.GetRequiredService<ApplicationConfig>().LogDirName);
+            // Locate the logs directory.
+            var logsDirPath = Path.Join(appDataDir, appConfig.LogDirName);
             if (!Directory.Exists(logsDirPath))
             {
                 Directory.CreateDirectory(logsDirPath);
             }
 
             // Setup logger config.
-            var date = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var logPath = Path.Join(logsDirPath, $"{Services.GetRequiredService<ApplicationConfig>().LogPrefix}{date}.txt");
+            var logCfg = LogManager.Configuration;
+            var date = appConfig.StartupDateTime;
+            var logPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{date}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "logTarget",
                 FileName = logPath,
                 Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
             };
+
             logCfg.AddRule(LogLevel.Debug, LogLevel.Fatal, logTarget);
             LogManager.Configuration = logCfg;
 
             Logger.Info($"Created a new log file: {logPath}");
         }
 
-        // Setups application data (user config file).
+        // Setups the application config and local data.
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
             var appConfig = Services.GetRequiredService<ApplicationConfig>();
             var localdata = appConfig.LocalData;  // default
 
-            // Try to get application settings from the AppData\Roaming dir.
+            // Try to get the application settings from the AppData\Roaming dir.
             var path = appConfig.ConfigFilePath;
 
             // File not found.
@@ -198,14 +203,13 @@ namespace AddonWars2.App
             {
                 // Try to load it and check if it's valid since serializer
                 // will either return incorrect data (i.e. some properties are missing)
-                // or will thron an exception and thus return default(T).
+                // or will throw an exception..
                 localdata = ApplicationConfig.LoadLocalDataFromXml(path);
                 if (!LocalData.IsValid(localdata))
                 {
                     Logger.Warn($"The given config file is not valid.");
 
-                    // Delete the corrupted file (since this name is reserved for the app config)
-                    // and replace it with a default one.
+                    // Delete the corrupted file and replace it with a default one.
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);

@@ -7,7 +7,7 @@
 
 namespace AddonWars2.App.Views
 {
-    using System.ComponentModel;
+    using System;
     using System.Windows.Controls;
     using AddonWars2.App.Helpers;
     using Microsoft.Web.WebView2.Core;
@@ -28,7 +28,7 @@ namespace AddonWars2.App.Views
             InitializeComponent();
             InitializeWebView2Async();
 
-            //AW2Application.Current.MainWindowInstance.Closing += MainWindowInstance_Closing;
+            AW2Application.Current.MainWindowInstance.Closed += MainWindowInstance_Closed;
         }
 
         #endregion Constructors
@@ -60,14 +60,14 @@ namespace AddonWars2.App.Views
             }
         }
 
-        // Cleanup WebView data.
-        private void MainWindowInstance_Closing(object sender, CancelEventArgs e)
+        // Cleanup WebView data on main window close event.
+        private void MainWindowInstance_Closed(object sender, EventArgs e)
         {
             var webView2 = (WebView2)FindName("WebView2Control");
             if (webView2 != null)
             {
-                var profile = webView2.CoreWebView2.Profile;
-                profile.ClearBrowsingDataAsync();
+                var profile = webView2.CoreWebView2?.Profile;
+                profile?.ClearBrowsingDataAsync();
             }
         }
 

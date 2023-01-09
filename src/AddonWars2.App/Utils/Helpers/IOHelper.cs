@@ -15,7 +15,7 @@ namespace AddonWars2.App.Helpers
     using NLog.Config;
 
     /// <summary>
-    /// Provides various methods to handle application data IO flow.
+    /// Provides various methods to manage IO flow.
     /// </summary>
     public static class IOHelper
     {
@@ -37,14 +37,14 @@ namespace AddonWars2.App.Helpers
             return appDir;
         }
 
-        // TODO: This method is not good, because it relies on application state inside a static class.
-
         /// <summary>
         /// Loads and return NLog logger configuration from the embedded config file.
         /// </summary>
         /// <returns>NLog configuration.</returns>
         public static LoggingConfiguration GetLoggerConfigurationNLog()
         {
+            // TODO: This method should be refactored, because it relies on application state inside a static class.
+
             // The GetManifestResourceStream method will always returns null
             // if the resource "built action" property is not set to "embedded resource".
             var assembly = typeof(AW2Application).Assembly;
@@ -98,12 +98,6 @@ namespace AddonWars2.App.Helpers
         /// <returns>Serialized string.</returns>
         public static string SerializeXml<T>(this T obj)
         {
-            // Note to myself: make sure setters are defined.
-
-            // Setter will be used when deserializing a string into an object,
-            // because an instance of the object needs to be created and then
-            // the setter will be used to populate the property name.
-
             var xmlSerializer = new XmlSerializer(typeof(T));
             var xns = new XmlSerializerNamespaces();
             xns.Add(string.Empty, string.Empty);  // omit namespaces

@@ -111,9 +111,9 @@
                 Focusable="False"
                 IsTabStop="False"
                 Cursor="Hand"
-                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"
                 BorderThickness="1"
-                Background="{DynamicResource LinearGradient.PrimaryPalette.Level2to3}"
+                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
                 attached:AccentColorExtension.AccentColor="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
                 Style="{DynamicResource MajorButtonAccentBackgroundStyle}">
                 <i:Interaction.Triggers>
@@ -134,8 +134,18 @@
                         FontSize="16"
                         FontWeight="Regular"
                         FontFamily="{DynamicResource Lato}"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level4}"
-                        Text="{DynamicResource S.HomePage.GameLocation.SelectButton}"/>
+                        Text="{DynamicResource S.HomePage.GameLocation.SelectButton}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level4}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Button.Content>
             </Button>
         </Grid>

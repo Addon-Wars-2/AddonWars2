@@ -12,7 +12,8 @@ namespace AddonWars2.App.Utils.Converters
     using System.Windows.Data;
 
     /// <summary>
-    /// Inverts a boolean value.
+    /// Converts a given <see cref="DateTime"/> value to an upper-case string
+    /// using a converter parameter as a <see cref="DateTime"/> format parameter.
     /// </summary>
     public class DateToUpperCaseConverter : IValueConverter
     {

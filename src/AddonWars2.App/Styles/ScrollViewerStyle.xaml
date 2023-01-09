@@ -36,7 +36,8 @@
                             Maximum="{TemplateBinding ScrollableHeight}"
                             ViewportSize="{TemplateBinding ViewportHeight}"
                             Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                            Style="{DynamicResource ScrollBarStyle}"/>
+                            Style="{DynamicResource ScrollBarStyle}"
+                            SnapsToDevicePixels="False"/>
                         <ScrollBar
                             x:Name="PART_HorizontalScrollBar"
                             Orientation="Horizontal"
@@ -46,7 +47,8 @@
                             Maximum="{TemplateBinding ScrollableWidth}"
                             ViewportSize="{TemplateBinding ViewportWidth}"
                             Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                            Style="{DynamicResource ScrollBarStyle}"/>
+                            Style="{DynamicResource ScrollBarStyle}"
+                            SnapsToDevicePixels="False"/>
                         <Button
                             x:Name="CornerButton"
                             Grid.Row="1"

@@ -165,6 +165,10 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the error code (including error message)
+        /// if an error occured on news feed update.
+        /// </summary>
         public string UpdateErrorCode
         {
             get => _updateErrorCode;
@@ -175,6 +179,10 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the view model state as a string representation
+        /// of <see cref="NewsViewModelState"/> value.
+        /// </summary>
         public string ViewModelState
         {
             get => _viewModelState;
@@ -185,6 +193,9 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the view model state.
+        /// </summary>
         internal NewsViewModelState ViewModelStateInternal
         {
             get => _viewModelStateInternal;

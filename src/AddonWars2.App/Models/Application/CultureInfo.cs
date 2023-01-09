@@ -11,8 +11,7 @@ namespace AddonWars2.App.Models.Application
     using System.Xml.Serialization;
 
     /// <summary>
-    /// Represents a single culture with its additional information,
-    /// encapsulated inside <see cref="CultureMap"/> object.
+    /// Represents an object that encapsulated culture information.
     /// </summary>
     [Serializable]
     public class CultureInfo
@@ -35,7 +34,6 @@ namespace AddonWars2.App.Models.Application
             FullName = fullName;
         }
 
-        // For serializer.
         private CultureInfo()
             : this(string.Empty, string.Empty, string.Empty)
         {
@@ -46,10 +44,9 @@ namespace AddonWars2.App.Models.Application
 
         #region Properties
 
-        // Publuc setters are okay - we need them for serialization.
-
         /// <summary>
-        /// Gets or sets culture string in a standard format, i.e. "en-US".
+        /// Gets or sets culture string using ISO 639 language codes,
+        /// i.e. "en-US".
         /// </summary>
         [XmlElement("culture")]
         public string Culture { get; set; }
