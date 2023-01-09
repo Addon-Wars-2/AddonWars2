@@ -12,6 +12,7 @@ namespace AddonWars2.App.Models.Application
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.ViewModels;
     using CommunityToolkit.Mvvm.ComponentModel;
@@ -41,11 +42,13 @@ namespace AddonWars2.App.Models.Application
         {
             Logger = logger;
             SelectedCulture = DefaultCulture;
-            LocalData = new LocalData();
+            LocalData = LocalData.Default;
 
-            PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
+            PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataInnerChanged, string.Empty);
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_LocalDataChanged, nameof(LocalData));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -61,6 +64,7 @@ namespace AddonWars2.App.Models.Application
             internal set
             {
                 SetProperty(ref _startupDateTime, value);
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -73,6 +77,7 @@ namespace AddonWars2.App.Models.Application
             set
             {
                 SetProperty(ref _appDataDir, value);
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -135,6 +140,7 @@ namespace AddonWars2.App.Models.Application
             set
             {
                 SetProperty(ref _selectedCulture, value);
+                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
             }
         }
 
@@ -147,6 +153,7 @@ namespace AddonWars2.App.Models.Application
             set
             {
                 SetProperty(ref _localData, value);
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -167,6 +174,7 @@ namespace AddonWars2.App.Models.Application
         public static void WriteLocalDataAsXml(string path, LocalData data)
         {
             IOHelper.SerializeXml(data, path);
+            Logger.LogDebug($"Local data saved.");
         }
 
         /// <summary>
@@ -176,38 +184,53 @@ namespace AddonWars2.App.Models.Application
         /// <returns><see cref="LocalData"/> object.</returns>
         public static LocalData LoadLocalDataFromXml(string path)
         {
-            return IOHelper.DeserializeXml<LocalData>(path);
+            var data = IOHelper.DeserializeXml<LocalData>(path);
+            Logger.LogDebug($"Local data loaded.");
+            return data;
         }
 
-        // Is invoked whenever selected culture property is changed.
+        // Is invoked whenever selected culture is changed.
         private void ApplicationConfig_SelectedCultureChanged(object sender, PropertyChangedEventArgs e)
         {
             // Set the requested culture string inside the local data.
-            var culture = AvailableCultures.First(x => x.Culture == SelectedCulture.Culture);
+            var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture.Culture, DefaultCulture);
             LocalData.SelectedCultureString = culture.Culture;
+            Logger.LogDebug($"Selected culture was changed to: {culture.Culture}");
 
             // ANet webside supports only several languages. If the requested culture is not supported by ANet,
             // then use global (en) version of ANet services.
             if (!ArenaNetSupportedCultures.Any(x => x.Culture == culture.Culture))
             {
                 culture = DefaultCulture;
+                Logger.LogDebug($"The requested culture is not supported by ANet services. The default one will be set for them.");
             }
 
             LocalData.Gw2Home = string.Format(LocalData.Gw2HomeTemplate, culture.ShortName.ToLower());
             LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture.ShortName.ToLower());
             LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
+
+            PropertyChangedEventManager.RemoveHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
+            PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
+            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger.LogDebug($"Handled.");
         }
 
         // Is invoked whenever local data property is changed.
+        private void ApplicationConfig_LocalDataInnerChanged(object sender, PropertyChangedEventArgs e)
+        {
+            WriteLocalDataAsXml(ConfigFilePath, LocalData);
+            Logger.LogDebug($"Handled.");
+        }
+
+        // Is invoked whenever local data is changed.
         private void ApplicationConfig_LocalDataChanged(object sender, PropertyChangedEventArgs e)
         {
             WriteLocalDataAsXml(ConfigFilePath, LocalData);
-            Logger.LogDebug($"Config file updated.");
 
-            // TODO: is it even legal?
-            PropertyChangedEventManager.RemoveHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
-            PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataChanged, string.Empty);
+            PropertyChangedEventManager.RemoveHandler(LocalData, ApplicationConfig_LocalDataInnerChanged, string.Empty);
+            PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataInnerChanged, string.Empty);
             Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger.LogDebug($"Handled.");
         }
 
         #endregion Methods

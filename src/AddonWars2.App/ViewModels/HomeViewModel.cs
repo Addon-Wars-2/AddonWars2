@@ -48,6 +48,8 @@ namespace AddonWars2.App.ViewModels
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -188,16 +190,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Commands Logic
 
         #region Methods
-
-        ////// Updates config if a property specified in the even manager params was changed.
-        ////private void HomeViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
-        ////{
-        ////    Logger.LogDebug("Executing method.");
-
-        ////    IOHelper.SerializeXml(AppConfig.LocalData, AppConfig.ConfigFilePath);
-
-        ////    Logger.LogDebug($"Config file updated.");
-        ////}
 
         #endregion Methods
     }

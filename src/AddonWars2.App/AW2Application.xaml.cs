@@ -86,10 +86,7 @@ namespace AddonWars2.App
             var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
             Process.Start(currExecPath);
 
-            // Now close the currrent one.
-            LogManager.Shutdown();
-
-            Current.Shutdown();
+            Current.MainWindowInstance.Close();
         }
 
         /// <inheritdoc/>
@@ -184,7 +181,6 @@ namespace AddonWars2.App
         {
             // Set the default settings.
             var appConfig = Services.GetRequiredService<ApplicationConfig>();
-            appConfig.LocalData = LocalData.Default;
             var localdata = appConfig.LocalData;  // default
 
             // Try to get application settings from the AppData\Roaming dir.

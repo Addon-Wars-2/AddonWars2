@@ -22,7 +22,7 @@
 	<Authors>RindCode</Authors>
 	<Company>Addon-Wars-2 </Company>
 	<Copyright>Copyright $(Company) © 2022</Copyright>
-	<VersionPrefix>1.0.0.0</VersionPrefix>
+	<VersionPrefix>0.1.0.0</VersionPrefix>
 	<VersionSuffix>alpha</VersionSuffix>
 	<AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
 	<FileVersion>$(VersionPrefix)</FileVersion>

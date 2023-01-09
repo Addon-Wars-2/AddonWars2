@@ -30,6 +30,8 @@ namespace AddonWars2.App.ViewModels
             : base(logger)
         {
             LoggingManagerInstance = loggingManager;
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

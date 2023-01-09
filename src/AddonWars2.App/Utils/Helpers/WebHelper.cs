@@ -8,6 +8,7 @@
 namespace AddonWars2.App.Utils.Helpers
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
     using System.Threading;
@@ -27,8 +28,7 @@ namespace AddonWars2.App.Utils.Helpers
         /// <param name="url">URL string.</param>
         /// <returns><see cref="HttpResponseMessage"/> object.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public static async Task<HttpResponseMessage> GetResponseAsync(
-            string url)
+        public static async Task<HttpResponseMessage> GetResponseAsync(string url)
         {
             if (url == null)
             {
@@ -39,13 +39,21 @@ namespace AddonWars2.App.Utils.Helpers
             {
                 try
                 {
+                    Debug.WriteLine(url);
+                    //var tokenSource = new CancellationTokenSource();
+                    //tokenSource.CancelAfter(TimeSpan.FromSeconds(10));
                     var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                    Debug.WriteLine($"response: {response.StatusCode}");
                     return response;
                 }
                 catch (HttpRequestException e)
                 {
                     return new HttpResponseMessage(e.StatusCode.Value);
                 }
+                //catch (TaskCanceledException e)
+                //{
+                //    return new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout);
+                //}
             }
         }
 

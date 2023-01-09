@@ -24,6 +24,8 @@ namespace AddonWars2.App.ViewModels
         public BaseViewModel(ILogger<BaseViewModel> logger)
         {
             Logger = logger;
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

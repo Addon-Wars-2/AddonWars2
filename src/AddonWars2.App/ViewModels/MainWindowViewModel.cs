@@ -48,6 +48,8 @@ namespace AddonWars2.App.ViewModels
             LoggingViewModel = loggingViewModel;
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -97,8 +99,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
-                AppConfig.LocalData.SelectedCultureString = value.Culture;
-                Logger.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
             }
         }
 

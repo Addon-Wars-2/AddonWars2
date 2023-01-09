@@ -30,7 +30,8 @@
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.UpdatingNewsPlaceholder">Обновление...</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Обновление...</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
 
     <!-- Logging Page -->
