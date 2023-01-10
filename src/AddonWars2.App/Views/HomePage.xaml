@@ -90,7 +90,7 @@
                 <!--
                 TODO: find out the root of the problem and why this workaround works.
                 This is a stupid workaround (need to test though) to resolve Error Template visual problem (idk why it works).
-                It turned out that for some reason if Gw2ExecRule validation passed, only text error was removed, but not the red border.
+                It turned out that for some reason if Gw2ExecRule validation passed, only the text error was removed, but not the red border.
                 Switching between tabs didn't help, neither playing around with Loaded event and binding.
                 Somehow forcing the text box to update its layout again when THERE ARE ERRORS resolved the issue.
                 Maybe the problem is in adorner layers. Maybe there is some racing inside the framework. Maybe I'm just missing something (likely).
@@ -102,7 +102,7 @@
                 </i:Interaction.Triggers>
             </TextBox>
             <Button
-                x:Name="SelectLocation"
+                x:Name="SelectButton"
                 Grid.Column="1"
                 Margin="20,0,0,20"
                 Height="30"
@@ -121,10 +121,13 @@
                         <i:CallMethodAction
                             TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Page}}"
                             MethodName="OpenFileDialog_OnClick"/>
-                        <i:ChangePropertyAction
+                        <i:InvokeCommandAction
+                            Command="{Binding Path=DataContext.UpdateGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                            CommandParameter="{Binding Path=(assist:DialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
+                        <!--<i:ChangePropertyAction
                             TargetName="GW2ExecTextBox"
                             PropertyName="Text"
-                            Value="{Binding Path=(assist:DialogAssist.SelectedPaths)[0], RelativeSource={RelativeSource AncestorType=Page}}"/>
+                            Value="{Binding Path=(assist:DialogAssist.SelectedPaths)[0], RelativeSource={RelativeSource AncestorType=Page}}"/>-->
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Button.Content>

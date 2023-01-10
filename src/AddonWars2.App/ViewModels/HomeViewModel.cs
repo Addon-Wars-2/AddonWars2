@@ -10,6 +10,8 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.IO;
     using System.Windows;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
@@ -47,6 +49,7 @@ namespace AddonWars2.App.ViewModels
             ////PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
+            UpdateGw2ExeCommand = new RelayCommand<string[]>(ExecuteUpdateGw2Exe);
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
 
             Logger.LogDebug("Instance initialized.");
@@ -133,6 +136,11 @@ namespace AddonWars2.App.ViewModels
         public RelayCommand TryFindGw2ExeCommand { get; private set; }
 
         /// <summary>
+        /// Gets a command that updates <see cref="Gw2ExecPath"/>.
+        /// </summary>
+        public RelayCommand<string[]> UpdateGw2ExeCommand { get; private set; }
+
+        /// <summary>
         /// Gets a command that updates a welcome message.
         /// </summary>
         public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
@@ -158,6 +166,27 @@ namespace AddonWars2.App.ViewModels
             Gw2ExecPath = gw2exe;
 
             Logger.LogInformation("GW2 executable location was set automatically.");
+        }
+
+        // UpdateGw2ExeCommand command logic.
+        private void ExecuteUpdateGw2Exe(string[] paths)
+        {
+            Logger.LogDebug("Executing command.");
+
+            if (paths.Length == 0)
+            {
+                Logger.LogDebug("No paths were selected.");
+                return;
+            }
+
+            var path = paths[0];
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                Logger.LogDebug("Path is null, empty or not valid.");
+                return;
+            }
+
+            Gw2ExecPath = path;
         }
 
         // UpdateWelcomeMessageCommand command logic.

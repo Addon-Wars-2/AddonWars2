@@ -276,8 +276,8 @@ namespace AddonWars2.App.ViewModels
             }
             catch (Exception e)
             {
-                // TODO: A "something failed, but I don't know what exactly" workaround.
-                Logger.LogDebug($"Failed to parse data.");
+                // HACK: A "something failed, but I don't know what exactly" workaround.
+                Logger.LogError($"Failed to parse data.");
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = $"{e.Message}";
                 return;
@@ -297,7 +297,7 @@ namespace AddonWars2.App.ViewModels
                 await Task.Delay(50);  // TODO: Delay feels wrong here, it belongs to UI.
             }
 
-            Logger.LogInformation("News list updated.");
+            Logger.LogInformation("News feed updated.");
         }
 
         // Async call for ParseRssFeedXml.
