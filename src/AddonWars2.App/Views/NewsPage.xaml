@@ -270,6 +270,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center">
                             <TextBlock
+                                Margin="0,0,0,10"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 FontSize="16"
@@ -291,7 +292,8 @@
                             <TextBlock
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
-                                FontSize="16"
+                                TextWrapping="Wrap"
+                                FontSize="10"
                                 FontWeight="Light"
                                 FontStyle="Normal"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"

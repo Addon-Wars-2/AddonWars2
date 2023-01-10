@@ -12,6 +12,7 @@ namespace AddonWars2.App.ViewModels
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using System.Xml.Linq;
     using AddonWars2.App.Commands;
@@ -48,7 +49,7 @@ namespace AddonWars2.App.ViewModels
     public class NewsViewModel : BaseViewModel
     {
         // TODO: There is quite a lot of logic inside this VM.
-        //       Maybe I should consider adding another layer between "dumb VM"
+        //       Maybe should we consider adding another layer between "dumb VM"
         //       and "dumb model" layers? Or separate UI logic from business one
         //       more explicitly?
 
@@ -224,34 +225,63 @@ namespace AddonWars2.App.ViewModels
 
         #region Commands Logic
 
+        #region ReloadNewsCommand Logic
+
         // ReloadNewsCommand command logic.
         private async void ExecuteReloadNewsAsync()
         {
             Logger.LogDebug("Executing command.");
             Logger.LogInformation("Updating news feed.");
 
-            ViewModelStateInternal = NewsViewModelState.Updating;
+            SetState(NewsViewModelState.Updating);
 
             RssFeedCollection.Clear();
 
-            SetState(NewsViewModelState.Updating);
-
-            // GW2 RSS feed falls back to EN version if the selected culture is unknown.
             Logger.LogDebug("Requesting RSS data.");
-            var response = await WebHelper.GetResponseAsync(AppConfig.LocalData.Gw2Rss);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await WebHelper.GetResponseAsync(AppConfig.LocalData.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
+            }
+            catch (HttpRequestException e)
+            {
+                // No internet connection.
+                Logger.LogError($"No internet connection.");
+                SetState(NewsViewModelState.FailedToUpdate);
+                UpdateErrorCode = e.Message;
+                return;
+            }
+
+            // Bad code returned.
             if (!response.IsSuccessStatusCode)
             {
                 Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
                 SetState(NewsViewModelState.FailedToUpdate);
-                UpdateErrorCode = $"{(int)response.StatusCode} {response.StatusCode}";
+                UpdateErrorCode = $"{response}";
                 return;
             }
 
+            // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
+            //       in some scenarios when the internet connection is interrupted.
+            //       Need to figure out what's the problem with the HTTP content stream (if there is any).
+            ObservableCollection<RssFeedItem> feed;
             Logger.LogDebug("Parsing response data.");
-            var stream = await response.Content.ReadAsStreamAsync();
-            var xml = await WebHelper.LoadXmlAsync(stream);
-            var feed = await ParseRssFeedXmlAsync(xml);
-            Logger.LogDebug($"Parsed items: {feed.Count}");
+            try
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                var xml = await WebHelper.LoadXmlAsync(stream);
+                feed = await ParseRssFeedXmlAsync(xml);
+                Logger.LogDebug($"Parsed items: {feed.Count}");
+            }
+            catch (Exception e)
+            {
+                // TODO: A "something failed, but I don't know what exactly" workaround.
+                Logger.LogDebug($"Failed to parse data.");
+                SetState(NewsViewModelState.FailedToUpdate);
+                UpdateErrorCode = $"{e.Message}";
+                return;
+            }
 
             foreach (var item in feed)
             {
@@ -301,7 +331,7 @@ namespace AddonWars2.App.ViewModels
                     PublishDate = DateTime.Parse(item.Element("pubDate")?.Value),
                     Guid = item.Element("guid")?.Value.Split("=").Last(),
                     Description = item.Element("description")?.Value,
-                    ContentEncoded = item.Element(nsContent + "encoded")?.Value.Replace(@"""//", @"""https://"),  // TODO: Move "coerce" part elsewhere?
+                    ContentEncoded = item.Element(nsContent + "encoded")?.Value.Replace(@"""//", @"""https://"),  // HACK: Is there a batter way rather than editing strings?
                     IsSticky = isSticky,
                 };
 
@@ -311,9 +341,10 @@ namespace AddonWars2.App.ViewModels
             return feed;
         }
 
+        // Asynchronously writes RSS item HTML content to a file.
         private async Task WriteRssItemContentAsync(RssFeedItem item)
         {
-            // TODO: Cache all items or cleanup?
+            // TODO: Should we cache items or merely map the GW2 RSS feed as is?
 
             var content = item.ContentEncoded;
             var guid = item.Guid;
@@ -330,6 +361,8 @@ namespace AddonWars2.App.ViewModels
 
             Logger.LogDebug($"HTML filed saved: {filepath}");
         }
+
+        #endregion ReloadNewsCommand Logic
 
         // LoadRssItemContentCommand command logic.
         private void ExecuteLoadRssItemContentCommand()
@@ -369,6 +402,7 @@ namespace AddonWars2.App.ViewModels
             Logger.LogDebug($"Config file updated.");
         }
 
+        // Sets the view model state.
         private void SetState(NewsViewModelState state)
         {
             Logger.LogDebug($"ViewModel state set: {state}");

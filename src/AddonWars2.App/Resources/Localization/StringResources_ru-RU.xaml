@@ -6,6 +6,9 @@
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String>
 
+    <!-- Exceptions -->
+    <s:String x:Key="S.Application.Exception.NoInternetConnection">Не удалось установить соединение.</s:String>
+
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Язык</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>

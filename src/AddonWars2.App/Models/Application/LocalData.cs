@@ -13,7 +13,7 @@ namespace AddonWars2.App.Models.Application
     /// <summary>
     /// Prepresents data that is stored locally.
     /// </summary>
-    [XmlRoot("localdata")]
+    [XmlRoot("LocalData")]
     public class LocalData : ObservableObject
     {
         #region Fields
@@ -66,7 +66,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the selected application culture string.
         /// </summary>
-        [XmlElement("selectedculture")]
+        [XmlElement("SelectedCulture")]
         public string SelectedCultureString
         {
             get => _selectedCultureString;
@@ -76,7 +76,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the ArenaNet homepage URL.
         /// </summary>
-        [XmlElement("anethome")]
+        [XmlElement("AnetHome")]
         public string AnetHome
         {
             get => _anetHome;
@@ -86,7 +86,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the GW2 homepage URL.
         /// </summary>
-        [XmlElement("gw2home")]
+        [XmlElement("Gw2Home")]
         public string Gw2Home
         {
             get => _gw2Home;
@@ -96,7 +96,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the GW2 wiki homepage URL.
         /// </summary>
-        [XmlElement("gw2wiki")]
+        [XmlElement("Gw2Wiki")]
         public string Gw2WikiHome
         {
             get => _gw2WikiHome;
@@ -106,7 +106,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the GW2 RSS feed URL.
         /// </summary>
-        [XmlElement("gw2rss")]
+        [XmlElement("Gw2Rss")]
         public string Gw2Rss
         {
             get => _gw2Rss;
@@ -116,7 +116,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the GW2 APIv2 endpoint URL.
         /// </summary>
-        [XmlElement("gw2api2")]
+        [XmlElement("Gw2Api")]
         public string Gw2Api2
         {
             get => _gw2Api2;
@@ -126,7 +126,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the name of GW2 executable.
         /// </summary>
-        [XmlElement("gw2filepath")]
+        [XmlElement("Gw2FilePath")]
         public string Gw2FilePath
         {
             get => _gw2FilePath;
@@ -136,7 +136,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the extension of GW2 executable.
         /// </summary>
-        [XmlElement("gw2fileexten")]
+        [XmlElement("Gw2FileExten")]
         public string Gw2FileExtension
         {
             get => _gw2FileExtension;
@@ -146,7 +146,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the product name of GW2 executable.
         /// </summary>
-        [XmlElement("gw2prodname")]
+        [XmlElement("Gw2ProdName")]
         public string Gw2ProductName
         {
             get => _gw2ProductName;
@@ -156,7 +156,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the file description of GW2 executable.
         /// </summary>
-        [XmlElement("gw2filedesc")]
+        [XmlElement("Gw2FileDesc")]
         public string Gw2FileDescription
         {
             get => _gw2FileDescription;

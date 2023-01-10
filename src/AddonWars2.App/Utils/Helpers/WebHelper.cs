@@ -11,6 +11,7 @@ namespace AddonWars2.App.Utils.Helpers
     using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
+    using System.Net.NetworkInformation;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml.Linq;
@@ -20,34 +21,74 @@ namespace AddonWars2.App.Utils.Helpers
     /// </summary>
     public static class WebHelper
     {
+        #region Fields
+
+        private static readonly HttpClient _httpClient;
+
+        #endregion Fields
+
+        #region Constructors
+
+        static WebHelper()
+        {
+            _httpClient = new HttpClient()
+            {
+                Timeout = TimeSpan.FromSeconds(15),
+            };
+        }
+
+        #endregion Constructors
+
         #region Methods
+
+        /// <summary>
+        /// Checks whether any network connection is available.
+        /// </summary>
+        /// <returns><see langword="true"/> if any network connection is availavble, otherwise - <see langword="false"/>.</returns>
+        public static bool IsNetworkAvailable()
+        {
+            return NetworkInterface.GetIsNetworkAvailable();
+        }
 
         /// <summary>
         /// Sends a GET request to the specified URL as an asynchronous operation.
         /// </summary>
         /// <param name="url">URL string.</param>
+        /// <param name="httpCompletionOption">
+        /// Indicates if <see cref="HttpClient"/> operations should be considered completed
+        /// either as soon as a response is available, or after reading the entire response
+        /// message including the content.
+        /// </param>
         /// <returns><see cref="HttpResponseMessage"/> object.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public static async Task<HttpResponseMessage> GetResponseAsync(string url)
+        public static async Task<HttpResponseMessage> GetResponseAsync(
+            string url,
+            HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead)
         {
             if (url == null)
             {
                 throw new ArgumentNullException(nameof(url));
             }
 
-            using (var httpClient = new HttpClient())
+            if (!IsNetworkAvailable())
             {
-                try
-                {
-                    Debug.WriteLine(url);
-                    var response = await httpClient.GetAsync(url).ConfigureAwait(false);
-                    Debug.WriteLine($"response: {response.StatusCode}");
-                    return response;
-                }
-                catch (HttpRequestException e)
+                var message = ResourcesHelper.GetApplicationResource<string>("S.Application.Exception.NoInternetConnection");
+                throw new HttpRequestException(message);
+            }
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url, httpCompletionOption).ConfigureAwait(false);
+                return response;
+            }
+            catch (HttpRequestException e)
+            {
+                if (e.StatusCode.HasValue)
                 {
                     return new HttpResponseMessage(e.StatusCode.Value);
                 }
+
+                return new HttpResponseMessage();
             }
         }
 

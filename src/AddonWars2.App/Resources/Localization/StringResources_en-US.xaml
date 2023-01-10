@@ -11,6 +11,9 @@
 
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String> <!-- NO TRANSLATION -->
+    
+    <!-- Exceptions -->
+    <s:String x:Key="S.Application.Exception.NoInternetConnection">No internet connection.</s:String>
 
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>

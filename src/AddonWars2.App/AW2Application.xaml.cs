@@ -166,8 +166,8 @@ namespace AddonWars2.App
 
             // Setup logger config.
             var logCfg = LogManager.Configuration;
-            var date = appConfig.StartupDateTime;
-            var logPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{date}.txt");
+            var unixMsDateTime = ((DateTimeOffset)appConfig.StartupDateTime).ToUnixTimeMilliseconds();
+            var logPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{unixMsDateTime}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "logTarget",
