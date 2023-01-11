@@ -22,7 +22,7 @@
                 </ResourceDictionary>
 
                 <!-- Themes (the default theme must always be the last one) -->
-                <ResourceDictionary Source="pack://application:,,,/Themes/Common.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Themes/Icons.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Themes/DefaultTheme.xaml"/>
 
                 <!-- Styles -->

@@ -17,14 +17,19 @@
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 
 	<Title>Addon Wars 2</Title>
-	<Description>Guild Wars 2™ Unofficial Add-On Manager</Description>
-	<AssemblyVersion>1.0.0</AssemblyVersion>
-	<ProductVersion>$(AssemblyVersion)</ProductVersion>
-	<InformationalVersion>OoooOooOOoo</InformationalVersion>
-	<Deterministic>False</Deterministic>
+	<Description></Description>
+	<Version-Major>0</Version-Major>
+	<Version-Minor>0</Version-Minor>
+	<Version-Build Condition=" '$(build_number)' == '' ">0</Version-Build>
+	<Version-Build Condition=" '$(build_number)' != '' ">$(build_number)</Version-Build>
+	<Version-Revision Condition=" '$(revision_number)' == '' ">0</Version-Revision>
+	<Version-Revision Condition=" '$(revision_number)' != '' ">$(revision_number)</Version-Revision>
+	<Version>$(AssemblyVersion)</Version>
+	<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+	<FileVersion>$(AssemblyVersion)</FileVersion>
 	<Authors>RindCode</Authors>
 	<Company>Addon-Wars-2</Company>
-	<Copyright>Copyright $(Company) © 2023</Copyright>
+	<Copyright>Copyright $(Company) © 2022</Copyright>
 	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
 	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 	<AssemblyName>AddonWars2</AssemblyName>

@@ -9,9 +9,6 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
-    using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -31,9 +28,9 @@ namespace AddonWars2.App.ViewModels
     public enum NewsViewModelState
     {
         /// <summary>
-        /// Normal state.
+        /// Ready state.
         /// </summary>
-        Normal,
+        Ready,
 
         /// <summary>
         /// View model is updating its RSS collection.
@@ -85,9 +82,10 @@ namespace AddonWars2.App.ViewModels
             AppConfig = appConfig;
             CommonCommands = commonCommands;
             RssFeedCollection = new ObservableCollection<RssFeedItem>();
-            SetState(NewsViewModelState.Normal);
+            SetState(NewsViewModelState.Ready);
 
-            ReloadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
+            LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
+            RefreshNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => ViewModelStateInternal == NewsViewModelState.Ready);
             LoadRssItemContentCommand = new RelayCommand(ExecuteLoadRssItemContentCommand);
 
             Logger.LogDebug("Instance initialized.");
@@ -213,9 +211,14 @@ namespace AddonWars2.App.ViewModels
         #region Commands
 
         /// <summary>
-        /// Gets a command that updates news list.
+        /// Gets a command that updates news list on the first load.
         /// </summary>
-        public RelayCommand ReloadNewsCommand { get; private set; }
+        public RelayCommand LoadNewsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that forces the news list to update itself.
+        /// </summary>
+        public RelayCommand RefreshNewsCommand { get; private set; }
 
         /// <summary>
         /// Gets a command that updates the content of a selected RSS item.
@@ -228,7 +231,7 @@ namespace AddonWars2.App.ViewModels
 
         #region ReloadNewsCommand Logic
 
-        // ReloadNewsCommand command logic.
+        // LoadNewsCommand command logic.
         private async void ExecuteReloadNewsAsync()
         {
             Logger.LogDebug("Executing command.");
@@ -277,7 +280,6 @@ namespace AddonWars2.App.ViewModels
             }
             catch (Exception e)
             {
-                // HACK: A "something failed, but I don't know what exactly" workaround.
                 Logger.LogError($"Failed to parse data.");
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = $"{e.Message}";
@@ -288,8 +290,6 @@ namespace AddonWars2.App.ViewModels
             {
                 await WriteRssItemContentAsync(item);
             }
-
-            SetState(NewsViewModelState.Normal);
 
             var sticky = feed.Where(x => x.IsSticky).ToList();
             foreach (var item in sticky)
@@ -304,6 +304,8 @@ namespace AddonWars2.App.ViewModels
                 RssFeedCollection.Add(item);
                 await Task.Delay(50);  // for animation purposes
             }
+
+            SetState(NewsViewModelState.Ready);
 
             Logger.LogInformation("News feed updated.");
         }

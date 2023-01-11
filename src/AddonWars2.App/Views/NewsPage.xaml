@@ -27,7 +27,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding Path=DataContext.ReloadNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
             <i:ChangePropertyAction
                 TargetObject="{Binding}"
                 PropertyName="IsActuallyLoaded"
@@ -46,13 +46,35 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock
-                Grid.Row="0" Grid.Column="0"
-                FontWeight="Light"
-                FontStyle="Normal"
-                FontSize="16"
-                FontFamily="{DynamicResource Menomonia}"
-                Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="NewsListHeaderText"
+                    Grid.Column="0"
+                    FontWeight="Light"
+                    FontStyle="Normal"
+                    FontSize="16"
+                    FontFamily="{DynamicResource Menomonia}"
+                    Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
+                <Button
+                    x:Name="RefreshNewsFeedButton"
+                    Grid.Column="1"
+                    Padding="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Height="16"
+                    Cursor="Hand"
+                    Focusable="False"
+                    Content="{DynamicResource Path.Icon.Refresh}"
+                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                    BorderThickness="1"
+                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                    Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}">
+                </Button>
+            </Grid>
             <Border
                 x:Name="RssFeedBorder"
                 Grid.Row="1" Grid.Column="0"
@@ -89,7 +111,7 @@
                                     x:Name="ScrollViewerControl"
                                     CanContentScroll="False"
                                     HorizontalScrollBarVisibility="Hidden"
-                                    VerticalScrollBarVisibility="Auto"
+                                    VerticalScrollBarVisibility="Visible"
                                     IsTabStop="False"
                                     Focusable="False"
                                     Style="{DynamicResource ScrollViewerStyle}">
@@ -205,6 +227,7 @@
                                             <ContentControl
                                                 x:Name="StickyRssItemIcon"
                                                 Height="{Binding Path=ActualHeight, ElementName=DateTimeRssItemPanel}"
+                                                Width="{Binding Path=ActualWidth, ElementName=DateTimeRssItemPanel}"
                                                 Foreground="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
                                                 Content="{DynamicResource Path.Icon.StickyRssItem}"
                                                 Visibility="Hidden"/>
