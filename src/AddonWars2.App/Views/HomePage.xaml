@@ -45,10 +45,11 @@
             <TextBlock
                 Grid.Row="0"
                 Margin="20,0,0,0"
-                FontFamily="{DynamicResource Lato}"
+                FontFamily="{DynamicResource Menomonia}"
                 FontWeight="Light"
                 FontStyle="Italic"
                 FontSize="16"
+                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>
         </Grid>
         <Grid
@@ -124,10 +125,6 @@
                         <i:InvokeCommandAction
                             Command="{Binding Path=DataContext.UpdateGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                             CommandParameter="{Binding Path=(assist:DialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
-                        <!--<i:ChangePropertyAction
-                            TargetName="GW2ExecTextBox"
-                            PropertyName="Text"
-                            Value="{Binding Path=(assist:DialogAssist.SelectedPaths)[0], RelativeSource={RelativeSource AncestorType=Page}}"/>-->
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Button.Content>
@@ -135,12 +132,12 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="16"
-                        FontWeight="Regular"
-                        FontFamily="{DynamicResource Lato}"
+                        FontWeight="Bold"
                         Text="{DynamicResource S.HomePage.GameLocation.SelectButton}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"/>
+                                <Setter Property="FontFamily" Value="{DynamicResource Menomonia}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
                                         <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level4}"/>

@@ -51,6 +51,7 @@
                 FontWeight="Light"
                 FontStyle="Normal"
                 FontSize="16"
+                FontFamily="{DynamicResource Menomonia}"
                 Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
             <Border
                 x:Name="RssFeedBorder"
@@ -115,27 +116,30 @@
                                     Orientation="Vertical"
                                     Background="Transparent"
                                     Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}">
+                                    <StackPanel.Resources>
+                                        <Storyboard x:Key="RssItemSlideInStoryboard">
+                                            <DoubleAnimation
+                                                From="0" To="1"
+                                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                                Storyboard.TargetName="DataTemplateRootBorder"
+                                                Storyboard.TargetProperty="Opacity"/>
+                                            <DoubleAnimation
+                                                From="-100" To="0"
+                                                FillBehavior="HoldEnd"
+                                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                                AccelerationRatio="0.2" DecelerationRatio="0.1"
+                                                Storyboard.TargetName="DataTemplateRootBorder"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"/>
+                                        </Storyboard>
+                                    </StackPanel.Resources>
                                     <StackPanel.RenderTransform>
                                         <TranslateTransform/>
                                     </StackPanel.RenderTransform>
-                                    <StackPanel.Triggers>
-                                        <EventTrigger RoutedEvent="Loaded">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <DoubleAnimation
-                                                        From="0" To="1"
-                                                        BeginTime="00:00:00" Duration="00:00:0.3"
-                                                        Storyboard.TargetProperty="Opacity"/>
-                                                    <DoubleAnimation
-                                                        From="-100" To="0"
-                                                        FillBehavior="HoldEnd"
-                                                        BeginTime="00:00:00" Duration="00:00:0.3"
-                                                        AccelerationRatio="0.2" DecelerationRatio="0.1"
-                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </StackPanel.Triggers>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
+                                            <i:ControlStoryboardAction Storyboard="{StaticResource RssItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Separator
                                         x:Name="ItemSeparator"
                                         Margin="10,0,10,0"
@@ -169,20 +173,23 @@
                                                 Margin="0,0,10,0"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
                                                 Text="{Binding Title}"
                                                 TextWrapping="Wrap"
                                                 IsHitTestVisible="False">
                                             </TextBlock>
                                         </Border>
-                                        <Border Grid.Column="1">
-                                            <StackPanel Orientation="Vertical">
+                                        <Grid Grid.Column="1">
+                                            <StackPanel
+                                                x:Name="DateTimeRssItemPanel"
+                                                Orientation="Vertical">
                                                 <TextBlock
                                                     x:Name="MonthText"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Typography.Capitals="AllPetiteCaps"
                                                     FontSize="10"
                                                     FontWeight="Regular"
+                                                    FontFamily="{DynamicResource Menomonia}"
                                                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                                                     Text="{Binding PublishDate, Converter={StaticResource DateToUpperConverter}, ConverterParameter='MMM'}"/>
                                                 <TextBlock
@@ -191,10 +198,17 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="14"
                                                     FontWeight="Bold"
+                                                    FontFamily="{DynamicResource Menomonia}"
                                                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                                                     Text="{Binding PublishDate, StringFormat='{}{0:dd}'}"/>
                                             </StackPanel>
-                                        </Border>
+                                            <ContentControl
+                                                x:Name="StickyRssItemIcon"
+                                                Height="{Binding Path=ActualHeight, ElementName=DateTimeRssItemPanel}"
+                                                Foreground="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
+                                                Content="{DynamicResource Path.Icon.StickyRssItem}"
+                                                Visibility="Hidden"/>
+                                        </Grid>
                                         <GridSplitter
                                             Grid.Column="0"
                                             Margin="0,-3,0,-3"
@@ -213,6 +227,7 @@
                                         <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                         <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                         <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                        <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemMouseOver}"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
@@ -222,12 +237,17 @@
                                         <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                         <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                         <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                        <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemSelected}"/>
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
                                         <Setter Property="Cursor" Value="Hand"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
                                         <Setter TargetName="ItemSeparator" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=IsSticky}" Value="True">
+                                        <Setter TargetName="DateTimeRssItemPanel" Property="Visibility" Value="Hidden"/>
+                                        <Setter TargetName="StickyRssItemIcon" Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
@@ -253,6 +273,7 @@
                             FontSize="16"
                             FontWeight="Light"
                             FontStyle="Normal"
+                            FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                             Text="{DynamicResource S.NewsPage.NewsList.UpdatingPlaceholder}">
                             <TextBlock.Style>
@@ -276,6 +297,7 @@
                                 FontSize="16"
                                 FontWeight="Light"
                                 FontStyle="Normal"
+                                FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
                                 Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
                                 <TextBlock.Style>
@@ -296,6 +318,7 @@
                                 FontSize="10"
                                 FontWeight="Light"
                                 FontStyle="Normal"
+                                FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
                                 Text="{Binding DataContext.UpdateErrorCode, RelativeSource={RelativeSource AncestorType=Page}}">
                                 <TextBlock.Style>
@@ -319,6 +342,7 @@
                 FontWeight="Light"
                 FontStyle="Normal"
                 FontSize="16"
+                FontFamily="{DynamicResource Menomonia}"
                 Text="{DynamicResource S.NewsPage.NewsDesc.Header}"/>
             <Border
                 x:Name="ItemWebView"

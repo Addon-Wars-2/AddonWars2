@@ -158,7 +158,7 @@
                                     ContentSource="Content">
                                     <ContentPresenter.Effect>
                                         <DropShadowEffect
-                                            Color="{DynamicResource Color.PrimaryPalette.Level1}"
+                                            Color="{DynamicResource Color.PrimaryPalette.Level2}"
                                             ShadowDepth="2"
                                             Direction="-90"
                                             BlurRadius="5"

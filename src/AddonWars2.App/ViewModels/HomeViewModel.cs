@@ -46,8 +46,6 @@ namespace AddonWars2.App.ViewModels
         {
             AppConfig = appConfig;
 
-            ////PropertyChangedEventManager.AddHandler(this, HomeViewModel_ConfigPropertyChanged, nameof(Gw2ExecPath));
-
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
             UpdateGw2ExeCommand = new RelayCommand<string[]>(ExecuteUpdateGw2Exe);
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);

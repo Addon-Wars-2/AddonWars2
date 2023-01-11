@@ -103,6 +103,7 @@
                             Cursor="Hand"
                             Focusable="False"
                             HorizontalAlignment="Left"
+                            TextBlock.FontFamily="{DynamicResource Menomonia}"
                             Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                             BorderThickness="1"
@@ -127,7 +128,8 @@
                             Grid.Row="0" Grid.Column="1"
                             Grid.ColumnSpan="1"
                             HorizontalAlignment="Left"
-                            Margin="40,62,0,0">
+                            Margin="40,62,0,0"
+                            FontFamily="{DynamicResource Menomonia}">
                             <Hyperlink
                                 NavigateUri="https://github.com/Addon-Wars-2/AddonWars2"
                                 TextDecorations="None"
@@ -215,6 +217,7 @@
                             Grid.ColumnSpan="3"
                             Margin="20,-10,0,0"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                            FontFamily="{DynamicResource Menomonia}"
                             Text="{DynamicResource S.MainWindow.Header.Text.AppDescription}"
                             IsHitTestVisible="False"/>
                     </Grid>
@@ -231,21 +234,27 @@
                     IsTabStop="False"
                     Style="{DynamicResource MainTabControlStyle}"
                     ItemContainerStyle="{DynamicResource MainWindowTabItemStyle}">
-                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}">
+                    <TabItem
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}"
+                        FontFamily="{DynamicResource Menomonia}">
                         <AdornerDecorator>
                             <Frame
                                 Source="HomePage.xaml"
                                 FocusVisualStyle="{x:Null}"/>
                         </AdornerDecorator>
                     </TabItem>
-                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.News}">
+                    <TabItem
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.News}"
+                        FontFamily="{DynamicResource Menomonia}">
                         <AdornerDecorator>
                             <Frame
                                 Source="NewsPage.xaml"
                                 FocusVisualStyle="{x:Null}"/>
                         </AdornerDecorator>
                     </TabItem>
-                    <TabItem Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}">
+                    <TabItem
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}"
+                        FontFamily="{DynamicResource Menomonia}">
                         <AdornerDecorator>
                             <Frame
                                 Source="LoggingPage.xaml"
@@ -261,15 +270,14 @@
             VerticalAlignment="Bottom">
             <TextBlock
                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                FontFamily="{DynamicResource Lato}"
                 FontWeight="Light"
-                FontSize="9"
+                FontSize="8"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
                 <Run Text="{Binding Path=DataContext.PackageVersionWithSuffix, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, StringFormat='{}build {0}'}"/>
                 <TextBlock.Effect>
                     <DropShadowEffect
-                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                        Color="{DynamicResource Color.PrimaryPalette.Level1}"
                         ShadowDepth="1"
                         Direction="-45"
                         BlurRadius="0"
@@ -278,16 +286,15 @@
             </TextBlock>
             <TextBlock
                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                FontFamily="{DynamicResource Lato}"
                 FontWeight="Light"
-                FontSize="9"
+                FontSize="8"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
                 <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>
                 <Run Text="{DynamicResource S.HomePage.Footer.CreatedByAuthor}"/>
                 <TextBlock.Effect>
                     <DropShadowEffect
-                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                        Color="{DynamicResource Color.PrimaryPalette.Level1}"
                         ShadowDepth="1"
                         Direction="-45"
                         BlurRadius="0"

@@ -18,8 +18,7 @@
                 <!-- Fonts -->
                 <ResourceDictionary>
                     <FontFamily x:Key="GWTwoFont">pack://application:,,,/Assets/Fonts/#GWTwoFont</FontFamily>
-                    <FontFamily x:Key="Lato">pack://application:,,,/Assets/Fonts/#Lato</FontFamily>
-                    <FontFamily x:Key="PTSerif">pack://application:,,,/Assets/Fonts/#PTSerif</FontFamily>
+                    <FontFamily x:Key="Menomonia">pack://application:,,,/Assets/Fonts/#Menomonia</FontFamily>
                 </ResourceDictionary>
 
                 <!-- Themes (the default theme must always be the last one) -->

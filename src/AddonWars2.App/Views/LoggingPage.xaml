@@ -24,6 +24,7 @@
             Grid.Row="0"
             Margin="0,0,0,5">
             <TextBlock
+                FontFamily="{DynamicResource Menomonia}"
                 Text="{DynamicResource S.LoggingPage.Description}"/>
         </Grid>
         <Border

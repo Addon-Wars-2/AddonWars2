@@ -9,11 +9,14 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using System.Windows;
     using System.Xml.Linq;
     using AddonWars2.App.Commands;
     using AddonWars2.App.Models.Application;
@@ -84,9 +87,7 @@ namespace AddonWars2.App.ViewModels
             RssFeedCollection = new ObservableCollection<RssFeedItem>();
             SetState(NewsViewModelState.Normal);
 
-            // TODO: uncomment after implementing refresh button.
-            ////ReloadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
-            ReloadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync);
+            ReloadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
             LoadRssItemContentCommand = new RelayCommand(ExecuteLoadRssItemContentCommand);
 
             Logger.LogDebug("Instance initialized.");
@@ -290,11 +291,18 @@ namespace AddonWars2.App.ViewModels
 
             SetState(NewsViewModelState.Normal);
 
-            // Instead or replacing the whole collection, we add items one by one for animation purposes.
-            foreach (var item in feed)
+            var sticky = feed.Where(x => x.IsSticky).ToList();
+            foreach (var item in sticky)
             {
                 RssFeedCollection.Add(item);
-                await Task.Delay(50);  // TODO: Delay feels wrong here, it belongs to UI.
+                await Task.Delay(50);  // for animation purposes
+            }
+
+            var normal = feed.Where(x => !x.IsSticky).ToList();
+            foreach (var item in normal)
+            {
+                RssFeedCollection.Add(item);
+                await Task.Delay(50);  // for animation purposes
             }
 
             Logger.LogInformation("News feed updated.");
@@ -394,13 +402,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Commands Logic
 
         #region Methods
-
-        // Updates config if a property specified in the even manager params was changed.
-        private void NewsViewModel_ConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ApplicationConfig.WriteLocalDataAsXml(AppConfig.ConfigFilePath, AppConfig.LocalData);
-            Logger.LogDebug($"Config file updated.");
-        }
 
         // Sets the view model state.
         private void SetState(NewsViewModelState state)
