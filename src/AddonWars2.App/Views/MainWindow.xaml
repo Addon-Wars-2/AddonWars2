@@ -312,7 +312,7 @@
             <TextBlock
                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 FontWeight="Light"
-                FontSize="8"
+                FontSize="9"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
                 <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>

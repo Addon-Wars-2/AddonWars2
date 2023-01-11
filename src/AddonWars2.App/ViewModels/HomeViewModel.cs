@@ -9,8 +9,6 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Windows;
     using AddonWars2.App.Helpers;
@@ -47,7 +45,7 @@ namespace AddonWars2.App.ViewModels
             AppConfig = appConfig;
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
-            UpdateGw2ExeCommand = new RelayCommand<string[]>(ExecuteUpdateGw2Exe);
+            UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePath);
             UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
 
             Logger.LogDebug("Instance initialized.");
@@ -136,7 +134,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a command that updates <see cref="Gw2ExecPath"/>.
         /// </summary>
-        public RelayCommand<string[]> UpdateGw2ExeCommand { get; private set; }
+        public RelayCommand<string[]> UpdateGw2ExePathCommand { get; private set; }
 
         /// <summary>
         /// Gets a command that updates a welcome message.
@@ -150,6 +148,9 @@ namespace AddonWars2.App.ViewModels
         // TryFindGw2ExeCommand command logic.
         private void ExecuteTryFindGw2Exe()
         {
+            // TODO: Add another step (if this one failed) to search inside the %adddata% directory
+            //       and parse GW2 GFXSettings file. GW2 dir path is stored in INSTALLPATH entry.
+
             Logger.LogDebug("Executing command.");
 
             // First try to get the file location from the registry.
@@ -166,8 +167,8 @@ namespace AddonWars2.App.ViewModels
             Logger.LogInformation("GW2 executable location was set automatically.");
         }
 
-        // UpdateGw2ExeCommand command logic.
-        private void ExecuteUpdateGw2Exe(string[] paths)
+        // UpdateGw2ExePathCommand command logic.
+        private void ExecuteUpdateGw2ExePath(string[] paths)
         {
             Logger.LogDebug("Executing command.");
 

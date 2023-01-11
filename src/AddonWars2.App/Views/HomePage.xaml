@@ -123,7 +123,7 @@
                             TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Page}}"
                             MethodName="OpenFileDialog_OnClick"/>
                         <i:InvokeCommandAction
-                            Command="{Binding Path=DataContext.UpdateGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                            Command="{Binding Path=DataContext.UpdateGw2ExePathCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                             CommandParameter="{Binding Path=(assist:DialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
