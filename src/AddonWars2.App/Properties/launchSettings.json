@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AddonWars2.App": {
+      "commandName": "Project",
+      "commandLineArgs": "-debug"
+    }
+  }
+}

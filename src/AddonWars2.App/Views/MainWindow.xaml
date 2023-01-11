@@ -28,6 +28,10 @@
     WindowStyle="None"
     KeyboardNavigation.TabNavigation="None">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.Triggers>
             <EventTrigger RoutedEvent="Loaded">
@@ -103,6 +107,7 @@
                             Cursor="Hand"
                             Focusable="False"
                             HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
                             TextBlock.FontFamily="{DynamicResource Menomonia}"
                             Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
@@ -129,6 +134,7 @@
                             Grid.ColumnSpan="1"
                             HorizontalAlignment="Left"
                             Margin="40,62,0,0"
+                            VerticalAlignment="Center"
                             FontFamily="{DynamicResource Menomonia}">
                             <Hyperlink
                                 NavigateUri="https://github.com/Addon-Wars-2/AddonWars2"
@@ -179,6 +185,25 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
+                            <TextBlock
+                                x:Name="IsDebugModeIndicator"
+                                Margin="0,0,5,0"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                                FontSize="12"
+                                FontWeight="Regular"
+                                Text="DEBUG MODE"
+                                Visibility="{Binding Path=DataContext.IsDebugMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisConverter}}"
+                                IsHitTestVisible="False">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect
+                                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                                        BlurRadius="0"
+                                        ShadowDepth="0.5"
+                                        Opacity="1.0"
+                                        Direction="-90"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
                             <Button
                                 x:Name="WindowMinimizeButton"
                                 Width="20" Height="25"

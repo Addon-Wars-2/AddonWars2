@@ -82,6 +82,12 @@ namespace AddonWars2.App.ViewModels
         public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.AvailableCultures;
 
         /// <summary>
+        /// Gets a value indicating whether the application
+        /// was executed in debug or normal mode.
+        /// </summary>
+        public bool IsDebugMode => AppConfig.IsDebugMode;
+
+        /// <summary>
         /// Gets the GW2 wiki URL.
         /// </summary>
         public string Gw2WikiLink => AppConfig.LocalData.Gw2WikiHome;
@@ -106,7 +112,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the package version with suffix included.
         /// </summary>
-        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
 
         #endregion Properties
 

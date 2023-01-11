@@ -24,6 +24,7 @@ namespace AddonWars2.App.Models.Application
     {
         #region Fields
 
+        private bool _isDebugMode;
         private DateTime _startupDateTime;
         private string _appDataDir;
         private CultureInfo _selectedCulture;
@@ -53,6 +54,20 @@ namespace AddonWars2.App.Models.Application
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a value indicating whether the application
+        /// was executed in debug or normal mode.
+        /// </summary>
+        public bool IsDebugMode
+        {
+            get => _isDebugMode;
+            internal set
+            {
+                SetProperty(ref _isDebugMode, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
 
         /// <summary>
         /// Gets the application startup date and time.
@@ -88,7 +103,14 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets the application log file prefix.
         /// </summary>
-        public string LogPrefix => "aw2_log_";
+        public string LogPrefix
+        {
+            get
+            {
+                var debugSuffix = IsDebugMode ? "debug_" : string.Empty;
+                return "aw2_log_" + debugSuffix;
+            }
+        }
 
         /// <summary>
         /// Gets the application config file name.

@@ -97,7 +97,20 @@ namespace AddonWars2.App
 
             var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
-            Services.GetRequiredService<ApplicationConfig>().StartupDateTime = startupDateTime;
+            var appConfig = Services.GetRequiredService<ApplicationConfig>();
+            appConfig.StartupDateTime = startupDateTime;
+
+            foreach (var arg in e.Args)
+            {
+                switch (arg)
+                {
+                    case "-debug":
+                        appConfig.IsDebugMode = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
@@ -170,13 +183,19 @@ namespace AddonWars2.App
             var logPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{unixMsDateTime}.txt");
             var logTarget = new FileTarget()
             {
-                Name = "logTarget",
+                Name = "LogFileTarget",
                 FileName = logPath,
                 Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
             };
 
-            logCfg.AddRule(LogLevel.Debug, LogLevel.Fatal, logTarget);
+            var minLevel = appConfig.IsDebugMode ? LogLevel.Debug : LogLevel.Info;
+            logCfg.AddRule(minLevel, LogLevel.Fatal, logTarget, "*");
             LogManager.Configuration = logCfg;
+
+            foreach (var rule in logCfg.LoggingRules)
+            {
+                rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
+            }
 
             Logger.Info($"Created a new log file: {logPath}");
         }
