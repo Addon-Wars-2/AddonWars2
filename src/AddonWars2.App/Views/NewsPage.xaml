@@ -307,7 +307,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="Updating">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="Fetching">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -413,6 +413,7 @@
                 </Border.Background>
                 <wv2:WebView2
                     x:Name="WebView2Control"
+                    DefaultBackgroundColor="Transparent"
                     Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">

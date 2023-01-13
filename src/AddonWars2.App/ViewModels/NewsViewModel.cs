@@ -33,7 +33,12 @@ namespace AddonWars2.App.ViewModels
         Ready,
 
         /// <summary>
-        /// View model is updating its RSS collection.
+        /// View model is fetching RSS data from a source.
+        /// </summary>
+        Fetching,
+
+        /// <summary>
+        /// View model is loading the content into its RSS collection.
         /// </summary>
         Updating,
 
@@ -85,7 +90,10 @@ namespace AddonWars2.App.ViewModels
             SetState(NewsViewModelState.Ready);
 
             LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
-            RefreshNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => ViewModelStateInternal == NewsViewModelState.Ready);
+            ////RefreshNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => ViewModelStateInternal == NewsViewModelState.Ready);
+            RefreshNewsCommand = new RelayCommand(
+                ExecuteReloadNewsAsync,
+                () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
             LoadRssItemContentCommand = new RelayCommand(ExecuteLoadRssItemContentCommand);
 
             Logger.LogDebug("Instance initialized.");
@@ -235,9 +243,9 @@ namespace AddonWars2.App.ViewModels
         private async void ExecuteReloadNewsAsync()
         {
             Logger.LogDebug("Executing command.");
-            Logger.LogInformation("Updating news feed.");
+            Logger.LogInformation("Fetching news feed.");
 
-            SetState(NewsViewModelState.Updating);
+            SetState(NewsViewModelState.Fetching);
 
             RssFeedCollection.Clear();
 
@@ -285,6 +293,8 @@ namespace AddonWars2.App.ViewModels
                 UpdateErrorCode = $"{e.Message}";
                 return;
             }
+
+            SetState(NewsViewModelState.Updating);
 
             foreach (var item in feed)
             {
