@@ -12,8 +12,6 @@
     Title="LoggingPage"
     DataContext="{markupex:DISource Type=vm:LoggingViewModel}"
     ShowsNavigationUI="False">
-    
-    <!-- Too bad we can't select logs with this approach... -->
 
     <Grid>
         <Grid.RowDefinitions>

@@ -25,6 +25,7 @@ namespace AddonWars2.App.Models.Application
         private string _gw2Rss;
         private string _gw2Api2;
         private string _gw2FilePath;
+        private string _gw2DirPath;
 
         #endregion Fields
 
@@ -121,13 +122,23 @@ namespace AddonWars2.App.Models.Application
         }
 
         /// <summary>
-        /// Gets or sets the name of GW2 executable.
+        /// Gets or sets the location of GW2 executable.
         /// </summary>
         [XmlElement("Gw2FilePath")]
         public string Gw2FilePath
         {
             get => _gw2FilePath;
             set => SetProperty(ref _gw2FilePath, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the location of GW2 directory.
+        /// </summary>
+        [XmlElement("Gw2DirPath")]
+        public string Gw2DirPath
+        {
+            get => _gw2DirPath;
+            set => SetProperty(ref _gw2DirPath, value);
         }
 
         /// <summary>
@@ -189,6 +200,7 @@ namespace AddonWars2.App.Models.Application
             Gw2Rss = string.Format(Gw2RssTemplate, "en");
             Gw2Api2 = LocalDataDefaultState.Gw2Api2;
             Gw2FilePath = LocalDataDefaultState.Gw2FilePath;
+            Gw2DirPath = LocalDataDefaultState.Gw2DirPath;
         }
 
         #endregion Methods
@@ -217,6 +229,8 @@ namespace AddonWars2.App.Models.Application
             internal static string Gw2Api2 => "https://api.guildwars2.com/v2";
 
             internal static string Gw2FilePath => string.Empty;
+
+            internal static string Gw2DirPath => string.Empty;
         }
 
         #endregion Inner Classes

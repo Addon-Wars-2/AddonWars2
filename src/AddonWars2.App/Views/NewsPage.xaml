@@ -375,7 +375,6 @@
             x:Name="ItemWebViewBorder"
             Grid.Row="0" Grid.Column="2"
             Grid.RowSpan="3"
-            Padding="1"
             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
             BorderThickness="1"
             SnapsToDevicePixels="True"
@@ -407,13 +406,16 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <Border x:Name="WebViewBorder">
+            <Border
+                x:Name="WebViewBorder"
+                SnapsToDevicePixels="True">
                 <Border.Background>
                     <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
                 </Border.Background>
                 <wv2:WebView2
                     x:Name="WebView2Control"
                     DefaultBackgroundColor="Transparent"
+                    SnapsToDevicePixels="True"
                     Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">

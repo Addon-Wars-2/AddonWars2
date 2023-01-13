@@ -26,6 +26,34 @@ namespace AddonWars2.App.Helpers
         #region Methods
 
         /// <summary>
+        /// Determines if a user has write access to a given directory.
+        /// </summary>
+        /// <param name="directory">Directory path.</param>
+        /// <returns><see langword="true"/> if has access, otherwise - <see langword="false"/>.</returns>
+        public static bool HasWriteAccessToDirectory(string directory)
+        {
+            if (string.IsNullOrEmpty(directory))
+            {
+                throw new ArgumentException("Directory path cannot be null or empty.", nameof(directory));
+            }
+
+            try
+            {
+                var stream = File.Create(Path.Combine(directory, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+                using (stream)
+                {
+                    // Do nothing.
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Generates and returns the application data directory for this application.
         /// </summary>
         /// <returns>Application data directory path.</returns>

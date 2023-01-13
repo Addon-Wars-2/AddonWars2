@@ -93,6 +93,7 @@
                                     Gw2FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}}"/>
                             </validation:Gw2ExecRule.ParamsWrapper>
                         </validation:Gw2ExecRule>
+                        <validation:Gw2WriteAccessToDirectory ValidatesOnTargetUpdated="True"/>
                     </Binding.ValidationRules>
                 </Binding>
                 <!--

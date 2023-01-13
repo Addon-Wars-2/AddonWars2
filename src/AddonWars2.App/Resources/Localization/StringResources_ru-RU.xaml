@@ -53,5 +53,6 @@
     <s:String x:Key="S.Common.ValidationText.DirectoryExists">Путь должен указывать на существующую директорию.</s:String>
     <s:String x:Key="S.Common.ValidationText.FileExists">Путь должен указывать на существующий файл.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на исполняемый файл Guild Wars 2.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GW2WriteAccessToDir">Нет прав на запись в директорию указанного файла.</s:String>
 
 </ResourceDictionary>

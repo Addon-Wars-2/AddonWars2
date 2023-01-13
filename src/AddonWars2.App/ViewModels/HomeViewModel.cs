@@ -87,6 +87,19 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets GW2 directory location.
+        /// </summary>
+        public string Gw2DirPath
+        {
+            get => AppConfig.LocalData.Gw2DirPath;
+            set
+            {
+                SetProperty(AppConfig.LocalData.Gw2DirPath, value, AppConfig.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
         /// Gets the GW2 exe file extension from the config object.
         /// </summary>
         public string Gw2FileExtension => AppConfig.Gw2FileExtension;
@@ -163,6 +176,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             Gw2ExecPath = gw2exe;
+            Gw2DirPath = Path.GetDirectoryName(gw2exe);
 
             Logger.LogInformation("GW2 executable location was set automatically.");
         }
@@ -186,6 +200,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             Gw2ExecPath = path;
+            Gw2DirPath = Path.GetDirectoryName(path);
         }
 
         // UpdateWelcomeMessageCommand command logic.
