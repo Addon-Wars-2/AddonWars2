@@ -7,7 +7,7 @@
 	<StartupObject>AddonWars2.App.AW2Application</StartupObject>
 
 	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
-	<BaseOutputPath>..\..\bld\</BaseOutputPath>
+	<BaseOutputPath></BaseOutputPath>
 	<GenerateDocumentationFile>False</GenerateDocumentationFile>
 	<SignAssembly>False</SignAssembly>
 	<Configurations>Debug;Release</Configurations>

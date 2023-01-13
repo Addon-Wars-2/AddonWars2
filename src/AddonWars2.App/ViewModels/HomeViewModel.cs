@@ -89,17 +89,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 exe file extension from the config object.
         /// </summary>
-        public string Gw2FileExtension => AppConfig.LocalData.Gw2FileExtension;
+        public string Gw2FileExtension => AppConfig.Gw2FileExtension;
 
         /// <summary>
         /// Gets the GW2 exe product name from the config object.
         /// </summary>
-        public string Gw2ProductName => AppConfig.LocalData.Gw2ProductName;
+        public string Gw2ProductName => AppConfig.Gw2ProductName;
 
         /// <summary>
         /// Gets the GW2 exe file description from the config object.
         /// </summary>
-        public string Gw2FileDescription => AppConfig.LocalData.Gw2FileDescription;
+        public string Gw2FileDescription => AppConfig.Gw2FileDescription;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.

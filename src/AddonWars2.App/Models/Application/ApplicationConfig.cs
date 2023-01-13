@@ -12,6 +12,7 @@ namespace AddonWars2.App.Models.Application
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using System.Xml.Serialization;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.ViewModels;
     using CommunityToolkit.Mvvm.ComponentModel;
@@ -121,6 +122,21 @@ namespace AddonWars2.App.Models.Application
         /// Gets the application config file path.
         /// </summary>
         public string ConfigFilePath => Path.Join(AppDataDir, ConfigFileName);
+
+        /// <summary>
+        /// Gets the extension of GW2 executable.
+        /// </summary>
+        public string Gw2FileExtension => ".exe";
+
+        /// <summary>
+        /// Gets the product name of GW2 executable.
+        /// </summary>
+        public string Gw2ProductName => "Guild Wars 2";
+
+        /// <summary>
+        /// Gets the file description of GW2 executable.
+        /// </summary>
+        public string Gw2FileDescription => "Guild Wars 2 Game Client";
 
         /// <summary>
         /// Gets the directory name used to store GW2 RSS feed pages in HTML format.

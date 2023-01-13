@@ -25,9 +25,6 @@ namespace AddonWars2.App.Models.Application
         private string _gw2Rss;
         private string _gw2Api2;
         private string _gw2FilePath;
-        private string _gw2FileExtension;
-        private string _gw2ProductName;
-        private string _gw2FileDescription;
 
         #endregion Fields
 
@@ -134,36 +131,6 @@ namespace AddonWars2.App.Models.Application
         }
 
         /// <summary>
-        /// Gets or sets the extension of GW2 executable.
-        /// </summary>
-        [XmlElement("Gw2FileExten")]
-        public string Gw2FileExtension
-        {
-            get => _gw2FileExtension;
-            set => SetProperty(ref _gw2FileExtension, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the product name of GW2 executable.
-        /// </summary>
-        [XmlElement("Gw2ProdName")]
-        public string Gw2ProductName
-        {
-            get => _gw2ProductName;
-            set => SetProperty(ref _gw2ProductName, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the file description of GW2 executable.
-        /// </summary>
-        [XmlElement("Gw2FileDesc")]
-        public string Gw2FileDescription
-        {
-            get => _gw2FileDescription;
-            set => SetProperty(ref _gw2FileDescription, value);
-        }
-
-        /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
@@ -209,10 +176,7 @@ namespace AddonWars2.App.Models.Application
                 !string.IsNullOrEmpty(obj.Gw2Home) &&
                 !string.IsNullOrEmpty(obj.Gw2WikiHome) &&
                 !string.IsNullOrEmpty(obj.Gw2Rss) &&
-                !string.IsNullOrEmpty(obj.Gw2Api2) &&
-                !string.IsNullOrEmpty(obj.Gw2FileExtension) &&
-                !string.IsNullOrEmpty(obj.Gw2ProductName) &&
-                !string.IsNullOrEmpty(obj.Gw2FileDescription);
+                !string.IsNullOrEmpty(obj.Gw2Api2);
         }
 
         // Sets default values.
@@ -225,9 +189,6 @@ namespace AddonWars2.App.Models.Application
             Gw2Rss = string.Format(Gw2RssTemplate, "en");
             Gw2Api2 = LocalDataDefaultState.Gw2Api2;
             Gw2FilePath = LocalDataDefaultState.Gw2FilePath;
-            Gw2FileExtension = LocalDataDefaultState.Gw2FileExtension;
-            Gw2ProductName = LocalDataDefaultState.Gw2ProductName;
-            Gw2FileDescription = LocalDataDefaultState.Gw2FileDescription;
         }
 
         #endregion Methods
@@ -256,12 +217,6 @@ namespace AddonWars2.App.Models.Application
             internal static string Gw2Api2 => "https://api.guildwars2.com/v2";
 
             internal static string Gw2FilePath => string.Empty;
-
-            internal static string Gw2FileExtension => ".exe";
-
-            internal static string Gw2ProductName => "Guild Wars 2";
-
-            internal static string Gw2FileDescription => "Guild Wars 2 Game Client";
         }
 
         #endregion Inner Classes
