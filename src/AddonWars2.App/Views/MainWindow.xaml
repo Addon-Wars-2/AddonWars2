@@ -63,9 +63,14 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
                 <Border
                     x:Name="HeaderPanel"
                     Grid.Row="0"
+                    Grid.ColumnSpan="2"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     Height="180"
@@ -249,8 +254,10 @@
                 </Border>
                 <TabControl
                     x:Name="MainTabControl"
-                    Grid.Row="1"
-                    Margin="20,-20,60,30"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="2"
+                    Margin="20,90,60,30"
                     Background="Transparent"
                     BorderBrush="Black"
                     BorderThickness="0"
@@ -290,7 +297,7 @@
             </Grid>
         </Border>
         <StackPanel
-            Margin="0,0,60,35"
+            Margin="0,0,65,30"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom">
             <TextBlock
@@ -312,7 +319,7 @@
             <TextBlock
                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 FontWeight="Light"
-                FontSize="9"
+                FontSize="8"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
                 <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>

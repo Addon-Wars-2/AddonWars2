@@ -17,22 +17,28 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid
-            Grid.Row="0"
-            Margin="0,0,0,5">
+            Grid.Row="1"
+            Margin="0,0,0,0">
             <TextBlock
+                Margin="0,0,0,2"
+                VerticalAlignment="Bottom"
+                FontWeight="Light"
+                FontStyle="Normal"
                 FontFamily="{DynamicResource Menomonia}"
                 Text="{DynamicResource S.LoggingPage.Description}"/>
         </Grid>
         <Border
             x:Name="MainBorder"
-            Grid.Row="1"
+            Grid.Row="2"
             Focusable="False"
             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-            BorderThickness="1">
+            BorderThickness="1"
+            SnapsToDevicePixels="True">
             <Border.Background>
                 <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level4}" Opacity="0.9"/>
             </Border.Background>

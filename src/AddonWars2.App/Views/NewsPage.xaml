@@ -36,354 +36,395 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="85"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="1.85*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0" Grid.Column="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    x:Name="NewsListHeaderText"
-                    Grid.Column="0"
-                    FontWeight="Light"
-                    FontStyle="Normal"
-                    FontSize="16"
-                    FontFamily="{DynamicResource Menomonia}"
-                    Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
-                <Button
-                    x:Name="RefreshNewsFeedButton"
-                    Grid.Column="1"
-                    Padding="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Height="16"
-                    Cursor="Hand"
-                    Focusable="False"
-                    Content="{DynamicResource Path.Icon.Refresh}"
-                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                    BorderThickness="1"
-                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                    Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}">
-                </Button>
-            </Grid>
-            <Border
-                x:Name="RssFeedBorder"
-                Grid.Row="1" Grid.Column="0"
+            <TextBlock
+                x:Name="NewsListHeaderText"
+                Grid.Column="0"
+                Margin="0,0,0,2"
+                VerticalAlignment="Bottom"
+                FontWeight="Light"
+                FontStyle="Normal"
+                FontSize="16"
+                FontFamily="{DynamicResource Menomonia}"
+                Text="{DynamicResource S.NewsPage.NewsList.Header}"/>
+            <Button
+                x:Name="RefreshNewsFeedButton"
+                Grid.Column="1"
+                Margin="0,0,0,2"
+                Padding="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Height="16"
+                Cursor="Hand"
+                Focusable="False"
+                Content="{DynamicResource Path.Icon.Refresh}"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
-                Focusable="False">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <Grid>
-                    <ListView
-                        x:Name="RssFeedItemsControl"
-                        ItemsSource="{Binding DataContext.RssFeedCollection, RelativeSource={RelativeSource AncestorType=Page}}"
-                        SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                        <ListView.Template>
-                            <ControlTemplate>
-                                <ScrollViewer
-                                    x:Name="ScrollViewerControl"
-                                    CanContentScroll="False"
-                                    HorizontalScrollBarVisibility="Hidden"
-                                    VerticalScrollBarVisibility="Visible"
-                                    IsTabStop="False"
-                                    Focusable="False"
-                                    Style="{DynamicResource ScrollViewerStyle}">
-                                    <ItemsPresenter/>
-                                    <i:Interaction.Triggers>
-                                        <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="False">
-                                            <i:CallMethodAction MethodName="ScrollToTop"/>
-                                        </i:DataTrigger>
-                                    </i:Interaction.Triggers>
-                                </ScrollViewer>
-                            </ControlTemplate>
-                        </ListView.Template>
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel
-                                    Orientation="Vertical"
-                                    IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel
-                                    x:Name="DataTemplateRootBorder"
-                                    Orientation="Vertical"
-                                    Background="Transparent"
-                                    Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}">
-                                    <StackPanel.Resources>
-                                        <Storyboard x:Key="RssItemSlideInStoryboard">
-                                            <DoubleAnimation
-                                                From="0" To="1"
-                                                BeginTime="00:00:00" Duration="00:00:0.3"
-                                                Storyboard.TargetName="DataTemplateRootBorder"
-                                                Storyboard.TargetProperty="Opacity"/>
-                                            <DoubleAnimation
-                                                From="-100" To="0"
-                                                FillBehavior="HoldEnd"
-                                                BeginTime="00:00:00" Duration="00:00:0.3"
-                                                AccelerationRatio="0.2" DecelerationRatio="0.1"
-                                                Storyboard.TargetName="DataTemplateRootBorder"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"/>
-                                        </Storyboard>
-                                    </StackPanel.Resources>
-                                    <StackPanel.RenderTransform>
-                                        <TranslateTransform/>
-                                    </StackPanel.RenderTransform>
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
-                                            <i:ControlStoryboardAction Storyboard="{StaticResource RssItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                    <Separator
-                                        x:Name="ItemSeparator"
-                                        Margin="10,0,10,0"
-                                        Height="0.5"
-                                        Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
-                                        SnapsToDevicePixels="True"
-                                        IsHitTestVisible="False">
-                                        <Separator.OpacityMask>
-                                            <LinearGradientBrush StartPoint="0.0,0.0" EndPoint="1.0,1.0">
-                                                <LinearGradientBrush.GradientStops>
-                                                    <GradientStop Offset="0.00" Color="Transparent"/>
-                                                    <GradientStop Offset="0.20" Color="Black"/>
-                                                    <GradientStop Offset="0.80" Color="Black"/>
-                                                    <GradientStop Offset="1.00" Color="Transparent"/>
-                                                </LinearGradientBrush.GradientStops>
-                                            </LinearGradientBrush>
-                                        </Separator.OpacityMask>
-                                    </Separator>
-                                    <Grid
+                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}">
+            </Button>
+        </Grid>
+        <Border
+            x:Name="RssFeedBorder"
+            Grid.Row="2" Grid.Column="0"
+            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            BorderThickness="1"
+            SnapsToDevicePixels="True"
+            Focusable="False">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <ListView
+                    x:Name="RssFeedItemsControl"
+                    ItemsSource="{Binding DataContext.RssFeedCollection, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <ScrollViewer
+                                x:Name="ScrollViewerControl"
+                                CanContentScroll="False"
+                                HorizontalScrollBarVisibility="Hidden"
+                                VerticalScrollBarVisibility="Visible"
+                                IsTabStop="False"
+                                Focusable="False"
+                                Style="{DynamicResource ScrollViewerStyle}">
+                                <ItemsPresenter/>
+                                <i:Interaction.Triggers>
+                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="False">
+                                        <i:CallMethodAction MethodName="ScrollToTop"/>
+                                    </i:DataTrigger>
+                                </i:Interaction.Triggers>
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel
+                                Orientation="Vertical"
+                                IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                x:Name="DataTemplateRootBorder"
+                                Orientation="Vertical"
+                                Background="Transparent"
+                                Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}">
+                                <StackPanel.Resources>
+                                    <Storyboard x:Key="RssItemSlideInStoryboard">
+                                        <DoubleAnimation
+                                            From="0" To="1"
+                                            BeginTime="00:00:00" Duration="00:00:0.3"
+                                            Storyboard.TargetName="DataTemplateRootBorder"
+                                            Storyboard.TargetProperty="Opacity"/>
+                                        <DoubleAnimation
+                                            From="-100" To="0"
+                                            FillBehavior="HoldEnd"
+                                            BeginTime="00:00:00" Duration="00:00:0.3"
+                                            AccelerationRatio="0.2" DecelerationRatio="0.1"
+                                            Storyboard.TargetName="DataTemplateRootBorder"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"/>
+                                    </Storyboard>
+                                </StackPanel.Resources>
+                                <StackPanel.RenderTransform>
+                                    <TranslateTransform/>
+                                </StackPanel.RenderTransform>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
+                                        <i:ControlStoryboardAction Storyboard="{StaticResource RssItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <Separator
+                                    x:Name="ItemSeparator"
+                                    Margin="10,0,10,0"
+                                    Height="0.5"
+                                    Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                                    SnapsToDevicePixels="True"
+                                    IsHitTestVisible="False">
+                                    <Separator.OpacityMask>
+                                        <LinearGradientBrush StartPoint="0.0,0.0" EndPoint="1.0,1.0">
+                                            <LinearGradientBrush.GradientStops>
+                                                <GradientStop Offset="0.00" Color="Transparent"/>
+                                                <GradientStop Offset="0.20" Color="Black"/>
+                                                <GradientStop Offset="0.80" Color="Black"/>
+                                                <GradientStop Offset="1.00" Color="Transparent"/>
+                                            </LinearGradientBrush.GradientStops>
+                                        </LinearGradientBrush>
+                                    </Separator.OpacityMask>
+                                </Separator>
+                                <Grid
                                         x:Name="ItemRootGrid"
                                         Margin="10,10,0,10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="6*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border
                                             x:Name="ItemRootBorder"
                                             Grid.Column="0">
-                                            <TextBlock
-                                                x:Name="DescText"
-                                                Margin="0,0,10,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                FontFamily="{DynamicResource Menomonia}"
-                                                Text="{Binding Title}"
-                                                TextWrapping="Wrap"
-                                                IsHitTestVisible="False">
-                                            </TextBlock>
-                                        </Border>
-                                        <Grid Grid.Column="1">
-                                            <StackPanel
+                                        <TextBlock
+                                            x:Name="DescText"
+                                            Margin="0,0,10,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontFamily="{DynamicResource Menomonia}"
+                                            Text="{Binding Title}"
+                                            TextWrapping="Wrap"
+                                            IsHitTestVisible="False">
+                                        </TextBlock>
+                                    </Border>
+                                    <Grid Grid.Column="1">
+                                        <StackPanel
                                                 x:Name="DateTimeRssItemPanel"
                                                 Orientation="Vertical">
-                                                <TextBlock
-                                                    x:Name="MonthText"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="10"
-                                                    FontWeight="Regular"
-                                                    FontFamily="{DynamicResource Menomonia}"
-                                                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                                                    Text="{Binding PublishDate, Converter={StaticResource DateToUpperConverter}, ConverterParameter='MMM'}"/>
-                                                <TextBlock
-                                                    x:Name="DayText"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="14"
-                                                    FontWeight="Bold"
-                                                    FontFamily="{DynamicResource Menomonia}"
-                                                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                                                    Text="{Binding PublishDate, StringFormat='{}{0:dd}'}"/>
-                                            </StackPanel>
-                                            <ContentControl
-                                                x:Name="StickyRssItemIcon"
-                                                Height="{Binding Path=ActualHeight, ElementName=DateTimeRssItemPanel}"
-                                                Width="{Binding Path=ActualWidth, ElementName=DateTimeRssItemPanel}"
-                                                Foreground="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
-                                                Content="{DynamicResource Path.Icon.StickyRssItem}"
-                                                Visibility="Hidden"/>
-                                        </Grid>
-                                        <GridSplitter
-                                            Grid.Column="0"
-                                            Margin="0,-3,0,-3"
-                                            Width="0.5"
-                                            SnapsToDevicePixels="True"
-                                            IsHitTestVisible="False"
-                                            Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"/>
+                                            <TextBlock
+                                                x:Name="MonthText"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="10"
+                                                FontWeight="Regular"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{Binding PublishDate, Converter={StaticResource DateToUpperConverter}, ConverterParameter='MMM'}"/>
+                                            <TextBlock
+                                                x:Name="DayText"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{Binding PublishDate, StringFormat='{}{0:dd}'}"/>
+                                        </StackPanel>
+                                        <ContentControl
+                                            x:Name="StickyRssItemIcon"
+                                            Height="{Binding Path=ActualHeight, ElementName=DateTimeRssItemPanel}"
+                                            Width="{Binding Path=ActualWidth, ElementName=DateTimeRssItemPanel}"
+                                            Foreground="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
+                                            Content="{DynamicResource Path.Icon.StickyRssItem}"
+                                            Visibility="Hidden"/>
                                     </Grid>
-                                </StackPanel>
-                                <DataTemplate.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
-                                            <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
-                                        <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
-                                        <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
-                                        <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemMouseOver}"/>
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Cursor" Value="Hand"/>
-                                        <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
-                                        <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
-                                        <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
-                                        <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemSelected}"/>
-                                    </MultiDataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Cursor" Value="Hand"/>
+                                    <GridSplitter
+                                        Grid.Column="0"
+                                        Margin="0,-3,0,-3"
+                                        Width="0.5"
+                                        SnapsToDevicePixels="True"
+                                        IsHitTestVisible="False"
+                                        Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"/>
+                                </Grid>
+                            </StackPanel>
+                            <DataTemplate.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
+                                        <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemMouseOver}"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="StickyRssItemIcon" Property="Content" Value="{DynamicResource Path.Icon.StickyRssItemSelected}"/>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                    <Setter TargetName="ItemSeparator" Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsSticky}" Value="True">
+                                    <Setter TargetName="DateTimeRssItemPanel" Property="Visibility" Value="Hidden"/>
+                                    <Setter TargetName="StickyRssItemIcon" Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                <Grid>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.NewsPage.NewsList.UpdatingPlaceholder}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="Updating">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                        <Setter TargetName="ItemSeparator" Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=IsSticky}" Value="True">
-                                        <Setter TargetName="DateTimeRssItemPanel" Property="Visibility" Value="Hidden"/>
-                                        <Setter TargetName="StickyRssItemIcon" Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                            <ContentPresenter/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                                </Style.Triggers>
                             </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-                    <Grid>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <StackPanel
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
                         <TextBlock
+                            Margin="0,0,0,10"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             FontSize="16"
                             FontWeight="Light"
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                            Text="{DynamicResource S.NewsPage.NewsList.UpdatingPlaceholder}">
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                            Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="Updating">
+                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <StackPanel
+                        <TextBlock
                             VerticalAlignment="Center"
-                            HorizontalAlignment="Center">
-                            <TextBlock
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                FontSize="16"
-                                FontWeight="Light"
-                                FontStyle="Normal"
-                                FontFamily="{DynamicResource Menomonia}"
-                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                                Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                TextWrapping="Wrap"
-                                FontSize="10"
-                                FontWeight="Light"
-                                FontStyle="Normal"
-                                FontFamily="{DynamicResource Menomonia}"
-                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                                Text="{Binding DataContext.UpdateErrorCode, RelativeSource={RelativeSource AncestorType=Page}}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                    </Grid>
+                            HorizontalAlignment="Center"
+                            TextWrapping="Wrap"
+                            FontSize="10"
+                            FontWeight="Light"
+                            FontStyle="Normal"
+                            FontFamily="{DynamicResource Menomonia}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                            Text="{Binding DataContext.UpdateErrorCode, RelativeSource={RelativeSource AncestorType=Page}}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
                 </Grid>
-            </Border>
-            <TextBlock
-                Grid.Row="0" Grid.Column="2"
-                Margin="0,0,0,0"
-                FontWeight="Light"
-                FontStyle="Normal"
-                FontSize="16"
-                FontFamily="{DynamicResource Menomonia}"
-                Text="{DynamicResource S.NewsPage.NewsDesc.Header}"/>
-            <Border
-                x:Name="ItemWebView"
-                Grid.Row="1" Grid.Column="2"
-                Margin="0,0,0,0"
-                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                BorderThickness="1"
-                Focusable="False">
+            </Grid>
+        </Border>
+        <!--<TextBlock
+            Grid.Row="0" Grid.Column="2"
+            Margin="0,0,0,0"
+            FontWeight="Light"
+            FontStyle="Normal"
+            FontSize="16"
+            FontFamily="{DynamicResource Menomonia}"
+            Text="{DynamicResource S.NewsPage.NewsDesc.Header}"/>-->
+        <Border
+            x:Name="ItemWebViewBorder"
+            Grid.Row="0" Grid.Column="2"
+            Grid.RowSpan="3"
+            Padding="1"
+            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            BorderThickness="1"
+            SnapsToDevicePixels="True"
+            Focusable="False">
+            <Border.Resources>
+                <Storyboard x:Key="ItemWebViewOpacityStoryboard">
+                    <DoubleAnimation
+                        From="0" To="1"
+                        BeginTime="00:00:00" Duration="00:00:0.5"
+                        Storyboard.TargetName="ItemWebViewBorder"
+                        Storyboard.TargetProperty="Opacity">
+                        <DoubleAnimation.EasingFunction>
+                            <QuadraticEase EasingMode="EaseInOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </Border.Resources>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=RssFeedItemsControl}">
+                    <i:ControlStoryboardAction Storyboard="{StaticResource ItemWebViewOpacityStoryboard}" ControlStoryboardOption="Play"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=RssFeedItemsControl, Path=SelectedItem}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Border x:Name="WebViewBorder">
                 <Border.Background>
                     <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
                 </Border.Background>
                 <wv2:WebView2
                     x:Name="WebView2Control"
-                    DefaultBackgroundColor="Transparent"
                     Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">
+                            <i:ChangePropertyAction PropertyName="Visibility" Value="Hidden"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="NavigationCompleted" SourceObject="{Binding ElementName=WebView2Control}">
+                            <i:ChangePropertyAction PropertyName="Visibility" Value="Visible"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </wv2:WebView2>
             </Border>
-        </Grid>
+        </Border>
     </Grid>
-    
+
 </Page>

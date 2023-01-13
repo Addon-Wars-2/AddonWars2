@@ -38,22 +38,29 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="85"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <TextBlock
-                Grid.Row="0"
-                Margin="20,0,0,0"
-                FontFamily="{DynamicResource Menomonia}"
-                FontWeight="Light"
-                FontStyle="Italic"
-                FontSize="16"
-                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="1.85*"/>
+        </Grid.ColumnDefinitions>
+        <!--<TextBlock
+            Grid.Row="1"
+            Margin="20,0,0,0"
+            VerticalAlignment="Bottom"
+            FontFamily="{DynamicResource Menomonia}"
+            FontWeight="Light"
+            FontStyle="Italic"
+            FontSize="16"
+            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>-->
         <Grid
-            Grid.Row="2">
+            x:Name="Gw2ExeSelec"
+            Grid.Row="3" Grid.Column="0"
+            Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
