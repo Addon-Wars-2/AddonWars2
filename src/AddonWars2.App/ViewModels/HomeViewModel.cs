@@ -11,9 +11,10 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
+    using AddonWars2.Addons;
+    using AddonWars2.App.Controllers;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
-    using AddonWars2.App.Utils.Helpers;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -26,7 +27,7 @@ namespace AddonWars2.App.ViewModels
 
         private static readonly Random _random = new Random();
         private bool _isActuallyLoaded = false;
-        private string _displayedWelcomeMessage;
+        ////private string _displayedWelcomeMessage;
 
         #endregion Fields
 
@@ -36,17 +37,20 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        /// <param name="addonsManager">A reference to <see cref="Controllers.AddonsManager"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         public HomeViewModel(
             ILogger<HomeViewModel> logger,
+            AddonsManager addonsManager,
             ApplicationConfig appConfig)
             : base(logger)
         {
             AppConfig = appConfig;
+            AddonsManager = addonsManager;
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePath);
-            UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
+            ////UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -61,17 +65,22 @@ namespace AddonWars2.App.ViewModels
         public ApplicationConfig AppConfig { get; private set; }
 
         /// <summary>
-        /// Gets the displayed welcome message.
+        /// Gets a reference to the application config.
         /// </summary>
-        public string DisplayedWelcomeMessage
-        {
-            get => _displayedWelcomeMessage;
-            private set
-            {
-                SetProperty(ref _displayedWelcomeMessage, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
+        public AddonsManager AddonsManager { get; private set; }
+
+        /////// <summary>
+        /////// Gets the displayed welcome message.
+        /////// </summary>
+        ////public string DisplayedWelcomeMessage
+        ////{
+        ////    get => _displayedWelcomeMessage;
+        ////    private set
+        ////    {
+        ////        SetProperty(ref _displayedWelcomeMessage, value);
+        ////        Logger.LogDebug($"Property set: {value}");
+        ////    }
+        ////}
 
         /// <summary>
         /// Gets or sets GW2 executable location.
@@ -95,6 +104,24 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig.LocalData.Gw2DirPath, value, AppConfig.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of installed add-ons.
+        /// </summary>
+        public ObservableCollection<Gw2Addon> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
+
+        /// <summary>
+        /// Gets or sets the currently selected add-on.
+        /// </summary>
+        public Gw2Addon SelectedAddon
+        {
+            get => AddonsManager.SelectedAddon;
+            set
+            {
+                SetProperty(AddonsManager.SelectedAddon, value, AddonsManager, (model, addon) => AddonsManager.SelectedAddon = addon);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -203,32 +230,32 @@ namespace AddonWars2.App.ViewModels
             Gw2DirPath = Path.GetDirectoryName(path);
         }
 
-        // UpdateWelcomeMessageCommand command logic.
-        private void ExecuteUpdateWelcomeMessage()
-        {
-            Logger.LogDebug("Executing command.");
+        ////// UpdateWelcomeMessageCommand command logic.
+        ////private void ExecuteUpdateWelcomeMessage()
+        ////{
+        ////    Logger.LogDebug("Executing command.");
 
-            var messages = new ObservableCollection<string>()
-            {
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
-                ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
-            };
+        ////    var messages = new ObservableCollection<string>()
+        ////    {
+        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
+        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
+        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
+        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
+        ////    };
 
-            // Should not happen normally.
-            if (messages == null || messages.Count == 0)
-            {
-                Logger.LogWarning($"No welcome message found.");
-                DisplayedWelcomeMessage = string.Empty;
-                return;
-            }
+        ////    // Should not happen normally.
+        ////    if (messages == null || messages.Count == 0)
+        ////    {
+        ////        Logger.LogWarning($"No welcome message found.");
+        ////        DisplayedWelcomeMessage = string.Empty;
+        ////        return;
+        ////    }
 
-            int i = _random.Next(0, messages.Count);
-            DisplayedWelcomeMessage = messages[i];
+        ////    int i = _random.Next(0, messages.Count);
+        ////    DisplayedWelcomeMessage = messages[i];
 
-            Logger.LogDebug("Display messages loaded.");
-        }
+        ////    Logger.LogDebug("Display messages loaded.");
+        ////}
 
         #endregion Commands Logic
 

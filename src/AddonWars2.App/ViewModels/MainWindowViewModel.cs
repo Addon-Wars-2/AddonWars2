@@ -112,7 +112,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the package version with suffix included.
         /// </summary>
-        public string PackageVersionWithSuffix => Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+        public string AssemblyFileVersion => Assembly.GetExecutingAssembly()?.GetName().Version.ToString();
 
         #endregion Properties
 

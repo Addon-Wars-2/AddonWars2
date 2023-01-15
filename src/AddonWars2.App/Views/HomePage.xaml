@@ -26,7 +26,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <!--<i:InvokeCommandAction Command="{Binding Path=DataContext.UpdateWelcomeMessageCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>-->
             <i:InvokeCommandAction  Command="{Binding Path=DataContext.TryFindGw2ExeCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
             <i:ChangePropertyAction
                 TargetObject="{Binding}"
@@ -57,10 +57,195 @@
             FontSize="16"
             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
             Text="{Binding Path=DataContext.DisplayedWelcomeMessage, RelativeSource={RelativeSource AncestorType=Page}, StringFormat='&quot;{0}&quot;'}"/>-->
+        <TextBlock
+            x:Name="InstalledAddonsListHeaderText"
+            Grid.Row="1" Grid.Column="0"
+            Margin="0,0,0,2"
+            VerticalAlignment="Bottom"
+            FontWeight="Light"
+            FontStyle="Normal"
+            FontSize="16"
+            FontFamily="{DynamicResource Menomonia}"
+            Text="{DynamicResource S.HomePage.AddonsList.Header}"/>
+        <Border
+            x:Name="InstalledAddonsListBorder"
+            Grid.Row="2" Grid.Column="0"
+            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            BorderThickness="1"
+            SnapsToDevicePixels="True"
+            Focusable="False">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Border.Style>
+            <ListView
+                x:Name="InstalledAddonsList"
+                ItemsSource="{Binding DataContext.InstalledAddonsCollection, RelativeSource={RelativeSource AncestorType=Page}}"
+                SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}">
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+                <ListView.Template>
+                    <ControlTemplate>
+                        <ScrollViewer
+                            x:Name="ScrollViewerControl"
+                            CanContentScroll="True"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Auto"
+                            IsTabStop="False"
+                            Focusable="False"
+                            Style="{DynamicResource ScrollViewerStyle}">
+                            <ItemsPresenter/>
+                            <i:Interaction.Triggers>
+                                <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=InstalledAddonsList}" Value="False">
+                                    <i:CallMethodAction MethodName="ScrollToTop"/>
+                                </i:DataTrigger>
+                            </i:Interaction.Triggers>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListView.Template>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel
+                            Orientation="Vertical"
+                            IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            x:Name="DataTemplateRootBorder"
+                            Orientation="Vertical"
+                            Background="Transparent"
+                            Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}">
+                            <Separator
+                                x:Name="ItemSeparator"
+                                Margin="10,0,10,0"
+                                Height="0.5"
+                                Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                                SnapsToDevicePixels="True"
+                                IsHitTestVisible="False">
+                                <Separator.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0.0,0.0" EndPoint="1.0,1.0">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0.00" Color="Transparent"/>
+                                            <GradientStop Offset="0.20" Color="Black"/>
+                                            <GradientStop Offset="0.80" Color="Black"/>
+                                            <GradientStop Offset="1.00" Color="Transparent"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Separator.OpacityMask>
+                            </Separator>
+                            <Grid
+                                x:Name="ItemRootGrid"
+                                Margin="10,10,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    x:Name="ItemRootBorder"
+                                    Grid.Column="0">
+                                    <TextBlock
+                                        x:Name="NameText"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{DynamicResource Menomonia}"
+                                        Text="{Binding Name}"
+                                        TextWrapping="Wrap"
+                                        IsHitTestVisible="False">
+                                    </TextBlock>
+                                </Border>
+                                <GridSplitter
+                                    Grid.Column="0"
+                                    Margin="0,-3,0,-3"
+                                    Width="0.5"
+                                    SnapsToDevicePixels="True"
+                                    IsHitTestVisible="False"
+                                    Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"/>
+                            </Grid>
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
+                                    <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                <Setter TargetName="ItemSeparator" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Border>
+        <TextBlock
+            x:Name="InstalledAddonDescHeaderText"
+            Grid.Row="1" Grid.Column="2"
+            Margin="0,0,0,2"
+            VerticalAlignment="Bottom"
+            FontWeight="Light"
+            FontStyle="Normal"
+            FontSize="16"
+            FontFamily="{DynamicResource Menomonia}"
+            Text="{DynamicResource S.HomePage.AddonDesc.Header}"/>
+        <Border
+            x:Name="InstalledAddonDescBorder"
+            Grid.Row="2" Grid.Column="2"
+            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            BorderThickness="1"
+            SnapsToDevicePixels="True"
+            Focusable="False">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Border.Style>
+        </Border>
         <Grid
             x:Name="Gw2ExeSelec"
             Grid.Row="3" Grid.Column="0"
-            Grid.ColumnSpan="3">
+            Grid.ColumnSpan="3"
+            Margin="0,10,0,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -68,8 +253,7 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 x:Name="GW2ExecTextBox"
-                Margin="0,0,0,20"
-                Grid.Column="0"
+                Grid.Row="1" Grid.Column="0"
                 Width="500" Height="30"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
@@ -93,7 +277,7 @@
                                     Gw2FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}}"/>
                             </validation:Gw2ExecRule.ParamsWrapper>
                         </validation:Gw2ExecRule>
-                        <validation:Gw2WriteAccessToDirectory ValidatesOnTargetUpdated="True"/>
+                        <validation:Gw2WriteAccessToDirRule ValidatesOnTargetUpdated="True"/>
                     </Binding.ValidationRules>
                 </Binding>
                 <!--
@@ -112,8 +296,8 @@
             </TextBox>
             <Button
                 x:Name="SelectButton"
-                Grid.Column="1"
-                Margin="20,0,0,20"
+                Grid.Row="1" Grid.Column="1"
+                Margin="10,0,0,0"
                 Height="30"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"

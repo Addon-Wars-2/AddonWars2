@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
+	<BaseOutputPath></BaseOutputPath>
+	<GenerateDocumentationFile>False</GenerateDocumentationFile>
+	<SignAssembly>False</SignAssembly>
+	<Configurations>Debug;Release</Configurations>
+	<NeutralLanguage>en</NeutralLanguage>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+
+	<Title>Addon Wars 2</Title>
+	<Description>Guild Wars 2™ Unofficial Add-On Manager</Description>
+	<Deterministic>False</Deterministic>
+	<Authors>RindCode</Authors>
+	<Company>Addon-Wars-2</Company>
+	<Copyright>Copyright $(Company) © 2023</Copyright>
+	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
+	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+	<AssemblyName>$(MSBuildProjectName)</AssemblyName>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Gw2Addon.cs" />
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

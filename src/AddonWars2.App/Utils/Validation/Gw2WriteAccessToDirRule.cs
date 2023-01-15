@@ -17,7 +17,7 @@ namespace AddonWars2.App.Utils.Validation
     /// <summary>
     /// Implements a <see cref="ValidationRule"/> to check if a user has write access for a given direntory.
     /// </summary>
-    public class Gw2WriteAccessToDirectory : ValidationRule
+    public class Gw2WriteAccessToDirRule : ValidationRule
     {
         #region Fields
 

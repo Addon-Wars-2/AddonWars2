@@ -257,7 +257,7 @@
                     Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.ColumnSpan="2"
-                    Margin="20,90,60,30"
+                    Margin="18,90,60,30"
                     Background="Transparent"
                     BorderBrush="Black"
                     BorderThickness="0"
@@ -306,7 +306,7 @@
                 FontSize="8"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
-                <Run Text="{Binding Path=DataContext.PackageVersionWithSuffix, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, StringFormat='{}build {0}'}"/>
+                <Run Text="{Binding Path=DataContext.AssemblyFileVersion, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, StringFormat='{}build {0}'}"/>
                 <TextBlock.Effect>
                     <DropShadowEffect
                         Color="{DynamicResource Color.PrimaryPalette.Level1}"

@@ -29,6 +29,8 @@
     <s:String x:Key="S.HomePage.Welcome.Message_03">Цветы лучше пуль.</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_04">...ни один смертный не будет настолько ТУПЫМ, чтобы уничтожить дракона...</s:String>
     -->
+    <s:String x:Key="S.HomePage.AddonsList.Header">Установленные Аддоны</s:String>
+    <s:String x:Key="S.HomePage.AddonDesc.Header">Описание Аддона</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedBy">создано</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String>

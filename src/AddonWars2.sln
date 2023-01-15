@@ -12,7 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
+		stylecop.json = stylecop.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Addons", "AddonWars2.Addons\AddonWars2.Addons.csproj", "{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +27,10 @@ Global
 		{8FB2A03B-0F7E-43DE-BFED-C6B816F04600}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FB2A03B-0F7E-43DE-BFED-C6B816F04600}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FB2A03B-0F7E-43DE-BFED-C6B816F04600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

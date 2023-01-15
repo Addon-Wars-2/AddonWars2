@@ -93,7 +93,7 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="True">
+                        <DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsList}" Value="True">
                             <Setter Property="Background" Value="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -101,7 +101,7 @@
             </Border.Style>
             <Grid>
                 <ListView
-                    x:Name="RssFeedItemsControl"
+                    x:Name="RssFeedItemsList"
                     ItemsSource="{Binding DataContext.RssFeedCollection, RelativeSource={RelativeSource AncestorType=Page}}"
                     SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}">
                     <i:Interaction.Triggers>
@@ -121,7 +121,7 @@
                                 Style="{DynamicResource ScrollViewerStyle}">
                                 <ItemsPresenter/>
                                 <i:Interaction.Triggers>
-                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsControl}" Value="False">
+                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsList}" Value="False">
                                         <i:CallMethodAction MethodName="ScrollToTop"/>
                                     </i:DataTrigger>
                                 </i:Interaction.Triggers>
@@ -260,7 +260,6 @@
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Cursor" Value="Hand"/>
                                     <Setter TargetName="DescText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                     <Setter TargetName="MonthText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                     <Setter TargetName="DayText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
@@ -379,28 +378,10 @@
             BorderThickness="1"
             SnapsToDevicePixels="True"
             Focusable="False">
-            <Border.Resources>
-                <Storyboard x:Key="ItemWebViewOpacityStoryboard">
-                    <DoubleAnimation
-                        From="0" To="1"
-                        BeginTime="00:00:00" Duration="00:00:0.5"
-                        Storyboard.TargetName="ItemWebViewBorder"
-                        Storyboard.TargetProperty="Opacity">
-                        <DoubleAnimation.EasingFunction>
-                            <QuadraticEase EasingMode="EaseInOut"/>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-            </Border.Resources>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=RssFeedItemsControl}">
-                    <i:ControlStoryboardAction Storyboard="{StaticResource ItemWebViewOpacityStoryboard}" ControlStoryboardOption="Play"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=RssFeedItemsControl, Path=SelectedItem}" Value="{x:Null}">
+                        <DataTrigger Binding="{Binding ElementName=RssFeedItemsList, Path=SelectedItem}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -412,6 +393,24 @@
                 <Border.Background>
                     <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
                 </Border.Background>
+                <Border.Resources>
+                    <Storyboard x:Key="ItemWebViewOpacityStoryboard">
+                        <DoubleAnimation
+                        From="0" To="1"
+                        BeginTime="00:00:00" Duration="00:00:0.7"
+                        Storyboard.TargetName="WebViewBorder"
+                        Storyboard.TargetProperty="Opacity">
+                            <DoubleAnimation.EasingFunction>
+                                <QuadraticEase EasingMode="EaseInOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </Border.Resources>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=RssFeedItemsList}">
+                        <i:ControlStoryboardAction Storyboard="{StaticResource ItemWebViewOpacityStoryboard}" ControlStoryboardOption="Play"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <wv2:WebView2
                     x:Name="WebView2Control"
                     DefaultBackgroundColor="Transparent"

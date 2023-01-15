@@ -49,6 +49,7 @@ namespace AddonWars2.App.Services
 
             // Services.
             services.AddSingleton<LoggingManager>();
+            services.AddSingleton<AddonsManager>();
             services.AddSingleton<DialogService>();
             services.AddSingleton<MessageBoxService>();
 

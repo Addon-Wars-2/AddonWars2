@@ -74,7 +74,8 @@ namespace AddonWars2.App
         /// <summary>
         /// Immediately restarts the application.
         /// </summary>
-        public void Restart()
+        /// <param name="asAdmin">Indicates whether a new process should request admin rights to start.</param>
+        public void Restart(bool asAdmin = false)
         {
             Logger.Debug("Restarting the application.");
 
@@ -84,8 +85,18 @@ namespace AddonWars2.App
             ApplicationConfig.WriteLocalDataAsXml(path, data);
 
             // Start a new process.
-            var currExecPath = Process.GetCurrentProcess().MainModule.FileName;
-            Process.Start(currExecPath);
+            var currExecPath = Environment.ProcessPath;
+            var verb = asAdmin ? "runas" : string.Empty;
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = currExecPath,
+                    Verb = verb,
+                },
+            };
+
+            process.Start();
 
             Current.MainWindowInstance.Close();
         }

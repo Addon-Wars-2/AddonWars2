@@ -65,6 +65,12 @@ namespace AddonWars2.App.Helpers
         // Performs the actual selection of a culture.
         private static string SelectCultureInternal(string cultureString, string fallback = "en-US")
         {
+            // TODO: If a new string resource has missing entries (let's say, some of them are commented),
+            //       a user will see a translation for this strings taken from the previously selected culture,
+            //       because old keys were not overwritten. To prevent this, maybe it's a good idea to put
+            //       a default culture (EN) right before the selected one, since a default one is always
+            //       fully translated.
+
             // Static class is dependent on application state, which is not good. Inject or move from static approach.
 
             // Copy all merged dictionaries to a temp list (TODO: memory footprint?).

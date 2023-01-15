@@ -18,9 +18,6 @@
 
 	<Title>Addon Wars 2</Title>
 	<Description>Guild Wars 2™ Unofficial Add-On Manager</Description>
-	<AssemblyVersion>1.0.0</AssemblyVersion>
-	<ProductVersion>$(AssemblyVersion)</ProductVersion>
-	<InformationalVersion>OoooOooOOoo</InformationalVersion>
 	<Deterministic>False</Deterministic>
 	<Authors>RindCode</Authors>
 	<Company>Addon-Wars-2</Company>
@@ -28,28 +25,18 @@
 	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
 	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 	<AssemblyName>AddonWars2</AssemblyName>
-
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>none</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="bin\**" />
-    <EmbeddedResource Remove="bin\**" />
-    <None Remove="bin\**" />
-    <Page Remove="bin\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Remove="AW2Application.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
@@ -95,6 +82,10 @@
     <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_12.png" />
     <Resource Include="Assets\Masks\btn\btn_bg_01.png" />
     <EmbeddedResource Include="Resources\NLog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AddonWars2.Addons\AddonWars2.Addons.csproj" />
   </ItemGroup>
 
   <ItemGroup>
