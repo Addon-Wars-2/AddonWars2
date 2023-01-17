@@ -1,6 +1,6 @@
 # AddonWars2
 
-A tool to improve the experience of using addons and plugins in Guild Wars 2 by handling installation, updates, and file management behind the scenes.
+A tool to improve the experience of using add-ons and plugins in Guild Wars 2 by handling installation, updates, and file management behind the scenes.
 ![App View Light](/img/app_view_01.png)
 
 ### Project status

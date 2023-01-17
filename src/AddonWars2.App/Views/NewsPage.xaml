@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:AddonWars2.App.Views"
@@ -23,6 +25,10 @@
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
         <convert:DateToUpperCaseConverter x:Key="DateToUpperConverter"/>
+        <CollectionViewSource
+            x:Key="RssItemsCollectionView"
+            Source="{Binding RssFeedCollection}">
+        </CollectionViewSource>
     </Page.Resources>
 
     <i:Interaction.Triggers>
@@ -75,8 +81,7 @@
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}">
-            </Button>
+                Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
         </Grid>
         <Border
             x:Name="RssFeedBorder"
@@ -92,24 +97,20 @@
                             <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
                         </Setter.Value>
                     </Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=HasItems, ElementName=RssFeedItemsList}" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
                 </Style>
             </Border.Style>
             <Grid>
-                <ListView
+                <ListBox
                     x:Name="RssFeedItemsList"
-                    ItemsSource="{Binding DataContext.RssFeedCollection, RelativeSource={RelativeSource AncestorType=Page}}"
-                    SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}">
+                    ItemsSource="{Binding Source={StaticResource RssItemsCollectionView}}"
+                    SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}"
+                    IsSynchronizedWithCurrentItem="{x:Null}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <ListView.Template>
+                    <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
                                 x:Name="ScrollViewerControl"
@@ -127,40 +128,48 @@
                                 </i:Interaction.Triggers>
                             </ScrollViewer>
                         </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemsPanel>
+                    </ListBox.Template>
+                    <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel
                                 Orientation="Vertical"
                                 IsItemsHost="True"/>
                         </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListView.ItemTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel
+                            <Grid
                                 x:Name="DataTemplateRootBorder"
-                                Orientation="Vertical"
                                 Background="Transparent"
                                 Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}">
-                                <StackPanel.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.Resources>
                                     <Storyboard x:Key="RssItemSlideInStoryboard">
                                         <DoubleAnimation
                                             From="0" To="1"
                                             BeginTime="00:00:00" Duration="00:00:0.3"
                                             Storyboard.TargetName="DataTemplateRootBorder"
-                                            Storyboard.TargetProperty="Opacity"/>
+                                            Storyboard.TargetProperty="Opacity">
+                                        </DoubleAnimation>
                                         <DoubleAnimation
-                                            From="-100" To="0"
+                                            From="100" To="0"
                                             FillBehavior="HoldEnd"
                                             BeginTime="00:00:00" Duration="00:00:0.3"
                                             AccelerationRatio="0.2" DecelerationRatio="0.1"
                                             Storyboard.TargetName="DataTemplateRootBorder"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"/>
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                            <DoubleAnimation.EasingFunction>
+                                                <ExponentialEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                     </Storyboard>
-                                </StackPanel.Resources>
-                                <StackPanel.RenderTransform>
+                                </Grid.Resources>
+                                <Grid.RenderTransform>
                                     <TranslateTransform/>
-                                </StackPanel.RenderTransform>
+                                </Grid.RenderTransform>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
                                         <i:ControlStoryboardAction Storyboard="{StaticResource RssItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
@@ -168,6 +177,7 @@
                                 </i:Interaction.Triggers>
                                 <Separator
                                     x:Name="ItemSeparator"
+                                    Grid.Row="0"
                                     Margin="10,0,10,0"
                                     Height="0.5"
                                     Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
@@ -185,15 +195,16 @@
                                     </Separator.OpacityMask>
                                 </Separator>
                                 <Grid
-                                        x:Name="ItemRootGrid"
-                                        Margin="10,10,0,10">
+                                    x:Name="ItemRootGrid"
+                                    Grid.Row="1"
+                                    Margin="10,10,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="6*"/>
                                         <ColumnDefinition Width="1*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border
-                                            x:Name="ItemRootBorder"
-                                            Grid.Column="0">
+                                        x:Name="ItemRootBorder"
+                                        Grid.Column="0">
                                         <TextBlock
                                             x:Name="DescText"
                                             Margin="0,0,10,0"
@@ -207,8 +218,8 @@
                                     </Border>
                                     <Grid Grid.Column="1">
                                         <StackPanel
-                                                x:Name="DateTimeRssItemPanel"
-                                                Orientation="Vertical">
+                                            x:Name="DateTimeRssItemPanel"
+                                            Orientation="Vertical">
                                             <TextBlock
                                                 x:Name="MonthText"
                                                 HorizontalAlignment="Center"
@@ -244,7 +255,7 @@
                                         IsHitTestVisible="False"
                                         Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"/>
                                 </Grid>
-                            </StackPanel>
+                            </Grid>
                             <DataTemplate.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -269,7 +280,7 @@
                                     <Setter Property="Cursor" Value="Hand"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                    <Setter TargetName="ItemSeparator" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsSticky}" Value="True">
                                     <Setter TargetName="DateTimeRssItemPanel" Property="Visibility" Value="Hidden"/>
@@ -277,21 +288,21 @@
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                             <Setter Property="Template">
                                 <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                         <ContentPresenter/>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
                 <Grid>
                     <TextBlock
                         VerticalAlignment="Center"
@@ -362,14 +373,6 @@
                 </Grid>
             </Grid>
         </Border>
-        <!--<TextBlock
-            Grid.Row="0" Grid.Column="2"
-            Margin="0,0,0,0"
-            FontWeight="Light"
-            FontStyle="Normal"
-            FontSize="16"
-            FontFamily="{DynamicResource Menomonia}"
-            Text="{DynamicResource S.NewsPage.NewsDesc.Header}"/>-->
         <Border
             x:Name="ItemWebViewBorder"
             Grid.Row="0" Grid.Column="2"
@@ -396,35 +399,51 @@
                 <Border.Resources>
                     <Storyboard x:Key="ItemWebViewOpacityStoryboard">
                         <DoubleAnimation
-                        From="0" To="1"
-                        BeginTime="00:00:00" Duration="00:00:0.7"
-                        Storyboard.TargetName="WebViewBorder"
-                        Storyboard.TargetProperty="Opacity">
+                            From="0" To="1"
+                            BeginTime="00:00:00" Duration="00:00:0.7"
+                            Storyboard.TargetName="WebViewBorder"
+                            Storyboard.TargetProperty="Opacity">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseInOut"/>
                             </DoubleAnimation.EasingFunction>
                         </DoubleAnimation>
                     </Storyboard>
                 </Border.Resources>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=RssFeedItemsList}">
-                        <i:ControlStoryboardAction Storyboard="{StaticResource ItemWebViewOpacityStoryboard}" ControlStoryboardOption="Play"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <wv2:WebView2
-                    x:Name="WebView2Control"
-                    DefaultBackgroundColor="Transparent"
-                    SnapsToDevicePixels="True"
-                    Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">
-                            <i:ChangePropertyAction PropertyName="Visibility" Value="Hidden"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="NavigationCompleted" SourceObject="{Binding ElementName=WebView2Control}">
-                            <i:ChangePropertyAction PropertyName="Visibility" Value="Visible"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </wv2:WebView2>
+                <Grid>
+                    <wv2:WebView2
+                        x:Name="WebView2Control"
+                        DefaultBackgroundColor="Transparent"
+                        SnapsToDevicePixels="True"
+                        Source="{Binding Path=DataContext.DisplayedRssFeedContent, RelativeSource={RelativeSource AncestorType=Page}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="Hidden"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="NavigationCompleted" SourceObject="{Binding ElementName=WebView2Control}">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="Visible"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </wv2:WebView2>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        TextWrapping="Wrap"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.NewsPage.WebView.LoadingPlaceholder}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="Visible"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="NavigationCompleted" SourceObject="{Binding ElementName=WebView2Control}">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="Hidden"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBlock>
+                </Grid>
             </Border>
         </Border>
     </Grid>

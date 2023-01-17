@@ -5,6 +5,12 @@
 
     <ControlTemplate x:Key="TextBoxValidationErrorTemplate">
         <StackPanel Orientation="Vertical">
+            <Border
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                BorderThickness="0,0,0,2"
+                CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}">
+                <AdornedElementPlaceholder x:Name="Placeholder"/>
+            </Border>
             <Grid
                 x:Name="ValidationBorder"
                 Visibility="Visible">
@@ -15,7 +21,7 @@
                     FontWeight="Light"
                     RenderOptions.ClearTypeHint="Enabled"
                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Text="{Binding ElementName=Placeholder, Path=AdornedElement.(Validation.Errors)/ErrorContent}">
                     <TextBlock.Effect>
@@ -28,12 +34,6 @@
                     </TextBlock.Effect>
                 </TextBlock>
             </Grid>
-            <Border
-                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                BorderThickness="0,0,0,2"
-                CornerRadius="{Binding ElementName=Placeholder, Path=AdornedElement.(attached:CornerRadiusExtension.CornerRadius)}">
-                <AdornedElementPlaceholder x:Name="Placeholder"/>
-            </Border>
         </StackPanel>
     </ControlTemplate>
 

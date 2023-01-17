@@ -8,7 +8,6 @@
 namespace AddonWars2.App.Utils.Helpers
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
     using System.Net.NetworkInformation;
@@ -90,6 +89,10 @@ namespace AddonWars2.App.Utils.Helpers
 
                 return new HttpResponseMessage();
             }
+            catch (TaskCanceledException)
+            {
+                return new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout);
+            }
         }
 
         /// <summary>
@@ -107,6 +110,8 @@ namespace AddonWars2.App.Utils.Helpers
             var xdoc = await XDocument.LoadAsync(stream, loadOptions, cancellationToken);
             return xdoc;
         }
+
+        //public static async Task<string> 
 
         #endregion Methods
     }

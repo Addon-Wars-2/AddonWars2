@@ -12,7 +12,6 @@ namespace AddonWars2.App.Models.Application
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using System.Xml.Serialization;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.ViewModels;
     using CommunityToolkit.Mvvm.ComponentModel;

@@ -40,6 +40,7 @@
     <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Обновление...</s:String>
     <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
+    <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Загрузка содержимого...</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Description">Логирование ведется автоматически.</s:String>

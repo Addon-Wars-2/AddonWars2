@@ -17,7 +17,7 @@ namespace AddonWars2.Addons
 
         public Gw2Addon(string name)
         {
-
+            Name = name;
         }
 
         #endregion Constructor

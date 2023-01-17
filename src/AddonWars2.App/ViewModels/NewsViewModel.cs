@@ -1,6 +1,6 @@
 ﻿// ==================================================================================================
-// <copyright file="NewsViewModel.cs" company="Addon-Wars-2 ">
-// Copyright (c) Addon-Wars-2 . All rights reserved.
+// <copyright file="NewsViewModel.cs" company="Addon-Wars-2">
+// Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
@@ -8,14 +8,15 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Xml.Linq;
     using AddonWars2.App.Commands;
+    using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.GuildWars2;
     using AddonWars2.App.Utils.Helpers;
@@ -53,11 +54,6 @@ namespace AddonWars2.App.ViewModels
     /// </summary>
     public class NewsViewModel : BaseViewModel
     {
-        // TODO: There is quite a lot of logic inside this VM.
-        //       Maybe should we consider adding another layer between "dumb VM"
-        //       and "dumb model" layers? Or separate UI logic from business one
-        //       more explicitly?
-
         #region Fields
 
         private string _updateErrorCode;
@@ -90,7 +86,6 @@ namespace AddonWars2.App.ViewModels
             SetState(NewsViewModelState.Ready);
 
             LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
-            ////RefreshNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => ViewModelStateInternal == NewsViewModelState.Ready);
             RefreshNewsCommand = new RelayCommand(
                 ExecuteReloadNewsAsync,
                 () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
@@ -156,7 +151,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _displayedRssFeedItem, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}, guild={value?.Guid}");
             }
         }
 
@@ -237,7 +232,7 @@ namespace AddonWars2.App.ViewModels
 
         #region Commands Logic
 
-        #region ReloadNewsCommand Logic
+        #region LoadNewsCommand Logic
 
         // LoadNewsCommand command logic.
         private async void ExecuteReloadNewsAsync()
@@ -259,137 +254,111 @@ namespace AddonWars2.App.ViewModels
             catch (HttpRequestException e)
             {
                 // No internet connection.
-                Logger.LogError($"No internet connection.");
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = e.Message;
+                Logger.LogError($"No internet connection.");
                 return;
             }
 
             // Bad code returned.
             if (!response.IsSuccessStatusCode)
             {
-                Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = $"{response}";
-                return;
-            }
-
-            // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
-            //       in some scenarios when the internet connection is interrupted.
-            //       Need to figure out what's the problem with the HTTP content stream (if there is any).
-            ObservableCollection<RssFeedItem> feed;
-            Logger.LogDebug("Parsing response data.");
-            try
-            {
-                var stream = await response.Content.ReadAsStreamAsync();
-                var xml = await WebHelper.LoadXmlAsync(stream);
-                feed = await ParseRssFeedXmlAsync(xml);
-                Logger.LogDebug($"Parsed items: {feed.Count}");
-            }
-            catch (Exception e)
-            {
-                Logger.LogError($"Failed to parse data.");
-                SetState(NewsViewModelState.FailedToUpdate);
-                UpdateErrorCode = $"{e.Message}";
+                Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
                 return;
             }
 
             SetState(NewsViewModelState.Updating);
 
+            var feed = await ParseResponseDataAsync(response);
+            feed = SortRssFeedCollection(feed);
             foreach (var item in feed)
             {
-                await WriteRssItemContentAsync(item);
+                item.ContentEncoded = RssFeedHelper.AddProtocolPrefixesToHtml(item.ContentEncoded, "https");
+                item.ContentEncoded = RssFeedHelper.InjectCssIntoHtml(item.ContentEncoded, "rss_style.css");
             }
 
-            var sticky = feed.Where(x => x.IsSticky).ToList();
-            foreach (var item in sticky)
-            {
-                RssFeedCollection.Add(item);
-                await Task.Delay(50);  // for animation purposes
-            }
+            var rssDirPath = Path.Combine(AppConfig.AppDataDir, AppConfig.RssFeedDirName);
+            var rssFilePath = Path.Combine(rssDirPath, "rss_style.css");
+            await IOHelper.ResourceCopyToAsync("AddonWars2.App.Resources.rss_style.css", rssFilePath);  // copy CSS embedded resource
 
-            var normal = feed.Where(x => !x.IsSticky).ToList();
-            foreach (var item in normal)
-            {
-                RssFeedCollection.Add(item);
-                await Task.Delay(50);  // for animation purposes
-            }
+            await WriteRssItemsAsync(feed, rssDirPath);
+            await FillRssItemsAsync(feed, RssFeedCollection);
 
             SetState(NewsViewModelState.Ready);
 
             Logger.LogInformation("News feed updated.");
         }
 
-        // Async call for ParseRssFeedXml.
-        private Task<ObservableCollection<RssFeedItem>> ParseRssFeedXmlAsync(XDocument xml)
+        // Parse response data.
+        private async Task<IList<RssFeedItem>> ParseResponseDataAsync(HttpResponseMessage response)
         {
-            var feed = Task.Run(() => ParseRssFeedXml(xml));
-            return feed;
+            // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
+            //       in some scenarios when the internet connection is interrupted.
+            //       Need to figure out what's the problem with the HTTP content stream (if there is any).
+            Logger.LogDebug("Parsing response data.");
+            try
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                var feed = await RssFeedHelper.ParseXmlStreamAsync(stream);
+                Logger.LogDebug($"Parsed items: {RssFeedCollection.Count}");
+                return feed;
+            }
+            catch (Exception e)
+            {
+                SetState(NewsViewModelState.FailedToUpdate);
+                UpdateErrorCode = $"{e.Message}";
+                Logger.LogError($"Failed to parse data.");
+                return null;
+            }
         }
 
-        // Parses the GW2 RSS feed.
-        private ObservableCollection<RssFeedItem> ParseRssFeedXml(XDocument xml)
+        // Sort the list, so the "sticky" item will be always above (the first one),
+        // and the rest will be sorted by date. Even though RSS feed already contains items in a
+        // historical order, we run this sort just to make sure.
+        private IList<RssFeedItem> SortRssFeedCollection(IList<RssFeedItem> collection)
         {
-            if (xml == null)
-            {
-                throw new NullReferenceException(nameof(xml));
-            }
-
-            var feed = new ObservableCollection<RssFeedItem>();
-            var nsContent = xml.Root.GetNamespaceOfPrefix("content");
-
-            foreach (var item in xml.Descendants("item"))
-            {
-                var isSticky = (from cat in item.Elements("category")
-                                where cat.Value.ToLower() == "sticky"
-                                select cat).Any();
-
-                var entry = new RssFeedItem()
-                {
-                    Title = item.Element("title")?.Value,
-                    Link = item.Element("link")?.Value,
-                    PublishDate = DateTime.Parse(item.Element("pubDate")?.Value),
-                    Guid = item.Element("guid")?.Value.Split("=").Last(),
-                    Description = item.Element("description")?.Value,
-                    ContentEncoded = item.Element(nsContent + "encoded")?.Value.Replace(@"""//", @"""https://"),  // HACK: Is there a batter way rather than editing strings?
-                    IsSticky = isSticky,
-                };
-
-                feed.Add(entry);
-            }
-
-            return feed;
+            return collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList();
         }
 
-        // Asynchronously writes RSS item HTML content to a file.
-        private async Task WriteRssItemContentAsync(RssFeedItem item)
+        // Write HTML files locally, so WebView can read them later.
+        private async Task WriteRssItemsAsync(IList<RssFeedItem> collection, string directory)
         {
-            // TODO: Should we cache items or merely map the GW2 RSS feed as is?
-
-            var content = item.ContentEncoded;
-            var guid = item.Guid;
-            var extension = ".html";
-            var dirpath = Path.Join(AppConfig.AppDataDir, AppConfig.RssFeedDirName);
-            var filepath = Path.Join(dirpath, guid) + extension;
-
-            if (!Directory.Exists(dirpath))
+            foreach (var item in collection)
             {
-                Directory.CreateDirectory(dirpath);
+                var filepath = Path.Combine(directory, item.Guid) + ".html";
+                await RssFeedHelper.WriteRssItemContentAsync(item, filepath);
+                Logger.LogDebug($"HTML file saved: {filepath}");
             }
-
-            await File.WriteAllTextAsync(filepath, content);
-
-            Logger.LogDebug($"HTML filed saved: {filepath}");
         }
 
-        #endregion ReloadNewsCommand Logic
+        // Update the destination list with new items using some delay.
+        private async Task FillRssItemsAsync(IList<RssFeedItem> source, IList<RssFeedItem> destination, int delay = 50)
+        {
+            foreach (var item in source)
+            {
+                destination.Add(item);
+                await Task.Delay(delay);  // for animation purposes
+                Logger.LogDebug($"RSS item with guid={item.Guid} added.");
+            }
+        }
+
+        #endregion LoadNewsCommand Logic
 
         // LoadRssItemContentCommand command logic.
         private void ExecuteLoadRssItemContentCommand()
         {
+            Logger.LogDebug("Executing command.");
+
+            if (DisplayedRssFeedItem == null)
+            {
+                Logger.LogDebug($"{nameof(DisplayedRssFeedItem)} is null.");
+            }
+
             var extension = ".html";
-            var dirpath = Path.Join(AppConfig.AppDataDir, AppConfig.RssFeedDirName);
-            var filepath = Path.Join(dirpath, DisplayedRssFeedItem?.Guid) + extension;
+            var dirpath = Path.Combine(AppConfig.AppDataDir, AppConfig.RssFeedDirName);
+            var filepath = Path.Combine(dirpath, DisplayedRssFeedItem?.Guid) + extension;
 
             if (File.Exists(filepath))
             {
@@ -418,9 +387,9 @@ namespace AddonWars2.App.ViewModels
         // Sets the view model state.
         private void SetState(NewsViewModelState state)
         {
-            Logger.LogDebug($"ViewModel state set: {state}");
             ViewModelStateInternal = state;
             ViewModelState = Enum.GetName(typeof(NewsViewModelState), state);
+            Logger.LogDebug($"ViewModel state set: {state}");
         }
 
         #endregion Methods

@@ -77,7 +77,6 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsFocused" Value="False"/>
                                 <Condition Property="Text" Value="{x:Static sys:String.Empty}"/>
                             </MultiTrigger.Conditions>
                             <Setter TargetName="HintBorder" Property="Visibility" Value="Visible"/>

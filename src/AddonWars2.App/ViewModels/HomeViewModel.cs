@@ -25,9 +25,8 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private static readonly Random _random = new Random();
         private bool _isActuallyLoaded = false;
-        ////private string _displayedWelcomeMessage;
+        private Gw2Addon _selectedAddon;
 
         #endregion Fields
 
@@ -50,7 +49,6 @@ namespace AddonWars2.App.ViewModels
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePath);
-            ////UpdateWelcomeMessageCommand = new RelayCommand(ExecuteUpdateWelcomeMessage, () => IsActuallyLoaded == false);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -68,19 +66,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to the application config.
         /// </summary>
         public AddonsManager AddonsManager { get; private set; }
-
-        /////// <summary>
-        /////// Gets the displayed welcome message.
-        /////// </summary>
-        ////public string DisplayedWelcomeMessage
-        ////{
-        ////    get => _displayedWelcomeMessage;
-        ////    private set
-        ////    {
-        ////        SetProperty(ref _displayedWelcomeMessage, value);
-        ////        Logger.LogDebug($"Property set: {value}");
-        ////    }
-        ////}
 
         /// <summary>
         /// Gets or sets GW2 executable location.
@@ -118,10 +103,10 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public Gw2Addon SelectedAddon
         {
-            get => AddonsManager.SelectedAddon;
+            get => _selectedAddon;
             set
             {
-                SetProperty(AddonsManager.SelectedAddon, value, AddonsManager, (model, addon) => AddonsManager.SelectedAddon = addon);
+                SetProperty(ref _selectedAddon, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -229,33 +214,6 @@ namespace AddonWars2.App.ViewModels
             Gw2ExecPath = path;
             Gw2DirPath = Path.GetDirectoryName(path);
         }
-
-        ////// UpdateWelcomeMessageCommand command logic.
-        ////private void ExecuteUpdateWelcomeMessage()
-        ////{
-        ////    Logger.LogDebug("Executing command.");
-
-        ////    var messages = new ObservableCollection<string>()
-        ////    {
-        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_01"),
-        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_02"),
-        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_03"),
-        ////        ResourcesHelper.GetApplicationResource<string>("S.HomePage.Welcome.Message_04"),
-        ////    };
-
-        ////    // Should not happen normally.
-        ////    if (messages == null || messages.Count == 0)
-        ////    {
-        ////        Logger.LogWarning($"No welcome message found.");
-        ////        DisplayedWelcomeMessage = string.Empty;
-        ////        return;
-        ////    }
-
-        ////    int i = _random.Next(0, messages.Count);
-        ////    DisplayedWelcomeMessage = messages[i];
-
-        ////    Logger.LogDebug("Display messages loaded.");
-        ////}
 
         #endregion Commands Logic
 

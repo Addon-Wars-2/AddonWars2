@@ -9,6 +9,9 @@ namespace AddonWars2.App.Helpers
 {
     using System;
     using System.IO;
+    using System.Reflection;
+    using System.Runtime.Versioning;
+    using System.Threading.Tasks;
     using System.Xml;
     using System.Xml.Serialization;
     using Microsoft.Win32;
@@ -19,10 +22,6 @@ namespace AddonWars2.App.Helpers
     /// </summary>
     public static class IOHelper
     {
-        #region Properties
-
-        #endregion Properties
-
         #region Methods
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace AddonWars2.App.Helpers
             // TODO: This method should be refactored, because it relies on application state inside a static class.
 
             // The GetManifestResourceStream method will always returns null
-            // if the resource "built action" property is not set to "embedded resource".
+            // if the resourceName "built action" property is not set to "embedded resourceName".
             var assembly = typeof(AW2Application).Assembly;
             var stream = assembly.GetManifestResourceStream("AddonWars2.App.Resources.NLog.config");
 
@@ -98,6 +97,7 @@ namespace AddonWars2.App.Helpers
         /// <param name="keyname">Key (directory) to search in.</param>
         /// <param name="name">Value name to search for.</param>
         /// <returns>A found value boxed inside an <see cref="object"/> if found. Otherwise - <see langword="null"/>.</returns>
+        [SupportedOSPlatform("windows")]
         public static object SearchRegistryKey(string keyname, string name)
         {
             if (keyname == null || name == null)
@@ -115,6 +115,32 @@ namespace AddonWars2.App.Helpers
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Writes a given resource locally.
+        /// </summary>
+        /// <param name="resourceName">Resource name.</param>
+        /// <param name="path">File path used to write a resource.</param>
+        /// <param name="fileMode"><see cref="FileMode"/> used for the writing operation.</param>
+        /// <returns><see cref="Task"/> object.</returns>
+        /// <exception cref="InvalidOperationException">Is thrown if a given resource is not found.</exception>
+        public static async Task ResourceCopyToAsync(string resourceName, string path, FileMode fileMode = FileMode.Create)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            using (var resource = assembly.GetManifestResourceStream(resourceName))
+            {
+                if (resource == null)
+                {
+                    throw new InvalidOperationException($"Resource not found: {resourceName}");
+                }
+
+                using (FileStream file = new FileStream(path, fileMode, FileAccess.Write))
+                {
+                    await resource.CopyToAsync(file);
+                }
             }
         }
 
