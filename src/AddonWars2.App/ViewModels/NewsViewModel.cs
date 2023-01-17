@@ -29,22 +29,23 @@ namespace AddonWars2.App.ViewModels
     public enum NewsViewModelState
     {
         /// <summary>
-        /// Ready state.
+        /// View model is ready. Default state.
         /// </summary>
         Ready,
 
         /// <summary>
-        /// View model is fetching RSS data from a source.
+        /// View model is fetching RSS data from a source (web or local).
         /// </summary>
         Fetching,
 
         /// <summary>
-        /// View model is loading the content into its RSS collection.
+        /// View model is updating its content to be presented in View.
         /// </summary>
         Updating,
 
         /// <summary>
-        /// View model couldn't retrieve RSS collection.
+        /// View model failed to update its data.
+        /// Similar to Ready, but is used to indicate there is an error occured.
         /// </summary>
         FailedToUpdate,
     }
@@ -89,7 +90,9 @@ namespace AddonWars2.App.ViewModels
             RefreshNewsCommand = new RelayCommand(
                 ExecuteReloadNewsAsync,
                 () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
-            LoadRssItemContentCommand = new RelayCommand(ExecuteLoadRssItemContentCommand);
+            LoadRssItemContentCommand = new RelayCommand(
+                ExecuteLoadRssItemContentCommand,
+                () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -273,15 +276,16 @@ namespace AddonWars2.App.ViewModels
 
             var feed = await ParseResponseDataAsync(response);
             feed = SortRssFeedCollection(feed);
+            var cssFileName = "style.css";
             foreach (var item in feed)
             {
                 item.ContentEncoded = RssFeedHelper.AddProtocolPrefixesToHtml(item.ContentEncoded, "https");
-                item.ContentEncoded = RssFeedHelper.InjectCssIntoHtml(item.ContentEncoded, "rss_style.css");
+                item.ContentEncoded = RssFeedHelper.InjectCssIntoHtml(item.ContentEncoded, cssFileName);
             }
 
             var rssDirPath = Path.Combine(AppConfig.AppDataDir, AppConfig.RssFeedDirName);
-            var rssFilePath = Path.Combine(rssDirPath, "rss_style.css");
-            await IOHelper.ResourceCopyToAsync("AddonWars2.App.Resources.rss_style.css", rssFilePath);  // copy CSS embedded resource
+            var rssFilePath = Path.Combine(rssDirPath, cssFileName);
+            await IOHelper.ResourceCopyToAsync($"AddonWars2.App.Resources.{cssFileName}", rssFilePath);  // copy CSS embedded resource
 
             await WriteRssItemsAsync(feed, rssDirPath);
             await FillRssItemsAsync(feed, RssFeedCollection);
@@ -354,6 +358,7 @@ namespace AddonWars2.App.ViewModels
             if (DisplayedRssFeedItem == null)
             {
                 Logger.LogDebug($"{nameof(DisplayedRssFeedItem)} is null.");
+                return;
             }
 
             var extension = ".html";

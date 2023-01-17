@@ -49,13 +49,6 @@ namespace AddonWars2.App.Views
             // TODO: Is there a better way to inject this?
             var appConfig = AW2Application.Current.Services.GetRequiredService<ApplicationConfig>();
             var appDataDir = appConfig.AppDataDir;
-            ////var cssFilePath = Path.Combine(appDataDir, appConfig.RssFeedDirName, "rssfeed.css");
-            ////var css = Assembly.GetExecutingAssembly().GetManifestResourceStream("AddonWars2.App.Resources.rssfeed.css");
-
-            ////using (var stream = File.OpenWrite(cssFilePath))
-            ////{
-            ////    await css.CopyToAsync(stream);
-            ////}
 
             // HACK: https://github.com/MicrosoftEdge/WebView2Feedback/issues/299#issuecomment-648812482
             var options = new CoreWebView2EnvironmentOptions("--disk-cache-size=1");
@@ -66,13 +59,29 @@ namespace AddonWars2.App.Views
             if (webView2 != null)
             {
                 await webView2.EnsureCoreWebView2Async(task);
+
                 webView2.CoreWebView2.Settings.IsStatusBarEnabled = true;
                 webView2.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
                 webView2.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 webView2.CoreWebView2.Settings.AreDefaultScriptDialogsEnabled = true;
                 webView2.CoreWebView2.Settings.IsScriptEnabled = true;
+
+                webView2.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+
                 webView2.AllowExternalDrop = false;
             }
+        }
+
+        // Redirects new window requests to a default browser.
+        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            var processInfo = new ProcessStartInfo(e.Uri)
+            {
+                UseShellExecute = true,
+            };
+
+            Process.Start(processInfo);
+            e.Handled = true;
         }
 
         // Cleanup WebView data on main window close event.

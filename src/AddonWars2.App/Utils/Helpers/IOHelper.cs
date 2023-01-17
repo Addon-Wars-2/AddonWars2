@@ -126,7 +126,10 @@ namespace AddonWars2.App.Helpers
         /// <param name="fileMode"><see cref="FileMode"/> used for the writing operation.</param>
         /// <returns><see cref="Task"/> object.</returns>
         /// <exception cref="InvalidOperationException">Is thrown if a given resource is not found.</exception>
-        public static async Task ResourceCopyToAsync(string resourceName, string path, FileMode fileMode = FileMode.Create)
+        public static async Task ResourceCopyToAsync(
+            string resourceName,
+            string path,
+            FileMode fileMode = FileMode.Create)
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -136,6 +139,8 @@ namespace AddonWars2.App.Helpers
                 {
                     throw new InvalidOperationException($"Resource not found: {resourceName}");
                 }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
 
                 using (FileStream file = new FileStream(path, fileMode, FileAccess.Write))
                 {

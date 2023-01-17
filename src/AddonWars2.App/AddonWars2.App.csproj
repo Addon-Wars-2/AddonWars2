@@ -39,7 +39,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\rss_style.css" />
+    <None Remove="Resources\style.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,7 +86,7 @@
     <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_12.png" />
     <Resource Include="Assets\Masks\btn\btn_bg_01.png" />
     <EmbeddedResource Include="Resources\NLog.config" />
-    <EmbeddedResource Include="Resources\rss_style.css" />
+    <EmbeddedResource Include="Resources\style.css" />
   </ItemGroup>
 
   <ItemGroup>
