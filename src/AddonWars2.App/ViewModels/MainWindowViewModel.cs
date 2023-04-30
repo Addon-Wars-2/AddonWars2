@@ -31,7 +31,7 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
         /// <param name="homeViewModel">A reference to <see cref="HomePageViewModel"/>.</param>
         /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
@@ -87,6 +87,11 @@ namespace AddonWars2.App.ViewModels
         /// was executed in debug or normal mode.
         /// </summary>
         public bool IsDebugMode => AppConfig.IsDebugMode;
+
+        /// <summary>
+        /// Gets the GW2 website URL.
+        /// </summary>
+        public string? Gw2HomeLink => AppConfig?.LocalData?.Gw2Home;
 
         /// <summary>
         /// Gets the GW2 wiki URL.

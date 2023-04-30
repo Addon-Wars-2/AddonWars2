@@ -21,14 +21,34 @@
         </Grid.RowDefinitions>
         <Grid
             Grid.Row="1"
-            Margin="0,0,0,0">
+            Margin="0,0,0,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <TextBlock
-                Margin="0,0,0,2"
+                Grid.Column="0"
                 VerticalAlignment="Bottom"
                 FontWeight="Light"
                 FontStyle="Normal"
                 FontFamily="{DynamicResource Menomonia}"
                 Text="{DynamicResource S.LoggingPage.Description}"/>
+            <Button
+                x:Name="OpenLogFileButton"
+                Grid.Column="1"
+                Padding="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Height="24"
+                Cursor="Hand"
+                Focusable="False"
+                Content="{DynamicResource S.LoggingPage.Button.OpenLogFile}"
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                BorderThickness="1"
+                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                FontFamily="{DynamicResource Menomonia}"
+                Command="{Binding DataContext.OpenLogFileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                ToolTip="{DynamicResource S.ToolTip.Button.OpenLogFile}"/>
         </Grid>
         <Border
             x:Name="MainBorder"

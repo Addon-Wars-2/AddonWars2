@@ -12,10 +12,11 @@
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>  <!-- NO TRANSLATION -->
-    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Unofficial Add-On Manager</s:String> <!-- NO TRANSLATION FOR "Guild Wars 2™" part -->
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Unofficial Add-Ons Manager</s:String> <!-- NO TRANSLATION FOR "Guild Wars 2™" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">GETTING STARTED</s:String>
-    <s:String x:Key="S.MainWindow.Header.Hyperlink.Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
-    <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">SUPPORT</s:String>
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Home">GW2 HOME</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
+    <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">HELP</s:String>
 
     <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
@@ -39,6 +40,7 @@
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Description">Logging is performed automatically.</s:String>
+    <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>
@@ -57,5 +59,6 @@
     <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Click to select the Guild Wars 2 executable path (.exe).</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Install new add-ons.</s:String>
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh news feed.</s:String>
+    <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
 
 </ResourceDictionary>

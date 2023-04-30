@@ -212,11 +212,11 @@ namespace AddonWars2.App
             // Setup logger config.
             var logCfg = LogManager.Configuration;
             var unixMsDateTime = ((DateTimeOffset)appConfig.StartupDateTime).ToUnixTimeMilliseconds();
-            var logPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{unixMsDateTime}.txt");
+            appConfig.LogFileFullPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{unixMsDateTime}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "LogFileTarget",
-                FileName = logPath,
+                FileName = appConfig.LogFileFullPath,
                 Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
             };
 
@@ -229,7 +229,7 @@ namespace AddonWars2.App
                 rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
             }
 
-            Logger?.Info($"Created a new log file: {logPath}");
+            Logger?.Info($"Created a new log file: {appConfig.LogFileFullPath}");
         }
 
         // Setups the application config and local data.

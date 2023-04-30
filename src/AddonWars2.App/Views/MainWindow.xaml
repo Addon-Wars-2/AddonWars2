@@ -138,11 +138,11 @@
                             Grid.Row="0" Grid.Column="1"
                             Grid.ColumnSpan="1"
                             HorizontalAlignment="Left"
-                            Margin="40,62,0,0"
+                            Margin="10,62,0,0"
                             VerticalAlignment="Center"
                             FontFamily="{DynamicResource Menomonia}">
                             <Hyperlink
-                                NavigateUri="https://github.com/Addon-Wars-2/AddonWars2"
+                                NavigateUri="https://github.com/Addon-Wars-2/AddonWars2/wiki"
                                 TextDecorations="None"
                                 FocusVisualStyle="{x:Null}">
                                 <i:Interaction.Triggers>
@@ -156,6 +156,20 @@
                             </Hyperlink>
                             <TextBlock Text="｜"/>
                             <Hyperlink
+                                NavigateUri="{Binding Path=DataContext.Gw2HomeLink, RelativeSource={RelativeSource AncestorType=Window}}"
+                                TextDecorations="None"
+                                FocusVisualStyle="{x:Null}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="RequestNavigate">
+                                        <i:InvokeCommandAction
+                                            Command="{Binding Path=DataContext.CommonCommands.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.Gw2Home}"/>
+                            </Hyperlink>
+                            <TextBlock Text="｜"/>
+                            <Hyperlink
                                 NavigateUri="{Binding Path=DataContext.Gw2WikiLink, RelativeSource={RelativeSource AncestorType=Window}}"
                                 TextDecorations="None"
                                 FocusVisualStyle="{x:Null}">
@@ -166,7 +180,7 @@
                                             PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
-                                <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.Wiki}"/>
+                                <TextBlock Text="{DynamicResource S.MainWindow.Header.Hyperlink.Gw2Wiki}"/>
                             </Hyperlink>
                             <TextBlock Text="｜"/>
                             <Hyperlink

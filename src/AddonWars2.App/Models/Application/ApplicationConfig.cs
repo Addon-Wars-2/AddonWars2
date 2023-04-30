@@ -27,6 +27,7 @@ namespace AddonWars2.App.Models.Application
         private bool _isDebugMode;
         private DateTime _startupDateTime;
         private string _appDataDir = string.Empty;
+        private string _logFileFullPath = string.Empty;
         private CultureInfo? _selectedCulture;
         private LocalData? _localData;
 
@@ -109,6 +110,19 @@ namespace AddonWars2.App.Models.Application
             {
                 var debugSuffix = IsDebugMode ? "debug_" : string.Empty;
                 return "aw2_log_" + debugSuffix;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the full log file path.
+        /// </summary>
+        public string LogFileFullPath
+        {
+            get => _logFileFullPath;
+            set
+            {
+                SetProperty(ref _logFileFullPath, value);
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 

@@ -38,7 +38,7 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="addonsManager">A reference to <see cref="AddonsService"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="AppConfig"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
             AddonsService addonsManager,

@@ -89,14 +89,6 @@
                 <Button.CommandParameter>
                     <sys:Int32>3</sys:Int32>
                 </Button.CommandParameter>
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:ChangePropertyAction
-                            PropertyName="SelectedIndex"
-                            Value="2"
-                            TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Frame}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
             </Button>
         </Grid>
         <Border
