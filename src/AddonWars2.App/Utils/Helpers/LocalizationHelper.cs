@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.Helpers
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using AddonWars2.App.Models.Application;
@@ -27,7 +28,7 @@ namespace AddonWars2.App.Helpers
         public static string SelectCulture(CultureInfo culture, string fallback = "en-US")
         {
             // Fallback to the default culture in none is set.
-            string cultureString;
+            string? cultureString;
             if (culture == null)
             {
                 cultureString = fallback;
@@ -46,7 +47,7 @@ namespace AddonWars2.App.Helpers
         /// <param name="culture">The culture string to be set.</param>
         /// <param name="fallback">Fallback culture string.</param>
         /// <returns>The actually selected culture.</returns>
-        public static string SelectCulture(string culture, string fallback = "en-US")
+        public static string SelectCulture(string? culture, string fallback = "en-US")
         {
             // Fallback to the default culture in none is set.
             string cultureString;
@@ -63,7 +64,7 @@ namespace AddonWars2.App.Helpers
         }
 
         // Performs the actual selection of a culture.
-        private static string SelectCultureInternal(string cultureString, string fallback = "en-US")
+        private static string SelectCultureInternal(string? cultureString, string fallback = "en-US")
         {
             // TODO: If a new string resource has missing entries (let's say, some of them are commented),
             //       a user will see a translation for this strings taken from the previously selected culture,
@@ -89,6 +90,11 @@ namespace AddonWars2.App.Helpers
             // We remove the requested resource and place it at the end => binding will use it instead.
             AW2Application.Current.Resources.MergedDictionaries.Remove(requestedResource);
             AW2Application.Current.Resources.MergedDictionaries.Add(requestedResource);
+
+            if (cultureString == null)
+            {
+                throw new NullReferenceException(nameof(cultureString));
+            }
 
             // Inform the threads about the new culture.
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(cultureString);

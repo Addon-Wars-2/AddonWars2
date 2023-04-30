@@ -44,7 +44,7 @@ namespace AddonWars2.App.Models.Logging
         /// <summary>
         /// Gets a reference to the <see cref="LoggingService"/> service.
         /// </summary>
-        public static LoggingService LoggingManagerInstance { get; internal set; }
+        public static LoggingService? LoggingManagerInstance { get; internal set; }
 
         #endregion Properties
 
@@ -72,7 +72,7 @@ namespace AddonWars2.App.Models.Logging
         // Sends a log message.
         private void SendLogMessage(string message)
         {
-            LoggingManagerInstance.LogEntries.Add(new LogEntry(message));
+            LoggingManagerInstance?.LogEntries?.Add(new LogEntry(message));
         }
 
         #endregion Methods

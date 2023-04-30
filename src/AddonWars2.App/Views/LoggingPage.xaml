@@ -43,7 +43,8 @@
             <Grid>
                 <ItemsControl
                     Margin="5"
-                    ItemsSource="{Binding DataContext.LogEntries, RelativeSource={RelativeSource AncestorType=Page}}">
+                    ItemsSource="{Binding DataContext.LogEntries, RelativeSource={RelativeSource AncestorType=Page}}"
+                    Focusable="False">
                     <ItemsControl.Template>
                         <ControlTemplate>
                             <ScrollViewer

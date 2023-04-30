@@ -6,6 +6,7 @@
 // ==================================================================================================
 
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Windows;
 
 [assembly: ThemeInfo(
@@ -18,3 +19,4 @@ using System.Windows;
 )]
 
 [assembly: AssemblyVersion("1.0.0.*")]
+[assembly: SupportedOSPlatform("windows")]

@@ -9,12 +9,19 @@ namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
     using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Services.Interfaces;
 
     /// <summary>
     /// Provides service methods for application logging.
     /// </summary>
-    public class LoggingService
+    public class LoggingService : ILoggingService
     {
+        #region Fields
+
+        private readonly ObservableCollection<ILogEntry>? _logEntries;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
@@ -22,17 +29,15 @@ namespace AddonWars2.App.Services
         /// </summary>
         public LoggingService()
         {
-            // Blank.
+            _logEntries = new ObservableCollection<ILogEntry>();
         }
 
         #endregion Constructors
 
         #region Properties
 
-        /// <summary>
-        /// Gets a collection of log entries.
-        /// </summary>
-        public ObservableCollection<LogEntry> LogEntries { get; private set; } = new ObservableCollection<LogEntry>();
+        /// <inheritdoc/>
+        public ObservableCollection<ILogEntry>? LogEntries => _logEntries;
 
         #endregion Properties
     }

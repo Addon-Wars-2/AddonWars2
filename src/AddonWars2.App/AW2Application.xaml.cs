@@ -57,15 +57,15 @@ namespace AddonWars2.App
         /// <summary>
         /// Gets a service provider instance.
         /// </summary>
-        public IServiceProvider Services { get; private set; }
+        public IServiceProvider? Services { get; private set; }
 
         /// <summary>
         /// Gets a reference to the main window instance.
         /// </summary>
-        public MainWindow MainWindowInstance { get; private set; }
+        public MainWindow? MainWindowInstance { get; private set; }
 
         // Gets the current logger instance.
-        private static Logger Logger { get; set; }
+        private static Logger? Logger { get; set; }
 
         #endregion Properties
 
@@ -77,11 +77,11 @@ namespace AddonWars2.App
         /// <param name="asAdmin">Indicates whether a new process should request admin rights to start.</param>
         public void Restart(bool asAdmin = false)
         {
-            Logger.Debug("Restarting the application.");
+            Logger?.Debug("Restarting the application.");
 
             // Save app/user data first.
-            var data = Services.GetRequiredService<ApplicationConfig>().LocalData;
-            var path = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
+            var data = Services?.GetRequiredService<ApplicationConfig>().LocalData;
+            var path = Services?.GetRequiredService<ApplicationConfig>().ConfigFilePath;
             ApplicationConfig.WriteLocalDataAsXml(path, data);
 
             // Start a new process.
@@ -98,7 +98,7 @@ namespace AddonWars2.App
 
             process.Start();
 
-            Current.MainWindowInstance.Close();
+            Current?.MainWindowInstance?.Close();
         }
 
         /// <inheritdoc/>
@@ -129,19 +129,20 @@ namespace AddonWars2.App
             AW2App_SetupLocalization();
 
             // To enable setting DataContext directly in markup.
-            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
+            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type!); };
 
             MainWindowInstance = new MainWindow();
             MainWindowInstance.Show();
 
-            Logger.Info("Application loaded and ready.");
+            Logger?.Info("Application loaded and ready.");
         }
 
         /// <inheritdoc/>
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            Logger.Info("Application shutdown.");
+
+            Logger?.Info("Application shutdown.");
             LogManager.Shutdown();
         }
 
@@ -177,17 +178,17 @@ namespace AddonWars2.App
             {
                 if (type == typeof(NLogLoggingManagerTarget))
                 {
-                    return new NLogLoggingManagerTarget(Services.GetRequiredService<LoggingService>());
+                    return new NLogLoggingManagerTarget(Services?.GetRequiredService<LoggingService>()!);
                 }
 
                 return defautCtor(type);
             };
 
             // Replace the current configuration to "reset" it.
-            Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init logger? Doesn't work without.
+            Services?.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init logger? Doesn't work without.
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
-            Logger.Info($"Start logging.");
+            Logger?.Info($"Start logging.");
 
             // Locate AppData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
@@ -196,10 +197,10 @@ namespace AddonWars2.App
                 Directory.CreateDirectory(appDataDir);
             }
 
-            var appConfig = Services.GetRequiredService<ApplicationConfig>();
-            appConfig.AppDataDir = appDataDir;
+            var appConfig = Services?.GetRequiredService<ApplicationConfig>();
+            appConfig!.AppDataDir = appDataDir;
 
-            Logger.Info($"Using AppData directory: {appDataDir}");
+            Logger?.Info($"Using AppData directory: {appDataDir}");
 
             // Locate the logs directory.
             var logsDirPath = Path.Join(appDataDir, appConfig.LogDirName);
@@ -228,15 +229,15 @@ namespace AddonWars2.App
                 rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
             }
 
-            Logger.Info($"Created a new log file: {logPath}");
+            Logger?.Info($"Created a new log file: {logPath}");
         }
 
         // Setups the application config and local data.
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            var appConfig = Services.GetRequiredService<ApplicationConfig>();
-            var localdata = appConfig.LocalData;  // default
+            var appConfig = Services?.GetRequiredService<ApplicationConfig>();
+            var localdata = appConfig!.LocalData;  // default
 
             // Try to get the application settings from the AppData\Roaming dir.
             var path = appConfig.ConfigFilePath;
@@ -247,7 +248,7 @@ namespace AddonWars2.App
                 // Create a new one with default settings.
                 ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                Logger.Info($"Created a new application config file: {path}");
+                Logger?.Info($"Created a new application config file: {path}");
             }
             else
             {
@@ -257,45 +258,52 @@ namespace AddonWars2.App
                 localdata = ApplicationConfig.LoadLocalDataFromXml(path);
                 if (!LocalData.IsValid(localdata))
                 {
-                    Logger.Warn($"The given config file is not valid.");
+                    Logger?.Warn($"The given config file is not valid.");
 
                     // Delete the corrupted file and replace it with a default one.
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                    Logger.Info($"Created a new application config file: {path}");
+                    Logger?.Info($"Created a new application config file: {path}");
                 }
             }
 
             appConfig.LocalData = localdata;
 
-            Logger.Info($"Using the application config file: {path}");
+            Logger?.Info($"Using the application config file: {path}");
         }
 
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var config = Services.GetRequiredService<ApplicationConfig>();
-            var culture = config.LocalData.SelectedCultureString;
+            var config = Services?.GetRequiredService<ApplicationConfig>();
+            var culture = config?.LocalData?.SelectedCultureString;
             var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
             // Now we should replace it in both places since config file may contain invalid culture string.
-            config.SelectedCulture = config.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, config.DefaultCulture);
-            config.LocalData.SelectedCultureString = config.SelectedCulture.Culture;
+            if (config!.LocalData == null)
+            {
+                throw new NullReferenceException(nameof(config.LocalData));
+            }
 
-            Logger.Info($"Culture selected: {actuallySelected}");
+            config!.SelectedCulture = config.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, config.DefaultCulture);
+            config!.LocalData.SelectedCultureString = config.SelectedCulture.Culture;
+
+            Logger?.Info($"Culture selected: {actuallySelected}");
         }
 
         // Logs any unhandled exception.
         private void LogUnhandledException(Exception exception, string source)
         {
             string message = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
-            Logger.Fatal(exception, message);
+            Logger?.Fatal(exception, message);
 
+#if !DEBUG
             Shutdown();
+#endif
         }
 
-        #endregion Methods
+#endregion Methods
     }
 }

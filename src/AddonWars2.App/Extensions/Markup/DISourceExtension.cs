@@ -19,15 +19,15 @@ namespace AddonWars2.App.Extensions.Markup
         /// <summary>
         /// Gets or sets a view model resolver.
         /// </summary>
-        public static Func<Type, object> Resolver { get; set; }
+        public static Func<Type?, object>? Resolver { get; set; }
 
         /// <summary>
         /// Gets or sets a view model type to be requested.
         /// </summary>
-        public Type Type { get; set; }
+        public Type? Type { get; set; }
 
         /// <inheritdoc/>
-        public override object ProvideValue(IServiceProvider serviceProvider)
+        public override object? ProvideValue(IServiceProvider serviceProvider)
         {
             return Resolver?.Invoke(Type);
         }

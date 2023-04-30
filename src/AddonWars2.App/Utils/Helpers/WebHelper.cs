@@ -33,7 +33,7 @@ namespace AddonWars2.App.Utils.Helpers
         {
             _httpClient = new HttpClient()
             {
-                Timeout = TimeSpan.FromSeconds(WebHelper._defaultTimeout),
+                Timeout = TimeSpan.FromSeconds(_defaultTimeout),
             };
         }
 
@@ -62,7 +62,7 @@ namespace AddonWars2.App.Utils.Helpers
         /// <returns><see cref="HttpResponseMessage"/> object.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
         public static async Task<HttpResponseMessage> GetResponseAsync(
-            string url,
+            string? url,
             HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead)
         {
             if (url == null)

@@ -15,6 +15,7 @@
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     DataContext="{markupex:DISource Type=vm:HomePageViewModel}"
     assist:DialogAssist.DialogService="{markupex:DISource Type=services:DialogService}"
@@ -83,7 +84,19 @@
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                Command=""/>
+                Command="{Binding Path=SwitchToInstallAddonsTabCommand, RelativeSource={RelativeSource AncestorType=Page}}">
+                <Button.CommandParameter>
+                    <sys:Int32>3</sys:Int32>
+                </Button.CommandParameter>
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:ChangePropertyAction
+                            PropertyName="SelectedIndex"
+                            Value="2"
+                            TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Frame}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+            </Button>
         </Grid>
         <Border
             x:Name="InstalledAddonsListBorder"

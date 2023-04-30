@@ -79,37 +79,37 @@ namespace AddonWars2.App.ViewModels
         #region Commands Logic
 
         // MinimizeWindowCommand command logic.
-        private void ExecuteMinimizeWindow(Window window)
+        private void ExecuteMinimizeWindow(Window? window)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
             SystemCommands.MinimizeWindow(window);
         }
 
         // MaximizeWindowCommand command logic.
-        private void ExecuteMaximizeWindow(Window window)
+        private void ExecuteMaximizeWindow(Window? window)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
             SystemCommands.MaximizeWindow(window);
         }
 
         // RestoreWindowCommand command logic.
-        private void ExecuteRestoreWindow(Window window)
+        private void ExecuteRestoreWindow(Window? window)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
             SystemCommands.RestoreWindow(window);
         }
 
         // CloseWindowCommand command logic.
-        private void ExecuteCloseWindow(Window window)
+        private void ExecuteCloseWindow(Window? window)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
             SystemCommands.CloseWindow(window);
         }
 
         // Performs Drag and Move on a given window.
-        private void ExecuteDragMoveWindow(Window window)
+        private void ExecuteDragMoveWindow(Window? window)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
             window?.DragMove();
         }
 

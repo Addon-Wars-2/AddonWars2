@@ -26,9 +26,9 @@ namespace AddonWars2.App.Models.Application
 
         private bool _isDebugMode;
         private DateTime _startupDateTime;
-        private string _appDataDir;
-        private CultureInfo _selectedCulture;
-        private LocalData _localData;
+        private string? _appDataDir;
+        private CultureInfo? _selectedCulture;
+        private LocalData? _localData;
 
         #endregion Fields
 
@@ -65,7 +65,7 @@ namespace AddonWars2.App.Models.Application
             internal set
             {
                 SetProperty(ref _isDebugMode, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
@@ -78,20 +78,20 @@ namespace AddonWars2.App.Models.Application
             internal set
             {
                 SetProperty(ref _startupDateTime, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
         /// <summary>
         /// Gets or sets the application %APPDATA% dir.
         /// </summary>
-        public string AppDataDir
+        public string? AppDataDir
         {
             get => _appDataDir;
             set
             {
                 SetProperty(ref _appDataDir, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
@@ -180,13 +180,13 @@ namespace AddonWars2.App.Models.Application
         /// Handlers are re-attached automatically to ensure they keep a reference to the current property instance.
         /// </para>
         /// </remarks>
-        public CultureInfo SelectedCulture
+        public CultureInfo? SelectedCulture
         {
             get => _selectedCulture;
             set
             {
                 SetProperty(ref _selectedCulture, value);
-                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
+                Logger?.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
             }
         }
 
@@ -202,20 +202,20 @@ namespace AddonWars2.App.Models.Application
         /// Handlers are re-attached automatically to ensure they keep a reference to the current property instance.
         /// </para>
         /// </remarks>
-        public LocalData LocalData
+        public LocalData? LocalData
         {
             get => _localData;
             set
             {
                 SetProperty(ref _localData, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
         /// <summary>
         /// Gets the current logger instance.
         /// </summary>
-        protected static ILogger Logger { get; private set; }
+        protected static ILogger? Logger { get; private set; }
 
         #endregion Properties
 
@@ -226,10 +226,12 @@ namespace AddonWars2.App.Models.Application
         /// </summary>
         /// <param name="path">A path data is written to.</param>
         /// <param name="data">Data to be written.</param>
-        public static void WriteLocalDataAsXml(string path, LocalData data)
+        public static void WriteLocalDataAsXml(string? path, LocalData? data)
         {
+            ArgumentNullException.ThrowIfNull(nameof(path));
+
             IOHelper.SerializeXml(data, path);
-            Logger.LogDebug($"Local data saved.");
+            Logger?.LogDebug($"Local data saved.");
         }
 
         /// <summary>
@@ -237,56 +239,81 @@ namespace AddonWars2.App.Models.Application
         /// </summary>
         /// <param name="path">File path.</param>
         /// <returns><see cref="LocalData"/> object.</returns>
-        public static LocalData LoadLocalDataFromXml(string path)
+        public static LocalData? LoadLocalDataFromXml(string path)
         {
             var data = IOHelper.DeserializeXml<LocalData>(path);
-            Logger.LogDebug($"Local data loaded.");
+            Logger?.LogDebug($"Local data loaded.");
             return data;
         }
 
         // Is invoked whenever the selected culture property is changed.
-        private void ApplicationConfig_SelectedCultureChanged(object sender, PropertyChangedEventArgs e)
+        private void ApplicationConfig_SelectedCultureChanged(object? sender, PropertyChangedEventArgs? e)
         {
+            ArgumentNullException.ThrowIfNull(nameof(sender));
+            ArgumentNullException.ThrowIfNull(nameof(e));
+
             // Set the requested culture string inside the local data.
-            var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture.Culture, DefaultCulture);
+            var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture?.Culture, DefaultCulture);
+
+            if (LocalData == null)
+            {
+                throw new NullReferenceException(nameof(LocalData));
+            }
+
             LocalData.SelectedCultureString = culture.Culture;
-            Logger.LogDebug($"Selected culture was changed to: {culture.Culture}");
+            Logger?.LogDebug($"Selected culture was changed to: {culture.Culture}");
 
             // ANet webside supports only several languages. If the requested culture is not supported by ANet,
             // then use global (en) version of ANet services.
             if (!ArenaNetSupportedCultures.Any(x => x.Culture == culture.Culture))
             {
                 culture = DefaultCulture;
-                Logger.LogDebug($"The requested culture is not supported by ANet services. The default one will be set for them.");
+                Logger?.LogDebug($"The requested culture is not supported by ANet services. The default one will be set for them.");
             }
 
-            LocalData.Gw2Home = string.Format(LocalData.Gw2HomeTemplate, culture.ShortName.ToLower());
-            LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture.ShortName.ToLower());
-            LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
+            LocalData.Gw2Home = string.Format(LocalData.Gw2HomeTemplate, culture?.ShortName?.ToLower());
+            LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture?.ShortName?.ToLower());
+            LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture?.ShortName?.ToLower());
 
             // Re-attach handlers to keep a reference to the current property instance.
             PropertyChangedEventManager.RemoveHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
-            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
-            Logger.LogDebug($"Handled.");
+            Logger?.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger?.LogDebug($"Handled.");
         }
 
         // Is invoked whenever the local data property is changed.
-        private void ApplicationConfig_LocalDataInnerChanged(object sender, PropertyChangedEventArgs e)
+        private void ApplicationConfig_LocalDataInnerChanged(object? sender, PropertyChangedEventArgs? e)
         {
+            ArgumentNullException.ThrowIfNull(nameof(sender));
+            ArgumentNullException.ThrowIfNull(nameof(e));
+
+            if (LocalData == null)
+            {
+                throw new NullReferenceException(nameof(LocalData));
+            }
+
             WriteLocalDataAsXml(ConfigFilePath, LocalData);
-            Logger.LogDebug($"Handled.");
+            Logger?.LogDebug($"Handled.");
         }
 
         // Is invoked whenever a local data inner property is changed.
-        private void ApplicationConfig_LocalDataChanged(object sender, PropertyChangedEventArgs e)
+        private void ApplicationConfig_LocalDataChanged(object? sender, PropertyChangedEventArgs? e)
         {
+            ArgumentNullException.ThrowIfNull(nameof(sender));
+            ArgumentNullException.ThrowIfNull(nameof(e));
+
+            if (LocalData == null)
+            {
+                throw new NullReferenceException(nameof(LocalData));
+            }
+
             WriteLocalDataAsXml(ConfigFilePath, LocalData);
 
             PropertyChangedEventManager.RemoveHandler(LocalData, ApplicationConfig_LocalDataInnerChanged, string.Empty);
             PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataInnerChanged, string.Empty);
-            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
-            Logger.LogDebug($"Handled.");
+            Logger?.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger?.LogDebug($"Handled.");
         }
 
         #endregion Methods

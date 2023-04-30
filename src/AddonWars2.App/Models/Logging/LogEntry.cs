@@ -10,8 +10,14 @@ namespace AddonWars2.App.Models.Logging
     /// <summary>
     /// Represents a single log entry.
     /// </summary>
-    public readonly struct LogEntry
+    public readonly struct LogEntry : ILogEntry
     {
+        #region Fields
+
+        private readonly string _message;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
@@ -29,17 +35,15 @@ namespace AddonWars2.App.Models.Logging
         /// <param name="message">Log entry message.</param>
         public LogEntry(string message)
         {
-            Message = message;
+            _message = message;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        /// <summary>
-        /// Gets the log message.
-        /// </summary>
-        public readonly string Message { get; }
+        /// <inheritdoc/>
+        public readonly string? Message => _message;
 
         #endregion Properties
     }

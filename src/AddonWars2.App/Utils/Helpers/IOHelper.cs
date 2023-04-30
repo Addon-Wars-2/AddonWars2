@@ -10,7 +10,6 @@ namespace AddonWars2.App.Helpers
     using System;
     using System.IO;
     using System.Reflection;
-    using System.Runtime.Versioning;
     using System.Threading.Tasks;
     using System.Xml;
     using System.Xml.Serialization;
@@ -77,6 +76,11 @@ namespace AddonWars2.App.Helpers
             var assembly = typeof(AW2Application).Assembly;
             var stream = assembly.GetManifestResourceStream("AddonWars2.App.Resources.NLog.config");
 
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
             string xml;
             using (var reader = new StreamReader(stream))
             {
@@ -97,19 +101,18 @@ namespace AddonWars2.App.Helpers
         /// <param name="keyname">Key (directory) to search in.</param>
         /// <param name="name">Value name to search for.</param>
         /// <returns>A found value boxed inside an <see cref="object"/> if found. Otherwise - <see langword="null"/>.</returns>
-        [SupportedOSPlatform("windows")]
-        public static object SearchRegistryKey(string keyname, string name)
+        public static object? SearchRegistryKey(string keyname, string name)
         {
             if (keyname == null || name == null)
             {
                 return null;
             }
 
-            RegistryKey parent = Registry.LocalMachine.OpenSubKey(keyname);
+            RegistryKey? parent = Registry.LocalMachine.OpenSubKey(keyname);
 
             try
             {
-                var foundValue = parent.GetValue(name);
+                var foundValue = parent?.GetValue(name);
                 return foundValue;
             }
             catch (Exception)
@@ -140,7 +143,13 @@ namespace AddonWars2.App.Helpers
                     throw new InvalidOperationException($"Resource not found: {resourceName}");
                 }
 
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var dirName = Path.GetDirectoryName(path);
+                if (dirName == null)
+                {
+                    throw new NullReferenceException(nameof(dirName));
+                }
+
+                Directory.CreateDirectory(dirName);
 
                 using (FileStream file = new FileStream(path, fileMode, FileAccess.Write))
                 {
@@ -178,7 +187,7 @@ namespace AddonWars2.App.Helpers
         /// <param name="obj">Object to be serialized.</param>
         /// <param name="filename">XML file path.</param>
         /// <returns>Serialized string.</returns>
-        public static string SerializeXml<T>(this T obj, string filename)
+        public static string SerializeXml<T>(this T obj, string? filename)
         {
             var serializedString = SerializeXml<T>(obj);
             if (string.IsNullOrEmpty(serializedString))
@@ -197,9 +206,9 @@ namespace AddonWars2.App.Helpers
         /// <typeparam name="T">Object type to be deserialized to.</typeparam>
         /// <param name="filename">XML file path.</param>
         /// <returns>Deserialized object.</returns>
-        public static T DeserializeXml<T>(string filename)
+        public static T? DeserializeXml<T>(string filename)
         {
-            T deserializedObj = default(T);
+            T? deserializedObj = default(T);
 
             if (string.IsNullOrEmpty(filename))
             {
@@ -211,7 +220,7 @@ namespace AddonWars2.App.Helpers
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 try
                 {
-                    deserializedObj = (T)serializer.Deserialize(reader);
+                    deserializedObj = (T?)serializer.Deserialize(reader);
                 }
                 catch (InvalidOperationException)
                 {
@@ -227,7 +236,7 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="xmlString">XML string.</param>
         /// <param name="filename">File path.</param>
-        public static void WriteXml(string xmlString, string filename)
+        public static void WriteXml(string xmlString, string? filename)
         {
             var xml = XmlDocumentFromString(xmlString);
             WriteXmlInternal(xml, filename);
@@ -238,7 +247,7 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="xml">XML document object.</param>
         /// <param name="filename">File path.</param>
-        public static void WriteXml(XmlDocument xml, string filename)
+        public static void WriteXml(XmlDocument xml, string? filename)
         {
             WriteXmlInternal(xml, filename);
         }
@@ -261,7 +270,7 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="filename">File path.</param>
         /// <returns><see cref="string"/> object.</returns>
-        public static string ReadXmlAsString(string filename)
+        public static string? ReadXmlAsString(string filename)
         {
             var xmlDoc = ReadXmlAsDocument(filename);
 
@@ -277,8 +286,10 @@ namespace AddonWars2.App.Helpers
         }
 
         // Writes a given XmlDocument to the specified file.
-        private static void WriteXmlInternal(XmlDocument xml, string filename)
+        private static void WriteXmlInternal(XmlDocument xml, string? filename)
         {
+            ArgumentException.ThrowIfNullOrEmpty(nameof(filename));
+
             var xmlWriterSettings = new XmlWriterSettings()
             {
                 Async = false,
@@ -288,7 +299,7 @@ namespace AddonWars2.App.Helpers
                 NewLineHandling = NewLineHandling.Replace,
             };
 
-            using (XmlWriter writer = XmlWriter.Create(filename, xmlWriterSettings))
+            using (XmlWriter writer = XmlWriter.Create(filename!, xmlWriterSettings))
             {
                 xml.Save(writer);
             }

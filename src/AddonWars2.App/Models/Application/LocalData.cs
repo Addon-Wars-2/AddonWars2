@@ -18,14 +18,14 @@ namespace AddonWars2.App.Models.Application
     {
         #region Fields
 
-        private string _selectedCultureString;
-        private string _anetHome;
-        private string _gw2Home;
-        private string _gw2WikiHome;
-        private string _gw2Rss;
-        private string _gw2Api2;
-        private string _gw2FilePath;
-        private string _gw2DirPath;
+        private string? _selectedCultureString;
+        private string? _anetHome;
+        private string? _gw2Home;
+        private string? _gw2WikiHome;
+        private string? _gw2Rss;
+        private string? _gw2Api2;
+        private string? _gw2FilePath;
+        private string? _gw2DirPath;
 
         #endregion Fields
 
@@ -65,7 +65,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the selected application culture string.
         /// </summary>
         [XmlElement("SelectedCulture")]
-        public string SelectedCultureString
+        public string? SelectedCultureString
         {
             get => _selectedCultureString;
             set => SetProperty(ref _selectedCultureString, value);
@@ -75,7 +75,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the ArenaNet homepage URL.
         /// </summary>
         [XmlElement("AnetHome")]
-        public string AnetHome
+        public string? AnetHome
         {
             get => _anetHome;
             set => SetProperty(ref _anetHome, value);
@@ -85,7 +85,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the GW2 homepage URL.
         /// </summary>
         [XmlElement("Gw2Home")]
-        public string Gw2Home
+        public string? Gw2Home
         {
             get => _gw2Home;
             set => SetProperty(ref _gw2Home, value);
@@ -95,7 +95,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the GW2 wiki homepage URL.
         /// </summary>
         [XmlElement("Gw2Wiki")]
-        public string Gw2WikiHome
+        public string? Gw2WikiHome
         {
             get => _gw2WikiHome;
             set => SetProperty(ref _gw2WikiHome, value);
@@ -105,7 +105,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the GW2 RSS feed URL.
         /// </summary>
         [XmlElement("Gw2Rss")]
-        public string Gw2Rss
+        public string? Gw2Rss
         {
             get => _gw2Rss;
             set => SetProperty(ref _gw2Rss, value);
@@ -115,7 +115,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the GW2 APIv2 endpoint URL.
         /// </summary>
         [XmlElement("Gw2Api")]
-        public string Gw2Api2
+        public string? Gw2Api2
         {
             get => _gw2Api2;
             set => SetProperty(ref _gw2Api2, value);
@@ -125,7 +125,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the location of GW2 executable.
         /// </summary>
         [XmlElement("Gw2FilePath")]
-        public string Gw2FilePath
+        public string? Gw2FilePath
         {
             get => _gw2FilePath;
             set => SetProperty(ref _gw2FilePath, value);
@@ -135,7 +135,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets the location of GW2 directory.
         /// </summary>
         [XmlElement("Gw2DirPath")]
-        public string Gw2DirPath
+        public string? Gw2DirPath
         {
             get => _gw2DirPath;
             set => SetProperty(ref _gw2DirPath, value);
@@ -175,7 +175,7 @@ namespace AddonWars2.App.Models.Application
         /// </remarks>
         /// <param name="obj"><see cref="LocalData"/> reference to check for validity.</param>
         /// <returns><see langword="true"/> if valid, otherwise <see langword="false"/>.</returns>
-        public static bool IsValid(LocalData obj)
+        public static bool IsValid(LocalData? obj)
         {
             // TODO: Implement through attributes maybe?
             //       Otherwise eventually we'll end up with a looooong and ugly method call.

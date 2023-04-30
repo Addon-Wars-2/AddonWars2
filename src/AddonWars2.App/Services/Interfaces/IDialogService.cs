@@ -24,10 +24,10 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="multiselect">An option indicating whether the dialog allows users to select multiple files.</param>
         /// <returns>An array of selected files. In none selected - return an empty array.</returns>
         public string[] OpenFileDialog(
-            string title = "",
-            string filename = "",
-            string defaultExt = "",
-            string filter = "",
+            string? title = "",
+            string? filename = "",
+            string? defaultExt = "",
+            string? filter = "",
             bool multiselect = false);
 
         #endregion Methods

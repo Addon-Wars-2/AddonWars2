@@ -10,6 +10,8 @@ namespace AddonWars2.App.Views
     using System.Windows.Controls;
     using AddonWars2.App.Extensions.Assists;
     using AddonWars2.App.Services;
+    using AddonWars2.App.Utils.Helpers;
+    using CommunityToolkit.Mvvm.Input;
 
     /// <summary>
     /// Interaction logic for HomePage.xaml.
@@ -24,6 +26,9 @@ namespace AddonWars2.App.Views
         public HomePage()
         {
             InitializeComponent();
+
+            // Belongs purely to UI, not data.
+            SwitchToInstallAddonsTabCommand = new RelayCommand<int>(ExecuteSwitchToInstallAddonsTabCommand);
         }
 
         #endregion Constructors
@@ -31,6 +36,29 @@ namespace AddonWars2.App.Views
         #region Properties
 
         #endregion Properties
+
+        #region Commands
+
+        /// <summary>
+        /// Gets a command that will search for a parent <see cref="TabControl"/>
+        /// and switch to the invisible "Install Addons" tab.
+        /// </summary>
+        public RelayCommand<int> SwitchToInstallAddonsTabCommand { get; private set; }
+
+        #endregion Commands
+
+        #region Commands Logic
+
+        private void ExecuteSwitchToInstallAddonsTabCommand(int tabIndex)
+        {
+            var tabControl = VisualTreeHelperEx.FindParent<TabControl>(this);
+            if (tabControl != null && tabIndex >= 0)
+            {
+                tabControl.SelectedIndex = tabIndex;
+            }
+        }
+
+        #endregion Commands Logic
 
         #region Methods
 

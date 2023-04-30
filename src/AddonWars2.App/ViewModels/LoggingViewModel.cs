@@ -31,7 +31,7 @@ namespace AddonWars2.App.ViewModels
         {
             LoggingManagerInstance = loggingManager;
 
-            Logger.LogDebug("Instance initialized.");
+            Logger?.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -46,7 +46,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<LogEntry> LogEntries => LoggingManagerInstance.LogEntries;
+        public ObservableCollection<ILogEntry>? LogEntries => LoggingManagerInstance.LogEntries;
 
         #endregion Properties
     }

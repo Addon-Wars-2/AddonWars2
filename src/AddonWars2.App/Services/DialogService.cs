@@ -19,10 +19,10 @@ namespace AddonWars2.App.Services
 
         /// <inheritdoc/>
         public string[] OpenFileDialog(
-            string title = "",
-            string filename = "",
-            string defaultExt = "",
-            string filter = "",
+            string? title = "",
+            string? filename = "",
+            string? defaultExt = "",
+            string? filter = "",
             bool multiselect = false)
         {
             var dialog = new OpenFileDialog()

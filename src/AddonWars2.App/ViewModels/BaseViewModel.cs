@@ -35,7 +35,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the current logger instance.
         /// </summary>
-        protected static ILogger Logger { get; private set; }
+        protected static ILogger? Logger { get; private set; }
 
         #endregion Properties
     }

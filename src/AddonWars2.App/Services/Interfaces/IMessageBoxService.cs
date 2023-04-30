@@ -25,8 +25,8 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="options">Special display options for a message box.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
         public MessageBoxResult Show(
-            string text,
-            string caption,
+            string? text,
+            string? caption,
             MessageBoxButton button,
             MessageBoxImage icon,
             MessageBoxResult defaultResult,
@@ -42,8 +42,8 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="defaultResult">A default message box result.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
         public MessageBoxResult Show(
-            string text,
-            string caption,
+            string? text,
+            string? caption,
             MessageBoxButton button,
             MessageBoxImage icon,
             MessageBoxResult defaultResult);
@@ -56,7 +56,7 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="button">Button(s) to be displayed.</param>
         /// <param name="icon">The icon image to be displayed.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
-        public MessageBoxResult Show(string text, string caption, MessageBoxButton button, MessageBoxImage icon)
+        public MessageBoxResult Show(string? text, string? caption, MessageBoxButton button, MessageBoxImage icon)
         {
             return Show(text, caption, button, icon, MessageBoxResult.None, MessageBoxOptions.None);
         }
@@ -68,7 +68,7 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="caption">Message box title.</param>
         /// <param name="button">Button(s) to be displayed.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
-        public MessageBoxResult Show(string text, string caption, MessageBoxButton button);
+        public MessageBoxResult Show(string? text, string? caption, MessageBoxButton button);
 
         /// <summary>
         /// Displays a native message box with specified text, caption, and style.
@@ -76,13 +76,13 @@ namespace AddonWars2.App.Services.Interfaces
         /// <param name="text">Message text.</param>
         /// <param name="caption">Message box title.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
-        public MessageBoxResult Show(string text, string caption);
+        public MessageBoxResult Show(string? text, string? caption);
 
         /// <summary>
         /// Displays a native message box with specified text, caption, and style.
         /// </summary>
         /// <param name="text">Message text.</param>
         /// <returns><see cref="MessageBoxResult"/> result.</returns>
-        public MessageBoxResult Show(string text);
+        public MessageBoxResult Show(string? text);
     }
 }

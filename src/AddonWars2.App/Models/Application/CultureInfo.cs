@@ -16,6 +16,14 @@ namespace AddonWars2.App.Models.Application
     [Serializable]
     public class CultureInfo
     {
+        #region Fields
+
+        private string? _culture;
+        private string? _shortName;
+        private string? _fullName;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
@@ -29,9 +37,9 @@ namespace AddonWars2.App.Models.Application
             string shortName,
             string fullName)
         {
-            Culture = culture;
-            ShortName = shortName;
-            FullName = fullName;
+            _culture = culture;
+            _shortName = shortName;
+            _fullName = fullName;
         }
 
         private CultureInfo()
@@ -49,19 +57,31 @@ namespace AddonWars2.App.Models.Application
         /// i.e. "en-US".
         /// </summary>
         [XmlElement("culture")]
-        public string Culture { get; set; }
+        public string? Culture
+        {
+            get => _culture;
+            set => _culture = value;
+        }
 
         /// <summary>
         /// Gets or sets culture short name.
         /// </summary>
         [XmlElement("short")]
-        public string ShortName { get; set; }
+        public string? ShortName
+        {
+            get => _shortName;
+            set => _shortName = value;
+        }
 
         /// <summary>
         /// Gets or sets culture full name.
         /// </summary>
         [XmlElement("full")]
-        public string FullName { get; set; }
+        public string? FullName
+        {
+            get => _fullName;
+            set => _fullName = value;
+        }
 
         #endregion Properties
     }

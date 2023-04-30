@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.Commands
 {
+    using System;
     using System.Diagnostics;
     using System.Windows.Navigation;
     using CommunityToolkit.Mvvm.Input;
@@ -49,9 +50,11 @@ namespace AddonWars2.App.Commands
         #region Commands Logic
 
         // OpenUrlCommand command logic.
-        private void ExecuteOpenUrlCommand(RequestNavigateEventArgs e)
+        private void ExecuteOpenUrlCommand(RequestNavigateEventArgs? e)
         {
             Logger.Debug("Executing command.");
+
+            ArgumentNullException.ThrowIfNull(nameof(e));
 
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#change-description
             // UseShellExecute = false is a default behavior for .NET Core and on, while it's set to true for .NET Framework.

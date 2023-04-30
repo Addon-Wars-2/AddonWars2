@@ -30,7 +30,10 @@ namespace AddonWars2.App.Views
             InitializeComponent();
             InitializeWebView2Async();
 
-            AW2Application.Current.MainWindowInstance.Closed += MainWindowInstance_Closed;
+            if (AW2Application.Current.MainWindowInstance != null)
+            {
+                AW2Application.Current.MainWindowInstance.Closed += MainWindowInstance_Closed;
+            }
         }
 
         #endregion Constructors
@@ -43,8 +46,8 @@ namespace AddonWars2.App.Views
         public async void InitializeWebView2Async()
         {
             // TODO: Is there a better way to inject this?
-            var appConfig = AW2Application.Current.Services.GetRequiredService<ApplicationConfig>();
-            var appDataDir = appConfig.AppDataDir;
+            var appConfig = AW2Application.Current?.Services?.GetRequiredService<ApplicationConfig>();
+            var appDataDir = appConfig!.AppDataDir;
 
             // HACK: https://github.com/MicrosoftEdge/WebView2Feedback/issues/299#issuecomment-648812482
             var options = new CoreWebView2EnvironmentOptions("--disk-cache-size=1");
@@ -69,9 +72,12 @@ namespace AddonWars2.App.Views
         }
 
         // Redirects new window requests to a default browser.
-        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs? e)
         {
-            var processInfo = new ProcessStartInfo(e.Uri)
+            ArgumentNullException.ThrowIfNull(nameof(sender));
+            ArgumentNullException.ThrowIfNull(nameof(e));
+
+            var processInfo = new ProcessStartInfo(e!.Uri)
             {
                 UseShellExecute = true,
             };
@@ -81,8 +87,11 @@ namespace AddonWars2.App.Views
         }
 
         // Cleanup WebView data on main window close event.
-        private void MainWindowInstance_Closed(object sender, EventArgs e)
+        private void MainWindowInstance_Closed(object? sender, EventArgs? e)
         {
+            ArgumentNullException.ThrowIfNull(nameof(sender));
+            ArgumentNullException.ThrowIfNull(nameof(e));
+
             var webView2 = (WebView2)FindName("WebView2Control");
             if (webView2 != null)
             {

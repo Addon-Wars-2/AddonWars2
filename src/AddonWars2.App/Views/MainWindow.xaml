@@ -58,7 +58,7 @@
             </Image.OpacityMask>
         </Image>
         <Border>
-            <Grid x:Name="MainGrid">
+            <Grid x:Name="MainWindowContentGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -278,20 +278,24 @@
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.News}"
                         FontFamily="{DynamicResource Menomonia}">
-                        <AdornerDecorator>
-                            <Frame
-                                Source="NewsPage.xaml"
-                                FocusVisualStyle="{x:Null}"/>
-                        </AdornerDecorator>
+                        <Frame
+                            Source="NewsPage.xaml"
+                            FocusVisualStyle="{x:Null}"/>
                     </TabItem>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}"
                         FontFamily="{DynamicResource Menomonia}">
-                        <AdornerDecorator>
-                            <Frame
-                                Source="LoggingPage.xaml"
-                                FocusVisualStyle="{x:Null}"/>
-                        </AdornerDecorator>
+                        <Frame
+                            Source="LoggingPage.xaml"
+                            FocusVisualStyle="{x:Null}"/>
+                    </TabItem>
+                    <TabItem
+                        Visibility="Collapsed"
+                        Header="&lt;Install Addons&gt;"
+                        FontFamily="{DynamicResource Menomonia}">
+                        <Frame
+                            Source="InstallAddonsPage.xaml"
+                            FocusVisualStyle="{x:Null}"/>
                     </TabItem>
                 </TabControl>
             </Grid>
@@ -334,6 +338,13 @@
                 </TextBlock.Effect>
             </TextBlock>
         </StackPanel>
+        <Grid
+            x:Name="InstallAddonsPage">
+            <Frame
+                Visibility="Hidden"
+                Source="InstallAddonsPage.xaml"
+                FocusVisualStyle="{x:Null}"/>
+        </Grid>
     </Grid>
 
 </Window>

@@ -9,7 +9,6 @@ namespace AddonWars2.App.ViewModels
 {
     using System.Collections.ObjectModel;
     using System.IO;
-    using System.Runtime.Versioning;
     using System.Windows;
     using AddonWars2.Addons;
     using AddonWars2.App.Helpers;
@@ -25,8 +24,10 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
+
         private bool _isActuallyLoaded = false;
-        private Gw2Addon _selectedAddon;
+        private Gw2Addon? _selectedAddon;
 
         #endregion Fields
 
@@ -36,7 +37,7 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="addonsManager">A reference to <see cref="Services.AddonsService"/>.</param>
+        /// <param name="addonsManager">A reference to <see cref="AddonsService"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
@@ -50,7 +51,7 @@ namespace AddonWars2.App.ViewModels
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
 
-            Logger.LogDebug("Instance initialized.");
+            Logger?.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -70,26 +71,26 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets GW2 executable location.
         /// </summary>
-        public string Gw2ExecPath
+        public string? Gw2ExecPath
         {
-            get => AppConfig.LocalData.Gw2FilePath;
+            get => AppConfig?.LocalData?.Gw2FilePath;
             set
             {
-                SetProperty(AppConfig.LocalData.Gw2FilePath, value, AppConfig.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
-                Logger.LogDebug($"Property set: {value}");
+                SetProperty(AppConfig?.LocalData?.Gw2FilePath, value, AppConfig?.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
         /// <summary>
         /// Gets or sets GW2 directory location.
         /// </summary>
-        public string Gw2DirPath
+        public string? Gw2DirPath
         {
-            get => AppConfig.LocalData.Gw2DirPath;
+            get => AppConfig?.LocalData?.Gw2DirPath;
             set
             {
-                SetProperty(AppConfig.LocalData.Gw2DirPath, value, AppConfig.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
-                Logger.LogDebug($"Property set: {value}");
+                SetProperty(AppConfig?.LocalData?.Gw2DirPath, value, AppConfig?.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
@@ -101,13 +102,13 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets the currently selected add-on.
         /// </summary>
-        public Gw2Addon SelectedAddon
+        public Gw2Addon? SelectedAddon
         {
             get => _selectedAddon;
             set
             {
                 SetProperty(ref _selectedAddon, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger?.LogDebug($"Property set: {value}");
             }
         }
 
@@ -142,7 +143,7 @@ namespace AddonWars2.App.ViewModels
                 if (_isActuallyLoaded == false)
                 {
                     SetProperty(ref _isActuallyLoaded, value);
-                    Logger.LogDebug($"Property set: {value}");
+                    Logger?.LogDebug($"Property set: {value}");
                 }
             }
         }
@@ -161,54 +162,48 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public RelayCommand<string[]> UpdateGw2ExePathCommand { get; private set; }
 
-        /// <summary>
-        /// Gets a command that updates a welcome message.
-        /// </summary>
-        public RelayCommand UpdateWelcomeMessageCommand { get; private set; }
-
         #endregion Commands
 
         #region Commands Logic
 
         // TryFindGw2ExeCommand command logic.
-        [SupportedOSPlatform("windows")]
         private void ExecuteTryFindGw2ExeCommand()
         {
             // TODO: Add another step (if this one failed) to search inside the %adddata% directory
             //       and parse GW2 GFXSettings file. GW2 dir path is stored in INSTALLPATH entry.
 
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
 
             // First try to get the file location from the registry.
-            var regDir = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Guild Wars 2";
+            var regDir = GW2_REGISTRY_DIR;
             var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
-                Logger.LogWarning("Couldn't find GW2 string in the registry.");
+                Logger?.LogWarning("Couldn't find GW2 string in the registry.");
                 gw2exe = string.Empty;
             }
 
             Gw2ExecPath = gw2exe;
             Gw2DirPath = Path.GetDirectoryName(gw2exe);
 
-            Logger.LogInformation("GW2 executable location was set automatically.");
+            Logger?.LogInformation("GW2 executable location was set automatically.");
         }
 
         // UpdateGw2ExePathCommand command logic.
-        private void ExecuteUpdateGw2ExePathCommand(string[] paths)
+        private void ExecuteUpdateGw2ExePathCommand(string[]? paths)
         {
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
 
-            if (paths.Length == 0)
+            if (paths?.Length == 0)
             {
-                Logger.LogDebug("No paths were selected.");
+                Logger?.LogDebug("No paths were selected.");
                 return;
             }
 
-            var path = paths[0];
+            var path = paths?[0];
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                Logger.LogDebug("Path is null, empty or not valid.");
+                Logger?.LogDebug("Path is null, empty or not valid.");
                 return;
             }
 

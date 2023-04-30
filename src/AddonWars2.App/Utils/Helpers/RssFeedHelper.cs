@@ -16,7 +16,7 @@ namespace AddonWars2.App.Utils.Helpers
     using AddonWars2.App.Models.GuildWars2;
 
     /// <summary>
-    /// Represents a Guild Wars 2 RSS feed as a collection of <see cref="RssFeedItem"/> objects.
+    /// Provides various methods to operate with RSS feeds.
     /// </summary>
     public static class RssFeedHelper
     {
@@ -53,6 +53,11 @@ namespace AddonWars2.App.Utils.Helpers
 
             // Create all required directories.
             var parentDirPath = Path.GetDirectoryName(filename);
+            if (parentDirPath == null)
+            {
+                throw new NullReferenceException(nameof(filename));
+            }
+
             Directory.CreateDirectory(parentDirPath);
 
             await File.WriteAllTextAsync(filename, content);
@@ -84,13 +89,14 @@ namespace AddonWars2.App.Utils.Helpers
         // Parses the RSS feed (XML document) and returns it as a collection of RssFeedItem objects.
         private static List<RssFeedItem> ParseRssFeedXml(XDocument xml)
         {
-            if (xml == null)
-            {
-                throw new NullReferenceException(nameof(xml));
-            }
+            ArgumentNullException.ThrowIfNull(xml);
 
             var feed = new List<RssFeedItem>();
-            var nsContent = xml.Root.GetNamespaceOfPrefix("content");
+            var nsContent = xml.Root?.GetNamespaceOfPrefix("content");
+            if (nsContent == null)
+            {
+                return new List<RssFeedItem>();
+            }
 
             foreach (var item in xml.Descendants("item"))
             {
@@ -102,7 +108,7 @@ namespace AddonWars2.App.Utils.Helpers
                 {
                     Title = item.Element("title")?.Value,
                     Link = item.Element("link")?.Value,
-                    PublishDate = DateTime.Parse(item.Element("pubDate")?.Value),
+                    PublishDate = DateTime.Parse(item.Element("pubDate")?.Value ?? string.Empty),
                     Guid = item.Element("guid")?.Value.Split("=").Last(),
                     Description = item.Element("description")?.Value,
                     ContentEncoded = item.Element(nsContent + "encoded")?.Value.Replace(@"""//", @"""https://"),

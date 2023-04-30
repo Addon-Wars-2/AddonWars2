@@ -18,8 +18,8 @@ namespace AddonWars2.App.Services
 
         /// <inheritdoc/>
         public MessageBoxResult Show(
-            string text,
-            string caption,
+            string? text,
+            string? caption,
             MessageBoxButton button,
             MessageBoxImage icon,
             MessageBoxResult defaultResult,
@@ -30,8 +30,8 @@ namespace AddonWars2.App.Services
 
         /// <inheritdoc/>
         public MessageBoxResult Show(
-            string text,
-            string caption,
+            string? text,
+            string? caption,
             MessageBoxButton button,
             MessageBoxImage icon,
             MessageBoxResult defaultResult)
@@ -40,25 +40,25 @@ namespace AddonWars2.App.Services
         }
 
         /// <inheritdoc/>
-        public MessageBoxResult Show(string text, string caption, MessageBoxButton button, MessageBoxImage icon)
+        public MessageBoxResult Show(string? text, string? caption, MessageBoxButton button, MessageBoxImage icon)
         {
             return Show(text, caption, button, icon, MessageBoxResult.None, MessageBoxOptions.None);
         }
 
         /// <inheritdoc/>
-        public MessageBoxResult Show(string text, string caption, MessageBoxButton button)
+        public MessageBoxResult Show(string? text, string? caption, MessageBoxButton button)
         {
             return Show(text, caption, button, MessageBoxImage.None, MessageBoxResult.None, MessageBoxOptions.None);
         }
 
         /// <inheritdoc/>
-        public MessageBoxResult Show(string text, string caption)
+        public MessageBoxResult Show(string? text, string? caption)
         {
             return Show(text, caption, MessageBoxButton.OK, MessageBoxImage.None, MessageBoxResult.None, MessageBoxOptions.None);
         }
 
         /// <inheritdoc/>
-        public MessageBoxResult Show(string text)
+        public MessageBoxResult Show(string? text)
         {
             return Show(text, string.Empty, MessageBoxButton.OK, MessageBoxImage.None, MessageBoxResult.None, MessageBoxOptions.None);
         }

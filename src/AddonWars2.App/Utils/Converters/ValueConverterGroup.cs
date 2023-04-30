@@ -29,7 +29,8 @@ namespace AddonWars2.App.Utils.Converters
         {
             if (parameter != null)
             {
-                _parameters = ParamsRegex().Split(parameter.ToString());
+                var parameterString = parameter.ToString() ?? string.Empty;
+                _parameters = ParamsRegex().Split(parameterString);
             }
 
             return this.Aggregate(value, (current, converter) => converter.Convert(current, targetType, GetParameter(converter), culture));
@@ -44,7 +45,7 @@ namespace AddonWars2.App.Utils.Converters
         [GeneratedRegex(@"(?<!\\),")]
         private static partial Regex ParamsRegex();
 
-        private string GetParameter(IValueConverter converter)
+        private string? GetParameter(IValueConverter converter)
         {
             if (_parameters == null)
             {
@@ -52,7 +53,7 @@ namespace AddonWars2.App.Utils.Converters
             }
 
             var index = IndexOf(converter);
-            string parameter;
+            string? parameter;
 
             try
             {

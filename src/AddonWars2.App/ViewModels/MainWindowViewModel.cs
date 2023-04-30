@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Reflection;
     using System.Windows.Controls;
@@ -32,7 +33,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
-        /// <param name="homeViewModel">A reference to <see cref="ViewModels.HomePageViewModel"/>.</param>
+        /// <param name="homeViewModel">A reference to <see cref="HomePageViewModel"/>.</param>
         /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
@@ -49,7 +50,7 @@ namespace AddonWars2.App.ViewModels
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
 
-            Logger.LogDebug("Instance initialized.");
+            Logger?.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -67,12 +68,12 @@ namespace AddonWars2.App.ViewModels
         public CommonCommands CommonCommands { get; private set; }
 
         /// <summary>
-        /// Gets a reference to <see cref="ViewModels.HomePageViewModel"/> view model.
+        /// Gets a reference to <see cref="HomePageViewModel"/> view model.
         /// </summary>
         public HomePageViewModel HomeViewModel { get; private set; }
 
         /// <summary>
-        /// Gets a reference to <see cref="ViewModels.LoggingViewModel"/> view model.
+        /// Gets a reference to <see cref="LoggingViewModel"/> view model.
         /// </summary>
         public LoggingViewModel LoggingViewModel { get; private set; }
 
@@ -90,29 +91,29 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 wiki URL.
         /// </summary>
-        public string Gw2WikiLink => AppConfig.LocalData.Gw2WikiHome;
+        public string? Gw2WikiLink => AppConfig?.LocalData?.Gw2WikiHome;
 
         /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
-        public CultureInfo SelectedCulture
+        public CultureInfo? SelectedCulture
         {
             get
             {
-                return AppConfig.SelectedCulture;
+                return AppConfig?.SelectedCulture;
             }
 
             set
             {
-                SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
-                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
+                SetProperty(AppConfig?.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
+                Logger?.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
             }
         }
 
         /// <summary>
         /// Gets the package version with suffix included.
         /// </summary>
-        public string AssemblyFileVersion => Assembly.GetExecutingAssembly()?.GetName().Version.ToString();
+        public string AssemblyFileVersion => Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? string.Empty;
 
         #endregion Properties
 
@@ -128,16 +129,18 @@ namespace AddonWars2.App.ViewModels
         #region Commands Logic
 
         // ChangeLanguageCommand command logic.
-        private void ExecuteChangeLanguageCommand(SelectionChangedEventArgs e)
+        private void ExecuteChangeLanguageCommand(SelectionChangedEventArgs? e)
         {
             // TODO: Doesn't really belong to VM since it does nothing with data (models).
             //       More naturally to put it to a code-behind.
 
-            Logger.LogDebug("Executing command.");
+            Logger?.LogDebug("Executing command.");
+
+            ArgumentNullException.ThrowIfNull(nameof(e));
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
             // and we edit its value. So we just ignore the first call until it's loaded completely.
-            ComboBox comboBox = (ComboBox)e.Source;
+            ComboBox comboBox = (ComboBox)e!.Source;
             if (!comboBox.IsLoaded)
             {
                 return;
