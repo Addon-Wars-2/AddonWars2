@@ -7,13 +7,13 @@
 
 namespace AddonWars2.App.Models.Logging
 {
-    using AddonWars2.App.Controllers;
+    using AddonWars2.App.Services;
     using NLog;
     using NLog.Targets;
 
     /// <summary>
     /// A custom NLog target that writes to <see cref="LogEntry"/> object and then
-    /// adds it to the collection specified in <see cref="LoggingManager"/>.
+    /// adds it to the collection specified in <see cref="LoggingService"/>.
     /// </summary>
     [Target("NLogLoggingManagerTarget")]
     public sealed class NLogLoggingManagerTarget : TargetWithLayout
@@ -23,8 +23,8 @@ namespace AddonWars2.App.Models.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="NLogLoggingManagerTarget"/> class.
         /// </summary>
-        /// <param name="loggingManager">A rerefence to a <see cref="LoggingManager"/> object.</param>
-        public NLogLoggingManagerTarget(LoggingManager loggingManager)
+        /// <param name="loggingManager">A rerefence to a <see cref="LoggingService"/> object.</param>
+        public NLogLoggingManagerTarget(LoggingService loggingManager)
         {
             LoggingManagerInstance = loggingManager;
         }
@@ -42,9 +42,9 @@ namespace AddonWars2.App.Models.Logging
         #region Properties
 
         /// <summary>
-        /// Gets a reference to the <see cref="LoggingManager"/> service.
+        /// Gets a reference to the <see cref="LoggingService"/> service.
         /// </summary>
-        public static LoggingManager LoggingManagerInstance { get; internal set; }
+        public static LoggingService LoggingManagerInstance { get; internal set; }
 
         #endregion Properties
 

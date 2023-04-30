@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.Services
 {
+    using AddonWars2.App.Services.Interfaces;
     using Microsoft.Win32;
 
     /// <summary>

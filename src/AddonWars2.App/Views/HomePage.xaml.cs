@@ -7,9 +7,9 @@
 
 namespace AddonWars2.App.Views
 {
-    using System.Diagnostics;
     using System.Windows.Controls;
     using AddonWars2.App.Extensions.Assists;
+    using AddonWars2.App.Services;
 
     /// <summary>
     /// Interaction logic for HomePage.xaml.
@@ -42,7 +42,7 @@ namespace AddonWars2.App.Views
             var ds = DialogAssist.GetDialogService(this);
             if (ds == null)
             {
-                return;
+                DialogAssist.SetDialogService(this, new DialogService());
             }
 
             var paths = ds.OpenFileDialog(

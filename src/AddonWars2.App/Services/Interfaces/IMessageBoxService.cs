@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Services
+namespace AddonWars2.App.Services.Interfaces
 {
     using System.Windows;
 

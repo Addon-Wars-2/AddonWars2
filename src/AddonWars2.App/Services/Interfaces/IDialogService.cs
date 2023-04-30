@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Services
+namespace AddonWars2.App.Services.Interfaces
 {
     /// <summary>
     /// Represents a contract for creating dialog windows.

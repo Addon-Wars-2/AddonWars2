@@ -29,12 +29,14 @@
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
 
     <!-- Home Page -->
+    
     <!--
     <s:String x:Key="S.HomePage.Welcome.Message_01">Alright, where are we heading today?</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_02">Where did I leave my chak infusion?</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_03">More violets I say, less violence.</s:String>
     <s:String x:Key="S.HomePage.Welcome.Message_04">...no mortal would be so monumentally STUPID as to destroy a dragon...</s:String>
     -->
+    
     <s:String x:Key="S.HomePage.AddonsList.Header">Installed Add-Ons</s:String>
     <s:String x:Key="S.HomePage.AddonDesc.Header">Add-On Description</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>

@@ -5,7 +5,7 @@
     <!--
     A trick called "twos" or "2s", that came from traditional animation, is used here.
     Duplicating frames effectively keeps the required frame rate with less unique frames.
-    In instance, animating on 2s with 24 fps requires to produce only 12 frames,
+    For instance, animating on 2s with 24 fps requires to produce only 12 frames,
     with exceptions related to motion speed and acceleration.
     -->
 

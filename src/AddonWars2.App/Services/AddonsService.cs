@@ -1,11 +1,11 @@
 ﻿// ==================================================================================================
-// <copyright file="AddonsManager.cs" company="Addon-Wars-2">
+// <copyright file="AddonsService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Controllers
+namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
     using AddonWars2.Addons;
@@ -15,14 +15,14 @@ namespace AddonWars2.App.Controllers
     /// Represents a class that encapsulates all operations on a collection
     /// of Guild Wars 2 add-ons.
     /// </summary>
-    public class AddonsManager : ObservableObject
+    public class AddonsService : ObservableObject
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddonsManager"/> class.
+        /// Initializes a new instance of the <see cref="AddonsService"/> class.
         /// </summary>
-        public AddonsManager()
+        public AddonsService()
         {
             // Blank.
         }

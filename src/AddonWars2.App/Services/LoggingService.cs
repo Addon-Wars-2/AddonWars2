@@ -1,11 +1,11 @@
 ﻿// ==================================================================================================
-// <copyright file="LoggingManager.cs" company="Addon-Wars-2">
+// <copyright file="LoggingService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Controllers
+namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
     using AddonWars2.App.Models.Logging;
@@ -13,14 +13,14 @@ namespace AddonWars2.App.Controllers
     /// <summary>
     /// Provides service methods for application logging.
     /// </summary>
-    public class LoggingManager
+    public class LoggingService
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoggingManager"/> class.
+        /// Initializes a new instance of the <see cref="LoggingService"/> class.
         /// </summary>
-        public LoggingManager()
+        public LoggingService()
         {
             // Blank.
         }

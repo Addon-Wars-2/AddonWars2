@@ -13,7 +13,6 @@ namespace AddonWars2.App
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
-    using AddonWars2.App.Controllers;
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
@@ -178,7 +177,7 @@ namespace AddonWars2.App
             {
                 if (type == typeof(NLogLoggingManagerTarget))
                 {
-                    return new NLogLoggingManagerTarget(Services.GetRequiredService<LoggingManager>());
+                    return new NLogLoggingManagerTarget(Services.GetRequiredService<LoggingService>());
                 }
 
                 return defautCtor(type);

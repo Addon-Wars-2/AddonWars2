@@ -12,9 +12,9 @@ namespace AddonWars2.App.ViewModels
     using System.Runtime.Versioning;
     using System.Windows;
     using AddonWars2.Addons;
-    using AddonWars2.App.Controllers;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Services;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -36,19 +36,19 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="addonsManager">A reference to <see cref="Controllers.AddonsManager"/>.</param>
+        /// <param name="addonsManager">A reference to <see cref="Services.AddonsService"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
-            AddonsManager addonsManager,
+            AddonsService addonsManager,
             ApplicationConfig appConfig)
             : base(logger)
         {
             AppConfig = appConfig;
             AddonsManager = addonsManager;
 
-            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2Exe, () => IsActuallyLoaded == false);
-            UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePath);
+            TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
+            UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -65,7 +65,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public AddonsManager AddonsManager { get; private set; }
+        public AddonsService AddonsManager { get; private set; }
 
         /// <summary>
         /// Gets or sets GW2 executable location.
@@ -172,7 +172,7 @@ namespace AddonWars2.App.ViewModels
 
         // TryFindGw2ExeCommand command logic.
         [SupportedOSPlatform("windows")]
-        private void ExecuteTryFindGw2Exe()
+        private void ExecuteTryFindGw2ExeCommand()
         {
             // TODO: Add another step (if this one failed) to search inside the %adddata% directory
             //       and parse GW2 GFXSettings file. GW2 dir path is stored in INSTALLPATH entry.
@@ -195,7 +195,7 @@ namespace AddonWars2.App.ViewModels
         }
 
         // UpdateGw2ExePathCommand command logic.
-        private void ExecuteUpdateGw2ExePath(string[] paths)
+        private void ExecuteUpdateGw2ExePathCommand(string[] paths)
         {
             Logger.LogDebug("Executing command.");
 
@@ -213,6 +213,13 @@ namespace AddonWars2.App.ViewModels
             }
 
             Gw2ExecPath = path;
+
+            // Inform UI even if the property value is the same.
+            // We do this, because the text box could be changed manually, but failed to pass validation.
+            // The actual property value does not change in such case, and re-selecting the same file again will not
+            // update the text box, since SetProperty internally compares old and new values, which are still the same.
+            OnPropertyChanged(nameof(Gw2ExecPath));
+
             Gw2DirPath = Path.GetDirectoryName(path);
         }
 

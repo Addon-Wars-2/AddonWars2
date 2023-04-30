@@ -8,6 +8,7 @@
 namespace AddonWars2.App.Services
 {
     using System.Windows;
+    using AddonWars2.App.Services.Interfaces;
 
     /// <summary>
     /// Provides a service to show a native message box.

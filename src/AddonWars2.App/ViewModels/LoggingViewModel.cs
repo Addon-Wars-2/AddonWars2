@@ -8,8 +8,8 @@
 namespace AddonWars2.App.ViewModels
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.App.Controllers;
     using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Services;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -23,10 +23,10 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="LoggingViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="loggingManager">A rerefence to a <see cref="LoggingManager"/> object.</param>
+        /// <param name="loggingManager">A rerefence to a <see cref="LoggingService"/> object.</param>
         public LoggingViewModel(
             ILogger<BaseViewModel> logger,
-            LoggingManager loggingManager)
+            LoggingService loggingManager)
             : base(logger)
         {
             LoggingManagerInstance = loggingManager;
@@ -39,9 +39,9 @@ namespace AddonWars2.App.ViewModels
         #region Properties
 
         /// <summary>
-        /// Gets a reference to <see cref="LoggingManager"/> service.
+        /// Gets a reference to <see cref="LoggingService"/> service.
         /// </summary>
-        public LoggingManager LoggingManagerInstance { get; private set; }
+        public LoggingService LoggingManagerInstance { get; private set; }
 
         /// <summary>
         /// Gets a collection of log entries.
