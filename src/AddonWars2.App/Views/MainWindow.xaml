@@ -39,7 +39,7 @@
                     <Storyboard>
                         <DoubleAnimation
                             From="0" To="1"
-                            BeginTime="00:00:00" Duration="00:00:0.6"
+                            BeginTime="00:00:00" Duration="00:00:0.3"
                             RepeatBehavior="1x"
                             Storyboard.TargetProperty="Opacity"/>
                         <ObjectAnimationUsingKeyFrames
@@ -266,36 +266,110 @@
                     IsTabStop="False"
                     Style="{DynamicResource MainTabControlStyle}"
                     ItemContainerStyle="{DynamicResource MainWindowTabItemStyle}">
+                    <TabControl.Resources>
+                        <Storyboard x:Key="HomePageTabStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="HomePageTab"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                        <Storyboard x:Key="NewsPageTabStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="NewsPageTab"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                        <Storyboard x:Key="LoggingPageTabStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="LoggingPageTab"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                        <Storyboard x:Key="InstallAddonsTabInternalStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="InstallAddonsTabInternal"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </TabControl.Resources>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}"
                         FontFamily="{DynamicResource Menomonia}">
                         <AdornerDecorator>
                             <Frame
+                                x:Name="HomePageTab"
                                 Source="HomePage.xaml"
-                                FocusVisualStyle="{x:Null}"/>
+                                FocusVisualStyle="{x:Null}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=HomePageTab}">
+                                        <i:ControlStoryboardAction Storyboard="{StaticResource HomePageTabStoryboard}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Frame>
                         </AdornerDecorator>
                     </TabItem>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.News}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
+                            x:Name="NewsPageTab"
                             Source="NewsPage.xaml"
-                            FocusVisualStyle="{x:Null}"/>
+                            FocusVisualStyle="{x:Null}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=NewsPageTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource NewsPageTabStoryboard}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Frame>
                     </TabItem>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
+                            x:Name="LoggingPageTab"
                             Source="LoggingPage.xaml"
-                            FocusVisualStyle="{x:Null}"/>
+                            FocusVisualStyle="{x:Null}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=LoggingPageTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource LoggingPageTabStoryboard}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Frame>
                     </TabItem>
                     <TabItem
+                        x:Name="InstallAddonsTabInternal"
                         Visibility="Collapsed"
                         Header="&lt;Install Addons&gt;"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
                             Source="InstallAddonsPage.xaml"
-                            FocusVisualStyle="{x:Null}"/>
+                            FocusVisualStyle="{x:Null}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTabInternal}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource InstallAddonsTabInternalStoryboard}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Frame>
                     </TabItem>
                 </TabControl>
             </Grid>

@@ -84,7 +84,8 @@
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                Command="{Binding Path=SwitchToInstallAddonsTabCommand, RelativeSource={RelativeSource AncestorType=Page}}">
+                Command="{Binding Path=SwitchToInstallAddonsTabCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                ToolTip="{DynamicResource S.ToolTip.Button.InstallAddons}">
                 <Button.CommandParameter>
                     <sys:Int32>3</sys:Int32>
                 </Button.CommandParameter>
@@ -246,7 +247,7 @@
                     HorizontalAlignment="Center"
                     FontFamily="{DynamicResource Menomonia}"
                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="No installed add-ons found.">
+                    Text="{DynamicResource S.HomePage.AddonsList.NoInstalledAddonsFound}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Hidden"/>
@@ -366,7 +367,8 @@
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
                 attached:AccentColorExtension.AccentColor="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
-                Style="{DynamicResource MajorButtonAccentBackgroundStyle}">
+                Style="{DynamicResource MajorButtonAccentBackgroundStyle}"
+                ToolTip="{DynamicResource S.ToolTip.Button.SelectGw2Path}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <i:CallMethodAction

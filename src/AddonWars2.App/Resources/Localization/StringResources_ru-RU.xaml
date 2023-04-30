@@ -3,12 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:s="clr-namespace:System;assembly=mscorlib">
 
-    <!--
-    If one struggles with a literal translation of welcome messages, it's acceptable to use a suitable
-    adaptation with a similar or close to the original meaning. Proverbs, idioms are the best candidates for it.
-    If a string contains a wordplay, it is highly recommended to find a "localized" wordplay as well.
-    -->
-    
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String>
 
@@ -29,15 +23,8 @@
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Логи</s:String>
 
     <!-- Home Page -->
-    
-    <!--
-    <s:String x:Key="S.HomePage.Welcome.Message_01">Отлично, куда мы направимся в этот раз?</s:String>
-    <s:String x:Key="S.HomePage.Welcome.Message_02">И где же я оставил свою чак-инфузию?</s:String>
-    <s:String x:Key="S.HomePage.Welcome.Message_03">Цветы лучше пуль.</s:String>
-    <s:String x:Key="S.HomePage.Welcome.Message_04">...ни один смертный не будет настолько ТУПЫМ, чтобы уничтожить дракона...</s:String>
-    -->
-    
     <s:String x:Key="S.HomePage.AddonsList.Header">Установленные Аддоны</s:String>
+    <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">Не обнаружено установленных аддонов.</s:String>
     <s:String x:Key="S.HomePage.AddonDesc.Header">Описание Аддона</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
     <s:String x:Key="S.HomePage.Footer.CreatedBy">создано</s:String>
@@ -65,5 +52,10 @@
     <s:String x:Key="S.Common.ValidationText.FileExists">Путь должен указывать на существующий файл.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на исполняемый файл Guild Wars 2.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2WriteAccessToDir">Нет прав на запись в директорию указанного файла.</s:String>
+
+    <!-- ToolTips -->
+    <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Нажмите, чтобы выбрать путь по исполняемого файла Guild Wars 2 (.exe).</s:String>
+    <s:String x:Key="S.ToolTip.Button.InstallAddons">Добавить новые аддоны.</s:String>
+    <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Обновить ленту новостей.</s:String>
 
 </ResourceDictionary>

@@ -81,7 +81,8 @@
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                Command="{Binding Path=DataContext.RefreshNewsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                ToolTip="{DynamicResource S.ToolTip.Button.RefreshNewsFeed}"/>
         </Grid>
         <Border
             x:Name="RssFeedBorder"
