@@ -74,8 +74,8 @@ namespace AddonWars2.App.Views
         // Redirects new window requests to a default browser.
         private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs? e)
         {
-            ArgumentNullException.ThrowIfNull(nameof(sender));
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             var processInfo = new ProcessStartInfo(e!.Uri)
             {
@@ -89,8 +89,8 @@ namespace AddonWars2.App.Views
         // Cleanup WebView data on main window close event.
         private void MainWindowInstance_Closed(object? sender, EventArgs? e)
         {
-            ArgumentNullException.ThrowIfNull(nameof(sender));
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             var webView2 = (WebView2)FindName("WebView2Control");
             if (webView2 != null)

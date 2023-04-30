@@ -54,7 +54,7 @@ namespace AddonWars2.App.Commands
         {
             Logger.Debug("Executing command.");
 
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             // https://learn.microsoft.com/en-us/dotnet/core/compatibility/fx-core#change-description
             // UseShellExecute = false is a default behavior for .NET Core and on, while it's set to true for .NET Framework.

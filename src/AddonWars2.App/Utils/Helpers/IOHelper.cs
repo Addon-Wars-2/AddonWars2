@@ -28,12 +28,10 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="directory">Directory path.</param>
         /// <returns><see langword="true"/> if has access, otherwise - <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentException">Is thrown if <paramref name="directory"/> is <see langword="null"/> or empty.</exception>
         public static bool HasWriteAccessToDirectory(string directory)
         {
-            if (string.IsNullOrEmpty(directory))
-            {
-                throw new ArgumentException("Directory path cannot be null or empty.", nameof(directory));
-            }
+            ArgumentException.ThrowIfNullOrEmpty(directory, nameof(directory));
 
             try
             {
@@ -128,11 +126,9 @@ namespace AddonWars2.App.Helpers
         /// <param name="path">File path used to write a resource.</param>
         /// <param name="fileMode"><see cref="FileMode"/> used for the writing operation.</param>
         /// <returns><see cref="Task"/> object.</returns>
-        /// <exception cref="InvalidOperationException">Is thrown if a given resource is not found.</exception>
-        public static async Task ResourceCopyToAsync(
-            string resourceName,
-            string path,
-            FileMode fileMode = FileMode.Create)
+        /// <exception cref="NullReferenceException">Is thrown if a given resource is not found.</exception>
+        /// <exception cref="NullReferenceException">Is thrown if <paramref name="path"/> directory is a root directory or <paramref name="path"/> is <see langword="null"/>.</exception>
+        public static async Task ResourceCopyToAsync(string resourceName, string path, FileMode fileMode = FileMode.Create)
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -140,7 +136,7 @@ namespace AddonWars2.App.Helpers
             {
                 if (resource == null)
                 {
-                    throw new InvalidOperationException($"Resource not found: {resourceName}");
+                    throw new NullReferenceException($"Resource not found: {resourceName}");
                 }
 
                 var dirName = Path.GetDirectoryName(path);
@@ -164,7 +160,7 @@ namespace AddonWars2.App.Helpers
         /// <typeparam name="T">Object type to be serialized.</typeparam>
         /// <param name="obj">Object to be serialized.</param>
         /// <returns>Serialized string.</returns>
-        public static string SerializeXml<T>(this T obj)
+        public static string SerializeXml<T>(this T? obj)
         {
             var xmlSerializer = new XmlSerializer(typeof(T));
             var xns = new XmlSerializerNamespaces();
@@ -187,8 +183,11 @@ namespace AddonWars2.App.Helpers
         /// <param name="obj">Object to be serialized.</param>
         /// <param name="filename">XML file path.</param>
         /// <returns>Serialized string.</returns>
-        public static string SerializeXml<T>(this T obj, string? filename)
+        /// <exception cref="ArgumentException">Is thrown if <paramref name="filename"/> is <see langword="null"/> or empty.</exception>
+        public static string SerializeXml<T>(this T? obj, string filename)
         {
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
+
             var serializedString = SerializeXml<T>(obj);
             if (string.IsNullOrEmpty(serializedString))
             {
@@ -236,8 +235,13 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="xmlString">XML string.</param>
         /// <param name="filename">File path.</param>
-        public static void WriteXml(string xmlString, string? filename)
+        /// <exception cref="ArgumentException">Is thrown if <paramref name="xmlString"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="ArgumentException">Is thrown if <paramref name="filename"/> is <see langword="null"/> or empty.</exception>
+        public static void WriteXml(string xmlString, string filename)
         {
+            ArgumentException.ThrowIfNullOrEmpty(xmlString, nameof(xmlString));
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
+
             var xml = XmlDocumentFromString(xmlString);
             WriteXmlInternal(xml, filename);
         }
@@ -247,18 +251,26 @@ namespace AddonWars2.App.Helpers
         /// </summary>
         /// <param name="xml">XML document object.</param>
         /// <param name="filename">File path.</param>
-        public static void WriteXml(XmlDocument xml, string? filename)
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="xml"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">Is thrown if <paramref name="filename"/> is <see langword="null"/> or empty.</exception>
+        public static void WriteXml(XmlDocument xml, string filename)
         {
+            ArgumentNullException.ThrowIfNull(xml, nameof(xml));
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
+
             WriteXmlInternal(xml, filename);
         }
 
         /// <summary>
-        /// Read a given XML document and returns as an <see cref="XmlDocument"/> object.
+        /// Read a given XML document string and returns as an <see cref="XmlDocument"/> object.
         /// </summary>
         /// <param name="filename">File path.</param>
         /// <returns><see cref="XmlDocument"/> object.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="filename"/> is <see langword="null"/>.</exception>
         public static XmlDocument ReadXmlAsDocument(string filename)
         {
+            ArgumentNullException.ThrowIfNull(filename, nameof(filename));
+
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(filename);
 
@@ -266,29 +278,36 @@ namespace AddonWars2.App.Helpers
         }
 
         /// <summary>
-        /// Read a given XML document and returns as an <see cref="string"/> object.
+        /// Read a given XML document string and returns as an <see cref="string"/> object.
         /// </summary>
         /// <param name="filename">File path.</param>
         /// <returns><see cref="string"/> object.</returns>
-        public static string? ReadXmlAsString(string filename)
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="filename"/> is <see langword="null"/>.</exception>
+        public static string ReadXmlAsString(string filename)
         {
+            ArgumentNullException.ThrowIfNull(filename, nameof(filename));
+
             var xmlDoc = ReadXmlAsDocument(filename);
 
-            return xmlDoc.ToString();
+            return xmlDoc.ToString() ?? string.Empty;
         }
 
         // Returns XmlDocument object from a given string.
         private static XmlDocument XmlDocumentFromString(string xmlString)
         {
+            ArgumentNullException.ThrowIfNull(xmlString, nameof(xmlString));
+
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlString);
+
             return xmlDoc;
         }
 
         // Writes a given XmlDocument to the specified file.
-        private static void WriteXmlInternal(XmlDocument xml, string? filename)
+        private static void WriteXmlInternal(XmlDocument xml, string filename)
         {
-            ArgumentException.ThrowIfNullOrEmpty(nameof(filename));
+            ArgumentNullException.ThrowIfNull(xml, nameof(xml));
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
 
             var xmlWriterSettings = new XmlWriterSettings()
             {

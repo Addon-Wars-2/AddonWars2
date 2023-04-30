@@ -14,41 +14,85 @@ namespace AddonWars2.App.Models.GuildWars2
     /// </summary>
     public class RssFeedItem
     {
+        #region Fields
+
+        private string _title = string.Empty;
+        private string _link = string.Empty;
+        private DateTime _publishDate;
+        private string _guid = string.Empty;
+        private string _description = string.Empty;
+        private string _contentEncoded = string.Empty;
+        private bool _isSticky = false;
+
+        #endregion Fields
+
+        #region Properties
+
         /// <summary>
         /// Gets or sets the RSS item title.
         /// </summary>
-        public string? Title { get; set; }
+        public string Title
+        {
+            get => _title;
+            set => _title = value;
+        }
 
         /// <summary>
         /// Gets or sets the RSS item link (URL).
         /// </summary>
-        public string? Link { get; set; }
+        public string Link
+        {
+            get => _link;
+            set => _link = value;
+        }
 
         /// <summary>
         /// Gets or sets the RSS item publish date.
         /// </summary>
-        public DateTime PublishDate { get; set; }
+        public DateTime PublishDate
+        {
+            get => _publishDate;
+            set => _publishDate = value;
+        }
 
         /// <summary>
         /// Gets or sets the RSS item unique GUID obtained
         /// from a unique URL in ANet RSS feed.
         /// </summary>
-        public string? Guid { get; set; }
+        public string Guid
+        {
+            get => _guid;
+            set => _guid = value;
+        }
 
         /// <summary>
         /// Gets or sets the RSS item description.
         /// </summary>
-        public string? Description { get; set; }
+        public string Description
+        {
+            get => _description;
+            set => _description = value;
+        }
 
         /// <summary>
         /// Gets or sets the RSS item content in HTML format.
         /// </summary>
-        public string? ContentEncoded { get; set; }
+        public string ContentEncoded
+        {
+            get => _contentEncoded;
+            set => _contentEncoded = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the RSS item is "sticky"
         /// (and thus should appear above all other items).
         /// </summary>
-        public bool IsSticky { get; set; }
+        public bool IsSticky
+        {
+            get => _isSticky;
+            set => _isSticky = value;
+        }
+
+        #endregion Properties
     }
 }

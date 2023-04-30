@@ -25,7 +25,7 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register(
-                "Data",
+                nameof(Data),
                 typeof(object),
                 typeof(BindingProxy),
                 new PropertyMetadata(default));

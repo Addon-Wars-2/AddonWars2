@@ -15,6 +15,6 @@ namespace AddonWars2.App.Models.Logging
         /// <summary>
         /// Gets the log message.
         /// </summary>
-        public string? Message { get; }
+        public string Message { get; }
     }
 }

@@ -29,7 +29,7 @@ namespace AddonWars2.App.ViewModels
             LoggingService loggingManager)
             : base(logger)
         {
-            LoggingManagerInstance = loggingManager;
+            LoggingServiceInstance = loggingManager;
 
             Logger?.LogDebug("Instance initialized.");
         }
@@ -41,12 +41,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to <see cref="LoggingService"/> service.
         /// </summary>
-        public LoggingService LoggingManagerInstance { get; private set; }
+        public LoggingService LoggingServiceInstance { get; private set; }
 
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<ILogEntry>? LogEntries => LoggingManagerInstance.LogEntries;
+        public ObservableCollection<ILogEntry> LogEntries => LoggingServiceInstance.LogEntries;
 
         #endregion Properties
     }

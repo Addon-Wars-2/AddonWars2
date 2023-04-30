@@ -35,7 +35,7 @@ namespace AddonWars2.App.Models.Logging
         /// <param name="message">Log entry message.</param>
         public LogEntry(string message)
         {
-            _message = message;
+            _message = message ?? string.Empty;
         }
 
         #endregion Constructors
@@ -43,7 +43,7 @@ namespace AddonWars2.App.Models.Logging
         #region Properties
 
         /// <inheritdoc/>
-        public readonly string? Message => _message;
+        public readonly string Message => _message;
 
         #endregion Properties
     }

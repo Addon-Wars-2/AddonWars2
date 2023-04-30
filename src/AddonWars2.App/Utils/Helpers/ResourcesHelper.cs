@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.Utils.Helpers
 {
+    using System;
     using System.Windows;
 
     /// <summary>
@@ -20,8 +21,11 @@ namespace AddonWars2.App.Utils.Helpers
         /// <typeparam name="T">Resource type.</typeparam>
         /// <param name="uri">Resource Uniform Resource Identifier.</param>
         /// <returns>The requested resource.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="uri"/> is <see langword="null"/>.</exception>
         public static T GetApplicationResource<T>(string uri)
         {
+            ArgumentNullException.ThrowIfNull(uri, nameof(uri));
+
             return (T)Application.Current.Resources[uri];
         }
     }

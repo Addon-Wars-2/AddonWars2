@@ -27,13 +27,10 @@ namespace AddonWars2.App.Utils.Helpers
         /// </summary>
         /// <param name="stream"><see cref="Stream"/> object of an RSS XML.</param>
         /// <returns>A collection of <see cref="RssFeedItem"/> objects.</returns>
-        /// <exception cref="ArgumentNullException">Is thrown when <paramref name="stream"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="stream"/> is <see langword="null"/>.</exception>
         public static async Task<List<RssFeedItem>> ParseXmlStreamAsync(Stream stream)
         {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             var xml = await WebHelper.LoadXmlAsync(stream);
             var feed = await Task.Run(() => ParseRssFeedXml(xml));
@@ -47,8 +44,13 @@ namespace AddonWars2.App.Utils.Helpers
         /// <param name="item"><see cref="RssFeedItem"/> object to be written.</param>
         /// <param name="filename">The full file path.</param>
         /// <returns><see cref="Task"/> object.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="filename"/> is <see langword="null"/> or empty.</exception>
         public static async Task WriteRssItemContentAsync(RssFeedItem item, string filename)
         {
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
+
             var content = item.ContentEncoded;
 
             // Create all required directories.
@@ -69,8 +71,13 @@ namespace AddonWars2.App.Utils.Helpers
         /// <param name="html">HTML file as a string.</param>
         /// <param name="prefix">Prefix to be added.</param>
         /// <returns>A new HTML string.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="html"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="prefix"/> is <see langword="null"/>.</exception>
         public static string AddProtocolPrefixesToHtml(string html, string prefix)
         {
+            ArgumentNullException.ThrowIfNull(html, nameof(html));
+            ArgumentNullException.ThrowIfNull(prefix, nameof(prefix));
+
             return html.Replace(@"""//", $@"""{prefix}://");
         }
 
@@ -89,7 +96,7 @@ namespace AddonWars2.App.Utils.Helpers
         // Parses the RSS feed (XML document) and returns it as a collection of RssFeedItem objects.
         private static List<RssFeedItem> ParseRssFeedXml(XDocument xml)
         {
-            ArgumentNullException.ThrowIfNull(xml);
+            ArgumentNullException.ThrowIfNull(xml, nameof(xml));
 
             var feed = new List<RssFeedItem>();
             var nsContent = xml.Root?.GetNamespaceOfPrefix("content");
@@ -100,18 +107,23 @@ namespace AddonWars2.App.Utils.Helpers
 
             foreach (var item in xml.Descendants("item"))
             {
+                if (item == null)
+                {
+                    continue;
+                }
+
                 var isSticky = (from cat in item.Elements("category")
                                 where cat.Value.ToLower() == "sticky"
                                 select cat).Any();
 
                 var entry = new RssFeedItem()
                 {
-                    Title = item.Element("title")?.Value,
-                    Link = item.Element("link")?.Value,
+                    Title = item.Element("title")?.Value ?? string.Empty,
+                    Link = item.Element("link")?.Value ?? string.Empty,
                     PublishDate = DateTime.Parse(item.Element("pubDate")?.Value ?? string.Empty),
-                    Guid = item.Element("guid")?.Value.Split("=").Last(),
-                    Description = item.Element("description")?.Value,
-                    ContentEncoded = item.Element(nsContent + "encoded")?.Value.Replace(@"""//", @"""https://"),
+                    Guid = item.Element("guid")?.Value?.Split("=").Last() ?? string.Empty,
+                    Description = item.Element("description")?.Value ?? string.Empty,
+                    ContentEncoded = item.Element(nsContent + "encoded")?.Value?.Replace(@"""//", @"""https://") ?? string.Empty,
                     IsSticky = isSticky,
                 };
 

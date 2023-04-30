@@ -26,7 +26,7 @@ namespace AddonWars2.App.Models.Application
 
         private bool _isDebugMode;
         private DateTime _startupDateTime;
-        private string? _appDataDir;
+        private string _appDataDir = string.Empty;
         private CultureInfo? _selectedCulture;
         private LocalData? _localData;
 
@@ -37,10 +37,10 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationConfig"/> class.
         /// </summary>
-        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
         public ApplicationConfig(ILogger<MainWindowViewModel> logger)
         {
-            Logger = logger;
             SelectedCulture = DefaultCulture;
             LocalData = LocalData.Default;
 
@@ -48,7 +48,7 @@ namespace AddonWars2.App.Models.Application
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_LocalDataChanged, nameof(LocalData));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
 
-            Logger.LogDebug("Instance initialized.");
+            Logger?.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -85,7 +85,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets or sets the application %APPDATA% dir.
         /// </summary>
-        public string? AppDataDir
+        public string AppDataDir
         {
             get => _appDataDir;
             set
@@ -226,12 +226,20 @@ namespace AddonWars2.App.Models.Application
         /// </summary>
         /// <param name="path">A path data is written to.</param>
         /// <param name="data">Data to be written.</param>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="path"/> is <see langword="null"/> or empty.</exception>
         public static void WriteLocalDataAsXml(string? path, LocalData? data)
         {
-            ArgumentNullException.ThrowIfNull(nameof(path));
+            ArgumentNullException.ThrowIfNull(path, nameof(path));
 
-            IOHelper.SerializeXml(data, path);
-            Logger?.LogDebug($"Local data saved.");
+            var serialized = IOHelper.SerializeXml(data, path);
+            if (serialized.Length == 0)
+            {
+                Logger?.LogDebug($"Local data saved.");
+            }
+            else
+            {
+                Logger?.LogDebug($"Local data saved.");
+            }
         }
 
         /// <summary>
@@ -249,8 +257,8 @@ namespace AddonWars2.App.Models.Application
         // Is invoked whenever the selected culture property is changed.
         private void ApplicationConfig_SelectedCultureChanged(object? sender, PropertyChangedEventArgs? e)
         {
-            ArgumentNullException.ThrowIfNull(nameof(sender));
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             // Set the requested culture string inside the local data.
             var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture?.Culture, DefaultCulture);
@@ -285,8 +293,8 @@ namespace AddonWars2.App.Models.Application
         // Is invoked whenever the local data property is changed.
         private void ApplicationConfig_LocalDataInnerChanged(object? sender, PropertyChangedEventArgs? e)
         {
-            ArgumentNullException.ThrowIfNull(nameof(sender));
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             if (LocalData == null)
             {
@@ -300,8 +308,8 @@ namespace AddonWars2.App.Models.Application
         // Is invoked whenever a local data inner property is changed.
         private void ApplicationConfig_LocalDataChanged(object? sender, PropertyChangedEventArgs? e)
         {
-            ArgumentNullException.ThrowIfNull(nameof(sender));
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             if (LocalData == null)
             {

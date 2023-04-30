@@ -18,9 +18,9 @@ namespace AddonWars2.App.Models.Application
     {
         #region Fields
 
-        private string? _culture;
-        private string? _shortName;
-        private string? _fullName;
+        private string _culture;
+        private string _shortName;
+        private string _fullName;
 
         #endregion Fields
 
@@ -37,6 +37,10 @@ namespace AddonWars2.App.Models.Application
             string shortName,
             string fullName)
         {
+            ArgumentNullException.ThrowIfNull(culture, nameof(culture));
+            ArgumentNullException.ThrowIfNull(shortName, nameof(shortName));
+            ArgumentNullException.ThrowIfNull(fullName, nameof(fullName));
+
             _culture = culture;
             _shortName = shortName;
             _fullName = fullName;
@@ -57,7 +61,7 @@ namespace AddonWars2.App.Models.Application
         /// i.e. "en-US".
         /// </summary>
         [XmlElement("culture")]
-        public string? Culture
+        public string Culture
         {
             get => _culture;
             set => _culture = value;
@@ -67,7 +71,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets culture short name.
         /// </summary>
         [XmlElement("short")]
-        public string? ShortName
+        public string ShortName
         {
             get => _shortName;
             set => _shortName = value;
@@ -77,7 +81,7 @@ namespace AddonWars2.App.Models.Application
         /// Gets or sets culture full name.
         /// </summary>
         [XmlElement("full")]
-        public string? FullName
+        public string FullName
         {
             get => _fullName;
             set => _fullName = value;

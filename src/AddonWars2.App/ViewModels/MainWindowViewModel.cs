@@ -136,7 +136,7 @@ namespace AddonWars2.App.ViewModels
 
             Logger?.LogDebug("Executing command.");
 
-            ArgumentNullException.ThrowIfNull(nameof(e));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
             // and we edit its value. So we just ignore the first call until it's loaded completely.

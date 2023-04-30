@@ -15,6 +15,12 @@ namespace AddonWars2.App.ViewModels
     /// </summary>
     public class BaseViewModel : ObservableObject
     {
+        #region Fields
+
+        private static ILogger? _logger;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
@@ -23,9 +29,9 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         public BaseViewModel(ILogger<BaseViewModel> logger)
         {
-            Logger = logger;
+            _logger = logger;
 
-            Logger.LogDebug("Instance initialized.");
+            Logger?.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -35,7 +41,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the current logger instance.
         /// </summary>
-        protected static ILogger? Logger { get; private set; }
+        protected static ILogger? Logger => _logger;
 
         #endregion Properties
     }

@@ -347,8 +347,8 @@ namespace AddonWars2.App.ViewModels
         // Update the destination list with new items using some delay.
         private async Task FillRssItemsAsync(IList<RssFeedItem>? source, IList<RssFeedItem>? destination, int delay = 50)
         {
-            ArgumentNullException.ThrowIfNull(nameof(source));
-            ArgumentNullException.ThrowIfNull(nameof(destination));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(destination, nameof(destination));
 
             foreach (var item in source!)
             {

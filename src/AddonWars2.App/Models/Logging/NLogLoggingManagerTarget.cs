@@ -72,7 +72,7 @@ namespace AddonWars2.App.Models.Logging
         // Sends a log message.
         private void SendLogMessage(string message)
         {
-            LoggingManagerInstance?.LogEntries?.Add(new LogEntry(message));
+            LoggingManagerInstance?.LogEntries.Add(new LogEntry(message));
         }
 
         #endregion Methods

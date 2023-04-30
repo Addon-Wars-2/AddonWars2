@@ -61,14 +61,9 @@ namespace AddonWars2.App.Utils.Helpers
         /// </param>
         /// <returns><see cref="HttpResponseMessage"/> object.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public static async Task<HttpResponseMessage> GetResponseAsync(
-            string? url,
-            HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead)
+        public static async Task<HttpResponseMessage> GetResponseAsync(string url, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead)
         {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url));
-            }
+            ArgumentNullException.ThrowIfNull(url, nameof(url));
 
             if (!IsNetworkAvailable())
             {
@@ -103,10 +98,7 @@ namespace AddonWars2.App.Utils.Helpers
         /// <param name="loadOptions">A set of <see cref="LoadOptions"/>.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>A newly created <see cref="XDocument"/> object.</returns>
-        public static async Task<XDocument> LoadXmlAsync(
-            Stream stream,
-            LoadOptions loadOptions = default,
-            CancellationToken cancellationToken = default)
+        public static async Task<XDocument> LoadXmlAsync(Stream stream, LoadOptions loadOptions = default, CancellationToken cancellationToken = default)
         {
             var xdoc = await XDocument.LoadAsync(stream, loadOptions, cancellationToken);
             return xdoc;
