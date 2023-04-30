@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="HomeViewModel.cs" company="Addon-Wars-2">
+// <copyright file="HomePageViewModel.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -7,9 +7,9 @@
 
 namespace AddonWars2.App.ViewModels
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.IO;
+    using System.Runtime.Versioning;
     using System.Windows;
     using AddonWars2.Addons;
     using AddonWars2.App.Controllers;
@@ -21,7 +21,7 @@ namespace AddonWars2.App.ViewModels
     /// <summary>
     /// View model used by home view.
     /// </summary>
-    public class HomeViewModel : BaseViewModel
+    public class HomePageViewModel : BaseViewModel
     {
         #region Fields
 
@@ -33,13 +33,13 @@ namespace AddonWars2.App.ViewModels
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
+        /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="addonsManager">A reference to <see cref="Controllers.AddonsManager"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
-        public HomeViewModel(
-            ILogger<HomeViewModel> logger,
+        public HomePageViewModel(
+            ILogger<HomePageViewModel> logger,
             AddonsManager addonsManager,
             ApplicationConfig appConfig)
             : base(logger)
@@ -171,6 +171,7 @@ namespace AddonWars2.App.ViewModels
         #region Commands Logic
 
         // TryFindGw2ExeCommand command logic.
+        [SupportedOSPlatform("windows")]
         private void ExecuteTryFindGw2Exe()
         {
             // TODO: Add another step (if this one failed) to search inside the %adddata% directory

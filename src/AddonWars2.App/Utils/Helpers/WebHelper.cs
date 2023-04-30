@@ -22,6 +22,7 @@ namespace AddonWars2.App.Utils.Helpers
     {
         #region Fields
 
+        private static readonly double _defaultTimeout = 15;
         private static readonly HttpClient _httpClient;
 
         #endregion Fields
@@ -32,7 +33,7 @@ namespace AddonWars2.App.Utils.Helpers
         {
             _httpClient = new HttpClient()
             {
-                Timeout = TimeSpan.FromSeconds(15),
+                Timeout = TimeSpan.FromSeconds(WebHelper._defaultTimeout),
             };
         }
 
@@ -110,8 +111,6 @@ namespace AddonWars2.App.Utils.Helpers
             var xdoc = await XDocument.LoadAsync(stream, loadOptions, cancellationToken);
             return xdoc;
         }
-
-        //public static async Task<string> 
 
         #endregion Methods
     }

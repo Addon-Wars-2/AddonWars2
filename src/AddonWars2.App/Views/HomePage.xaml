@@ -16,7 +16,7 @@
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     mc:Ignorable="d"
-    DataContext="{markupex:DISource Type=vm:HomeViewModel}"
+    DataContext="{markupex:DISource Type=vm:HomePageViewModel}"
     assist:DialogAssist.DialogService="{markupex:DISource Type=services:DialogService}"
     Title="HomePage"
     ShowsNavigationUI="False">

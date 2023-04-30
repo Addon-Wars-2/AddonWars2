@@ -8,8 +8,6 @@
 namespace AddonWars2.App.Controllers
 {
     using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
-    using System.ComponentModel;
     using AddonWars2.Addons;
     using CommunityToolkit.Mvvm.ComponentModel;
 

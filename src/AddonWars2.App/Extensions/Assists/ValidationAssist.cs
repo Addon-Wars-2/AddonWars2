@@ -29,21 +29,6 @@ namespace AddonWars2.App.Extensions.Assists
                 new PropertyMetadata(false));
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="GetPopupPlacement(DependencyObject)"/> getter
-        /// and <see cref="SetPopupPlacement(DependencyObject, PlacementMode)"/> setter.
-        /// </summary>
-        public static readonly DependencyProperty PopupPlacementProperty =
-            DependencyProperty.RegisterAttached(
-                "PopupPlacement",
-                typeof(PlacementMode),
-                typeof(ValidationAssist),
-                new PropertyMetadata(PlacementMode.Bottom));
-
-        #endregion Attached Properties
-
-        #region Attached Properties Methods
-
-        /// <summary>
         /// Gets the value of <see cref="UsePopupProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is get from.</param>
@@ -62,6 +47,17 @@ namespace AddonWars2.App.Extensions.Assists
         {
             obj.SetValue(UsePopupProperty, value);
         }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="GetPopupPlacement(DependencyObject)"/> getter
+        /// and <see cref="SetPopupPlacement(DependencyObject, PlacementMode)"/> setter.
+        /// </summary>
+        public static readonly DependencyProperty PopupPlacementProperty =
+            DependencyProperty.RegisterAttached(
+                "PopupPlacement",
+                typeof(PlacementMode),
+                typeof(ValidationAssist),
+                new PropertyMetadata(PlacementMode.Bottom));
 
         /// <summary>
         /// Gets the value of <see cref="PopupPlacementProperty"/>.
@@ -83,6 +79,6 @@ namespace AddonWars2.App.Extensions.Assists
             obj.SetValue(PopupPlacementProperty, value);
         }
 
-        #endregion Attached Properties Methods
+        #endregion Attached Properties
     }
 }

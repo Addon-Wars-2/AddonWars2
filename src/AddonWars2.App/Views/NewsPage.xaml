@@ -19,7 +19,7 @@
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     mc:Ignorable="d" 
     Title="NewsPage"
-    DataContext="{markupex:DISource Type=vm:NewsViewModel}"
+    DataContext="{markupex:DISource Type=vm:NewsPageViewModel}"
     ShowsNavigationUI="False">
 
     <Page.Resources>

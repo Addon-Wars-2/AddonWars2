@@ -18,7 +18,7 @@ namespace AddonWars2.App.Utils.Helpers
     /// <summary>
     /// Represents a Guild Wars 2 RSS feed as a collection of <see cref="RssFeedItem"/> objects.
     /// </summary>
-    public class RssFeedHelper
+    public static class RssFeedHelper
     {
         #region Methods
 

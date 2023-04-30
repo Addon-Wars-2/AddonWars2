@@ -28,10 +28,6 @@ namespace AddonWars2.App.Extensions.AttachedProperties
                 typeof(CornerRadiusExtension),
                 new PropertyMetadata(new CornerRadius(0)));
 
-        #endregion Attached Properties
-
-        #region Attached Properties Methods
-
         /// <summary>
         /// Gets the value of <see cref="Border.CornerRadius"/>.
         /// </summary>
@@ -52,6 +48,6 @@ namespace AddonWars2.App.Extensions.AttachedProperties
             obj.SetValue(CornerRadiusProperty, value);
         }
 
-        #endregion Attached Properties Methods
+        #endregion Attached Properties
     }
 }

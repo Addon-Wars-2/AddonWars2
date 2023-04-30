@@ -28,10 +28,6 @@ namespace AddonWars2.App.Extensions.AttachedProperties
                 typeof(AccentColorExtension),
                 new PropertyMetadata(default(Brush)));
 
-        #endregion Attached Properties
-
-        #region Attached Properties Methods
-
         /// <summary>
         /// Gets the value of <see cref="AccentColorProperty"/>.
         /// </summary>
@@ -52,6 +48,6 @@ namespace AddonWars2.App.Extensions.AttachedProperties
             obj.SetValue(AccentColorProperty, value);
         }
 
-        #endregion Attached Properties Methods
+        #endregion Attached Properties
     }
 }

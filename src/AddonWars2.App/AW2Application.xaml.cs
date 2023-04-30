@@ -11,6 +11,7 @@ namespace AddonWars2.App
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows;
     using AddonWars2.App.Controllers;
     using AddonWars2.App.Extensions.Markup;
@@ -123,6 +124,7 @@ namespace AddonWars2.App
                 }
             }
 
+            AW2App_SetupExceptionHandling();
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
             AW2App_SetupLocalization();
@@ -130,7 +132,7 @@ namespace AddonWars2.App
             // To enable setting DataContext directly in markup.
             DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
 
-            MainWindowInstance = new ();
+            MainWindowInstance = new MainWindow();
             MainWindowInstance.Show();
 
             Logger.Info("Application loaded and ready.");
@@ -142,6 +144,25 @@ namespace AddonWars2.App
             base.OnExit(e);
             Logger.Info("Application shutdown.");
             LogManager.Shutdown();
+        }
+
+        // Setups exception handling.
+        private void AW2App_SetupExceptionHandling()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+
+            DispatcherUnhandledException += (s, e) =>
+            {
+                LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
+                e.Handled = true;
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+                e.SetObserved();
+            };
         }
 
         // Setups logging.
@@ -267,20 +288,14 @@ namespace AddonWars2.App
             Logger.Info($"Culture selected: {actuallySelected}");
         }
 
-        // Shows a popup message if an unhandled exception occured.
-        ////private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        ////{
-        ////    // TODO: A custom and more discriptive dialog would be nice.
+        // Logs any unhandled exception.
+        private void LogUnhandledException(Exception exception, string source)
+        {
+            string message = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
+            Logger.Fatal(exception, message);
 
-        ////    var fullMessage = $"Source: {e.Exception.Source}\n\n{e.Exception.Message}";
-        ////    var exTitle = (string)Current.Resources["S.MessageBox.SDocument.UnhandledEx"];
-
-        ////    MessageBoxService.Show(fullMessage, exTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-
-        ////    e.Handled = true;
-
-        ////    Logger.Fatal(e.Exception, "AN UNHANDLED EXCEPTION OCCURED.");
-        ////}
+            Shutdown();
+        }
 
         #endregion Methods
     }

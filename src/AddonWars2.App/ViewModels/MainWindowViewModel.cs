@@ -32,13 +32,13 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
-        /// <param name="homeViewModel">A reference to <see cref="ViewModels.HomeViewModel"/>.</param>
+        /// <param name="homeViewModel">A reference to <see cref="ViewModels.HomePageViewModel"/>.</param>
         /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
             ApplicationConfig appConfig,
             CommonCommands commonCommands,
-            HomeViewModel homeViewModel,
+            HomePageViewModel homeViewModel,
             LoggingViewModel loggingViewModel)
             : base(logger)
         {
@@ -67,9 +67,9 @@ namespace AddonWars2.App.ViewModels
         public CommonCommands CommonCommands { get; private set; }
 
         /// <summary>
-        /// Gets a reference to <see cref="ViewModels.HomeViewModel"/> view model.
+        /// Gets a reference to <see cref="ViewModels.HomePageViewModel"/> view model.
         /// </summary>
-        public HomeViewModel HomeViewModel { get; private set; }
+        public HomePageViewModel HomeViewModel { get; private set; }
 
         /// <summary>
         /// Gets a reference to <see cref="ViewModels.LoggingViewModel"/> view model.

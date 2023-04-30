@@ -27,10 +27,6 @@ namespace AddonWars2.App.Extensions.Assists
                 typeof(HintAssist),
                 new PropertyMetadata(null));
 
-        #endregion Attached Properties
-
-        #region Attached Properties Methods
-
         /// <summary>
         /// Gets the value of <see cref="HintProperty"/>.
         /// </summary>
@@ -51,6 +47,6 @@ namespace AddonWars2.App.Extensions.Assists
             obj.SetValue(HintProperty, value);
         }
 
-        #endregion Attached Properties Methods
+        #endregion Attached Properties
     }
 }

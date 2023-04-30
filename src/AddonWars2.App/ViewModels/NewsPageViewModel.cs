@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="NewsViewModel.cs" company="Addon-Wars-2">
+// <copyright file="NewsPageViewModel.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -24,7 +24,7 @@ namespace AddonWars2.App.ViewModels
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents <see cref="NewsViewModel"/> states.
+    /// Represents <see cref="NewsPageViewModel"/> states.
     /// </summary>
     public enum NewsViewModelState
     {
@@ -53,7 +53,7 @@ namespace AddonWars2.App.ViewModels
     /// <summary>
     /// View model used by news view.
     /// </summary>
-    public class NewsViewModel : BaseViewModel
+    public class NewsPageViewModel : BaseViewModel
     {
         #region Fields
 
@@ -70,13 +70,13 @@ namespace AddonWars2.App.ViewModels
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NewsViewModel"/> class.
+        /// Initializes a new instance of the <see cref="NewsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
-        public NewsViewModel(
-            ILogger<NewsViewModel> logger,
+        public NewsPageViewModel(
+            ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             CommonCommands commonCommands)
             : base(logger)
@@ -275,7 +275,13 @@ namespace AddonWars2.App.ViewModels
             SetState(NewsViewModelState.Updating);
 
             var feed = await ParseResponseDataAsync(response);
+            if (feed == null)
+            {
+                return;
+            }
+
             feed = SortRssFeedCollection(feed);
+
             var cssFileName = "style.css";
             foreach (var item in feed)
             {
@@ -301,6 +307,7 @@ namespace AddonWars2.App.ViewModels
             // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
             //       in some scenarios when the internet connection is interrupted.
             //       Need to figure out what's the problem with the HTTP content stream (if there is any).
+
             Logger.LogDebug("Parsing response data.");
             try
             {

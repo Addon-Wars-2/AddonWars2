@@ -29,21 +29,6 @@ namespace AddonWars2.App.Extensions.Assists
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="GetSelectedPaths(DependencyObject)"/> getter
-        /// and <see cref="SetSelectedPaths(DependencyObject, string)"/> setter.
-        /// </summary>
-        public static readonly DependencyProperty SelectedPathsProperty =
-            DependencyProperty.RegisterAttached(
-                "SelectedPaths",
-                typeof(string[]),
-                typeof(DialogAssist),
-                new PropertyMetadata(null));
-
-        #endregion Attached Properties
-
-        #region Attached Properties Methods
-
-        /// <summary>
         /// Gets the value of <see cref="DialogServiceProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is get from.</param>
@@ -62,6 +47,17 @@ namespace AddonWars2.App.Extensions.Assists
         {
             obj.SetValue(DialogServiceProperty, value);
         }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="GetSelectedPaths(DependencyObject)"/> getter
+        /// and <see cref="SetSelectedPaths(DependencyObject, string)"/> setter.
+        /// </summary>
+        public static readonly DependencyProperty SelectedPathsProperty =
+            DependencyProperty.RegisterAttached(
+                "SelectedPaths",
+                typeof(string[]),
+                typeof(DialogAssist),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// Gets the value of <see cref="SelectedPathsProperty"/>.
@@ -83,6 +79,6 @@ namespace AddonWars2.App.Extensions.Assists
             obj.SetValue(SelectedPathsProperty, value);
         }
 
-        #endregion Attached Properties Methods
+        #endregion Attached Properties
     }
 }

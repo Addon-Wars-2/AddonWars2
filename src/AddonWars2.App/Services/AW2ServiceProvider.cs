@@ -40,8 +40,8 @@ namespace AddonWars2.App.Services
 
             // View models.
             services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<HomeViewModel>();
-            services.AddSingleton<NewsViewModel>();
+            services.AddSingleton<HomePageViewModel>();
+            services.AddSingleton<NewsPageViewModel>();
             services.AddSingleton<LoggingViewModel>();
 
             // Commands.

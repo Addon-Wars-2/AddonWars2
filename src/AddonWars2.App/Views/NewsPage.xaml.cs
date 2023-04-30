@@ -9,12 +9,8 @@ namespace AddonWars2.App.Views
 {
     using System;
     using System.Diagnostics;
-    using System.IO;
-    using System.Reflection;
-    using System.Windows;
     using System.Windows.Controls;
     using AddonWars2.App.Models.Application;
-    using AddonWars2.App.Utils.Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Web.WebView2.Core;
     using Microsoft.Web.WebView2.Wpf;
