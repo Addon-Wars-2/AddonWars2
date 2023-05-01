@@ -73,7 +73,7 @@ namespace AddonWars2.App.Views
                 DialogAssist.SetDialogService(this, new DialogService());
             }
 
-            var paths = ds.OpenFileDialog(
+            var paths = ds!.OpenFileDialog(
                 defaultExt: ".exe",
                 filter: "GW2 .exe|*.exe|All Files|*.*",
                 multiselect: false);

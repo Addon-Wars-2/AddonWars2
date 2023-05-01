@@ -12,7 +12,17 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Services.Interfaces;
     using AddonWars2.App.ViewModels;
+    using AddonWars2.Services.RssFeedService;
+    using AddonWars2.Services.RssFeedService.Interfaces;
+    using AddonWars2.Services.RssFeedService.Models;
+    using AddonWars2.Services.WebClientService;
+    using AddonWars2.Services.WebClientService.Interfaces;
+    using AddonWars2.Services.XmlReadWriteService;
+    using AddonWars2.Services.XmlReadWriteService.Interfaces;
+    using AddonWars2.Services.XmlSerializerService;
+    using AddonWars2.Services.XmlSerializerService.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using NLog.Extensions.Logging;
@@ -34,7 +44,7 @@ namespace AddonWars2.App.Services
 
             // Models.
             // TODO: factories?
-            services.AddSingleton<NLogLoggingManagerTarget>();
+            services.AddSingleton<NLogLogsAggregatorTarget>();
             services.AddSingleton<ApplicationConfig>();
 
             // View models.
@@ -47,10 +57,15 @@ namespace AddonWars2.App.Services
             services.AddSingleton<CommonCommands>();
 
             // Services.
-            services.AddSingleton<LoggingService>();
+            services.AddSingleton<ILogsAggregator, LogsAggregator>();
             services.AddSingleton<AddonsService>();
             services.AddSingleton<DialogService>();
             services.AddSingleton<MessageBoxService>();
+            services.AddSingleton<Gw2RssFeedService>();
+            services.AddSingleton<IWebClientService, GenericWebClientService>();
+            services.AddSingleton<IXmlReaderService, XmlReaderService>();
+            services.AddSingleton<IXmlWriterService, XmlWriterService>();
+            services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
 
             // Configure logger here as per NLog GitHub guide.
             var cfg = IOHelper.GetLoggerConfigurationNLog();

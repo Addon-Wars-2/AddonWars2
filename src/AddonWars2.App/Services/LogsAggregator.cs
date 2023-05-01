@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="LoggingService.cs" company="Addon-Wars-2">
+// <copyright file="LogsAggregator.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -12,9 +12,9 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Services.Interfaces;
 
     /// <summary>
-    /// Provides service methods for application logging.
+    /// Represents log messages aggregator.
     /// </summary>
-    public class LoggingService : ILoggingService
+    public class LogsAggregator : ILogsAggregator
     {
         #region Fields
 
@@ -25,9 +25,9 @@ namespace AddonWars2.App.Services
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoggingService"/> class.
+        /// Initializes a new instance of the <see cref="LogsAggregator"/> class.
         /// </summary>
-        public LoggingService()
+        public LogsAggregator()
         {
             _logEntries = new ObservableCollection<ILogEntry>();
         }

@@ -17,7 +17,7 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private static ILogger? _logger;
+        private static ILogger _logger;
 
         #endregion Fields
 
@@ -31,7 +31,7 @@ namespace AddonWars2.App.ViewModels
         {
             _logger = logger;
 
-            Logger?.LogDebug("Instance initialized.");
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -41,7 +41,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the current logger instance.
         /// </summary>
-        protected static ILogger? Logger => _logger;
+        protected static ILogger Logger => _logger;
 
         #endregion Properties
     }

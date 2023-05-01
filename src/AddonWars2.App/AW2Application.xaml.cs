@@ -18,6 +18,7 @@ namespace AddonWars2.App
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services;
+    using AddonWars2.App.Services.Interfaces;
     using AddonWars2.App.ViewModels;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -57,15 +58,20 @@ namespace AddonWars2.App
         /// <summary>
         /// Gets a service provider instance.
         /// </summary>
-        public IServiceProvider? Services { get; private set; }
+        public IServiceProvider Services { get; private set; }
 
         /// <summary>
         /// Gets a reference to the main window instance.
         /// </summary>
-        public MainWindow? MainWindowInstance { get; private set; }
+        public MainWindow MainWindowInstance { get; private set; }
+
+        /// <summary>
+        /// Gets the application config reference.
+        /// </summary>
+        public ApplicationConfig ApplicationConfig { get; private set; }
 
         // Gets the current logger instance.
-        private static Logger? Logger { get; set; }
+        private static Logger Logger { get; set; }
 
         #endregion Properties
 
@@ -77,11 +83,11 @@ namespace AddonWars2.App
         /// <param name="asAdmin">Indicates whether a new process should request admin rights to start.</param>
         public void Restart(bool asAdmin = false)
         {
-            Logger?.Debug("Restarting the application.");
+            Logger.Debug("Restarting the application.");
 
             // Save app/user data first.
-            var data = Services?.GetRequiredService<ApplicationConfig>().LocalData;
-            var path = Services?.GetRequiredService<ApplicationConfig>().ConfigFilePath;
+            var data = Services.GetRequiredService<ApplicationConfig>().LocalData;
+            var path = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
             ApplicationConfig.WriteLocalDataAsXml(path, data);
 
             // Start a new process.
@@ -98,7 +104,7 @@ namespace AddonWars2.App
 
             process.Start();
 
-            Current?.MainWindowInstance?.Close();
+            Current.MainWindowInstance?.Close();
         }
 
         /// <inheritdoc/>
@@ -108,15 +114,15 @@ namespace AddonWars2.App
 
             var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
-            var appConfig = Services.GetRequiredService<ApplicationConfig>();
-            appConfig.StartupDateTime = startupDateTime;
+            ApplicationConfig = Services.GetRequiredService<ApplicationConfig>();
+            ApplicationConfig.StartupDateTime = startupDateTime;
 
             foreach (var arg in e.Args)
             {
                 switch (arg)
                 {
                     case "-debug":
-                        appConfig.IsDebugMode = true;
+                        ApplicationConfig.IsDebugMode = true;
                         break;
                     default:
                         break;
@@ -129,12 +135,12 @@ namespace AddonWars2.App
             AW2App_SetupLocalization();
 
             // To enable setting DataContext directly in markup.
-            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type!); };
+            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
 
             MainWindowInstance = new MainWindow();
             MainWindowInstance.Show();
 
-            Logger?.Info("Application loaded and ready.");
+            Logger.Info("Application loaded and ready.");
         }
 
         /// <inheritdoc/>
@@ -142,7 +148,7 @@ namespace AddonWars2.App
         {
             base.OnExit(e);
 
-            Logger?.Info("Application shutdown.");
+            Logger.Info("Application shutdown.");
             LogManager.Shutdown();
         }
 
@@ -168,7 +174,7 @@ namespace AddonWars2.App
         // Setups logging.
         private void AW2App_SetupLogger()
         {
-            Target.Register<NLogLoggingManagerTarget>("NLogLoggingManagerTarget");
+            Target.Register<NLogLogsAggregatorTarget>("NLogLogsAggregatorTarget");
 
             // Workaround details:
             // https://github.com/NLog/NLog/wiki/Dependency-injection-with-NLog
@@ -176,19 +182,19 @@ namespace AddonWars2.App
             var defautCtor = ConfigurationItemFactory.Default.CreateInstance;
             ConfigurationItemFactory.Default.CreateInstance = type =>
             {
-                if (type == typeof(NLogLoggingManagerTarget))
+                if (type == typeof(NLogLogsAggregatorTarget))
                 {
-                    return new NLogLoggingManagerTarget(Services?.GetRequiredService<LoggingService>()!);
+                    return new NLogLogsAggregatorTarget(Services.GetRequiredService<ILogsAggregator>());
                 }
 
                 return defautCtor(type);
             };
 
             // Replace the current configuration to "reset" it.
-            Services?.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init logger? Doesn't work without.
+            Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init Logger Doesn't work without.
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
-            Logger?.Info($"Start logging.");
+            Logger.Info($"Start logging.");
 
             // Locate AppData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
@@ -197,13 +203,12 @@ namespace AddonWars2.App
                 Directory.CreateDirectory(appDataDir);
             }
 
-            var appConfig = Services?.GetRequiredService<ApplicationConfig>();
-            appConfig!.AppDataDir = appDataDir;
+            ApplicationConfig.AppDataDir = appDataDir;
 
-            Logger?.Info($"Using AppData directory: {appDataDir}");
+            Logger.Info($"Using AppData directory: {appDataDir}");
 
             // Locate the logs directory.
-            var logsDirPath = Path.Join(appDataDir, appConfig.LogDirName);
+            var logsDirPath = Path.Join(appDataDir, ApplicationConfig.LogDirName);
             if (!Directory.Exists(logsDirPath))
             {
                 Directory.CreateDirectory(logsDirPath);
@@ -211,16 +216,16 @@ namespace AddonWars2.App
 
             // Setup logger config.
             var logCfg = LogManager.Configuration;
-            var unixMsDateTime = ((DateTimeOffset)appConfig.StartupDateTime).ToUnixTimeMilliseconds();
-            appConfig.LogFileFullPath = Path.Join(logsDirPath, $"{appConfig.LogPrefix}{unixMsDateTime}.txt");
+            var unixMsDateTime = ((DateTimeOffset)ApplicationConfig.StartupDateTime).ToUnixTimeMilliseconds();
+            ApplicationConfig.LogFileFullPath = Path.Join(logsDirPath, $"{ApplicationConfig.LogPrefix}{unixMsDateTime}.txt");
             var logTarget = new FileTarget()
             {
                 Name = "LogFileTarget",
-                FileName = appConfig.LogFileFullPath,
+                FileName = ApplicationConfig.LogFileFullPath,
                 Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
             };
 
-            var minLevel = appConfig.IsDebugMode ? LogLevel.Debug : LogLevel.Info;
+            var minLevel = ApplicationConfig.IsDebugMode ? LogLevel.Debug : LogLevel.Info;
             logCfg.AddRule(minLevel, LogLevel.Fatal, logTarget, "*");
             LogManager.Configuration = logCfg;
 
@@ -229,18 +234,17 @@ namespace AddonWars2.App
                 rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
             }
 
-            Logger?.Info($"Created a new log file: {appConfig.LogFileFullPath}");
+            Logger.Info($"Created a new log file: {ApplicationConfig.LogFileFullPath}");
         }
 
         // Setups the application config and local data.
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            var appConfig = Services?.GetRequiredService<ApplicationConfig>();
-            var localdata = appConfig!.LocalData;  // default
+            var localdata = ApplicationConfig.LocalData;  // default
 
             // Try to get the application settings from the AppData\Roaming dir.
-            var path = appConfig.ConfigFilePath;
+            var path = ApplicationConfig.ConfigFilePath;
 
             // File not found.
             if (!File.Exists(path))
@@ -248,7 +252,7 @@ namespace AddonWars2.App
                 // Create a new one with default settings.
                 ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                Logger?.Info($"Created a new application config file: {path}");
+                Logger.Info($"Created a new application config file: {path}");
             }
             else
             {
@@ -258,46 +262,45 @@ namespace AddonWars2.App
                 localdata = ApplicationConfig.LoadLocalDataFromXml(path);
                 if (!LocalData.IsValid(localdata))
                 {
-                    Logger?.Warn($"The given config file is not valid.");
+                    Logger.Warn($"The given config file is not valid.");
 
                     // Delete the corrupted file and replace it with a default one.
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                    Logger?.Info($"Created a new application config file: {path}");
+                    Logger.Info($"Created a new application config file: {path}");
                 }
             }
 
-            appConfig.LocalData = localdata;
+            ApplicationConfig.LocalData = localdata;
 
-            Logger?.Info($"Using the application config file: {path}");
+            Logger.Info($"Using the application config file: {path}");
         }
 
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var config = Services?.GetRequiredService<ApplicationConfig>();
-            var culture = config?.LocalData?.SelectedCultureString;
+            var culture = ApplicationConfig.LocalData?.SelectedCultureString;
             var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
             // Now we should replace it in both places since config file may contain invalid culture string.
-            if (config!.LocalData == null)
+            if (ApplicationConfig.LocalData == null)
             {
-                throw new NullReferenceException(nameof(config.LocalData));
+                throw new NullReferenceException(nameof(ApplicationConfig.LocalData));
             }
 
-            config!.SelectedCulture = config.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, config.DefaultCulture);
-            config!.LocalData.SelectedCultureString = config.SelectedCulture.Culture;
+            ApplicationConfig.SelectedCulture = ApplicationConfig.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, ApplicationConfig.DefaultCulture);
+            ApplicationConfig.LocalData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
 
-            Logger?.Info($"Culture selected: {actuallySelected}");
+            Logger.Info($"Culture selected: {actuallySelected}");
         }
 
         // Logs any unhandled exception.
         private void LogUnhandledException(Exception exception, string source)
         {
             string message = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
-            Logger?.Fatal(exception, message);
+            Logger.Fatal(exception, message);
 
 #if !DEBUG
             Shutdown();

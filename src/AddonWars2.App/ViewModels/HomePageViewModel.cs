@@ -26,6 +26,8 @@ namespace AddonWars2.App.ViewModels
 
         private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
 
+        private readonly ApplicationConfig _applicationConfig;
+
         private bool _isActuallyLoaded = false;
         private Gw2Addon? _selectedAddon;
 
@@ -37,21 +39,21 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="addonsManager">A reference to <see cref="AddonsService"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="AppConfig"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
-            AddonsService addonsManager,
-            ApplicationConfig appConfig)
+            ApplicationConfig appConfig,
+            AddonsService addonsManager)
             : base(logger)
         {
-            AppConfig = appConfig;
+            _applicationConfig = appConfig;
             AddonsManager = addonsManager;
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
 
-            Logger?.LogDebug("Instance initialized.");
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -61,7 +63,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig { get; private set; }
+        public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets a reference to the application config.
@@ -77,7 +79,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig?.LocalData?.Gw2FilePath, value, AppConfig?.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -90,7 +92,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig?.LocalData?.Gw2DirPath, value, AppConfig?.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -108,7 +110,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _selectedAddon, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -143,7 +145,7 @@ namespace AddonWars2.App.ViewModels
                 if (_isActuallyLoaded == false)
                 {
                     SetProperty(ref _isActuallyLoaded, value);
-                    Logger?.LogDebug($"Property set: {value}");
+                    Logger.LogDebug($"Property set: {value}");
                 }
             }
         }
@@ -172,38 +174,38 @@ namespace AddonWars2.App.ViewModels
             // TODO: Add another step (if this one failed) to search inside the %adddata% directory
             //       and parse GW2 GFXSettings file. GW2 dir path is stored in INSTALLPATH entry.
 
-            Logger?.LogDebug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             // First try to get the file location from the registry.
             var regDir = GW2_REGISTRY_DIR;
             var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
-                Logger?.LogWarning("Couldn't find GW2 string in the registry.");
+                Logger.LogWarning("Couldn't find GW2 string in the registry.");
                 gw2exe = string.Empty;
             }
 
             Gw2ExecPath = gw2exe;
             Gw2DirPath = Path.GetDirectoryName(gw2exe);
 
-            Logger?.LogInformation("GW2 executable location was set automatically.");
+            Logger.LogInformation("GW2 executable location was set automatically.");
         }
 
         // UpdateGw2ExePathCommand command logic.
         private void ExecuteUpdateGw2ExePathCommand(string[]? paths)
         {
-            Logger?.LogDebug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             if (paths?.Length == 0)
             {
-                Logger?.LogDebug("No paths were selected.");
+                Logger.LogDebug("No paths were selected.");
                 return;
             }
 
             var path = paths?[0];
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                Logger?.LogDebug("Path is null, empty or not valid.");
+                Logger.LogDebug("Path is null, empty or not valid.");
                 return;
             }
 

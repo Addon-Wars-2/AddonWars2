@@ -15,11 +15,11 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows;
-    using AddonWars2.App.Commands;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
-    using AddonWars2.App.Models.GuildWars2;
-    using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.Services.RssFeedService;
+    using AddonWars2.Services.RssFeedService.Models;
+    using AddonWars2.Services.WebClientService.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -57,12 +57,16 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private readonly ApplicationConfig _applicationConfig;
+        private readonly Gw2RssFeedService _rssFeedService;
+        private readonly IWebClientService _webClientService;
+
         private string? _updateErrorCode;
         private string? _viewModelState;
         private NewsViewModelState _viewModelStateInternal;
         private bool _isActuallyLoaded = false;
-        private ObservableCollection<RssFeedItem>? _rssFeedCollection;
-        private RssFeedItem? _displayedRssFeedItem;
+        private ObservableCollection<Gw2RssFeedItem>? _rssFeedCollection;
+        private Gw2RssFeedItem? _displayedRssFeedItem;
         private Uri? _displayedRssFeedContent;
 
         #endregion Fields
@@ -72,18 +76,22 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="NewsPageViewModel"/> class.
         /// </summary>
-        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ViewModels.AppConfig"/>.</param>
-        /// <param name="commonCommands">A reference to a common commands class.</param>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
+        /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
+        /// <param name="webClientServices">A referemnce to <see cref="IWebClientService"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
-            CommonCommands commonCommands)
+            Gw2RssFeedService rssFeedService,
+            IWebClientService webClientServices)
             : base(logger)
         {
-            AppConfig = appConfig;
-            CommonCommands = commonCommands;
-            RssFeedCollection = new ObservableCollection<RssFeedItem>();
+            _applicationConfig = appConfig;
+            _rssFeedService = rssFeedService;
+            _webClientService = webClientServices;
+            RssFeedCollection = new ObservableCollection<Gw2RssFeedItem>();
+
             SetState(NewsViewModelState.Ready);
 
             LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
@@ -94,7 +102,7 @@ namespace AddonWars2.App.ViewModels
                 ExecuteLoadRssItemContentCommand,
                 () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
 
-            Logger?.LogDebug("Instance initialized.");
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -104,12 +112,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig { get; private set; }
+        public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
-        /// Gets a reference to a common commands class.
+        /// Gets a reference to the application config.
         /// </summary>
-        public CommonCommands CommonCommands { get; private set; }
+        public Gw2RssFeedService RssFeedService => _rssFeedService;
+
+        /// <summary>
+        /// Gets a reference to the application config.
+        /// </summary>
+        public IWebClientService WebClientService => _webClientService;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -127,7 +140,7 @@ namespace AddonWars2.App.ViewModels
                 if (_isActuallyLoaded == false)
                 {
                     SetProperty(ref _isActuallyLoaded, value);
-                    Logger?.LogDebug($"Property set: {value}");
+                    Logger.LogDebug($"Property set: {value}");
                 }
             }
         }
@@ -135,26 +148,26 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets a collection of GW2 RSS items.
         /// </summary>
-        public ObservableCollection<RssFeedItem>? RssFeedCollection
+        public ObservableCollection<Gw2RssFeedItem>? RssFeedCollection
         {
             get => _rssFeedCollection;
             set
             {
                 SetProperty(ref _rssFeedCollection, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
         /// <summary>
         /// Gets or sets the currently displayed RSS item.
         /// </summary>
-        public RssFeedItem? DisplayedRssFeedItem
+        public Gw2RssFeedItem? DisplayedRssFeedItem
         {
             get => _displayedRssFeedItem;
             set
             {
                 SetProperty(ref _displayedRssFeedItem, value);
-                Logger?.LogDebug($"Property set: {value}, guild={value?.Guid}");
+                Logger.LogDebug($"Property set: {value}, guild={value?.Guid}");
             }
         }
 
@@ -167,7 +180,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _displayedRssFeedContent, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -181,7 +194,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _updateErrorCode, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -195,7 +208,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _viewModelState, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -208,7 +221,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _viewModelStateInternal, value);
-                Logger?.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -240,26 +253,26 @@ namespace AddonWars2.App.ViewModels
         // LoadNewsCommand command logic.
         private async void ExecuteReloadNewsAsync()
         {
-            Logger?.LogDebug("Executing command.");
-            Logger?.LogInformation("Fetching news feed.");
+            Logger.LogDebug("Executing command.");
+            Logger.LogInformation("Fetching news feed.");
 
             SetState(NewsViewModelState.Fetching);
 
             RssFeedCollection?.Clear();
 
-            Logger?.LogDebug("Requesting RSS data.");
+            Logger.LogDebug("Requesting RSS data.");
 
             HttpResponseMessage response;
             try
             {
-                response = await WebHelper.GetResponseAsync(AppConfig?.LocalData?.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
+                response = await WebClientService.GetResponseAsync(AppConfig.LocalData.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
             }
             catch (HttpRequestException e)
             {
                 // No internet connection.
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = e.Message;
-                Logger?.LogError($"No internet connection.");
+                Logger.LogError($"No internet connection.");
                 return;
             }
 
@@ -268,7 +281,7 @@ namespace AddonWars2.App.ViewModels
             {
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = $"{response}";
-                Logger?.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
+                Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
                 return;
             }
 
@@ -285,8 +298,8 @@ namespace AddonWars2.App.ViewModels
             var cssFileName = "style.css";
             foreach (var item in feed)
             {
-                item.ContentEncoded = RssFeedHelper.AddProtocolPrefixesToHtml(item.ContentEncoded ?? string.Empty, "https");
-                item.ContentEncoded = RssFeedHelper.InjectCssIntoHtml(item.ContentEncoded ?? string.Empty, cssFileName);
+                item.ContentEncoded = RssFeedService.AddProtocolPrefixesToHtml(item.ContentEncoded ?? string.Empty, "https");
+                item.ContentEncoded = RssFeedService.InjectCssIntoHtml(item.ContentEncoded ?? string.Empty, cssFileName);
             }
 
             var rssDirPath = Path.Combine(AppConfig?.AppDataDir ?? string.Empty, AppConfig?.RssFeedDirName ?? string.Empty);
@@ -298,63 +311,68 @@ namespace AddonWars2.App.ViewModels
 
             SetState(NewsViewModelState.Ready);
 
-            Logger?.LogInformation("News feed updated.");
+            Logger.LogInformation("News feed updated.");
         }
 
         // Parse response data.
-        private async Task<IList<RssFeedItem>> ParseResponseDataAsync(HttpResponseMessage response)
+        private async Task<IList<Gw2RssFeedItem>> ParseResponseDataAsync(HttpResponseMessage response)
         {
             // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
             //       in some scenarios when the internet connection is interrupted.
             //       Need to figure out what's the problem with the HTTP content stream (if there is any).
 
-            Logger?.LogDebug("Parsing response data.");
+            Logger.LogDebug("Parsing response data.");
+
             try
             {
                 var stream = await response.Content.ReadAsStreamAsync();
-                var feed = await RssFeedHelper.ParseXmlStreamAsync(stream);
-                Logger?.LogDebug($"Parsed items: {RssFeedCollection?.Count}");
+                var feed = await RssFeedService.ReadXmlStreamAsync(stream);
+
+                Logger.LogDebug($"Parsed items: {feed.Count}");
+
                 return feed;
             }
             catch (Exception e)
             {
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = $"{e.Message}";
-                Logger?.LogError($"Failed to parse data.");
-                return new List<RssFeedItem>();
+
+                Logger.LogError($"Failed to parse data.");
+
+                return new List<Gw2RssFeedItem>();
             }
         }
 
         // Sort the list, so the "sticky" item will be always above (the first one),
         // and the rest will be sorted by date. Even though RSS feed already contains items in a
         // historical order, we run this sort just to make sure.
-        private IList<RssFeedItem> SortRssFeedCollection(IList<RssFeedItem> collection)
+        private IList<Gw2RssFeedItem> SortRssFeedCollection(IList<Gw2RssFeedItem> collection)
         {
             return collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList();
         }
 
         // Write HTML files locally, so WebView can read them later.
-        private async Task WriteRssItemsAsync(IList<RssFeedItem> collection, string directory)
+        private async Task WriteRssItemsAsync(IList<Gw2RssFeedItem> collection, string directory)
         {
             foreach (var item in collection)
             {
                 var filepath = Path.Combine(directory, item.Guid ?? string.Empty) + ".html";
-                await RssFeedHelper.WriteRssItemContentAsync(item, filepath);
-                Logger?.LogDebug($"HTML file saved: {filepath}");
+                await RssFeedService.WriteRssItemAsync(item, filepath);
+                Logger.LogDebug($"HTML file saved: {filepath}");
             }
         }
 
         // Update the destination list with new items using some delay.
-        private async Task FillRssItemsAsync(IList<RssFeedItem>? source, IList<RssFeedItem>? destination, int delay = 50)
+        private async Task FillRssItemsAsync(IList<Gw2RssFeedItem>? source, IList<Gw2RssFeedItem>? destination, int delay = 50)
         {
             ArgumentNullException.ThrowIfNull(source, nameof(source));
             ArgumentNullException.ThrowIfNull(destination, nameof(destination));
 
             foreach (var item in source!)
             {
-                destination!.Add(item);
+                destination.Add(item);
                 await Task.Delay(delay);  // for animation purposes
-                Logger?.LogDebug($"RSS item with guid={item.Guid} added.");
+                Logger.LogDebug($"RSS item with guid={item.Guid} added.");
             }
         }
 
@@ -363,11 +381,11 @@ namespace AddonWars2.App.ViewModels
         // LoadRssItemContentCommand command logic.
         private void ExecuteLoadRssItemContentCommand()
         {
-            Logger?.LogDebug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             if (DisplayedRssFeedItem == null)
             {
-                Logger?.LogDebug($"{nameof(DisplayedRssFeedItem)} is null.");
+                Logger.LogDebug($"{nameof(DisplayedRssFeedItem)} is null.");
                 return;
             }
 
@@ -380,19 +398,19 @@ namespace AddonWars2.App.ViewModels
                 try
                 {
                     DisplayedRssFeedContent = new Uri(filepath);
-                    Logger?.LogDebug($"WebView2 content loaded from: {filepath}");
+                    Logger.LogDebug($"WebView2 content loaded from: {filepath}");
                     return;
                 }
                 catch (Exception e)
                 {
                     DisplayedRssFeedContent = null;
-                    Logger?.LogError($"An exception occured: {e.Message}");
+                    Logger.LogError($"An exception occured: {e.Message}");
                     return;
                 }
             }
 
             DisplayedRssFeedContent = new Uri("about:blank");
-            Logger?.LogDebug($"Failed to load WebView2 content from HTML file.");
+            Logger.LogDebug($"Failed to load WebView2 content from HTML file.");
         }
 
         #endregion Commands Logic
@@ -404,7 +422,7 @@ namespace AddonWars2.App.ViewModels
         {
             ViewModelStateInternal = state;
             ViewModelState = Enum.GetName(typeof(NewsViewModelState), state);
-            Logger?.LogDebug($"ViewModel state set: {state}");
+            Logger.LogDebug($"ViewModel state set: {state}");
         }
 
         #endregion Methods

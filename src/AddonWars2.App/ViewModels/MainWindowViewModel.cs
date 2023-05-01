@@ -23,6 +23,9 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private readonly ApplicationConfig _applicationConfig;
+        private readonly CommonCommands _commonCommands;
+
         #endregion Fields
 
         #region Constructors
@@ -31,26 +34,20 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="AppConfig"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
-        /// <param name="homeViewModel">A reference to <see cref="HomePageViewModel"/>.</param>
-        /// <param name="loggingViewModel">A reference to <see cref="ViewModels.LoggingViewModel"/>.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
             ApplicationConfig appConfig,
-            CommonCommands commonCommands,
-            HomePageViewModel homeViewModel,
-            LoggingViewModel loggingViewModel)
+            CommonCommands commonCommands)
             : base(logger)
         {
-            AppConfig = appConfig;
-            CommonCommands = commonCommands;
-            HomeViewModel = homeViewModel;
-            LoggingViewModel = loggingViewModel;
+            _applicationConfig = appConfig;
+            _commonCommands = commonCommands;
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
 
-            Logger?.LogDebug("Instance initialized.");
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -60,22 +57,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig { get; private set; }
+        public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets a reference to a common commands class.
         /// </summary>
-        public CommonCommands CommonCommands { get; private set; }
-
-        /// <summary>
-        /// Gets a reference to <see cref="HomePageViewModel"/> view model.
-        /// </summary>
-        public HomePageViewModel HomeViewModel { get; private set; }
-
-        /// <summary>
-        /// Gets a reference to <see cref="LoggingViewModel"/> view model.
-        /// </summary>
-        public LoggingViewModel LoggingViewModel { get; private set; }
+        public CommonCommands CommonCommands => _commonCommands;
 
         /// <summary>
         /// Gets a list of available cultures.
@@ -111,7 +98,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(AppConfig?.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
-                Logger?.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
+                Logger.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
             }
         }
 
@@ -139,7 +126,7 @@ namespace AddonWars2.App.ViewModels
             // TODO: Doesn't really belong to VM since it does nothing with data (models).
             //       More naturally to put it to a code-behind.
 
-            Logger?.LogDebug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             ArgumentNullException.ThrowIfNull(e, nameof(e));
 

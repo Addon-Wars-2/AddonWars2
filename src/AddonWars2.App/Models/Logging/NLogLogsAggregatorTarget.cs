@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="NLogLoggingManagerTarget.cs" company="Addon-Wars-2">
+// <copyright file="NLogLogsAggregatorTarget.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,31 +8,32 @@
 namespace AddonWars2.App.Models.Logging
 {
     using AddonWars2.App.Services;
+    using AddonWars2.App.Services.Interfaces;
     using NLog;
     using NLog.Targets;
 
     /// <summary>
     /// A custom NLog target that writes to <see cref="LogEntry"/> object and then
-    /// adds it to the collection specified in <see cref="LoggingService"/>.
+    /// adds it to the collection specified in <see cref="ILogsAggregator"/>.
     /// </summary>
-    [Target("NLogLoggingManagerTarget")]
-    public sealed class NLogLoggingManagerTarget : TargetWithLayout
+    [Target("NLogLogsAggregatorTarget")]
+    public sealed class NLogLogsAggregatorTarget : TargetWithLayout
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NLogLoggingManagerTarget"/> class.
+        /// Initializes a new instance of the <see cref="NLogLogsAggregatorTarget"/> class.
         /// </summary>
-        /// <param name="loggingManager">A rerefence to a <see cref="LoggingService"/> object.</param>
-        public NLogLoggingManagerTarget(LoggingService loggingManager)
+        /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> object.</param>
+        public NLogLogsAggregatorTarget(ILogsAggregator logsAggregator)
         {
-            LoggingManagerInstance = loggingManager;
+            LogsAggregatorInstance = logsAggregator;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NLogLoggingManagerTarget"/> class.
+        /// Initializes a new instance of the <see cref="NLogLogsAggregatorTarget"/> class.
         /// </summary>
-        public NLogLoggingManagerTarget()
+        public NLogLogsAggregatorTarget()
         {
             // Blank.
         }
@@ -42,9 +43,9 @@ namespace AddonWars2.App.Models.Logging
         #region Properties
 
         /// <summary>
-        /// Gets a reference to the <see cref="LoggingService"/> service.
+        /// Gets a reference to the <see cref="ILogsAggregator"/> instance.
         /// </summary>
-        public static LoggingService? LoggingManagerInstance { get; internal set; }
+        public static ILogsAggregator? LogsAggregatorInstance { get; internal set; }
 
         #endregion Properties
 
@@ -72,7 +73,7 @@ namespace AddonWars2.App.Models.Logging
         // Sends a log message.
         private void SendLogMessage(string message)
         {
-            LoggingManagerInstance?.LogEntries.Add(new LogEntry(message));
+            LogsAggregatorInstance?.LogEntries.Add(new LogEntry(message));
         }
 
         #endregion Methods

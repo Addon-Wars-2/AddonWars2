@@ -13,6 +13,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services;
+    using AddonWars2.App.Services.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -21,26 +22,33 @@ namespace AddonWars2.App.ViewModels
     /// </summary>
     public class LoggingViewModel : BaseViewModel
     {
+        #region Fields
+
+        private readonly ApplicationConfig _applicationConfig;
+        private readonly ILogsAggregator _logsAggregator;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoggingViewModel"/> class.
         /// </summary>
-        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="loggingService">A rerefence to a <see cref="LoggingService"/> object.</param>
-        /// <param name="appConfig">A reference to <see cref="AppConfig"/>.</param>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/> instance.</param>
+        /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> instance.</param>
+        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
         public LoggingViewModel(
-            ILogger<BaseViewModel> logger,
-            LoggingService loggingService,
+            ILogger<LoggingViewModel> logger,
+            ILogsAggregator logsAggregator,
             ApplicationConfig appConfig)
             : base(logger)
         {
-            LoggingServiceInstance = loggingService;
-            AppConfig = appConfig;
+            _logsAggregator = logsAggregator;
+            _applicationConfig = appConfig;
 
             OpenLogFileCommand = new RelayCommand(ExecuteOpenLogFileCommand);
 
-            Logger?.LogDebug("Instance initialized.");
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -50,17 +58,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig { get; private set; }
+        public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
-        /// Gets a reference to <see cref="LoggingService"/> service.
+        /// Gets a reference to <see cref="Services.LogsAggregator"/> service.
         /// </summary>
-        public LoggingService LoggingServiceInstance { get; private set; }
+        public ILogsAggregator LogsAggregator => _logsAggregator;
 
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<ILogEntry> LogEntries => LoggingServiceInstance.LogEntries;
+        public ObservableCollection<ILogEntry> LogEntries => LogsAggregator.LogEntries;
 
         #endregion Properties
 
