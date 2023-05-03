@@ -21,5 +21,26 @@ namespace AddonWars2.App
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Brings the window to foreground.
+        /// </summary>
+        public void BringToForeground()
+        {
+            // Source: https://stackoverflow.com/a/23730146
+            // TODO: move out of code-behind?
+
+            if (WindowState == WindowState.Minimized || Visibility == Visibility.Hidden)
+            {
+                Show();
+                WindowState = WindowState.Normal;
+            }
+
+            // According to some sources these steps gurantee that an app will be brought to foreground.
+            Activate();
+            Topmost = true;
+            Topmost = false;
+            Focus();
+        }
     }
 }

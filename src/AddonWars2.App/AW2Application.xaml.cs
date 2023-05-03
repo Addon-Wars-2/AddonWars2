@@ -11,6 +11,7 @@ namespace AddonWars2.App
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using AddonWars2.App.Extensions.Markup;
@@ -35,6 +36,18 @@ namespace AddonWars2.App
         // TODO: I don't like the mess in ctor inner calls, especially due to
         //       mixing it with logger calls. Maybe to refactor it to make more verbose and readable?
         // TODO: Review dependencies inside ctor inner calls.
+
+        #region Fields
+
+        private const string UNIQUE_MUTEX_NAME = "c1284452-e2a7-4f2e-853d-9272848b0b1d";
+
+        private const string UNIQUE_EVENT_NAME = "816a7b1c-9be6-4d4d-9fd4-a45e267448eb";
+
+        private EventWaitHandle _eventWaitHandle;
+
+        private Mutex _mutex;
+
+        #endregion Fields
 
         #region Constructors
 
@@ -72,6 +85,20 @@ namespace AddonWars2.App
 
         // Gets the current logger instance.
         private static Logger Logger { get; set; }
+
+        // Event wait handle.
+        private EventWaitHandle EventWaitHandle
+        {
+            get => _eventWaitHandle;
+            set => _eventWaitHandle = value;
+        }
+
+        // The mutex.
+        private Mutex Mutex
+        {
+            get => _mutex;
+            set => _mutex = value;
+        }
 
         #endregion Properties
 
@@ -113,6 +140,8 @@ namespace AddonWars2.App
         {
             base.OnStartup(e);
 
+            EnsureMutex();
+
             var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
             ApplicationConfig = Services.GetRequiredService<ApplicationConfig>();
@@ -152,6 +181,41 @@ namespace AddonWars2.App
             Logger.Info("Application shutdown.");
 
             LogManager.Shutdown();
+        }
+
+        // Allows only one instance to exist.
+        // Source: https://stackoverflow.com/a/23730146
+        private void EnsureMutex()
+        {
+            bool isOwned;
+            Mutex = new Mutex(true, UNIQUE_MUTEX_NAME, out isOwned);
+            EventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, UNIQUE_EVENT_NAME);
+
+            GC.KeepAlive(Mutex);
+
+            if (isOwned)
+            {
+                // Spawn a thread which will be waiting for our event.
+                var thread = new Thread(
+                    () =>
+                    {
+                        while (EventWaitHandle.WaitOne())
+                        {
+                            Current.Dispatcher.BeginInvoke(() => Current.MainWindowInstance.BringToForeground());
+                        }
+                    });
+
+                // It is important mark it as background otherwise it will prevent app from exiting.
+                thread.IsBackground = true;
+                thread.Start();
+                return;
+            }
+
+            // Notify other instance so it could bring itself to foreground.
+            EventWaitHandle.Set();
+
+            // Terminate this instance.
+            Shutdown();
         }
 
         // Setups exception handling.
