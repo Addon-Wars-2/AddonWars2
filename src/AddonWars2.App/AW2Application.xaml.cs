@@ -86,8 +86,8 @@ namespace AddonWars2.App
             Logger.Debug("Restarting the application.");
 
             // Save app/user data first.
-            var data = Services.GetRequiredService<ApplicationConfig>().LocalData;
-            var path = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
+            var data = ApplicationConfig.LocalData;
+            var path = ApplicationConfig.ConfigFilePath;
 
             ApplicationConfig.WriteLocalDataAsXml(path, data);
 
@@ -256,7 +256,6 @@ namespace AddonWars2.App
             {
                 // Create a new one with default settings.
                 ApplicationConfig.WriteLocalDataAsXml(path, localdata);
-                ApplicationConfig.LocalData = localdata;
 
                 Logger.Info($"Created a new application config file: {path}");
             }
@@ -274,11 +273,12 @@ namespace AddonWars2.App
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
-                    ApplicationConfig.LocalData = localdata;
 
                     Logger.Info($"Created a new application config file: {path}");
                 }
             }
+
+            ApplicationConfig.LocalData = localdata ?? LocalData.Default;
 
             Logger.Info($"Using the application config file: {path}");
         }
@@ -289,12 +289,12 @@ namespace AddonWars2.App
             var culture = ApplicationConfig.LocalData.SelectedCultureString;
             var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
-            // Now we should replace it in both places since config file may contain invalid culture string.
             if (ApplicationConfig.LocalData == null)
             {
                 throw new NullReferenceException(nameof(ApplicationConfig.LocalData));
             }
 
+            // Now we should replace it in both places since config file may contain invalid culture string.
             ApplicationConfig.SelectedCulture = ApplicationConfig.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, ApplicationConfig.DefaultCulture);
             ApplicationConfig.LocalData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
 

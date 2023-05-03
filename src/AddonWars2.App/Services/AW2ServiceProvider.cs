@@ -14,11 +14,11 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
     using AddonWars2.App.ViewModels;
+    using AddonWars2.Services.HttpClientService;
+    using AddonWars2.Services.HttpClientService.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
-    using AddonWars2.Services.WebClientService;
-    using AddonWars2.Services.WebClientService.Interfaces;
     using AddonWars2.Services.XmlReadWriteService;
     using AddonWars2.Services.XmlReadWriteService.Interfaces;
     using AddonWars2.Services.XmlSerializerService;
@@ -62,7 +62,7 @@ namespace AddonWars2.App.Services
             services.AddSingleton<DialogService>();
             services.AddSingleton<IMessageBoxService, MessageBoxService>();
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
-            services.AddSingleton<IWebClientService, GenericWebClientService>();
+            services.AddSingleton<IHttpClientService, GenericHttpClientService>();
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();

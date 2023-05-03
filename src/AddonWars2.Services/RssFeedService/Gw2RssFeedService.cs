@@ -9,9 +9,9 @@ namespace AddonWars2.Services.RssFeedService
 {
     using System.Collections.Generic;
     using System.Xml.Linq;
+    using AddonWars2.Services.HttpClientService.Interfaces;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
-    using AddonWars2.Services.WebClientService.Interfaces;
     using AddonWars2.Services.XmlReadWriteService.Interfaces;
 
     /// <summary>
@@ -21,7 +21,7 @@ namespace AddonWars2.Services.RssFeedService
     {
         #region Fields
 
-        private readonly IWebClientService _webClientService;
+        private readonly IHttpClientService _webClientService;
         private readonly IXmlReaderService _xmlReaderService;
 
         #endregion Fields
@@ -31,9 +31,9 @@ namespace AddonWars2.Services.RssFeedService
         /// <summary>
         /// Initializes a new instance of the <see cref="Gw2RssFeedService"/> class.
         /// </summary>
-        /// <param name="webClientService">A reference to <see cref="IWebClientService"/> instance.</param>
+        /// <param name="webClientService">A reference to <see cref="IHttpClientService"/> instance.</param>
         /// <param name="xmlReaderService">A rerence to <see cref="IXmlReaderService"/> service.</param>
-        public Gw2RssFeedService(IWebClientService webClientService, IXmlReaderService xmlReaderService)
+        public Gw2RssFeedService(IHttpClientService webClientService, IXmlReaderService xmlReaderService)
         {
             _webClientService = webClientService;
             _xmlReaderService = xmlReaderService;
@@ -46,7 +46,7 @@ namespace AddonWars2.Services.RssFeedService
         /// <summary>
         /// Gets the web client service.
         /// </summary>
-        protected IWebClientService WebClientService => _webClientService;
+        protected IHttpClientService WebClientService => _webClientService;
 
         /// <summary>
         /// Gets the web client service.

@@ -15,17 +15,11 @@
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
-
-	<Title>Addon Wars 2</Title>
-	<Description>Guild Wars 2™ Unofficial Add-On Manager</Description>
-	<Deterministic>False</Deterministic>
-	<Authors>RindCode</Authors>
-	<Company>Addon-Wars-2</Company>
-	<Copyright>Copyright $(Company) © 2023</Copyright>
 	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
 	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 	<AssemblyName>AddonWars2</AssemblyName>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
 	  
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 	  
@@ -41,11 +35,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="stylecop.json" />
+    <ApplicationDefinition Include="AW2Application.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <ApplicationDefinition Include="AW2Application.xaml" />
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,13 +55,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1722.45" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="YamlDotNet" Version="13.1.0" />
   </ItemGroup>
 
   <ItemGroup>

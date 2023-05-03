@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 		stylecop.json = stylecop.json
@@ -17,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Addons", "AddonWars2.Addons\AddonWars2.Addons.csproj", "{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

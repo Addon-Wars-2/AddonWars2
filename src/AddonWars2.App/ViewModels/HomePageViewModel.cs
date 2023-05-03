@@ -11,7 +11,7 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
-    using AddonWars2.Addons;
+    using AddonWars2.Addons.Models.Mods;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Services;
@@ -30,7 +30,7 @@ namespace AddonWars2.App.ViewModels
         private readonly ApplicationConfig _applicationConfig;
 
         private bool _isActuallyLoaded = false;
-        private Gw2Addon? _selectedAddon;
+        private ModInfoData? _selectedAddon;
 
         #endregion Fields
 
@@ -100,12 +100,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of installed add-ons.
         /// </summary>
-        public ObservableCollection<Gw2Addon> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
+        public ObservableCollection<ModInfoData> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
 
         /// <summary>
         /// Gets or sets the currently selected add-on.
         /// </summary>
-        public Gw2Addon? SelectedAddon
+        public ModInfoData? SelectedAddon
         {
             get => _selectedAddon;
             set

@@ -132,7 +132,7 @@ namespace AddonWars2.App.ViewModels
 
             // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
             // and we edit its value. So we just ignore the first call until it's loaded completely.
-            ComboBox comboBox = (ComboBox)e!.Source;
+            ComboBox comboBox = (ComboBox)e.Source;
             if (!comboBox.IsLoaded)
             {
                 return;

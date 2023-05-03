@@ -207,7 +207,7 @@ namespace AddonWars2.App.Models.Application
             set
             {
                 SetProperty(ref _selectedCulture, value);
-                Logger.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
+                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
             }
         }
 
@@ -257,15 +257,9 @@ namespace AddonWars2.App.Models.Application
         {
             ArgumentNullException.ThrowIfNull(path, nameof(path));
 
-            var serialized = XmlSerializationService.SerializeXml(data, path);
-            if (serialized.Length == 0)
-            {
-                Logger.LogDebug($"Local data saved.");
-            }
-            else
-            {
-                Logger.LogDebug($"Local data saving FAILED.");
-            }
+            _ = XmlSerializationService.SerializeXml(data, path);  // TODO: check the returned result
+
+            Logger.LogDebug($"Local data saved.");
         }
 
         /// <summary>
@@ -289,7 +283,7 @@ namespace AddonWars2.App.Models.Application
             ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             // Set the requested culture string inside the local data.
-            var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture?.Culture, DefaultCulture);
+            var culture = AvailableCultures.FirstOrDefault(x => x.Culture == SelectedCulture.Culture, DefaultCulture);
 
             if (LocalData == null)
             {
@@ -305,18 +299,18 @@ namespace AddonWars2.App.Models.Application
             if (!ArenaNetSupportedCultures.Any(x => x.Culture == culture.Culture))
             {
                 culture = DefaultCulture;
-                Logger.LogWarning($"The requested culture is not supported by ANet services. The default one will be set for them.");
+                Logger.LogWarning($"The requested culture is not supported by ANet services. The default one ({culture.Culture}) will be set for them.");
             }
 
-            LocalData.Gw2Home = string.Format(LocalData.Gw2HomeTemplate, culture?.ShortName?.ToLower());
-            LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture?.ShortName?.ToLower());
-            LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture?.ShortName?.ToLower());
+            LocalData.Gw2Home = string.Format(LocalData.Gw2HomeTemplate, culture.ShortName.ToLower());
+            LocalData.Gw2Rss = string.Format(LocalData.Gw2RssTemplate, culture.ShortName.ToLower());
+            LocalData.Gw2WikiHome = string.Format(LocalData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
 
             // Re-attach handlers to keep a reference to the current property instance.
             PropertyChangedEventManager.RemoveHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
             PropertyChangedEventManager.AddHandler(this, ApplicationConfig_SelectedCultureChanged, nameof(SelectedCulture));
 
-            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger.LogDebug($"PropertyChangedEventManager | ApplicationConfig_SelectedCultureChanged handler re-attached.");
             Logger.LogDebug($"Handled.");
         }
 
@@ -352,7 +346,7 @@ namespace AddonWars2.App.Models.Application
             PropertyChangedEventManager.RemoveHandler(LocalData, ApplicationConfig_LocalDataPropertyChanged, string.Empty);
             PropertyChangedEventManager.AddHandler(LocalData, ApplicationConfig_LocalDataPropertyChanged, string.Empty);
 
-            Logger.LogDebug($"PropertyChangedEventManager handler re-attached.");
+            Logger.LogDebug($"PropertyChangedEventManager | ApplicationConfig_LocalDataPropertyChanged handler re-attached.");
             Logger.LogDebug($"Handled.");
         }
 

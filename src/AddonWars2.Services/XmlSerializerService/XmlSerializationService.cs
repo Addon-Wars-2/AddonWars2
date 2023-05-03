@@ -60,7 +60,7 @@ namespace AddonWars2.Services.XmlSerializerService
             {
                 xmlSerializer.Serialize(writer, obj, xns);
                 stringWriter.Flush();  // to ensure data is written before the writer gets disposed
-                return stringWriter.ToString();
+                return stringWriter.ToString();  // TODO: serializer always returns 0.
             }
         }
 

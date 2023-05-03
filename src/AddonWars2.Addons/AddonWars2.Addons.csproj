@@ -11,20 +11,8 @@
 	<SignAssembly>False</SignAssembly>
 	<Configurations>Debug;Release</Configurations>
 	<NeutralLanguage>en</NeutralLanguage>
-	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-
-	<Title>Addon Wars 2</Title>
-	<Description>Guild Wars 2™ Unofficial Add-On Manager</Description>
-	<Deterministic>False</Deterministic>
-	<Authors>RindCode</Authors>
-	<Company>Addon-Wars-2</Company>
-	<Copyright>Copyright $(Company) © 2023</Copyright>
-	<RepositoryUrl>https://github.com/Addon-Wars-2/AddonWars2</RepositoryUrl>
-	<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-	<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -36,7 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="stylecop.json" />
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,12 +36,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="YamlDotNet" Version="13.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Arcdps\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
   </ItemGroup>
 
 </Project>

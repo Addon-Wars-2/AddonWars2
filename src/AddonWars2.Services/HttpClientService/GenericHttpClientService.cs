@@ -1,44 +1,42 @@
 ﻿// ==================================================================================================
-// <copyright file="GenericWebClientService.cs" company="Addon-Wars-2">
+// <copyright file="GenericHttpClientService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Services.WebClientService
+namespace AddonWars2.Services.HttpClientService
 {
+    using System.Net;
     using System.Net.Http;
     using System.Net.NetworkInformation;
-    using AddonWars2.Services.WebClientService.Interfaces;
+    using AddonWars2.Services.HttpClientService.Interfaces;
 
     /// <summary>
     /// Represents a web service client.
     /// </summary>
-    public class GenericWebClientService : IWebClientService
+    public class GenericHttpClientService : IHttpClientService
     {
         #region Fields
 
-        private readonly HttpClient _httpClient;
+        private static readonly HttpClient _httpClient;
 
         #endregion Fields
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GenericWebClientService"/> class.
-        /// </summary>
-        public GenericWebClientService()
+        // Static constructor.
+        static GenericHttpClientService()
         {
             _httpClient = new HttpClient();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericWebClientService"/> class.
+        /// Initializes a new instance of the <see cref="GenericHttpClientService"/> class.
         /// </summary>
-        /// <param name="httpClient">A HTTP client to use.</param>
-        public GenericWebClientService(HttpClient httpClient)
+        public GenericHttpClientService()
         {
-            _httpClient = httpClient;
+            // Blank.
         }
 
         #endregion Constructors
@@ -88,7 +86,7 @@ namespace AddonWars2.Services.WebClientService
             }
             catch (TaskCanceledException)
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout);
+                return new HttpResponseMessage(HttpStatusCode.RequestTimeout);
             }
         }
 

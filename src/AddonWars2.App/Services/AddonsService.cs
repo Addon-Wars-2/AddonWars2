@@ -8,7 +8,8 @@
 namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.Addons;
+    using AddonWars2.Addons.Downloader;
+    using AddonWars2.Addons.Models.Mods;
     using CommunityToolkit.Mvvm.ComponentModel;
 
     /// <summary>
@@ -33,26 +34,26 @@ namespace AddonWars2.App.Services
         /// <summary>
         /// Gets a collection of installed addons.
         /// </summary>
-        public ObservableCollection<Gw2Addon> InstalledAddonsCollection { get; private set; } = new ObservableCollection<Gw2Addon>()
+        public ObservableCollection<ModInfoData> InstalledAddonsCollection { get; private set; } = new ObservableCollection<ModInfoData>()
         {
-            ////new Gw2Addon("Addon 04"),
-            ////new Gw2Addon("Addon 05"),
-            ////new Gw2Addon("Addon 06"),
-            ////new Gw2Addon("Addon 01"),
-            ////new Gw2Addon("Addon 02"),
-            ////new Gw2Addon("Addon 03"),
-            ////new Gw2Addon("Addon 07"),
-            ////new Gw2Addon("Addon 08"),
-            ////new Gw2Addon("Addon 09"),
-            ////new Gw2Addon("Addon 10"),
-            ////new Gw2Addon("Addon 11"),
-            ////new Gw2Addon("Addon 12"),
-            ////new Gw2Addon("Addon 13"),
-            ////new Gw2Addon("Addon 14"),
-            ////new Gw2Addon("Addon 15"),
-            ////new Gw2Addon("Addon 16"),
-            ////new Gw2Addon("Addon 17"),
-            ////new Gw2Addon("Addon 18"),
+            ////new ModInfoData("Addon 04"),
+            ////new ModInfoData("Addon 05"),
+            ////new ModInfoData("Addon 06"),
+            ////new ModInfoData("Addon 01"),
+            ////new ModInfoData("Addon 02"),
+            ////new ModInfoData("Addon 03"),
+            ////new ModInfoData("Addon 07"),
+            ////new ModInfoData("Addon 08"),
+            ////new ModInfoData("Addon 09"),
+            ////new ModInfoData("Addon 10"),
+            ////new ModInfoData("Addon 11"),
+            ////new ModInfoData("Addon 12"),
+            ////new ModInfoData("Addon 13"),
+            ////new ModInfoData("Addon 14"),
+            ////new ModInfoData("Addon 15"),
+            ////new ModInfoData("Addon 16"),
+            ////new ModInfoData("Addon 17"),
+            ////new ModInfoData("Addon 18"),
         };
 
         #endregion Properties

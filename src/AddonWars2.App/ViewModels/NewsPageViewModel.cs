@@ -17,10 +17,10 @@ namespace AddonWars2.App.ViewModels
     using System.Windows;
     using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
+    using AddonWars2.Services.HttpClientService.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
-    using AddonWars2.Services.WebClientService.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -62,7 +62,7 @@ namespace AddonWars2.App.ViewModels
 
         private readonly ApplicationConfig _applicationConfig;
         private readonly Gw2RssFeedService _rssFeedService;
-        private readonly IWebClientService _webClientService;
+        private readonly IHttpClientService _httpClientService;
 
         private string _updateErrorCode = string.Empty;
         private string _viewModelState = string.Empty;
@@ -82,17 +82,17 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
-        /// <param name="webClientServices">A referemnce to <see cref="IWebClientService"/>.</param>
+        /// <param name="webClientServices">A referemnce to <see cref="IHttpClientService"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
-            IWebClientService webClientServices)
+            IHttpClientService webClientServices)
             : base(logger)
         {
             _applicationConfig = appConfig;
             _rssFeedService = (Gw2RssFeedService)rssFeedService;
-            _webClientService = webClientServices;
+            _httpClientService = webClientServices;
 
             LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
             RefreshNewsCommand = new RelayCommand(
@@ -122,7 +122,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public IWebClientService WebClientService => _webClientService;
+        public IHttpClientService HttpClientService => _httpClientService;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -265,7 +265,7 @@ namespace AddonWars2.App.ViewModels
             HttpResponseMessage response;
             try
             {
-                response = await WebClientService.GetResponseAsync(AppConfig.LocalData.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
+                response = await HttpClientService.GetResponseAsync(AppConfig.LocalData.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
             }
             catch (HttpRequestException e)
             {

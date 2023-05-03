@@ -1,16 +1,16 @@
 ﻿// ==================================================================================================
-// <copyright file="IWebClientService.cs" company="Addon-Wars-2">
+// <copyright file="IHttpClientService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Services.WebClientService.Interfaces
+namespace AddonWars2.Services.HttpClientService.Interfaces
 {
     /// <summary>
     /// Represents a contract for web client services.
     /// </summary>
-    public interface IWebClientService
+    public interface IHttpClientService
     {
         /// <summary>
         /// Checks whether any network connection is available.
