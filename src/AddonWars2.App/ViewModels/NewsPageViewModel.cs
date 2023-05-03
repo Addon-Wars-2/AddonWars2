@@ -15,8 +15,8 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows;
-    using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.Services.HttpClientService.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
@@ -273,7 +273,7 @@ namespace AddonWars2.App.ViewModels
                 SetState(NewsViewModelState.FailedToUpdate);
                 UpdateErrorCode = e.Message;
 
-                Logger.LogError($"No internet connection.");
+                Logger.LogError($"{UpdateErrorCode}");
 
                 return;
             }

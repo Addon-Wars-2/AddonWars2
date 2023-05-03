@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Helpers
+namespace AddonWars2.App.Utils.Helpers
 {
     using System;
     using System.IO;

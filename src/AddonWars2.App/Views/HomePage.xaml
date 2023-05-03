@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:AddonWars2.App.Views"
     xmlns:vm="clr-namespace:AddonWars2.App.ViewModels"
-    xmlns:cmd="clr-namespace:AddonWars2.App.Commands"
+    xmlns:cmd="clr-namespace:AddonWars2.App.ViewModels.Commands"
     xmlns:convert="clr-namespace:AddonWars2.App.Utils.Converters"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"

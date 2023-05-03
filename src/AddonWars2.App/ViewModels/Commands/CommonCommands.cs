@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Commands
+namespace AddonWars2.App.ViewModels.Commands
 {
     using System;
     using System.Diagnostics;

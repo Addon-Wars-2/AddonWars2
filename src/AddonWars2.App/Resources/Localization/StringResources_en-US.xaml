@@ -12,7 +12,7 @@
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>  <!-- NO TRANSLATION -->
-    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Unofficial Add-Ons Manager</s:String> <!-- NO TRANSLATION FOR "Guild Wars 2™" part -->
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Rindaar's Unofficial Add-Ons Manager</s:String> <!-- NO TRANSLATION -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">GETTING STARTED</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Home">GW2 HOME</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
@@ -28,8 +28,6 @@
     <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">No installed add-ons found.</s:String>
     <s:String x:Key="S.HomePage.AddonDesc.Header">Add-On Description</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedBy">created by</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String> <!-- NO TRANSLATION -->
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>

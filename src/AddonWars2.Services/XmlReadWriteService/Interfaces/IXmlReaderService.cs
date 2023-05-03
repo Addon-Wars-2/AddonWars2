@@ -14,7 +14,6 @@ namespace AddonWars2.Services.XmlReadWriteService.Interfaces
     /// Represents a contract for XML reader services.
     /// </summary>
     public interface IXmlReaderService
-
     {
         /// <summary>
         /// Asynchronously creates a new <see cref="XDocument"/> from the specified stream.

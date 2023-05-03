@@ -11,7 +11,6 @@ namespace AddonWars2.App.Utils.Validation
     using System.Globalization;
     using System.IO;
     using System.Windows.Controls;
-    using AddonWars2.App.Helpers;
     using AddonWars2.App.Utils.Helpers;
 
     /// <summary>

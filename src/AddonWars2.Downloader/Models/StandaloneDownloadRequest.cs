@@ -5,9 +5,9 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Downloader.Models
+namespace AddonWars2.Downloader.Models
 {
-    using AddonWars2.Addons.Downloader.Interfaces;
+    using AddonWars2.Downloader.Interfaces;
 
     /// <summary>
     /// Encapsulates addon download request.
@@ -25,9 +25,10 @@ namespace AddonWars2.Addons.Downloader.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="StandaloneDownloadRequest"/> class.
         /// </summary>
-        public StandaloneDownloadRequest()
+        /// <param name="url">URL of a file to download.</param>
+        public StandaloneDownloadRequest(string url)
         {
-            // Blank.
+            _url = url;
         }
 
         #endregion Constructors

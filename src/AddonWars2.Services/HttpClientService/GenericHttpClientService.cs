@@ -72,8 +72,7 @@ namespace AddonWars2.Services.HttpClientService
 
             try
             {
-                var response = await HttpClient.GetAsync(url, httpCompletionOption).ConfigureAwait(false);
-                return response;
+                return await HttpClient.GetAsync(url, httpCompletionOption).ConfigureAwait(false);
             }
             catch (HttpRequestException e)
             {

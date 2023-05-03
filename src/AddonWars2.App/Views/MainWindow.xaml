@@ -7,7 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:AddonWars2.App"
     xmlns:vm="clr-namespace:AddonWars2.App.ViewModels"
-    xmlns:cmd="clr-namespace:AddonWars2.App.Commands"
+    xmlns:cmd="clr-namespace:AddonWars2.App.ViewModels.Commands"
     xmlns:convert="clr-namespace:AddonWars2.App.Utils.Converters"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
@@ -389,39 +389,22 @@
             </Grid>
         </Border>
         <StackPanel
-            Margin="0,0,65,35"
+            Margin="0,0,65,40"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom">
             <TextBlock
                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                FontWeight="Light"
-                FontSize="8"
+                FontWeight="Normal"
+                FontSize="10"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center">
                 <Run Text="{Binding Path=DataContext.AssemblyFileVersion, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, StringFormat='{}build {0}'}"/>
                 <TextBlock.Effect>
                     <DropShadowEffect
-                        Color="{DynamicResource Color.PrimaryPalette.Level1}"
+                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
                         ShadowDepth="1"
-                        Direction="-45"
-                        BlurRadius="0"
-                        Opacity="1.0"/>
-                </TextBlock.Effect>
-            </TextBlock>
-            <TextBlock
-                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                FontWeight="Light"
-                FontSize="8"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center">
-                <Run Text="{DynamicResource S.HomePage.Footer.CreatedBy}"/>
-                <Run Text="{DynamicResource S.HomePage.Footer.CreatedByAuthor}"/>
-                <TextBlock.Effect>
-                    <DropShadowEffect
-                        Color="{DynamicResource Color.PrimaryPalette.Level1}"
-                        ShadowDepth="1"
-                        Direction="-45"
-                        BlurRadius="0"
+                        Direction="-90"
+                        BlurRadius="1"
                         Opacity="1.0"/>
                 </TextBlock.Effect>
             </TextBlock>

@@ -12,7 +12,7 @@
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Язык</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>
-    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Неофициальный Менеджер Аддонов</s:String>
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Rindaar's Unofficial Add-Ons Manager</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">НАЧАЛО РАБОТЫ</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Home">GW2 САЙТ</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 ВИКИ</s:String>
@@ -28,8 +28,6 @@
     <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">Не обнаружено установленных аддонов.</s:String>
     <s:String x:Key="S.HomePage.AddonDesc.Header">Описание Аддона</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedBy">создано</s:String>
-    <s:String x:Key="S.HomePage.Footer.CreatedByAuthor">Rihar.3465 (Rindaar)</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>

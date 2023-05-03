@@ -15,11 +15,11 @@ namespace AddonWars2.App
     using System.Threading.Tasks;
     using System.Windows;
     using AddonWars2.App.Extensions.Markup;
-    using AddonWars2.App.Helpers;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services;
     using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;

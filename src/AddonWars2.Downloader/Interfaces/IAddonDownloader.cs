@@ -5,8 +5,10 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Downloader.Interfaces
+namespace AddonWars2.Downloader.Interfaces
 {
+    using AddonWars2.Downloader.Models;
+
     /// <summary>
     /// Provides a contract for addon downloaders.
     /// </summary>
@@ -17,6 +19,6 @@ namespace AddonWars2.Addons.Downloader.Interfaces
         /// </summary>
         /// <param name="request">A request objects which wraps the request information.</param>
         /// <returns><see cref="IDownloadedAddon"/> object.</returns>
-        Task<IDownloadedAddon> Download(IDownloadRequest request);
+        Task<DownloadedObject> Download(IDownloadRequest request);
     }
 }

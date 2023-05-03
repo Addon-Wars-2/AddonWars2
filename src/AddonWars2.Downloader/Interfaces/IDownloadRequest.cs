@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Downloader.Interfaces
+namespace AddonWars2.Downloader.Interfaces
 {
     /// <summary>
     /// Represents a contract for download requests.

@@ -11,8 +11,8 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.Reflection;
     using System.Windows.Controls;
-    using AddonWars2.App.Commands;
     using AddonWars2.App.Models.Application;
+    using AddonWars2.App.ViewModels.Commands;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 

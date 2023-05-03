@@ -8,8 +8,8 @@
 namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.Addons.Downloader;
     using AddonWars2.Addons.Models.Mods;
+    using AddonWars2.Downloader.Models;
     using CommunityToolkit.Mvvm.ComponentModel;
 
     /// <summary>
@@ -25,6 +25,7 @@ namespace AddonWars2.App.Services
         public AddonsService()
         {
             // Blank.
+            var request = new StandaloneDownloadRequest("https://www.deltaconnected.com/arcdps/gw2addon_arcdps.dll");
         }
 
         #endregion Constructors
