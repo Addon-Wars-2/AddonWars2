@@ -47,7 +47,7 @@ namespace AddonWars2.App.Views
         {
             // TODO: Is there a better way to inject this?
             var appConfig = AW2Application.Current?.Services?.GetRequiredService<ApplicationConfig>();
-            var appDataDir = appConfig!.AppDataDir;
+            var appDataDir = appConfig.AppDataDir;
 
             // HACK: https://github.com/MicrosoftEdge/WebView2Feedback/issues/299#issuecomment-648812482
             var options = new CoreWebView2EnvironmentOptions("--disk-cache-size=1");

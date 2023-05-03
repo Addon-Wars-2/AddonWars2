@@ -11,8 +11,6 @@ namespace AddonWars2.App.Helpers
     using System.IO;
     using System.Reflection;
     using System.Threading.Tasks;
-    using System.Xml;
-    using System.Xml.Serialization;
     using Microsoft.Win32;
     using NLog.Config;
 
@@ -35,7 +33,7 @@ namespace AddonWars2.App.Helpers
 
             try
             {
-                var stream = File.Create(Path.Combine(directory, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+                var stream = File.Create(Path.Combine(directory, Path.GetRandomFileName()), bufferSize: 1, FileOptions.DeleteOnClose);
                 using (stream)
                 {
                     // Do nothing.
@@ -51,6 +49,7 @@ namespace AddonWars2.App.Helpers
 
         /// <summary>
         /// Generates and returns the application data directory for this application.
+        /// The directory will be placed into OS appdata directory.
         /// </summary>
         /// <returns>Application data directory path.</returns>
         public static string GenerateApplicationDataDirectory()
@@ -58,6 +57,7 @@ namespace AddonWars2.App.Helpers
             var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var appName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
             var appDir = Path.Join(appDataDir, appName);
+
             return appDir;
         }
 
@@ -85,8 +85,7 @@ namespace AddonWars2.App.Helpers
                 xml = reader.ReadToEnd();
             }
 
-            var cfg = XmlLoggingConfiguration.CreateFromXmlString(xml);
-            return cfg;
+            return XmlLoggingConfiguration.CreateFromXmlString(xml);
         }
 
         /// <summary>

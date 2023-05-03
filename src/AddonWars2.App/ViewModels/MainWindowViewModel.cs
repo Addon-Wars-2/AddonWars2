@@ -78,27 +78,27 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 website URL.
         /// </summary>
-        public string? Gw2HomeLink => AppConfig?.LocalData?.Gw2Home;
+        public string Gw2HomeLink => AppConfig.LocalData.Gw2Home;
 
         /// <summary>
         /// Gets the GW2 wiki URL.
         /// </summary>
-        public string? Gw2WikiLink => AppConfig?.LocalData?.Gw2WikiHome;
+        public string Gw2WikiLink => AppConfig.LocalData.Gw2WikiHome;
 
         /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
-        public CultureInfo? SelectedCulture
+        public CultureInfo SelectedCulture
         {
             get
             {
-                return AppConfig?.SelectedCulture;
+                return AppConfig.SelectedCulture;
             }
 
             set
             {
-                SetProperty(AppConfig?.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
-                Logger.LogDebug($"Property set: {value}. Culture: {value?.Culture}");
+                SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
+                Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
             }
         }
 

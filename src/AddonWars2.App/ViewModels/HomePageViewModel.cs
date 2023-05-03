@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
@@ -73,12 +74,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets GW2 executable location.
         /// </summary>
-        public string? Gw2ExecPath
+        public string Gw2ExecPath
         {
-            get => AppConfig?.LocalData?.Gw2FilePath;
+            get => AppConfig.LocalData.Gw2FilePath;
             set
             {
-                SetProperty(AppConfig?.LocalData?.Gw2FilePath, value, AppConfig?.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
+                SetProperty(AppConfig.LocalData.Gw2FilePath, value, AppConfig.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -86,12 +87,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets GW2 directory location.
         /// </summary>
-        public string? Gw2DirPath
+        public string Gw2DirPath
         {
-            get => AppConfig?.LocalData?.Gw2DirPath;
+            get => AppConfig.LocalData.Gw2DirPath;
             set
             {
-                SetProperty(AppConfig?.LocalData?.Gw2DirPath, value, AppConfig?.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                SetProperty(AppConfig.LocalData.Gw2DirPath, value, AppConfig.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -186,7 +187,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             Gw2ExecPath = gw2exe;
-            Gw2DirPath = Path.GetDirectoryName(gw2exe);
+            Gw2DirPath = Path.GetDirectoryName(gw2exe) ?? string.Empty;
 
             Logger.LogInformation("GW2 executable location was set automatically.");
         }
@@ -217,7 +218,7 @@ namespace AddonWars2.App.ViewModels
             // update the text box, since SetProperty internally compares old and new values, which are still the same.
             OnPropertyChanged(nameof(Gw2ExecPath));
 
-            Gw2DirPath = Path.GetDirectoryName(path);
+            Gw2DirPath = Path.GetDirectoryName(path) ?? string.Empty;
         }
 
         #endregion Commands Logic

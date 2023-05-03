@@ -51,10 +51,11 @@ namespace AddonWars2.Services.XmlSerializerService
         public string SerializeXml<T>(T? obj)
         {
             var xmlSerializer = new XmlSerializer(typeof(T));
+
             var xns = new XmlSerializerNamespaces();
             xns.Add(string.Empty, string.Empty);  // omit namespaces
-            var stringWriter = new StringWriter();
 
+            var stringWriter = new StringWriter();
             using (var writer = XmlWriter.Create(stringWriter))
             {
                 xmlSerializer.Serialize(writer, obj, xns);

@@ -52,8 +52,4 @@
     <PackageReference Include="YamlDotNet" Version="13.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

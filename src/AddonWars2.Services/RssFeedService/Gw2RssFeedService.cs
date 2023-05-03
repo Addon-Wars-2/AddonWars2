@@ -123,7 +123,7 @@ namespace AddonWars2.Services.RssFeedService
                 {
                     Title = item.Element("title")?.Value ?? string.Empty,
                     Link = item.Element("link")?.Value ?? string.Empty,
-                    PublishDate = DateTime.Parse(item.Element("pubDate")?.Value ?? string.Empty),
+                    PublishDate = DateTime.Parse(item.Element("pubDate")?.Value ?? string.Empty),  // TODO: convert to local time, since the original dt is PDT
                     Guid = item.Element("guid")?.Value?.Split("=").Last() ?? string.Empty,
                     Description = item.Element("description")?.Value ?? string.Empty,
                     ContentEncoded = item.Element(nsContent + "encoded")?.Value?.Replace(@"""//", @"""https://") ?? string.Empty,

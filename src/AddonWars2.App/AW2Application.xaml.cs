@@ -88,6 +88,7 @@ namespace AddonWars2.App
             // Save app/user data first.
             var data = Services.GetRequiredService<ApplicationConfig>().LocalData;
             var path = Services.GetRequiredService<ApplicationConfig>().ConfigFilePath;
+
             ApplicationConfig.WriteLocalDataAsXml(path, data);
 
             // Start a new process.
@@ -104,7 +105,7 @@ namespace AddonWars2.App
 
             process.Start();
 
-            Current.MainWindowInstance?.Close();
+            Current.MainWindowInstance.Close();
         }
 
         /// <inheritdoc/>
@@ -149,6 +150,7 @@ namespace AddonWars2.App
             base.OnExit(e);
 
             Logger.Info("Application shutdown.");
+
             LogManager.Shutdown();
         }
 
@@ -190,11 +192,10 @@ namespace AddonWars2.App
                 return defautCtor(type);
             };
 
-            // Replace the current configuration to "reset" it.
+            // Replace the current logger configuration to "reset" it.
             Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init Logger Doesn't work without.
             Logger = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
-            Logger.Info($"Start logging.");
 
             // Locate AppData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
@@ -205,9 +206,7 @@ namespace AddonWars2.App
 
             ApplicationConfig.AppDataDir = appDataDir;
 
-            Logger.Info($"Using AppData directory: {appDataDir}");
-
-            // Locate the logs directory.
+            // Locate the logs directory within the application directory.
             var logsDirPath = Path.Join(appDataDir, ApplicationConfig.LogDirName);
             if (!Directory.Exists(logsDirPath))
             {
@@ -216,8 +215,12 @@ namespace AddonWars2.App
 
             // Setup logger config.
             var logCfg = LogManager.Configuration;
+
+            // Session log file will contain startup datetime in milliseconds format.
             var unixMsDateTime = ((DateTimeOffset)ApplicationConfig.StartupDateTime).ToUnixTimeMilliseconds();
             ApplicationConfig.LogFileFullPath = Path.Join(logsDirPath, $"{ApplicationConfig.LogPrefix}{unixMsDateTime}.txt");
+
+            // Set the log target.
             var logTarget = new FileTarget()
             {
                 Name = "LogFileTarget",
@@ -225,6 +228,7 @@ namespace AddonWars2.App
                 Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
             };
 
+            // Set logging rules.
             var minLevel = ApplicationConfig.IsDebugMode ? LogLevel.Debug : LogLevel.Info;
             logCfg.AddRule(minLevel, LogLevel.Fatal, logTarget, "*");
             LogManager.Configuration = logCfg;
@@ -234,7 +238,8 @@ namespace AddonWars2.App
                 rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
             }
 
-            Logger.Info($"Created a new log file: {ApplicationConfig.LogFileFullPath}");
+            Logger.Info($"Start logging: {ApplicationConfig.LogFileFullPath}");
+            Logger.Info($"Using AppData directory: {appDataDir}");
         }
 
         // Setups the application config and local data.
@@ -251,6 +256,7 @@ namespace AddonWars2.App
             {
                 // Create a new one with default settings.
                 ApplicationConfig.WriteLocalDataAsXml(path, localdata);
+                ApplicationConfig.LocalData = localdata;
 
                 Logger.Info($"Created a new application config file: {path}");
             }
@@ -268,12 +274,11 @@ namespace AddonWars2.App
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
+                    ApplicationConfig.LocalData = localdata;
 
                     Logger.Info($"Created a new application config file: {path}");
                 }
             }
-
-            ApplicationConfig.LocalData = localdata;
 
             Logger.Info($"Using the application config file: {path}");
         }
@@ -281,7 +286,7 @@ namespace AddonWars2.App
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var culture = ApplicationConfig.LocalData?.SelectedCultureString;
+            var culture = ApplicationConfig.LocalData.SelectedCultureString;
             var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
             // Now we should replace it in both places since config file may contain invalid culture string.
@@ -299,14 +304,50 @@ namespace AddonWars2.App
         // Logs any unhandled exception.
         private void LogUnhandledException(Exception exception, string source)
         {
+            // TODO: We should be able to revert any action if an unhandled exception has occured.
+            //       Like if we were updating addons, and an exception was thrown in the middle of the process.
+
             string message = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
             Logger.Fatal(exception, message);
 
 #if !DEBUG
+            // Try to open log file automatically, so a user can just copy-paste it.
+            try
+            {
+                Process.Start(new ProcessStartInfo(ApplicationConfig.LogFileFullPath)
+                {
+                    Verb = "open",
+                    UseShellExecute = true,
+                });
+            }
+            catch (Exception)
+            {
+                // If we can't do this for whatever reason, do nothing.
+                Logger.Error("Unable to open log file automatically.");
+            }
+
+            // Show the error message box.
+            var mbs = Services.GetRequiredService<IMessageBoxService>();
+            if (mbs != null)
+            {
+                var mbMessage =
+                    $"An unhandled exception occured.\n\n" +
+                    $"The application will be terminated. If the log file wasn't opened automatically, " +
+                    $"it can be found under the following path:\n\n{ApplicationConfig.LogFileFullPath}";
+
+                mbs.Show(
+                    mbMessage,
+                    "An unhandled exception occured",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error,
+                    MessageBoxResult.OK,
+                    MessageBoxOptions.DefaultDesktopOnly);
+            }
+
             Shutdown();
 #endif
         }
 
-#endregion Methods
+        #endregion Methods
     }
 }

@@ -60,8 +60,8 @@ namespace AddonWars2.App.Services
             services.AddSingleton<ILogsAggregator, LogsAggregator>();
             services.AddSingleton<AddonsService>();
             services.AddSingleton<DialogService>();
-            services.AddSingleton<MessageBoxService>();
-            services.AddSingleton<Gw2RssFeedService>();
+            services.AddSingleton<IMessageBoxService, MessageBoxService>();
+            services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
             services.AddSingleton<IWebClientService, GenericWebClientService>();
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();

@@ -11,7 +11,7 @@ namespace AddonWars2.Addons
     using Newtonsoft.Json;
 
     /// <summary>
-    /// Represents a Guild Wars 2 add-on, which was installed by add-on manager.
+    /// Represents a Guild Wars 2 add-on, encapsulating the information about it.
     /// </summary>
     [Serializable]
     public class Gw2Addon

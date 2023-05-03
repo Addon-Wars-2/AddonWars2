@@ -10,9 +10,9 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
+    using System.Windows;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
-    using AddonWars2.App.Services;
     using AddonWars2.App.Services.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
@@ -26,6 +26,7 @@ namespace AddonWars2.App.ViewModels
 
         private readonly ApplicationConfig _applicationConfig;
         private readonly ILogsAggregator _logsAggregator;
+        private readonly IMessageBoxService _messageBoxService;
 
         #endregion Fields
 
@@ -37,14 +38,17 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/> instance.</param>
         /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
+        /// <param name="messageBoxService">A reference to <see cref="IMessageBoxService"/> instance.</param>
         public LoggingViewModel(
             ILogger<LoggingViewModel> logger,
             ILogsAggregator logsAggregator,
-            ApplicationConfig appConfig)
+            ApplicationConfig appConfig,
+            IMessageBoxService messageBoxService)
             : base(logger)
         {
             _logsAggregator = logsAggregator;
             _applicationConfig = appConfig;
+            _messageBoxService = messageBoxService;
 
             OpenLogFileCommand = new RelayCommand(ExecuteOpenLogFileCommand);
 
@@ -61,9 +65,14 @@ namespace AddonWars2.App.ViewModels
         public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
-        /// Gets a reference to <see cref="Services.LogsAggregator"/> service.
+        /// Gets a reference to <see cref="ILogsAggregator"/> service.
         /// </summary>
         public ILogsAggregator LogsAggregator => _logsAggregator;
+
+        /// <summary>
+        /// Gets a reference to <see cref="IMessageBoxService"/> service.
+        /// </summary>
+        public IMessageBoxService MessageBoxService => _messageBoxService;
 
         /// <summary>
         /// Gets a collection of log entries.
@@ -94,9 +103,15 @@ namespace AddonWars2.App.ViewModels
                     UseShellExecute = true,
                 });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return;
+                MessageBoxService.Show(
+                    e.Message,
+                    "Failed to open log file",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                Logger.LogError($"Failed to open log file:\n{e.Message}");
             }
         }
 

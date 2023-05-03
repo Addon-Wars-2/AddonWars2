@@ -33,7 +33,7 @@ namespace AddonWars2.App.Models.Logging
         /// Initializes a new instance of the <see cref="LogEntry"/> struct.
         /// </summary>
         /// <param name="message">Log entry message.</param>
-        public LogEntry(string message)
+        public LogEntry(string? message)
         {
             _message = message ?? string.Empty;
         }
