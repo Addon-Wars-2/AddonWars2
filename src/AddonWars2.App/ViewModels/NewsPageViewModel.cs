@@ -17,7 +17,7 @@ namespace AddonWars2.App.ViewModels
     using System.Windows;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.Services.HttpClientService.Interfaces;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
@@ -62,7 +62,7 @@ namespace AddonWars2.App.ViewModels
 
         private readonly ApplicationConfig _applicationConfig;
         private readonly Gw2RssFeedService _rssFeedService;
-        private readonly IHttpClientService _httpClientService;
+        private readonly IHttpClientWrapper _httpClientService;
 
         private string _updateErrorCode = string.Empty;
         private string _viewModelState = string.Empty;
@@ -82,12 +82,12 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
-        /// <param name="webClientServices">A referemnce to <see cref="IHttpClientService"/>.</param>
+        /// <param name="webClientServices">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
-            IHttpClientService webClientServices)
+            IHttpClientWrapper webClientServices)
             : base(logger)
         {
             _applicationConfig = appConfig;
@@ -122,7 +122,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public IHttpClientService HttpClientService => _httpClientService;
+        public IHttpClientWrapper HttpClientService => _httpClientService;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -265,7 +265,7 @@ namespace AddonWars2.App.ViewModels
             HttpResponseMessage response;
             try
             {
-                response = await HttpClientService.GetResponseAsync(AppConfig.LocalData.Gw2Rss, HttpCompletionOption.ResponseHeadersRead);
+                response = await HttpClientService.GetAsync(AppConfig.LocalData.Gw2Rss);
             }
             catch (HttpRequestException e)
             {

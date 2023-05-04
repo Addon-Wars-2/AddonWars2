@@ -14,8 +14,8 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
-    using AddonWars2.Services.HttpClientService;
-    using AddonWars2.Services.HttpClientService.Interfaces;
+    using AddonWars2.Services.HttpClientWrapper;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
@@ -25,7 +25,7 @@ namespace AddonWars2.App.Services
     using AddonWars2.Services.XmlSerializerService.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using NLog.Extensions.Logging;
+    using Serilog;
 
     /// <summary>
     /// Application service collection for Dependency Injection purposes.
@@ -43,8 +43,6 @@ namespace AddonWars2.App.Services
             var services = new ServiceCollection();
 
             // Models.
-            // TODO: factories?
-            services.AddSingleton<NLogLogsAggregatorTarget>();
             services.AddSingleton<ApplicationConfig>();
 
             // View models.
@@ -62,18 +60,20 @@ namespace AddonWars2.App.Services
             services.AddSingleton<DialogService>();
             services.AddSingleton<IMessageBoxService, MessageBoxService>();
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
-            services.AddSingleton<IHttpClientService, GenericHttpClientService>();
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
 
-            // Configure logger here as per NLog GitHub guide.
-            var cfg = IOHelper.GetLoggerConfigurationNLog();
+            // Http client services.
+            services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
+
+            // Logging.
+            services.AddSingleton<SerilogLogsAggregatorSink>();
             services.AddLogging(builder =>
             {
                 builder.ClearProviders();
                 builder.SetMinimumLevel(LogLevel.Debug);
-                builder.AddNLog(cfg);
+                builder.AddSerilog(dispose: true);
             });
 
             return services.BuildServiceProvider();

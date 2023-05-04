@@ -19,17 +19,15 @@ namespace AddonWars2.Services.RssFeedService.Interfaces
         /// and returns as a collection of <see cref="T"/>.
         /// </summary>
         /// <param name="stream"><see cref="Stream"/> object of an RSS XML.</param>
-        /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>A collection of <see cref="T"/> objects.</returns>
-        public Task<IList<T>> ReadXmlStreamAsync(Stream stream, CancellationToken cancellationToken = default);
+        public Task<IList<T>> ReadXmlStreamAsync(Stream stream);
 
         /// <summary>
         /// Asynchronously writes RSS item to a file.
         /// </summary>
         /// <param name="item"><see cref="T"/> object to be written.</param>
         /// <param name="filename">The full file path.</param>
-        /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns><see cref="Task"/> object.</returns>
-        public Task WriteRssItemAsync(T item, string filename, CancellationToken cancellationToken = default);
+        public Task WriteRssItemAsync(T item, string filename);
     }
 }

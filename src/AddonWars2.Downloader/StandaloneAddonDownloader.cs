@@ -12,7 +12,7 @@ namespace AddonWars2.Downloader
     using System.Reflection;
     using AddonWars2.Downloader.Interfaces;
     using AddonWars2.Downloader.Models;
-    using AddonWars2.Services.HttpClientService.Interfaces;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
 
     /// <summary>
     /// Represens a <see cref="AddonDownloaderBase"/> used to download standalone addons.
@@ -25,7 +25,7 @@ namespace AddonWars2.Downloader
         private static readonly string _productVersion;
         private static readonly string _productComment = "+(https://github.com/Addon-Wars-2/AddonWars2)";  // TODO: move elsewhere (cfg?), do not hardcode
         private static readonly HttpClient _httpClient;
-        private readonly IHttpClientService _httpClientService;
+        private readonly IHttpClientWrapper _httpClientService;
 
         #endregion Fields
 
@@ -49,8 +49,8 @@ namespace AddonWars2.Downloader
         /// <summary>
         /// Initializes a new instance of the <see cref="StandaloneAddonDownloader"/> class.
         /// </summary>
-        /// <param name="httpClientService">A reference to <see cref="IHttpClientService"/> instance.</param>
-        public StandaloneAddonDownloader(IHttpClientService httpClientService)
+        /// <param name="httpClientService">A reference to <see cref="IGenericHttpClientService"/> instance.</param>
+        public StandaloneAddonDownloader(IHttpClientWrapper httpClientService)
         {
             _httpClientService = httpClientService;
         }
@@ -68,7 +68,7 @@ namespace AddonWars2.Downloader
         /// <summary>
         /// Gets the HTTP client service instance.
         /// </summary>
-        protected IHttpClientService HttpClientService => _httpClientService;
+        protected IHttpClientWrapper HttpClientService => _httpClientService;
 
         #endregion Properties
 
@@ -77,7 +77,7 @@ namespace AddonWars2.Downloader
         /// <inheritdoc/>
         public override async Task<DownloadedObject> Download(IDownloadRequest request)
         {
-            using (var response = await HttpClientService.GetResponseAsync(request.Url))
+            using (var response = await HttpClientService.GetAsync(request.Url))
             {
                 return await DownloadFromResponse(response);
             }
@@ -86,7 +86,7 @@ namespace AddonWars2.Downloader
 
             ////try
             ////{
-            ////    response = await HttpClientService.GetResponseAsync(request.Url);
+            ////    response = await HttpClientService.GetAsync(request.Url);
             ////}
             ////catch (HttpRequestException)
             ////{

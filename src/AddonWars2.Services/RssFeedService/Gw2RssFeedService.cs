@@ -9,7 +9,7 @@ namespace AddonWars2.Services.RssFeedService
 {
     using System.Collections.Generic;
     using System.Xml.Linq;
-    using AddonWars2.Services.HttpClientService.Interfaces;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
     using AddonWars2.Services.XmlReadWriteService.Interfaces;
@@ -21,7 +21,7 @@ namespace AddonWars2.Services.RssFeedService
     {
         #region Fields
 
-        private readonly IHttpClientService _webClientService;
+        private readonly IHttpClientWrapper _httpClientService;
         private readonly IXmlReaderService _xmlReaderService;
 
         #endregion Fields
@@ -31,11 +31,11 @@ namespace AddonWars2.Services.RssFeedService
         /// <summary>
         /// Initializes a new instance of the <see cref="Gw2RssFeedService"/> class.
         /// </summary>
-        /// <param name="webClientService">A reference to <see cref="IHttpClientService"/> instance.</param>
+        /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="xmlReaderService">A rerence to <see cref="IXmlReaderService"/> service.</param>
-        public Gw2RssFeedService(IHttpClientService webClientService, IXmlReaderService xmlReaderService)
+        public Gw2RssFeedService(IHttpClientWrapper httpClientService, IXmlReaderService xmlReaderService)
         {
-            _webClientService = webClientService;
+            _httpClientService = httpClientService;
             _xmlReaderService = xmlReaderService;
         }
 
@@ -46,7 +46,7 @@ namespace AddonWars2.Services.RssFeedService
         /// <summary>
         /// Gets the web client service.
         /// </summary>
-        protected IHttpClientService WebClientService => _webClientService;
+        protected IHttpClientWrapper HttpClientService => _httpClientService;
 
         /// <summary>
         /// Gets the web client service.
@@ -59,7 +59,7 @@ namespace AddonWars2.Services.RssFeedService
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentNullException">Is thrown if <paramref name="stream"/> is <see langword="null"/>.</exception>
-        public async Task<IList<Gw2RssFeedItem>> ReadXmlStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        public async Task<IList<Gw2RssFeedItem>> ReadXmlStreamAsync(Stream stream)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
@@ -72,7 +72,7 @@ namespace AddonWars2.Services.RssFeedService
         /// <inheritdoc/>
         /// <exception cref="ArgumentNullException">Is thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException">Is thrown if <paramref name="filename"/> is <see langword="null"/> or empty.</exception>
-        public async Task WriteRssItemAsync(Gw2RssFeedItem item, string filename, CancellationToken cancellationToken = default)
+        public async Task WriteRssItemAsync(Gw2RssFeedItem item, string filename)
         {
             ArgumentNullException.ThrowIfNull(item, nameof(item));
             ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));

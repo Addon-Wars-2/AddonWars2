@@ -11,7 +11,7 @@ namespace AddonWars2.App.ViewModels.Commands
     using System.Diagnostics;
     using System.Windows.Navigation;
     using CommunityToolkit.Mvvm.Input;
-    using NLog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Provides a set of common <see cref="IRelayCommand"/> commands, which do not belong
@@ -19,13 +19,22 @@ namespace AddonWars2.App.ViewModels.Commands
     /// </summary>
     public class CommonCommands
     {
+        #region Fields
+
+        private static ILogger _logger;
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommonCommands"/> class.
         /// </summary>
-        public CommonCommands()
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        public CommonCommands(ILogger<CommonCommands> logger)
         {
+            _logger = logger;
+
             OpenUrlCommand = new RelayCommand<RequestNavigateEventArgs>(ExecuteOpenUrlCommand);
         }
 
@@ -33,8 +42,10 @@ namespace AddonWars2.App.ViewModels.Commands
 
         #region Properties
 
-        // Gets the current logger instance.
-        private static Logger Logger => LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// Gets the current logger instance.
+        /// </summary>
+        protected static ILogger Logger => _logger;
 
         #endregion Properties
 
@@ -52,7 +63,7 @@ namespace AddonWars2.App.ViewModels.Commands
         // OpenUrlCommand command logic.
         private void ExecuteOpenUrlCommand(RequestNavigateEventArgs? e)
         {
-            Logger.Debug("Executing command.");
+            Logger.LogDebug("Executing command.");
 
             ArgumentNullException.ThrowIfNull(e, nameof(e));
 

@@ -47,8 +47,4 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
-  </ItemGroup>
-
 </Project>

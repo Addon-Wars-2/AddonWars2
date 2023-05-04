@@ -20,13 +20,12 @@ namespace AddonWars2.App
     using AddonWars2.App.Services;
     using AddonWars2.App.Services.Interfaces;
     using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.App.ViewModels;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
-    using NLog;
-    using NLog.Config;
-    using NLog.Targets;
-    using LogLevel = NLog.LogLevel;
+    using Serilog;
+    using Serilog.Enrichers.CallerInfo;
+    using Serilog.Events;
+    using Serilog.Exceptions;
+    using Serilog.Filters;
 
     /// <summary>
     /// Interaction logic for AW2Application.xaml.
@@ -40,11 +39,9 @@ namespace AddonWars2.App
         #region Fields
 
         private const string UNIQUE_MUTEX_NAME = "c1284452-e2a7-4f2e-853d-9272848b0b1d";
-
         private const string UNIQUE_EVENT_NAME = "816a7b1c-9be6-4d4d-9fd4-a45e267448eb";
 
         private EventWaitHandle _eventWaitHandle;
-
         private Mutex _mutex;
 
         #endregion Fields
@@ -83,8 +80,10 @@ namespace AddonWars2.App
         /// </summary>
         public ApplicationConfig ApplicationConfig { get; private set; }
 
-        // Gets the current logger instance.
-        private static Logger Logger { get; set; }
+        /// <summary>
+        /// Gets the logger instance.
+        /// </summary>
+        public ILogger Logger { get; private set; }
 
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
@@ -170,7 +169,7 @@ namespace AddonWars2.App
             MainWindowInstance = new MainWindow();
             MainWindowInstance.Show();
 
-            Logger.Info("Application loaded and ready.");
+            Logger.Information("Application loaded and ready.");
         }
 
         /// <inheritdoc/>
@@ -178,9 +177,9 @@ namespace AddonWars2.App
         {
             base.OnExit(e);
 
-            Logger.Info("Application shutdown.");
+            Log.Logger.Information("Application shutdown.");
 
-            LogManager.Shutdown();
+            Log.CloseAndFlush();
         }
 
         // Allows only one instance to exist.
@@ -208,6 +207,7 @@ namespace AddonWars2.App
                 // It is important mark it as background otherwise it will prevent app from exiting.
                 thread.IsBackground = true;
                 thread.Start();
+
                 return;
             }
 
@@ -240,27 +240,6 @@ namespace AddonWars2.App
         // Setups logging.
         private void AW2App_SetupLogger()
         {
-            Target.Register<NLogLogsAggregatorTarget>("NLogLogsAggregatorTarget");
-
-            // Workaround details:
-            // https://github.com/NLog/NLog/wiki/Dependency-injection-with-NLog
-
-            var defautCtor = ConfigurationItemFactory.Default.CreateInstance;
-            ConfigurationItemFactory.Default.CreateInstance = type =>
-            {
-                if (type == typeof(NLogLogsAggregatorTarget))
-                {
-                    return new NLogLogsAggregatorTarget(Services.GetRequiredService<ILogsAggregator>());
-                }
-
-                return defautCtor(type);
-            };
-
-            // Replace the current logger configuration to "reset" it.
-            Services.GetRequiredService<ILogger<MainWindowViewModel>>();  // TODO: Apparently this call is required to init Logger Doesn't work without.
-            Logger = LogManager.GetCurrentClassLogger();
-            LogManager.Configuration = IOHelper.GetLoggerConfigurationNLog();
-
             // Locate AppData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
@@ -277,33 +256,53 @@ namespace AddonWars2.App
                 Directory.CreateDirectory(logsDirPath);
             }
 
-            // Setup logger config.
-            var logCfg = LogManager.Configuration;
-
             // Session log file will contain startup datetime in milliseconds format.
             var unixMsDateTime = ((DateTimeOffset)ApplicationConfig.StartupDateTime).ToUnixTimeMilliseconds();
             ApplicationConfig.LogFileFullPath = Path.Join(logsDirPath, $"{ApplicationConfig.LogPrefix}{unixMsDateTime}.txt");
 
-            // Set the log target.
-            var logTarget = new FileTarget()
+            if (ApplicationConfig.IsDebugMode)
             {
-                Name = "LogFileTarget",
-                FileName = ApplicationConfig.LogFileFullPath,
-                Layout = "${longdate} [${level:uppercase=true}] [${callsite}] ${message} ${exception:format=ToString}",
-            };
-
-            // Set logging rules.
-            var minLevel = ApplicationConfig.IsDebugMode ? LogLevel.Debug : LogLevel.Info;
-            logCfg.AddRule(minLevel, LogLevel.Fatal, logTarget, "*");
-            LogManager.Configuration = logCfg;
-
-            foreach (var rule in logCfg.LoggingRules)
+                Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.WithCallerInfo(
+                    includeFileInfo: true,
+                    assemblyPrefix: "AW2",
+                    prefix: string.Empty)
+                .Enrich.WithExceptionDetails()
+                .Filter.ByExcluding(Matching.FromSource("System")) // to disable logging access from another thread (System.Net.Http)
+                .WriteTo.Sink(
+                    Services.GetRequiredService<SerilogLogsAggregatorSink>(),
+                    LogEventLevel.Debug)
+                .WriteTo.File(
+                    ApplicationConfig.LogFileFullPath,
+                    LogEventLevel.Debug,
+                    "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
+                .CreateLogger();
+            }
+            else
             {
-                rule.SetLoggingLevels(minLevel, LogLevel.Fatal);
+                Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .Enrich.WithCallerInfo(
+                    includeFileInfo: true,
+                    assemblyPrefix: "AW2",
+                    prefix: string.Empty)
+                .Enrich.WithExceptionDetails()
+                .Filter.ByExcluding(Matching.FromSource("System")) // to disable logging access from another thread (System.Net.Http)
+                .WriteTo.Sink(
+                    Services.GetRequiredService<SerilogLogsAggregatorSink>(),
+                    LogEventLevel.Information)
+                .WriteTo.File(
+                    ApplicationConfig.LogFileFullPath,
+                    LogEventLevel.Information,
+                    "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
+                .CreateLogger();
             }
 
-            Logger.Info($"Start logging: {ApplicationConfig.LogFileFullPath}");
-            Logger.Info($"Using AppData directory: {appDataDir}");
+            Logger = Log.Logger;
+
+            Logger.Information($"Logging started: {ApplicationConfig.LogFileFullPath}");
+            Logger.Information($"Using AppData directory: {appDataDir}");
         }
 
         // Setups the application config and local data.
@@ -321,7 +320,7 @@ namespace AddonWars2.App
                 // Create a new one with default settings.
                 ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                Logger.Info($"Created a new application config file: {path}");
+                Logger.Information($"Created a new application config file: {path}");
             }
             else
             {
@@ -331,20 +330,20 @@ namespace AddonWars2.App
                 localdata = ApplicationConfig.LoadLocalDataFromXml(path);
                 if (!LocalData.IsValid(localdata))
                 {
-                    Logger.Warn($"The given config file is not valid.");
+                    Logger.Warning($"The given config file is not valid.");
 
                     // Delete the corrupted file and replace it with a default one.
                     File.Delete(path);
                     localdata = LocalData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
-                    Logger.Info($"Created a new application config file: {path}");
+                    Logger.Information($"Created a new application config file: {path}");
                 }
             }
 
             ApplicationConfig.LocalData = localdata ?? LocalData.Default;
 
-            Logger.Info($"Using the application config file: {path}");
+            Logger.Information($"Using the application config file: {path}");
         }
 
         // Setups application language.
@@ -362,7 +361,7 @@ namespace AddonWars2.App
             ApplicationConfig.SelectedCulture = ApplicationConfig.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, ApplicationConfig.DefaultCulture);
             ApplicationConfig.LocalData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
 
-            Logger.Info($"Culture selected: {actuallySelected}");
+            Logger.Information($"Culture selected: {actuallySelected}");
         }
 
         // Logs any unhandled exception.
