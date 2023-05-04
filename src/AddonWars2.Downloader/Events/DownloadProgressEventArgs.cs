@@ -16,6 +16,7 @@ namespace AddonWars2.Downloader.Events
 
         private readonly long _totalBytesToReceive;
         private readonly long _bytesReceived;
+        private readonly double _progress;
 
         #endregion Fields
 
@@ -30,6 +31,7 @@ namespace AddonWars2.Downloader.Events
         {
             _totalBytesToReceive = totalBytesToReceive;
             _bytesReceived = bytesReceived;
+            _progress = bytesReceived / _totalBytesToReceive * 100;
         }
 
         #endregion Constructors
@@ -48,9 +50,8 @@ namespace AddonWars2.Downloader.Events
 
         /// <summary>
         /// Gets the download progress percentage locked between 0 and 100.
-        /// This is a calculated value.
         /// </summary>
-        public double Progress => BytesReceived / TotalBytesToReceive * 100;
+        public double Progress => _progress;
 
         #endregion Properties
     }

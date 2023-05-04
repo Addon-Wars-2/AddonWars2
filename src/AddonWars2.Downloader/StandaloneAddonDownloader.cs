@@ -81,19 +81,6 @@ namespace AddonWars2.Downloader
             {
                 return await DownloadFromResponse(response);
             }
-
-            ////HttpResponseMessage response;
-
-            ////try
-            ////{
-            ////    response = await HttpClientService.GetAsync(request.Url);
-            ////}
-            ////catch (HttpRequestException)
-            ////{
-            ////    return new DownloadedObject(Array.Empty<byte>()) { Status = Status.Failed };
-            ////}
-
-            ////return new DownloadedObject(await response.Content.ReadAsByteArrayAsync());
         }
 
         private async Task<DownloadedObject> DownloadFromResponse(HttpResponseMessage response)
@@ -137,49 +124,6 @@ namespace AddonWars2.Downloader
 
             return new DownloadedObject(filename, content);
         }
-
-        ////private async Task ProcessContentStream(long? contentLength, Stream stream)
-        ////{
-        ////    var totalBytesRead = 0L;
-        ////    var readCount = 0L;
-        ////    var buffer = new byte[8192];
-        ////    var isMoreToRead = true;
-
-        ////    using (var fileStream = new FileStream("", FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
-        ////    {
-        ////        do
-        ////        {
-        ////            var bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length);
-        ////            if (bytesRead == 0)
-        ////            {
-        ////                isMoreToRead = false;
-        ////                TriggerProgressChanged(contentLength, totalBytesRead);
-        ////                continue;
-        ////            }
-
-        ////            await fileStream.WriteAsync(buffer, 0, bytesRead);
-
-        ////            totalBytesRead += bytesRead;
-        ////            readCount += 1;
-
-        ////            if (readCount % 100 == 0)
-        ////                TriggerProgressChanged(contentLength, totalBytesRead);
-        ////        }
-        ////        while (isMoreToRead);
-        ////    }
-        ////}
-
-        ////private void TriggerProgressChanged(long? totalDownloadSize, long totalBytesRead)
-        ////{
-        ////    if (ProgressChanged == null)
-        ////        return;
-
-        ////    double? progressPercentage = null;
-        ////    if (totalDownloadSize.HasValue)
-        ////        progressPercentage = Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
-
-        ////    ProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
-        ////}
 
         #endregion Methods
     }

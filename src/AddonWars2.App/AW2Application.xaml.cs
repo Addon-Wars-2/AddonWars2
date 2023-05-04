@@ -269,7 +269,7 @@ namespace AddonWars2.App
                     assemblyPrefix: "AW2",
                     prefix: string.Empty)
                 .Enrich.WithExceptionDetails()
-                .Filter.ByExcluding(Matching.FromSource("System")) // to disable logging access from another thread (System.Net.Http)
+                .Filter.ByIncludingOnly(Matching.FromSource("AddonWars2"))
                 .WriteTo.Sink(
                     Services.GetRequiredService<SerilogLogsAggregatorSink>(),
                     LogEventLevel.Debug)
@@ -288,7 +288,7 @@ namespace AddonWars2.App
                     assemblyPrefix: "AW2",
                     prefix: string.Empty)
                 .Enrich.WithExceptionDetails()
-                .Filter.ByExcluding(Matching.FromSource("System")) // to disable logging access from another thread (System.Net.Http)
+                .Filter.ByIncludingOnly(Matching.FromSource("AddonWars2"))
                 .WriteTo.Sink(
                     Services.GetRequiredService<SerilogLogsAggregatorSink>(),
                     LogEventLevel.Information)

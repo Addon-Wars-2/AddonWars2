@@ -8,7 +8,7 @@
 namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.Addons.Models.Mods;
+    using AddonWars2.Addons.Models.ModInfo;
     using AddonWars2.Downloader.Models;
     using CommunityToolkit.Mvvm.ComponentModel;
 

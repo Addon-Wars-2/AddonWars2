@@ -26,13 +26,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock
-                Grid.Column="0"
-                VerticalAlignment="Bottom"
-                FontWeight="Light"
-                FontStyle="Normal"
-                FontFamily="{DynamicResource Menomonia}"
-                Text="{DynamicResource S.LoggingPage.Description}"/>
             <Button
                 x:Name="OpenLogFileButton"
                 Grid.Column="1"

@@ -37,7 +37,6 @@
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
 
     <!-- Logging Page -->
-    <s:String x:Key="S.LoggingPage.Description">Logging is performed automatically.</s:String>
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
 
     <!-- Controls -->

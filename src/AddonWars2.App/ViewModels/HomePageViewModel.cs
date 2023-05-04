@@ -10,7 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
-    using AddonWars2.Addons.Models.Mods;
+    using AddonWars2.Addons.Models.ModInfo;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Services;
     using AddonWars2.App.Utils.Helpers;

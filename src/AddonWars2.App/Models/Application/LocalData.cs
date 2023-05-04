@@ -146,21 +146,21 @@ namespace AddonWars2.App.Models.Application
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal string Gw2HomeTemplate => LocalDataDefaultState.Gw2HomeTemplate;
+        internal static string Gw2HomeTemplate => LocalDataDefaultState.Gw2HomeTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal string Gw2RssTemplate => LocalDataDefaultState.Gw2RssTemplate;
+        internal static string Gw2RssTemplate => LocalDataDefaultState.Gw2RssTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal string Gw2WikiHomeTemplate => LocalDataDefaultState.Gw2WikiHomeTemplate;
+        internal static string Gw2WikiHomeTemplate => LocalDataDefaultState.Gw2WikiHomeTemplate;
 
         #endregion Properties
 

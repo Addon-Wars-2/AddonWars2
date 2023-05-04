@@ -250,6 +250,8 @@ namespace AddonWars2.App.ViewModels
 
         #region LoadNewsCommand Logic
 
+        // TODO: Move out logic to services. This VM does way to much.
+
         // LoadNewsCommand command logic.
         private async void ExecuteReloadNewsAsync()
         {
@@ -416,7 +418,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             DisplayedRssFeedContent = new Uri(URI_DEFAULT);
-            Logger.LogDebug($"Failed to load WebView2 content from HTML file.");
+            Logger.LogError($"Failed to load WebView2 content from HTML file.");
         }
 
         #endregion Commands Logic

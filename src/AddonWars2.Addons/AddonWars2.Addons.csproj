@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Arcdps\" />
+    <Folder Include="RemoteLibrary\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

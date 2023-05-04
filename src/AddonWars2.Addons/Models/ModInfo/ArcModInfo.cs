@@ -1,31 +1,31 @@
 ﻿// ==================================================================================================
-// <copyright file="ModInfoSchema.cs" company="Addon-Wars-2">
+// <copyright file="ArcModInfo.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Models.Mods
+namespace AddonWars2.Addons.Models.ModInfo
 {
     using System.Text.Json.Serialization;
 
     /// <summary>
-    /// Encapsulates "modinfo" schema information.
+    /// Encapsulates ArcDPS plugin information.
     /// </summary>
-    public class ModInfoSchema
+    public class ArcModInfo
     {
         #region Fields
 
-        private uint _templateVersion = 1;
+        private string _arcPluginName = string.Empty;
 
         #endregion Fields
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModInfoSchema"/> class.
+        /// Initializes a new instance of the <see cref="ArcModInfo"/> class.
         /// </summary>
-        public ModInfoSchema()
+        public ArcModInfo()
         {
             // Blank.
         }
@@ -35,13 +35,16 @@ namespace AddonWars2.Addons.Models.Mods
         #region Properties
 
         /// <summary>
-        /// Gets or sets the template schema version.
+        /// Gets or sets the ArcDPS plugin name.
         /// </summary>
-        [JsonPropertyName("template_ver")]
-        public uint TemplateVersion
+        /// <remarks>
+        /// The plugin name must be provided as a file name including its extension.
+        /// </remarks>
+        [JsonPropertyName("arc_plugin_name")]
+        public string ArcPluginName
         {
-            get => _templateVersion;
-            set => _templateVersion = value;
+            get => _arcPluginName;
+            set => _arcPluginName = value;
         }
 
         #endregion Properties

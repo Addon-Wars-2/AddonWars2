@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Models.Mods
+namespace AddonWars2.Addons.Models.ModInfo
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
