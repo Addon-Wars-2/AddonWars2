@@ -256,13 +256,12 @@ namespace AddonWars2.App.ViewModels
         private async void ExecuteReloadNewsAsync()
         {
             Logger.LogDebug("Executing command.");
-            Logger.LogInformation("Fetching news feed.");
 
             SetState(NewsViewModelState.Fetching);
 
             RssFeedCollection.Clear();
 
-            Logger.LogDebug("Requesting RSS data.");
+            Logger.LogInformation("Requesting RSS data.");
 
             HttpResponseMessage response;
             try

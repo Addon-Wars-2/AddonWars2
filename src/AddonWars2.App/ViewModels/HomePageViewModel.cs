@@ -198,14 +198,14 @@ namespace AddonWars2.App.ViewModels
 
             if (paths?.Length == 0)
             {
-                Logger.LogDebug("No paths were selected.");
+                Logger.LogWarning("No paths were selected.");
                 return;
             }
 
             var path = paths?[0];
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                Logger.LogDebug("Path is null, empty or not valid.");
+                Logger.LogWarning("Path is null, empty or not valid.");
                 return;
             }
 

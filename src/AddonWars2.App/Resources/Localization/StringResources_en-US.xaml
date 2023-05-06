@@ -12,7 +12,7 @@
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>  <!-- NO TRANSLATION -->
-    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Rindaar's Unofficial Add-Ons Manager</s:String> <!-- NO TRANSLATION -->
+    <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Rindaar's Unofficial Add-On Manager</s:String> <!-- NO TRANSLATION -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.GettingStarted">GETTING STARTED</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Home">GW2 HOME</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->

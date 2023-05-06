@@ -109,7 +109,7 @@ namespace AddonWars2.App
         /// <param name="asAdmin">Indicates whether a new process should request admin rights to start.</param>
         public void Restart(bool asAdmin = false)
         {
-            Logger.Debug("Restarting the application.");
+            Logger.Information("Restarting the application.");
 
             // Save app/user data first.
             var data = ApplicationConfig.LocalData;
@@ -139,7 +139,10 @@ namespace AddonWars2.App
         {
             base.OnStartup(e);
 
-            EnsureMutex();
+            if (!EnsureMutex())
+            {
+                return;
+            }
 
             var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
@@ -158,13 +161,13 @@ namespace AddonWars2.App
                 }
             }
 
+            // To enable setting DataContext directly in markup.
+            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
+
             AW2App_SetupExceptionHandling();
             AW2App_SetupLogger();
             AW2App_SetupAppConfig();
             AW2App_SetupLocalization();
-
-            // To enable setting DataContext directly in markup.
-            DISourceExtension.Resolver = (type) => { return Services.GetRequiredService(type); };
 
             MainWindowInstance = new MainWindow();
             MainWindowInstance.Show();
@@ -177,14 +180,14 @@ namespace AddonWars2.App
         {
             base.OnExit(e);
 
-            Log.Logger.Information("Application shutdown.");
+            Logger.Information("Application shutdown.");
 
             Log.CloseAndFlush();
         }
 
         // Allows only one instance to exist.
         // Source: https://stackoverflow.com/a/23730146
-        private void EnsureMutex()
+        private bool EnsureMutex()
         {
             bool isOwned;
             Mutex = new Mutex(true, UNIQUE_MUTEX_NAME, out isOwned);
@@ -204,11 +207,11 @@ namespace AddonWars2.App
                         }
                     });
 
-                // It is important mark it as background otherwise it will prevent app from exiting.
+                // It is important to mark it as background, otherwise it will prevent app from exiting.
                 thread.IsBackground = true;
                 thread.Start();
 
-                return;
+                return isOwned;
             }
 
             // Notify other instance so it could bring itself to foreground.
@@ -216,6 +219,8 @@ namespace AddonWars2.App
 
             // Terminate this instance.
             Shutdown();
+
+            return isOwned;
         }
 
         // Setups exception handling.
@@ -263,40 +268,42 @@ namespace AddonWars2.App
             if (ApplicationConfig.IsDebugMode)
             {
                 Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.WithCallerInfo(
-                    includeFileInfo: true,
-                    assemblyPrefix: "AW2",
-                    prefix: string.Empty)
-                .Enrich.WithExceptionDetails()
-                .Filter.ByIncludingOnly(Matching.FromSource("AddonWars2"))
-                .WriteTo.Sink(
-                    Services.GetRequiredService<SerilogLogsAggregatorSink>(),
-                    LogEventLevel.Debug)
-                .WriteTo.File(
-                    ApplicationConfig.LogFileFullPath,
-                    LogEventLevel.Debug,
-                    "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
-                .CreateLogger();
+                    .MinimumLevel.Debug()
+                    .Enrich.WithCallerInfo(
+                        includeFileInfo: true,
+                        assemblyPrefix: "AW2",
+                        prefix: string.Empty)
+                    .Enrich.WithExceptionDetails()
+                    .Filter.ByExcluding(Matching.FromSource("Microsoft"))
+                    .Filter.ByExcluding(Matching.FromSource("System"))
+                    .WriteTo.Sink(
+                        Services.GetRequiredService<SerilogLogsAggregatorSink>(),
+                        LogEventLevel.Debug)
+                    .WriteTo.File(
+                        ApplicationConfig.LogFileFullPath,
+                        LogEventLevel.Debug,
+                        "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
+                    .CreateLogger();
             }
             else
             {
                 Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .Enrich.WithCallerInfo(
-                    includeFileInfo: true,
-                    assemblyPrefix: "AW2",
-                    prefix: string.Empty)
-                .Enrich.WithExceptionDetails()
-                .Filter.ByIncludingOnly(Matching.FromSource("AddonWars2"))
-                .WriteTo.Sink(
-                    Services.GetRequiredService<SerilogLogsAggregatorSink>(),
-                    LogEventLevel.Information)
-                .WriteTo.File(
-                    ApplicationConfig.LogFileFullPath,
-                    LogEventLevel.Information,
-                    "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
-                .CreateLogger();
+                    .MinimumLevel.Information()
+                    .Enrich.WithCallerInfo(
+                        includeFileInfo: true,
+                        assemblyPrefix: "AW2",
+                        prefix: string.Empty)
+                    .Enrich.WithExceptionDetails()
+                    .Filter.ByExcluding(Matching.FromSource("Microsoft"))
+                    .Filter.ByExcluding(Matching.FromSource("System"))
+                    .WriteTo.Sink(
+                        Services.GetRequiredService<SerilogLogsAggregatorSink>(),
+                        LogEventLevel.Information)
+                    .WriteTo.File(
+                        ApplicationConfig.LogFileFullPath,
+                        LogEventLevel.Information,
+                        "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
+                    .CreateLogger();
             }
 
             Logger = Log.Logger;

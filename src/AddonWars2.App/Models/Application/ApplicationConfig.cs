@@ -292,7 +292,7 @@ namespace AddonWars2.App.Models.Application
 
             LocalData.SelectedCultureString = culture.Culture;
 
-            Logger.LogDebug($"Selected culture was changed to: {culture.Culture}");
+            Logger.LogInformation($"Selected culture was changed to: {culture.Culture}");
 
             // ANet webside supports only several languages. If the requested culture is not supported by ANet,
             // then use global (en) version of ANet services.
