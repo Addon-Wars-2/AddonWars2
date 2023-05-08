@@ -18,8 +18,9 @@ namespace AddonWars2.App
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services;
-    using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.Services.Interfaces;  // Do NOT remove even if shown as unused.
     using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.SharedData;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
     using Serilog.Enrichers.CallerInfo;
@@ -32,10 +33,6 @@ namespace AddonWars2.App
     /// </summary>
     public partial class AW2Application : Application
     {
-        // TODO: I don't like the mess in ctor inner calls, especially due to
-        //       mixing it with logger calls. Maybe to refactor it to make more verbose and readable?
-        // TODO: Review dependencies inside ctor inner calls.
-
         #region Fields
 
         private const string UNIQUE_MUTEX_NAME = "c1284452-e2a7-4f2e-853d-9272848b0b1d";
@@ -112,7 +109,7 @@ namespace AddonWars2.App
             Logger.Information("Restarting the application.");
 
             // Save app/user data first.
-            var data = ApplicationConfig.LocalData;
+            var data = ApplicationConfig.UserData;
             var path = ApplicationConfig.ConfigFilePath;
 
             ApplicationConfig.WriteLocalDataAsXml(path, data);
@@ -139,12 +136,13 @@ namespace AddonWars2.App
         {
             base.OnStartup(e);
 
+            var startupDateTime = DateTime.Now;
+
             if (!EnsureMutex())
             {
                 return;
             }
 
-            var startupDateTime = DateTime.Now;
             Services = AW2ServiceProvider.ConfigureServices();
             ApplicationConfig = Services.GetRequiredService<ApplicationConfig>();
             ApplicationConfig.StartupDateTime = startupDateTime;
@@ -189,8 +187,7 @@ namespace AddonWars2.App
         // Source: https://stackoverflow.com/a/23730146
         private bool EnsureMutex()
         {
-            bool isOwned;
-            Mutex = new Mutex(true, UNIQUE_MUTEX_NAME, out isOwned);
+            Mutex = new Mutex(true, UNIQUE_MUTEX_NAME, out bool isOwned);
             EventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, UNIQUE_EVENT_NAME);
 
             GC.KeepAlive(Mutex);
@@ -245,7 +242,7 @@ namespace AddonWars2.App
         // Setups logging.
         private void AW2App_SetupLogger()
         {
-            // Locate AppData\Roaming application directory.
+            // Locate AppStaticData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
             {
@@ -255,7 +252,7 @@ namespace AddonWars2.App
             ApplicationConfig.AppDataDir = appDataDir;
 
             // Locate the logs directory within the application directory.
-            var logsDirPath = Path.Join(appDataDir, ApplicationConfig.LogDirName);
+            var logsDirPath = Path.Join(appDataDir, AppStaticData.LOG_DIR_NAME);
             if (!Directory.Exists(logsDirPath))
             {
                 Directory.CreateDirectory(logsDirPath);
@@ -263,7 +260,8 @@ namespace AddonWars2.App
 
             // Session log file will contain startup datetime in milliseconds format.
             var unixMsDateTime = ((DateTimeOffset)ApplicationConfig.StartupDateTime).ToUnixTimeMilliseconds();
-            ApplicationConfig.LogFileFullPath = Path.Join(logsDirPath, $"{ApplicationConfig.LogPrefix}{unixMsDateTime}.txt");
+            var prefix = ApplicationConfig.IsDebugMode ? AppStaticData.LOG_FILE_PREFIX_DEBUG : AppStaticData.LOG_FILE_PREFIX;
+            ApplicationConfig.LogFilePath = Path.Join(logsDirPath, $"{prefix}{unixMsDateTime}.txt");
 
             if (ApplicationConfig.IsDebugMode)
             {
@@ -280,7 +278,7 @@ namespace AddonWars2.App
                         Services.GetRequiredService<SerilogLogsAggregatorSink>(),
                         LogEventLevel.Debug)
                     .WriteTo.File(
-                        ApplicationConfig.LogFileFullPath,
+                        ApplicationConfig.LogFilePath,
                         LogEventLevel.Debug,
                         "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
                     .CreateLogger();
@@ -300,7 +298,7 @@ namespace AddonWars2.App
                         Services.GetRequiredService<SerilogLogsAggregatorSink>(),
                         LogEventLevel.Information)
                     .WriteTo.File(
-                        ApplicationConfig.LogFileFullPath,
+                        ApplicationConfig.LogFilePath,
                         LogEventLevel.Information,
                         "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}] [{Level:u3}] [{Namespace}.{Method}] {Message}{NewLine}{Exception}")
                     .CreateLogger();
@@ -308,17 +306,17 @@ namespace AddonWars2.App
 
             Logger = Log.Logger;
 
-            Logger.Information($"Logging started: {ApplicationConfig.LogFileFullPath}");
-            Logger.Information($"Using AppData directory: {appDataDir}");
+            Logger.Information($"Logging started: {ApplicationConfig.LogFilePath}");
+            Logger.Information($"Using AppStaticData directory: {appDataDir}");
         }
 
         // Setups the application config and local data.
         private void AW2App_SetupAppConfig()
         {
             // Set the default settings.
-            var localdata = ApplicationConfig.LocalData;  // default
+            var localdata = ApplicationConfig.UserData;  // default
 
-            // Try to get the application settings from the AppData\Roaming dir.
+            // Try to get the application settings from the AppStaticData\Roaming dir.
             var path = ApplicationConfig.ConfigFilePath;
 
             // File not found.
@@ -333,22 +331,22 @@ namespace AddonWars2.App
             {
                 // Try to load it and check if it's valid since serializer
                 // will either return incorrect data (i.e. some properties are missing)
-                // or will throw an exception..
+                // or will throw an exception.
                 localdata = ApplicationConfig.LoadLocalDataFromXml(path);
-                if (!LocalData.IsValid(localdata))
+                if (!UserData.IsValid(localdata))
                 {
                     Logger.Warning($"The given config file is not valid.");
 
                     // Delete the corrupted file and replace it with a default one.
                     File.Delete(path);
-                    localdata = LocalData.Default;
+                    localdata = UserData.Default;
                     ApplicationConfig.WriteLocalDataAsXml(path, localdata);
 
                     Logger.Information($"Created a new application config file: {path}");
                 }
             }
 
-            ApplicationConfig.LocalData = localdata ?? LocalData.Default;
+            ApplicationConfig.UserData = localdata ?? UserData.Default;
 
             Logger.Information($"Using the application config file: {path}");
         }
@@ -356,17 +354,18 @@ namespace AddonWars2.App
         // Setups application language.
         private void AW2App_SetupLocalization()
         {
-            var culture = ApplicationConfig.LocalData.SelectedCultureString;
+            // This search is based on localized XAML string resources. Fallback is en-US.
+            var culture = ApplicationConfig.UserData.SelectedCultureString;
             var actuallySelected = LocalizationHelper.SelectCulture(culture);
 
-            if (ApplicationConfig.LocalData == null)
+            if (ApplicationConfig.UserData == null)
             {
-                throw new NullReferenceException(nameof(ApplicationConfig.LocalData));
+                throw new NullReferenceException(nameof(ApplicationConfig.UserData));
             }
 
             // Now we should replace it in both places since config file may contain invalid culture string.
-            ApplicationConfig.SelectedCulture = ApplicationConfig.AvailableCultures.FirstOrDefault(x => x.Culture == actuallySelected, ApplicationConfig.DefaultCulture);
-            ApplicationConfig.LocalData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
+            ApplicationConfig.SelectedCulture = AppStaticData.APP_SUPPORTED_CULTURES.FirstOrDefault(x => x.Culture == actuallySelected, AppStaticData.DEFAULT_CULTURE);
+            ApplicationConfig.UserData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
 
             Logger.Information($"Culture selected: {actuallySelected}");
         }
@@ -384,7 +383,7 @@ namespace AddonWars2.App
             // Try to open log file automatically, so a user can just copy-paste it.
             try
             {
-                Process.Start(new ProcessStartInfo(ApplicationConfig.LogFileFullPath)
+                Process.Start(new ProcessStartInfo(ApplicationConfig.LogFilePath)
                 {
                     Verb = "open",
                     UseShellExecute = true,
@@ -403,7 +402,7 @@ namespace AddonWars2.App
                 var mbMessage =
                     $"An unhandled exception occured.\n\n" +
                     $"The application will be terminated. If the log file wasn't opened automatically, " +
-                    $"it can be found under the following path:\n\n{ApplicationConfig.LogFileFullPath}";
+                    $"it can be found under the following path:\n\n{ApplicationConfig.LogFilePath}";
 
                 mbs.Show(
                     mbMessage,

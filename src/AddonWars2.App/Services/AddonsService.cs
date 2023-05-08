@@ -8,7 +8,7 @@
 namespace AddonWars2.App.Services
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.Addons.Models.ModInfo;
+    using AddonWars2.Addons.Models.AddonInfo;
     using AddonWars2.Downloader.Models;
     using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -25,7 +25,7 @@ namespace AddonWars2.App.Services
         public AddonsService()
         {
             // Blank.
-            var request = new StandaloneDownloadRequest("https://www.deltaconnected.com/arcdps/gw2addon_arcdps.dll");
+            
         }
 
         #endregion Constructors
@@ -35,26 +35,26 @@ namespace AddonWars2.App.Services
         /// <summary>
         /// Gets a collection of installed addons.
         /// </summary>
-        public ObservableCollection<ModInfoData> InstalledAddonsCollection { get; private set; } = new ObservableCollection<ModInfoData>()
+        public ObservableCollection<AddonInfoData> InstalledAddonsCollection { get; private set; } = new ObservableCollection<AddonInfoData>()
         {
-            ////new ModInfoData("Addon 04"),
-            ////new ModInfoData("Addon 05"),
-            ////new ModInfoData("Addon 06"),
-            ////new ModInfoData("Addon 01"),
-            ////new ModInfoData("Addon 02"),
-            ////new ModInfoData("Addon 03"),
-            ////new ModInfoData("Addon 07"),
-            ////new ModInfoData("Addon 08"),
-            ////new ModInfoData("Addon 09"),
-            ////new ModInfoData("Addon 10"),
-            ////new ModInfoData("Addon 11"),
-            ////new ModInfoData("Addon 12"),
-            ////new ModInfoData("Addon 13"),
-            ////new ModInfoData("Addon 14"),
-            ////new ModInfoData("Addon 15"),
-            ////new ModInfoData("Addon 16"),
-            ////new ModInfoData("Addon 17"),
-            ////new ModInfoData("Addon 18"),
+            ////new AddonInfoData("Addon 04"),
+            ////new AddonInfoData("Addon 05"),
+            ////new AddonInfoData("Addon 06"),
+            ////new AddonInfoData("Addon 01"),
+            ////new AddonInfoData("Addon 02"),
+            ////new AddonInfoData("Addon 03"),
+            ////new AddonInfoData("Addon 07"),
+            ////new AddonInfoData("Addon 08"),
+            ////new AddonInfoData("Addon 09"),
+            ////new AddonInfoData("Addon 10"),
+            ////new AddonInfoData("Addon 11"),
+            ////new AddonInfoData("Addon 12"),
+            ////new AddonInfoData("Addon 13"),
+            ////new AddonInfoData("Addon 14"),
+            ////new AddonInfoData("Addon 15"),
+            ////new AddonInfoData("Addon 16"),
+            ////new AddonInfoData("Addon 17"),
+            ////new AddonInfoData("Addon 18"),
         };
 
         #endregion Properties

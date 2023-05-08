@@ -92,6 +92,7 @@
     <ProjectReference Include="..\AddonWars2.Addons\AddonWars2.Addons.csproj" />
     <ProjectReference Include="..\AddonWars2.Downloader\AddonWars2.Downloader.csproj" />
     <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
+    <ProjectReference Include="..\AddonWars2.StaticData\AddonWars2.SharedData.csproj" />
   </ItemGroup>
 
 </Project>

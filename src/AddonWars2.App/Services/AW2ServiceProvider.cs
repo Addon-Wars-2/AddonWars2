@@ -11,7 +11,6 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
-    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.Services.HttpClientWrapper;

@@ -13,6 +13,8 @@ namespace AddonWars2.App.ViewModels
     using System.Windows.Controls;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Entities;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -67,7 +69,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a list of available cultures.
         /// </summary>
-        public ObservableCollection<CultureInfo> AvailableCultures => AppConfig.AvailableCultures;
+        public ObservableCollection<CultureInfo> AvailableCultures => new ObservableCollection<CultureInfo>(AppStaticData.APP_SUPPORTED_CULTURES);
 
         /// <summary>
         /// Gets a value indicating whether the application
@@ -78,23 +80,29 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 website URL.
         /// </summary>
-        public string Gw2HomeLink => AppConfig.LocalData.Gw2Home;
+        public string Gw2HomeLink => AppConfig.UserData.Gw2Home;
 
         /// <summary>
         /// Gets the GW2 wiki URL.
         /// </summary>
-        public string Gw2WikiLink => AppConfig.LocalData.Gw2WikiHome;
+        public string Gw2WikiLink => AppConfig.UserData.Gw2WikiHome;
+
+        /// <summary>
+        /// Gets the project URL.
+        /// </summary>
+        public string ProjectLink => WebStaticData.PROJECT_REPOSITORY_URL_GITHUB;
+
+        /// <summary>
+        /// Gets the project wiki URL.
+        /// </summary>
+        public string ProjectWikiLink => WebStaticData.PROJECT_WIKI_URL_GITHUB;
 
         /// <summary>
         /// Gets or sets the selected culture.
         /// </summary>
         public CultureInfo SelectedCulture
         {
-            get
-            {
-                return AppConfig.SelectedCulture;
-            }
-
+            get => AppConfig.SelectedCulture;
             set
             {
                 SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);

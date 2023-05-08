@@ -1,11 +1,11 @@
 ﻿// ==================================================================================================
-// <copyright file="ModInfoData.cs" company="Addon-Wars-2">
+// <copyright file="AddonInfoData.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Models.ModInfo
+namespace AddonWars2.Addons.Models.AddonInfo
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
@@ -84,7 +84,7 @@ namespace AddonWars2.Addons.Models.ModInfo
     /// Represents a Guild Wars 2 add-on, encapsulating the information about it.
     /// </summary>
     [Serializable]
-    public class ModInfoData
+    public class AddonInfoData
     {
         #region Fields
 
@@ -98,6 +98,7 @@ namespace AddonWars2.Addons.Models.ModInfo
         private string _hostUrl = string.Empty;
         private DownloadType _downloadType = DownloadType.Archive;
         private InstallMode _installMode = InstallMode.Binary;
+        private ArcPluginInfo _arcModInfo = ArcPluginInfo.Empty;
         private List<string> _requiredAddons = new List<string>();
         private List<string> _conflicts = new List<string>();
 
@@ -106,9 +107,9 @@ namespace AddonWars2.Addons.Models.ModInfo
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModInfoData"/> class.
+        /// Initializes a new instance of the <see cref="AddonInfoData"/> class.
         /// </summary>
-        public ModInfoData()
+        public AddonInfoData()
         {
             // Blank.
         }
@@ -219,6 +220,19 @@ namespace AddonWars2.Addons.Models.ModInfo
         {
             get => _installMode;
             set => _installMode = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the additional information for ArcDPS addons.
+        /// </summary>
+        /// <remarks>
+        /// If an addon is not an ArcDPS plugin, its data will be empty.
+        /// </remarks>
+        [JsonPropertyName("arc_modinfo")]
+        public ArcPluginInfo ArcModInfo
+        {
+            get => _arcModInfo;
+            set => _arcModInfo = value;
         }
 
         /// <summary>

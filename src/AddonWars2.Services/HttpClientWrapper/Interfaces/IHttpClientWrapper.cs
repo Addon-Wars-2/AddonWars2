@@ -13,6 +13,11 @@ namespace AddonWars2.Services.HttpClientWrapper.Interfaces
     public interface IHttpClientWrapper
     {
         /// <summary>
+        /// Gets the <see cref="System.Net.Http.HttpClient"/> object.
+        /// </summary>
+        public HttpClient HttpClient { get; }
+
+        /// <summary>
         /// Checks whether any network connection is available.
         /// </summary>
         /// <returns><see langword="true"/> if any network connection is availavble, otherwise - <see langword="false"/>.</returns>
@@ -22,8 +27,9 @@ namespace AddonWars2.Services.HttpClientWrapper.Interfaces
         /// Sends a GET request to the specified URL as an asynchronous operation.
         /// </summary>
         /// <param name="uri">Request uri.</param>
+        /// <param name="headers">Headers collection to set for the request.</param>
         /// <returns>Response object.</returns>
-        Task<HttpResponseMessage> GetAsync(string uri);
+        Task<HttpResponseMessage> GetAsync(string uri, Dictionary<string, string>? headers = null);
 
         /// <summary>
         /// Sends a POST request to the specified URL as an asynchronous operation.

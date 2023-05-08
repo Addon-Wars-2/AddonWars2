@@ -60,33 +60,6 @@ namespace AddonWars2.App.Utils.Helpers
             return appDir;
         }
 
-        ///// <summary>
-        ///// Loads and return NLog logger configuration from the embedded config file.
-        ///// </summary>
-        ///// <returns>NLog configuration.</returns>
-        //public static LoggingConfiguration GetLoggerConfigurationNLog()
-        //{
-        //    // TODO: This method should be refactored, because it relies on application state inside a static class.
-
-        //    // The GetManifestResourceStream method will always returns null
-        //    // if the resourceName "built action" property is not set to "embedded resourceName".
-        //    var assembly = typeof(AW2Application).Assembly;
-        //    var stream = assembly.GetManifestResourceStream("AddonWars2.App.Resources.NLog.config");
-
-        //    if (stream == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(stream));
-        //    }
-
-        //    string xml;
-        //    using (var reader = new StreamReader(stream))
-        //    {
-        //        xml = reader.ReadToEnd();
-        //    }
-
-        //    return XmlLoggingConfiguration.CreateFromXmlString(xml);
-        //}
-
         /// <summary>
         /// Performs a registry search for a given <see cref="name"/> within the specified
         /// <paramref name="keyname"/> using the local machine data.

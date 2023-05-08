@@ -97,7 +97,7 @@ namespace AddonWars2.App.ViewModels
         {
             try
             {
-                Process.Start(new ProcessStartInfo(AppConfig.LogFileFullPath)
+                Process.Start(new ProcessStartInfo(AppConfig.LogFilePath)
                 {
                     Verb = "open",
                     UseShellExecute = true,

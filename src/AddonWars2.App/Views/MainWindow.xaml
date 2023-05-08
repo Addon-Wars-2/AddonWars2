@@ -142,7 +142,7 @@
                             VerticalAlignment="Center"
                             FontFamily="{DynamicResource Menomonia}">
                             <Hyperlink
-                                NavigateUri="https://github.com/Addon-Wars-2/AddonWars2/wiki"
+                                NavigateUri="{Binding Path=DataContext.ProjectWikiLink, RelativeSource={RelativeSource AncestorType=Window}}"
                                 TextDecorations="None"
                                 FocusVisualStyle="{x:Null}">
                                 <i:Interaction.Triggers>
@@ -184,7 +184,7 @@
                             </Hyperlink>
                             <TextBlock Text="｜"/>
                             <Hyperlink
-                                NavigateUri="https://github.com/Addon-Wars-2/AddonWars2"
+                                NavigateUri="{Binding Path=DataContext.ProjectLink, RelativeSource={RelativeSource AncestorType=Window}}"
                                 TextDecorations="None"
                                 FocusVisualStyle="{x:Null}">
                                 <i:Interaction.Triggers>

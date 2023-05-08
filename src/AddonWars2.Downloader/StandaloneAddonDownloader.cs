@@ -8,9 +8,6 @@
 namespace AddonWars2.Downloader
 {
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using AddonWars2.Downloader.Interfaces;
     using AddonWars2.Downloader.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
 
@@ -19,65 +16,26 @@ namespace AddonWars2.Downloader
     /// </summary>
     public class StandaloneAddonDownloader : AddonDownloaderBase
     {
-        #region Fields
-
-        private static readonly string _productName;
-        private static readonly string _productVersion;
-        private static readonly string _productComment = "+(https://github.com/Addon-Wars-2/AddonWars2)";  // TODO: move elsewhere (cfg?), do not hardcode
-        private static readonly HttpClient _httpClient;
-        private readonly IHttpClientWrapper _httpClientService;
-
-        #endregion Fields
-
         #region Constructors
-
-        // Static constructor.
-        static StandaloneAddonDownloader()
-        {
-            _productName = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? string.Empty;
-            _productVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? string.Empty;
-
-            var productValue = new ProductInfoHeaderValue(_productName, _productVersion);
-            var commentValue = new ProductInfoHeaderValue(_productComment);
-
-            _httpClient = new HttpClient() { Timeout = TimeSpan.FromMinutes(5) };  // TODO: reconsider timeout value
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.UserAgent.Add(productValue);
-            _httpClient.DefaultRequestHeaders.UserAgent.Add(commentValue);
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StandaloneAddonDownloader"/> class.
         /// </summary>
-        /// <param name="httpClientService">A reference to <see cref="IGenericHttpClientService"/> instance.</param>
+        /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         public StandaloneAddonDownloader(IHttpClientWrapper httpClientService)
+            : base(httpClientService)
         {
-            _httpClientService = httpClientService;
+            // Blank.
         }
 
         #endregion Constructors
 
-        #region Properties
-
-        /// <summary>
-        /// Gets the HTTP client object, providing the ability to send HTTP requests and
-        /// receive HTTP responses from a resource identified by a URI.
-        /// </summary>
-        protected HttpClient HttpClient => _httpClient;
-
-        /// <summary>
-        /// Gets the HTTP client service instance.
-        /// </summary>
-        protected IHttpClientWrapper HttpClientService => _httpClientService;
-
-        #endregion Properties
-
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<DownloadedObject> Download(IDownloadRequest request)
+        public override async Task<DownloadedObject> Download(DownloadRequest request)
         {
-            using (var response = await HttpClientService.GetAsync(request.Url))
+            using (var response = await HttpClientService.GetAsync(request.Url, request.Headers))
             {
                 return await DownloadFromResponse(response);
             }
@@ -92,7 +50,7 @@ namespace AddonWars2.Downloader
 
             if (contentLength == 0)
             {
-                return new DownloadedObject(filename, Array.Empty<byte>());
+                return new DownloadedObject(filename, Array.Empty<byte>(), response.Headers);
             }
 
             byte[] content = Array.Empty<byte>();
@@ -122,7 +80,7 @@ namespace AddonWars2.Downloader
                 }
             }
 
-            return new DownloadedObject(filename, content);
+            return new DownloadedObject(filename, content, response.Headers);
         }
 
         #endregion Methods

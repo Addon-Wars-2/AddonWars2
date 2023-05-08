@@ -21,6 +21,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
+    using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -94,8 +95,8 @@ namespace AddonWars2.App.ViewModels
             _rssFeedService = (Gw2RssFeedService)rssFeedService;
             _httpClientService = webClientServices;
 
-            LoadNewsCommand = new RelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
-            RefreshNewsCommand = new RelayCommand(
+            LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
+            RefreshNewsCommand = new AsyncRelayCommand(
                 ExecuteReloadNewsAsync,
                 () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
             LoadRssItemContentCommand = new RelayCommand(
@@ -232,12 +233,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a command that updates news list on the first load.
         /// </summary>
-        public RelayCommand LoadNewsCommand { get; private set; }
+        public AsyncRelayCommand LoadNewsCommand { get; private set; }
 
         /// <summary>
         /// Gets a command that forces the news list to update itself.
         /// </summary>
-        public RelayCommand RefreshNewsCommand { get; private set; }
+        public AsyncRelayCommand RefreshNewsCommand { get; private set; }
 
         /// <summary>
         /// Gets a command that updates the content of a selected RSS item.
@@ -253,7 +254,7 @@ namespace AddonWars2.App.ViewModels
         // TODO: Move out logic to services. This VM does way to much.
 
         // LoadNewsCommand command logic.
-        private async void ExecuteReloadNewsAsync()
+        private async Task ExecuteReloadNewsAsync()
         {
             Logger.LogDebug("Executing command.");
 
@@ -266,7 +267,7 @@ namespace AddonWars2.App.ViewModels
             HttpResponseMessage response;
             try
             {
-                response = await HttpClientService.GetAsync(AppConfig.LocalData.Gw2Rss);
+                response = await HttpClientService.GetAsync(AppConfig.UserData.Gw2Rss);
             }
             catch (HttpRequestException e)
             {
@@ -298,16 +299,16 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            feed = SortRssFeedCollection(feed);
+            feed = await SortRssFeedCollectionAsync(feed);
 
-            var cssFileName = "style.css";
+            var cssFileName = "style.css";  // TODO: move out hardcoding
             foreach (var item in feed)
             {
                 item.ContentEncoded = RssFeedService.AddProtocolPrefixesToHtml(item.ContentEncoded ?? string.Empty, "https");
                 item.ContentEncoded = RssFeedService.InjectCssIntoHtml(item.ContentEncoded ?? string.Empty, cssFileName);
             }
 
-            var rssDirPath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppConfig.RssFeedDirName ?? string.Empty);
+            var rssDirPath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppStaticData.RSS_FEED_DIR_NAME ?? string.Empty);
             var rssFilePath = Path.Combine(rssDirPath, cssFileName);
             await IOHelper.ResourceCopyToAsync($"AddonWars2.App.Resources.{cssFileName}", rssFilePath);  // copy CSS embedded resource
 
@@ -351,11 +352,11 @@ namespace AddonWars2.App.ViewModels
         // Sort the list, so the "sticky" item will be always above (the first one),
         // and the rest will be sorted by date. Even though RSS feed already contains items in a
         // historical order, we run this sort just to make sure.
-        private IList<Gw2RssFeedItem> SortRssFeedCollection(IList<Gw2RssFeedItem> collection)
+        private async Task<IList<Gw2RssFeedItem>> SortRssFeedCollectionAsync(IList<Gw2RssFeedItem> collection)
         {
             ArgumentNullException.ThrowIfNull(collection, nameof(collection));
 
-            return collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList();
+            return await Task.Run(() => collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList());
         }
 
         // Write HTML files locally, so WebView can read them later.
@@ -397,7 +398,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             var extension = ".html";
-            var dirpath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppConfig.RssFeedDirName);
+            var dirpath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppStaticData.RSS_FEED_DIR_NAME);
             var filepath = Path.Combine(dirpath, DisplayedRssFeedItem.Guid ?? string.Empty) + extension;
 
             if (File.Exists(filepath))

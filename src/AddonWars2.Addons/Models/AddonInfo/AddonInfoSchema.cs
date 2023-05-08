@@ -1,18 +1,18 @@
 ﻿// ==================================================================================================
-// <copyright file="ModInfoSchema.cs" company="Addon-Wars-2">
+// <copyright file="AddonInfoSchema.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.Models.ModInfo
+namespace AddonWars2.Addons.Models.AddonInfo
 {
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// Encapsulates "modinfo" schema information.
     /// </summary>
-    public class ModInfoSchema
+    public class AddonInfoSchema
     {
         #region Fields
 
@@ -23,9 +23,9 @@ namespace AddonWars2.Addons.Models.ModInfo
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModInfoSchema"/> class.
+        /// Initializes a new instance of the <see cref="AddonInfoSchema"/> class.
         /// </summary>
-        public ModInfoSchema()
+        public AddonInfoSchema()
         {
             // Blank.
         }

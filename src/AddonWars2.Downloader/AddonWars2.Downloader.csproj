@@ -48,6 +48,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
+		<ProjectReference Include="..\AddonWars2.StaticData\AddonWars2.SharedData.csproj" />
 	</ItemGroup>
 
 </Project>

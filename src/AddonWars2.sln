@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloader", "Ad
 		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D} = {9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.SharedData", "AddonWars2.StaticData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

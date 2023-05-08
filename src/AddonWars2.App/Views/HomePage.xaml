@@ -323,9 +323,9 @@
                         <validation:Gw2ExecRule ValidatesOnTargetUpdated="True">
                             <validation:Gw2ExecRule.ParamsWrapper>
                                 <validation:Gw2ExecRuleParams
-                                    Gw2FileExtension="{Binding Path=Data.Gw2FileExtension, Source={StaticResource DataContextProxy}}"
-                                    Gw2ProductName="{Binding Path=Data.Gw2ProductName, Source={StaticResource DataContextProxy}}"
-                                    Gw2FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}}"/>
+                                    Gw2FileExtension="{Binding Path=Data.Gw2FileExtension, Source={StaticResource DataContextProxy}, Mode=OneWay}"
+                                    Gw2ProductName="{Binding Path=Data.Gw2ProductName, Source={StaticResource DataContextProxy}, Mode=OneWay}"
+                                    Gw2FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
                             </validation:Gw2ExecRule.ParamsWrapper>
                         </validation:Gw2ExecRule>
                         <validation:Gw2WriteAccessToDirRule ValidatesOnTargetUpdated="True"/>

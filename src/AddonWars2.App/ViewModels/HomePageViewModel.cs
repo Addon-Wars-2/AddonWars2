@@ -10,10 +10,11 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
-    using AddonWars2.Addons.Models.ModInfo;
+    using AddonWars2.Addons.Models.AddonInfo;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Services;
     using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 
@@ -29,7 +30,7 @@ namespace AddonWars2.App.ViewModels
         private readonly ApplicationConfig _applicationConfig;
 
         private bool _isActuallyLoaded = false;
-        private ModInfoData? _selectedAddon;
+        private AddonInfoData? _selectedAddon;
 
         #endregion Fields
 
@@ -75,10 +76,10 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public string Gw2ExecPath
         {
-            get => AppConfig.LocalData.Gw2FilePath;
+            get => AppConfig.UserData.Gw2FilePath;
             set
             {
-                SetProperty(AppConfig.LocalData.Gw2FilePath, value, AppConfig.LocalData, (model, filepath) => model.Gw2FilePath = filepath);
+                SetProperty(AppConfig.UserData.Gw2FilePath, value, AppConfig.UserData, (model, filepath) => model.Gw2FilePath = filepath);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -88,10 +89,10 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public string Gw2DirPath
         {
-            get => AppConfig.LocalData.Gw2DirPath;
+            get => AppConfig.UserData.Gw2DirPath;
             set
             {
-                SetProperty(AppConfig.LocalData.Gw2DirPath, value, AppConfig.LocalData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                SetProperty(AppConfig.UserData.Gw2DirPath, value, AppConfig.UserData, (model, dirpath) => model.Gw2DirPath = dirpath);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -99,12 +100,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of installed add-ons.
         /// </summary>
-        public ObservableCollection<ModInfoData> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
+        public ObservableCollection<AddonInfoData> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
 
         /// <summary>
         /// Gets or sets the currently selected add-on.
         /// </summary>
-        public ModInfoData? SelectedAddon
+        public AddonInfoData? SelectedAddon
         {
             get => _selectedAddon;
             set
@@ -117,17 +118,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 exe file extension from the config object.
         /// </summary>
-        public string Gw2FileExtension => AppConfig.Gw2FileExtension;
+        public string Gw2FileExtension => GameStaticData.GW2_EXECUTABLE_EXTENSION;
 
         /// <summary>
         /// Gets the GW2 exe product name from the config object.
         /// </summary>
-        public string Gw2ProductName => AppConfig.Gw2ProductName;
+        public string Gw2ProductName => GameStaticData.GW2_PRODUCT_NAME;
 
         /// <summary>
         /// Gets the GW2 exe file description from the config object.
         /// </summary>
-        public string Gw2FileDescription => AppConfig.Gw2FileDescription;
+        public string Gw2FileDescription => GameStaticData.GW2_FILE_DESC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.

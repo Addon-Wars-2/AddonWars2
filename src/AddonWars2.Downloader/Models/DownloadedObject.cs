@@ -7,26 +7,7 @@
 
 namespace AddonWars2.Downloader.Models
 {
-    /// <summary>
-    /// Specifies the <see cref="DownloadedObject"/> completion status.
-    /// </summary>
-    public enum Status
-    {
-        /// <summary>
-        /// The default value.
-        /// </summary>
-        None,
-
-        /// <summary>
-        /// Downloading has completed successfully.
-        /// </summary>
-        Success,
-
-        /// <summary>
-        /// Downloading has failed.
-        /// </summary>
-        Failed,
-    }
+    using System.Net.Http.Headers;
 
     /// <summary>
     /// Represents a downloaded file.
@@ -36,8 +17,8 @@ namespace AddonWars2.Downloader.Models
         #region Fields
 
         private readonly string _name;
+        private readonly HttpResponseHeaders _headers;
         private readonly byte[] _content;
-        private Status _status = Status.None;
 
         #endregion Fields
 
@@ -48,15 +29,17 @@ namespace AddonWars2.Downloader.Models
         /// </summary>
         /// <param name="name">The downloaded object name.</param>
         /// <param name="content">The downloaded content represented as a byte array.</param>
+        /// <param name="headers">The response headers.</param>
         /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
-        public DownloadedObject(string name, byte[] content)
+        public DownloadedObject(string name, byte[] content, HttpResponseHeaders headers)
         {
             ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
 
             _name = name;
             _content = content;
+            _headers = headers;
         }
 
         #endregion Constructors
@@ -69,18 +52,14 @@ namespace AddonWars2.Downloader.Models
         public string Name => _name;
 
         /// <summary>
+        /// Gets the response headers.
+        /// </summary>
+        public HttpResponseHeaders Headers => _headers;
+
+        /// <summary>
         /// Gets the downloaded content as a byte array.
         /// </summary>
         public byte[] Content => _content;
-
-        /// <summary>
-        /// Gets or sets the completion status.
-        /// </summary>
-        public Status Status
-        {
-            get => _status;
-            set => _status = value;
-        }
 
         #endregion Properties
     }

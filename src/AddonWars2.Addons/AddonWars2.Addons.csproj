@@ -43,8 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ModData\" />
-    <Folder Include="RemoteLibrary\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

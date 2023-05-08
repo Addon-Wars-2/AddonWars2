@@ -7,6 +7,7 @@
 
 namespace AddonWars2.Services.HttpClientWrapper
 {
+    using System.Net.Http.Headers;
     using System.Net.NetworkInformation;
     using System.Threading.Tasks;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
@@ -37,10 +38,8 @@ namespace AddonWars2.Services.HttpClientWrapper
 
         #region Properties
 
-        /// <summary>
-        /// Gets the <see cref="System.Net.Http.HttpClient"/> object.
-        /// </summary>
-        protected HttpClient HttpClient => _httpClient;
+        /// <inheritdoc/>
+        public HttpClient HttpClient => _httpClient;
 
         #endregion Properties
 
@@ -54,15 +53,22 @@ namespace AddonWars2.Services.HttpClientWrapper
 
         /// <inheritdoc/>
         /// <exception cref="HttpRequestException">Is thrown if the response has a bad status code.</exception>
-        public async Task<HttpResponseMessage> GetAsync(string? uri)
+        public async Task<HttpResponseMessage> GetAsync(string? uri, Dictionary<string, string>? headers = null)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, uri))
             {
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
+                }
+
                 HttpResponseMessage response = await HttpClient.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
 
                 return response;
-
             }
         }
 

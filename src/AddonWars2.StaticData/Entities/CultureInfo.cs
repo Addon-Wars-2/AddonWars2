@@ -5,22 +5,20 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Models.Application
+namespace AddonWars2.SharedData.Entities
 {
     using System;
-    using System.Xml.Serialization;
 
     /// <summary>
     /// Represents an object that encapsulated culture information.
     /// </summary>
-    [Serializable]
     public class CultureInfo
     {
         #region Fields
 
-        private string _culture;
-        private string _shortName;
-        private string _fullName;
+        private readonly string _culture;
+        private readonly string _shortName;
+        private readonly string _fullName;
 
         #endregion Fields
 
@@ -37,16 +35,19 @@ namespace AddonWars2.App.Models.Application
             string shortName,
             string fullName)
         {
-            ArgumentNullException.ThrowIfNull(culture, nameof(culture));
-            ArgumentNullException.ThrowIfNull(shortName, nameof(shortName));
-            ArgumentNullException.ThrowIfNull(fullName, nameof(fullName));
+            ArgumentException.ThrowIfNullOrEmpty(culture, nameof(culture));
+            ArgumentException.ThrowIfNullOrEmpty(shortName, nameof(shortName));
+            ArgumentException.ThrowIfNullOrEmpty(fullName, nameof(fullName));
 
             _culture = culture;
             _shortName = shortName;
             _fullName = fullName;
         }
 
-        private CultureInfo()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CultureInfo"/> class.
+        /// </summary>
+        public CultureInfo()
             : this(string.Empty, string.Empty, string.Empty)
         {
             // Blank.
@@ -57,35 +58,19 @@ namespace AddonWars2.App.Models.Application
         #region Properties
 
         /// <summary>
-        /// Gets or sets culture string using ISO 639 language codes,
-        /// i.e. "en-US".
+        /// Gets culture string using ISO 639 language codes, i.e. "en-US".
         /// </summary>
-        [XmlElement("culture")]
-        public string Culture
-        {
-            get => _culture;
-            set => _culture = value;
-        }
+        public string Culture => _culture;
 
         /// <summary>
-        /// Gets or sets culture short name.
+        /// Gets culture short name.
         /// </summary>
-        [XmlElement("short")]
-        public string ShortName
-        {
-            get => _shortName;
-            set => _shortName = value;
-        }
+        public string ShortName => _shortName;
 
         /// <summary>
-        /// Gets or sets culture full name.
+        /// Gets culture full name.
         /// </summary>
-        [XmlElement("full")]
-        public string FullName
-        {
-            get => _fullName;
-            set => _fullName = value;
-        }
+        public string FullName => _fullName;
 
         #endregion Properties
     }

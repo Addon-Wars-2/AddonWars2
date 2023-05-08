@@ -10,7 +10,7 @@ namespace AddonWars2.App.Utils.Helpers
     using System;
     using System.Linq;
     using System.Threading;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.SharedData.Entities;
 
     /// <summary>
     /// Provides various methods to manage localization problems within the application.
@@ -66,7 +66,7 @@ namespace AddonWars2.App.Utils.Helpers
         // Performs the actual selection of a culture.
         private static string SelectCultureInternal(string cultureString, string fallback = "en-US")
         {
-            // TODO: If a new string resource has missing entries (let's say, some of them are commented),
+            // TODO: If a new string resource has missing entries (let's say, some of them are comment out),
             //       a user will see a translation for this strings taken from the previously selected culture,
             //       because old keys were not overwritten. To prevent this, maybe it's a good idea to put
             //       a default culture (EN) right before the selected one, since a default one is always

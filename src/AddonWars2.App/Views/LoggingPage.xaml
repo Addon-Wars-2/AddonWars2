@@ -55,7 +55,7 @@
             </Border.Background>
             <Grid>
                 <ItemsControl
-                    Margin="5"
+                    Margin="5,5,2,2"
                     ItemsSource="{Binding DataContext.LogEntries, RelativeSource={RelativeSource AncestorType=Page}}"
                     Focusable="False">
                     <ItemsControl.Template>

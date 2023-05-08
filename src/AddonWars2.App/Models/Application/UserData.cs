@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="LocalData.cs" company="Addon-Wars-2">
+// <copyright file="UserData.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,13 +8,13 @@
 namespace AddonWars2.App.Models.Application
 {
     using System.Xml.Serialization;
+    using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.ComponentModel;
 
     /// <summary>
-    /// Prepresents data that is stored locally.
+    /// Prepresents user data that is stored locally.
     /// </summary>
-    [XmlRoot("LocalData")]
-    public class LocalData : ObservableObject
+    public class UserData : ObservableObject
     {
         #region Fields
 
@@ -32,9 +32,9 @@ namespace AddonWars2.App.Models.Application
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalData"/> class.
+        /// Initializes a new instance of the <see cref="UserData"/> class.
         /// </summary>
-        public LocalData()
+        public UserData()
         {
             // Blank.
         }
@@ -44,18 +44,18 @@ namespace AddonWars2.App.Models.Application
         #region Properties
 
         /// <summary>
-        /// Gets a default instance version of <see cref="LocalData"/>.
+        /// Gets a default instance version of <see cref="UserData"/>.
         /// </summary>
         /// <remarks>
-        /// The default version of <see cref="LocalData"/> will contain
+        /// The default version of <see cref="UserData"/> will contain
         /// pre-defined properties hardcoded internally.
         /// </remarks>
         [XmlIgnore]
-        public static LocalData Default
+        public static UserData Default
         {
             get
             {
-                var obj = new LocalData();
+                var obj = new UserData();
                 obj.SetDefaultValues();
                 return obj;
             }
@@ -146,21 +146,28 @@ namespace AddonWars2.App.Models.Application
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2HomeTemplate => LocalDataDefaultState.Gw2HomeTemplate;
+        internal static string AnetHomeTemplate => UserDataDefaultState.Gw2HomeTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2RssTemplate => LocalDataDefaultState.Gw2RssTemplate;
+        internal static string Gw2HomeTemplate => UserDataDefaultState.Gw2HomeTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2WikiHomeTemplate => LocalDataDefaultState.Gw2WikiHomeTemplate;
+        internal static string Gw2RssTemplate => UserDataDefaultState.Gw2RssTemplate;
+
+        /// <summary>
+        /// Gets a template string that contanins a single format item that can be
+        /// substituted with a culture string in a short format, i.e. "en", "de", etc.
+        /// </summary>
+        [XmlIgnore]
+        internal static string Gw2WikiHomeTemplate => UserDataDefaultState.Gw2WikiHomeTemplate;
 
         #endregion Properties
 
@@ -173,9 +180,9 @@ namespace AddonWars2.App.Models.Application
         /// This methods should be used after deserialization to ensure the input file contained
         /// the required and valid data.
         /// </remarks>
-        /// <param name="obj"><see cref="LocalData"/> reference to check for validity.</param>
+        /// <param name="obj"><see cref="UserData"/> reference to check for validity.</param>
         /// <returns><see langword="true"/> if valid, otherwise <see langword="false"/>.</returns>
-        public static bool IsValid(LocalData? obj)
+        public static bool IsValid(UserData? obj)
         {
             // TODO: Implement through attributes maybe?
             //       Otherwise eventually we'll end up with a looooong and ugly method call.
@@ -193,14 +200,14 @@ namespace AddonWars2.App.Models.Application
         // Sets default values.
         private void SetDefaultValues()
         {
-            SelectedCultureString = LocalDataDefaultState.SelectedCultureString;
-            AnetHome = LocalDataDefaultState.AnetHome;
-            Gw2Home = string.Format(Gw2HomeTemplate, "en");
-            Gw2WikiHome = LocalDataDefaultState.Gw2WikiHome;
-            Gw2Rss = string.Format(Gw2RssTemplate, "en");
-            Gw2Api2 = LocalDataDefaultState.Gw2Api2;
-            Gw2FilePath = LocalDataDefaultState.Gw2FilePath;
-            Gw2DirPath = LocalDataDefaultState.Gw2DirPath;
+            SelectedCultureString = UserDataDefaultState.SelectedCultureString;
+            AnetHome = UserDataDefaultState.AnetHome;
+            Gw2Home = UserDataDefaultState.Gw2Home;
+            Gw2Rss = UserDataDefaultState.Gw2Rss;
+            Gw2WikiHome = UserDataDefaultState.Gw2WikiHome;
+            Gw2Api2 = UserDataDefaultState.Gw2Api2;
+            Gw2FilePath = UserDataDefaultState.Gw2FilePath;
+            Gw2DirPath = UserDataDefaultState.Gw2DirPath;
         }
 
         #endregion Methods
@@ -208,25 +215,27 @@ namespace AddonWars2.App.Models.Application
         #region Inner Classes
 
         // Encapsulates the default state of the class.
-        private static class LocalDataDefaultState
+        private static class UserDataDefaultState
         {
-            internal static string Gw2HomeTemplate => "https://guildwars2.com/{0}";
+            internal static string AnetHomeTemplate => WebStaticData.ANET_HOME_TEMPLATE;
 
-            internal static string Gw2RssTemplate => "https://www.guildwars2.com/{0}/feed";
+            internal static string Gw2HomeTemplate => WebStaticData.GW2_HOME_TEMPLATE;
 
-            internal static string Gw2WikiHomeTemplate => "https://wiki-{0}.guildwars2.com";
+            internal static string Gw2RssTemplate => WebStaticData.GW2_RSS_TEMPLATE;
 
-            internal static string SelectedCultureString => "en-US";
+            internal static string Gw2WikiHomeTemplate => WebStaticData.GW2_WIKI_TEMPLATE;
 
-            internal static string AnetHome => "https://arena.net";
+            internal static string SelectedCultureString => AppStaticData.DEFAULT_CULTURE.Culture;
 
-            internal static string Gw2Home => string.Format(Gw2HomeTemplate, "en");
+            internal static string AnetHome => string.Format(AnetHomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
 
-            internal static string Gw2WikiHome => string.Format(Gw2WikiHomeTemplate, "en");
+            internal static string Gw2Home => string.Format(Gw2HomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
 
-            internal static string Gw2Rss => string.Format(Gw2RssTemplate, "en");
+            internal static string Gw2WikiHome => string.Format(Gw2WikiHomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
 
-            internal static string Gw2Api2 => "https://api.guildwars2.com/v2";
+            internal static string Gw2Rss => string.Format(Gw2RssTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
+
+            internal static string Gw2Api2 => WebStaticData.GW2_APIV2_ENDPOINT;
 
             internal static string Gw2FilePath => string.Empty;
 
