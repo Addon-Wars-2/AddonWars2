@@ -49,6 +49,7 @@ namespace AddonWars2.App.Services
             services.AddSingleton<HomePageViewModel>();
             services.AddSingleton<NewsPageViewModel>();
             services.AddSingleton<LoggingViewModel>();
+            services.AddSingleton<InstallAddonsPageViewModel>();
 
             // Commands.
             services.AddSingleton<CommonCommands>();

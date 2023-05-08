@@ -30,10 +30,10 @@ namespace AddonWars2.Downloader
     {
         #region Fields
 
-        private static string _defaultProductName;
-        private static string _defaultProductVersion;
-        private static string _defaultProductComment;  // TODO: move elsewhere (cfg?), do not hardcode
-        private static string _userAgent = string.Empty;
+        //private static string _defaultProductName;
+        //private static string _defaultProductVersion;
+        //private static string _defaultProductComment;
+        //private static string _userAgent = string.Empty;
 
         private readonly IHttpClientWrapper _httpClientService;
 
@@ -41,15 +41,15 @@ namespace AddonWars2.Downloader
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes static members of the <see cref="AddonDownloaderBase"/> class.
-        /// </summary>
-        static AddonDownloaderBase()
-        {
-            _defaultProductName = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? string.Empty;
-            _defaultProductVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? string.Empty;
-            _defaultProductComment = $"+{WebStaticData.PROJECT_WIKI_URL_GITHUB}";
-        }
+        ///// <summary>
+        ///// Initializes static members of the <see cref="AddonDownloaderBase"/> class.
+        ///// </summary>
+        //static AddonDownloaderBase()
+        //{
+        //    _defaultProductName = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? string.Empty;
+        //    _defaultProductVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? string.Empty;
+        //    _defaultProductComment = $"+{WebStaticData.PROJECT_WIKI_URL_GITHUB}";
+        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddonDownloaderBase"/> class.
@@ -73,65 +73,65 @@ namespace AddonWars2.Downloader
 
         #region Properties
 
-        /// <summary>
-        /// Gets or sets the default product name used in <see cref="HttpClient"/> user agent.
-        /// </summary>
-        /// <remarks>
-        /// The initial value is equal to the executing assembly title attribute
-        /// and is set in static constructor.
-        /// </remarks>
-        public static string DefaultProductName
-        {
-            get => _defaultProductName;
-            set
-            {
-                _defaultProductName = value;
-                ReconstructUserAgent();
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets the default product name used in <see cref="HttpClient"/> user agent.
+        ///// </summary>
+        ///// <remarks>
+        ///// The initial value is equal to the executing assembly title attribute
+        ///// and is set in static constructor.
+        ///// </remarks>
+        //public static string DefaultProductName
+        //{
+        //    get => _defaultProductName;
+        //    set
+        //    {
+        //        _defaultProductName = value;
+        //        ReconstructUserAgent();
+        //    }
+        //}
 
-        /// <summary>
-        /// Gets or sets the default product version used in <see cref="HttpClient"/> user agent.
-        /// </summary>
-        /// <remarks>
-        /// The initial value is equal to the executing assembly varsion attribute
-        /// and is set in static constructor.
-        /// </remarks>
-        public static string DefaultProductVersion
-        {
-            get => _defaultProductVersion;
-            set
-            {
-                _defaultProductVersion = value;
-                ReconstructUserAgent();
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets the default product version used in <see cref="HttpClient"/> user agent.
+        ///// </summary>
+        ///// <remarks>
+        ///// The initial value is equal to the executing assembly varsion attribute
+        ///// and is set in static constructor.
+        ///// </remarks>
+        //public static string DefaultProductVersion
+        //{
+        //    get => _defaultProductVersion;
+        //    set
+        //    {
+        //        _defaultProductVersion = value;
+        //        ReconstructUserAgent();
+        //    }
+        //}
 
-        /// <summary>
-        /// Gets or sets the default product comment used in <see cref="HttpClient"/> user agent.
-        /// </summary>
-        /// <remarks>
-        /// The initial value is equal to an empty string and is set in static constructor.
-        /// </remarks>
-        public static string DefaultProductComment
-        {
-            get => _defaultProductComment;
-            set
-            {
-                _defaultProductComment = value;
-                ReconstructUserAgent();
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets the default product comment used in <see cref="HttpClient"/> user agent.
+        ///// </summary>
+        ///// <remarks>
+        ///// The initial value is equal to an empty string and is set in static constructor.
+        ///// </remarks>
+        //public static string DefaultProductComment
+        //{
+        //    get => _defaultProductComment;
+        //    set
+        //    {
+        //        _defaultProductComment = value;
+        //        ReconstructUserAgent();
+        //    }
+        //}
 
-        /// <summary>
-        /// Gets a User-Agent string.
-        /// </summary>
-        /// <remarks>
-        /// This value is constrcuted from <see cref="_defaultProductName"/>, <see cref="DefaultProductVersion"/>
-        /// and <see cref="DefaultProductComment"/> values and gets updated internally every time any of these
-        /// properties are changed.
-        /// </remarks>
-        public static string UserAgent => _userAgent;
+        ///// <summary>
+        ///// Gets a User-Agent string.
+        ///// </summary>
+        ///// <remarks>
+        ///// This value is constrcuted from <see cref="_defaultProductName"/>, <see cref="DefaultProductVersion"/>
+        ///// and <see cref="DefaultProductComment"/> values and gets updated internally every time any of these
+        ///// properties are changed.
+        ///// </remarks>
+        //public static string UserAgent => _userAgent;
 
         /// <summary>
         /// Gets the HTTP client object, providing the ability to send HTTP requests and
@@ -163,11 +163,11 @@ namespace AddonWars2.Downloader
             handler?.Invoke(this, new DownloadProgressEventArgs(totalBytesToReceive, bytesReceived));
         }
 
-        // Updates User-Agent value.
-        private static void ReconstructUserAgent()
-        {
-            _userAgent = $"{DefaultProductName}/{DefaultProductVersion} (+{DefaultProductComment})";
-        }
+        //// Updates User-Agent value.
+        //private static void ReconstructUserAgent()
+        //{
+        //    _userAgent = $"{DefaultProductName}/{DefaultProductVersion} (+{DefaultProductComment})";
+        //}
 
         #endregion Methods
     }

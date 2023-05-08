@@ -9,7 +9,7 @@
     <Path x:Key="Path.Icon.Close" x:Shared="False" Stretch="None" Data="{DynamicResource Geometry.Icon.Close}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}" StrokeThickness="1.5"/>
 
     <Geometry x:Key="Geometry.Icon.ArrowDown">M 0,5 L 5,10 M 10,5 L 5,10</Geometry>
-    <Path x:Key="Path.Icon.ArrowDown" x:Shared="False" Stretch="Uniform" Data="{DynamicResource Geometry.Icon.ArrowDown}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}" StrokeThickness="1.0"/>
+    <Path x:Key="Path.Icon.ArrowDown" x:Shared="False" Stretch="Uniform" StrokeEndLineCap="Square" Data="{DynamicResource Geometry.Icon.ArrowDown}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}" StrokeThickness="1.0"/>
 
     <Geometry x:Key="Geometry.Icon.Add">M 0,5 L 10,5 M 5,0 L 5,10</Geometry>
     <Path x:Key="Path.Icon.Add" x:Shared="False" Stretch="Uniform" Data="{DynamicResource Geometry.Icon.Add}" Stroke="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}" StrokeThickness="1.5"/>

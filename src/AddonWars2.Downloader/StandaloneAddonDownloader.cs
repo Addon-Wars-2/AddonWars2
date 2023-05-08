@@ -50,7 +50,7 @@ namespace AddonWars2.Downloader
 
             if (contentLength == 0)
             {
-                return new DownloadedObject(filename, Array.Empty<byte>(), response.Headers);
+                return new DownloadedObject(filename, Array.Empty<byte>());
             }
 
             byte[] content = Array.Empty<byte>();
@@ -80,7 +80,7 @@ namespace AddonWars2.Downloader
                 }
             }
 
-            return new DownloadedObject(filename, content, response.Headers);
+            return new DownloadedObject(filename, content);
         }
 
         #endregion Methods

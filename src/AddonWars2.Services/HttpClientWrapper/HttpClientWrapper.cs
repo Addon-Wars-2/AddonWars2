@@ -7,7 +7,6 @@
 
 namespace AddonWars2.Services.HttpClientWrapper
 {
-    using System.Net.Http.Headers;
     using System.Net.NetworkInformation;
     using System.Threading.Tasks;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;

@@ -87,6 +87,7 @@
                 Command="{Binding Path=SwitchToInstallAddonsTabCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                 ToolTip="{DynamicResource S.ToolTip.Button.InstallAddons}">
                 <Button.CommandParameter>
+                    <!-- ADVANCE THE TAB INDEX WHEN ADD A NEW VISIBLE ONE -->
                     <sys:Int32>3</sys:Int32>
                 </Button.CommandParameter>
             </Button>

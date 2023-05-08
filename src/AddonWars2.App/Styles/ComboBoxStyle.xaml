@@ -78,22 +78,29 @@
                         <Border
                             x:Name="ContentBorder"
                             Background="Transparent"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
-                            <Border
-                                Background="{TemplateBinding Background}"
-                                HorizontalAlignment="Right">
-                                <ContentPresenter
-                                    x:Name="ArrowGlyph"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border
                                     Grid.Column="1"
-                                    Margin="6"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Content="{DynamicResource Path.Icon.ArrowDown}"/>
-                            </Border>
+                                    Width="{TemplateBinding ActualHeight}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ContentPresenter
+                                        x:Name="ArrowGlyph"
+                                        Margin="5,3,5,3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Content="{DynamicResource Path.Icon.ArrowDown}"/>
+                                </Border>
+                            </Grid>
+                            
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -124,23 +131,52 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">
-                    <Grid x:Name="TemplateRoot">
+                    <Grid
+                        x:Name="TemplateRoot"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}">
                         <Border
                             x:Name="MainBorder"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         </Border>
-                        <ContentPresenter
-                            x:Name="ContentSite"
-                            Grid.Column="1"
-                            Margin="0,0,0,0"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                            IsHitTestVisible="False"/>
+                        <Grid
+                            Margin="{TemplateBinding BorderThickness}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                x:Name="TextHintBorder"
+                                Grid.Column="0"
+                                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                                BorderBrush="Transparent">
+                                <ContentPresenter
+                                    x:Name="TextHint"
+                                    Margin="4,0,4,0"
+                                    TextElement.Foreground="{TemplateBinding Foreground}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding assist:HintAssist.Hint}"
+                                    IsHitTestVisible="False"/>
+                            </Border>
+                            <Border
+                                x:Name="ContentSiteBorder"
+                                Grid.Column="1"
+                                Width="{Binding ElementName=ContentSiteBorder, Path=ActualHeight}"
+                                Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}">
+                                <ContentPresenter
+                                    x:Name="ContentSite"
+                                    TextElement.Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                    IsHitTestVisible="False"/>
+                            </Border>
+                        </Grid>
                         <TextBox
                             x:Name="PART_EditableTextBox"
                             Background="Transparent"
@@ -154,7 +190,7 @@
                             x:Name="ToggleButton"
                             ClickMode="Press"
                             Focusable="False"
-                            Background="{TemplateBinding Background}"
+                            Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                             BorderBrush="Transparent"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
@@ -245,7 +281,7 @@
                                 <ContentPresenter
                                     x:Name="TextHint"
                                     Margin="4,0,4,0"
-                                    TextElement.Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                                    TextElement.Foreground="{TemplateBinding Foreground}"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Content="{TemplateBinding assist:HintAssist.Hint}"

@@ -17,7 +17,6 @@ namespace AddonWars2.Downloader.Models
         #region Fields
 
         private readonly string _name;
-        private readonly HttpResponseHeaders _headers;
         private readonly byte[] _content;
 
         #endregion Fields
@@ -29,17 +28,15 @@ namespace AddonWars2.Downloader.Models
         /// </summary>
         /// <param name="name">The downloaded object name.</param>
         /// <param name="content">The downloaded content represented as a byte array.</param>
-        /// <param name="headers">The response headers.</param>
         /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
-        public DownloadedObject(string name, byte[] content, HttpResponseHeaders headers)
+        public DownloadedObject(string name, byte[] content)
         {
             ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
 
             _name = name;
             _content = content;
-            _headers = headers;
         }
 
         #endregion Constructors
@@ -50,11 +47,6 @@ namespace AddonWars2.Downloader.Models
         /// Gets the downloaded object name.
         /// </summary>
         public string Name => _name;
-
-        /// <summary>
-        /// Gets the response headers.
-        /// </summary>
-        public HttpResponseHeaders Headers => _headers;
 
         /// <summary>
         /// Gets the downloaded content as a byte array.

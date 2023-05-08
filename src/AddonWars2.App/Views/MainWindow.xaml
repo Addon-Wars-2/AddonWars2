@@ -114,6 +114,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             TextBlock.FontFamily="{DynamicResource Menomonia}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                             Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                             BorderThickness="1"
@@ -318,7 +319,7 @@
                             <DoubleAnimation
                                 From="0" To="1"
                                 BeginTime="00:00:00" Duration="00:00:0.3"
-                                Storyboard.TargetName="InstallAddonsTabInternal"
+                                Storyboard.TargetName="InstallAddonsTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
                                     <ExponentialEase EasingMode="EaseOut"/>
@@ -371,15 +372,15 @@
                         </Frame>
                     </TabItem>
                     <TabItem
-                        x:Name="InstallAddonsTabInternal"
-                        Visibility="Collapsed"
+                        Visibility="Visible"
                         Header="&lt;Install Addons&gt;"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
+                            x:Name="InstallAddonsTab"
                             Source="InstallAddonsPage.xaml"
                             FocusVisualStyle="{x:Null}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTabInternal}">
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTab}">
                                     <i:ControlStoryboardAction Storyboard="{StaticResource InstallAddonsTabInternalStoryboard}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
@@ -409,13 +410,6 @@
                 </TextBlock.Effect>
             </TextBlock>
         </StackPanel>
-        <Grid
-            x:Name="InstallAddonsPage">
-            <Frame
-                Visibility="Hidden"
-                Source="InstallAddonsPage.xaml"
-                FocusVisualStyle="{x:Null}"/>
-        </Grid>
     </Grid>
 
 </Window>
