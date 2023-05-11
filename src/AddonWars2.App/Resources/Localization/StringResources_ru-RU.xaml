@@ -20,6 +20,7 @@
 
     <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Главная</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Install">Установка</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.News">Новости</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Логи</s:String>
 
@@ -32,7 +33,8 @@
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
     <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Обновление...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">Нет соединения.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Загрузка содержимого...</s:String>
 

@@ -293,6 +293,17 @@
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
+                        <Storyboard x:Key="InstallAddonsTabStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="InstallAddonsTab"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
                         <Storyboard x:Key="NewsPageTabStoryboard">
                             <DoubleAnimation
                                 From="0" To="1"
@@ -315,17 +326,6 @@
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
-                        <Storyboard x:Key="InstallAddonsTabInternalStoryboard">
-                            <DoubleAnimation
-                                From="0" To="1"
-                                BeginTime="00:00:00" Duration="00:00:0.3"
-                                Storyboard.TargetName="InstallAddonsTab"
-                                Storyboard.TargetProperty="Opacity">
-                                <DoubleAnimation.EasingFunction>
-                                    <ExponentialEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
                     </TabControl.Resources>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}"
@@ -342,6 +342,20 @@
                                 </i:Interaction.Triggers>
                             </Frame>
                         </AdornerDecorator>
+                    </TabItem>
+                    <TabItem
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Install}"
+                        FontFamily="{DynamicResource Menomonia}">
+                        <Frame
+                            x:Name="InstallAddonsTab"
+                            Source="InstallAddonsPage.xaml"
+                            FocusVisualStyle="{x:Null}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource InstallAddonsTabStoryboard}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Frame>
                     </TabItem>
                     <TabItem
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.News}"
@@ -367,21 +381,6 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=LoggingPageTab}">
                                     <i:ControlStoryboardAction Storyboard="{StaticResource LoggingPageTabStoryboard}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </Frame>
-                    </TabItem>
-                    <TabItem
-                        Visibility="Visible"
-                        Header="&lt;Install Addons&gt;"
-                        FontFamily="{DynamicResource Menomonia}">
-                        <Frame
-                            x:Name="InstallAddonsTab"
-                            Source="InstallAddonsPage.xaml"
-                            FocusVisualStyle="{x:Null}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTab}">
-                                    <i:ControlStoryboardAction Storyboard="{StaticResource InstallAddonsTabInternalStoryboard}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Frame>

@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="IAddonsInfoStorage.cs" company="Addon-Wars-2">
+// <copyright file="IRegistryProvider.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -22,7 +22,7 @@ namespace AddonWars2.Addons.AddonLibProvider.Interfaces
     /// Note, that the interface doesn't deal with the actual addons storage.
     /// </para>
     /// </remarks>
-    public interface IAddonsInfoStorage
+    public interface IRegistryProvider
     {
         /// <summary>
         /// Gets a collection of addons data stored within the library.

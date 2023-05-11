@@ -8,6 +8,9 @@
 namespace AddonWars2.App.Services
 {
     using System;
+    using System.Net.Http;
+    using System.Reflection;
+    using AddonWars2.Addons.AddonLibProvider;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
@@ -22,8 +25,10 @@ namespace AddonWars2.App.Services
     using AddonWars2.Services.XmlReadWriteService.Interfaces;
     using AddonWars2.Services.XmlSerializerService;
     using AddonWars2.Services.XmlSerializerService.Interfaces;
+    using AddonWars2.SharedData;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Octokit;
     using Serilog;
 
     /// <summary>
@@ -40,6 +45,10 @@ namespace AddonWars2.App.Services
         public static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
+
+            var defaultProductName = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyTitleAttribute>()?.Title.Replace(" ", "-") ?? string.Empty;
+            var defaultProductVersion = Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString() ?? string.Empty;
+            var defaultProductComment = $"{WebStaticData.PROJECT_WIKI_URL_GITHUB}";
 
             // Models.
             services.AddSingleton<ApplicationConfig>();
@@ -63,9 +72,17 @@ namespace AddonWars2.App.Services
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
-
-            // Http client services.
-            services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
+            services.AddSingleton<GitHubClient>(
+                new GitHubClient(new ProductHeaderValue(defaultProductName, defaultProductVersion)));
+            services.AddSingleton<GithubRegistryProvider>();
+            services.AddSingleton<HttpClient>(
+                builder =>
+                {
+                    var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("User-Agent", $"{defaultProductName}/{defaultProductVersion} (+{defaultProductComment})");
+                    return client;
+                });
+            services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
 
             // Logging.
             services.AddSingleton<SerilogLogsAggregatorSink>();

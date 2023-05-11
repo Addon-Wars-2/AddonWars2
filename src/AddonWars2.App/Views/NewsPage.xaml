@@ -337,7 +337,7 @@
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
+                            Text="{DynamicResource S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>

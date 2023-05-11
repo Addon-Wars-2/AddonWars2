@@ -44,8 +44,8 @@ namespace AddonWars2.App.ViewModels
             CommonCommands commonCommands)
             : base(logger)
         {
-            _applicationConfig = appConfig;
-            _commonCommands = commonCommands;
+            _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
 

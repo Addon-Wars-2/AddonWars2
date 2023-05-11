@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
     using CommunityToolkit.Mvvm.ComponentModel;
     using Microsoft.Extensions.Logging;
 
@@ -29,7 +30,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         public BaseViewModel(ILogger<BaseViewModel> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             Logger.LogDebug("Instance initialized.");
         }

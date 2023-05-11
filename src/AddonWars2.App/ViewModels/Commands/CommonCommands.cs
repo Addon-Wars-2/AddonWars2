@@ -33,7 +33,7 @@ namespace AddonWars2.App.ViewModels.Commands
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         public CommonCommands(ILogger<CommonCommands> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             OpenUrlCommand = new RelayCommand<RequestNavigateEventArgs>(ExecuteOpenUrlCommand);
         }

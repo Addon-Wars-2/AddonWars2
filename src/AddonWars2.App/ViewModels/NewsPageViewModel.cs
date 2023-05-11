@@ -26,33 +26,6 @@ namespace AddonWars2.App.ViewModels
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents <see cref="NewsPageViewModel"/> states.
-    /// </summary>
-    public enum NewsViewModelState
-    {
-        /// <summary>
-        /// View model is ready. Default state.
-        /// </summary>
-        Ready,
-
-        /// <summary>
-        /// View model is fetching RSS data from a source (web or local).
-        /// </summary>
-        Fetching,
-
-        /// <summary>
-        /// View model is updating its content to be presented in View.
-        /// </summary>
-        Updating,
-
-        /// <summary>
-        /// View model failed to update its data.
-        /// Similar to Ready, but is used to indicate there is an error occured.
-        /// </summary>
-        FailedToUpdate,
-    }
-
-    /// <summary>
     /// View model used by news view.
     /// </summary>
     public class NewsPageViewModel : BaseViewModel
@@ -83,17 +56,17 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
-        /// <param name="webClientServices">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
+        /// <param name="httpClientService">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
-            IHttpClientWrapper webClientServices)
+            IHttpClientWrapper httpClientService)
             : base(logger)
         {
-            _applicationConfig = appConfig;
-            _rssFeedService = (Gw2RssFeedService)rssFeedService;
-            _httpClientService = webClientServices;
+            _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _rssFeedService = (Gw2RssFeedService)rssFeedService ?? throw new ArgumentNullException(nameof(rssFeedService));
+            _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
 
             LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
             RefreshNewsCommand = new AsyncRelayCommand(
@@ -107,6 +80,37 @@ namespace AddonWars2.App.ViewModels
         }
 
         #endregion Constructors
+
+        #region Enums
+
+        /// <summary>
+        /// Represents <see cref="NewsPageViewModel"/> states.
+        /// </summary>
+        private enum NewsViewModelState
+        {
+            /// <summary>
+            /// View model is ready. Default state.
+            /// </summary>
+            Ready,
+
+            /// <summary>
+            /// View model is fetching RSS data from a source (web or local).
+            /// </summary>
+            Fetching,
+
+            /// <summary>
+            /// View model is updating its content to be presented in View.
+            /// </summary>
+            Updating,
+
+            /// <summary>
+            /// View model failed to update its data.
+            /// Similar to Ready, but is used to indicate there is an error occured.
+            /// </summary>
+            FailedToUpdate,
+        }
+
+        #endregion Enums
 
         #region Properties
 
@@ -216,7 +220,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets the view model state.
         /// </summary>
-        internal NewsViewModelState ViewModelStateInternal
+        private NewsViewModelState ViewModelStateInternal
         {
             get => _viewModelStateInternal;
             set
@@ -251,7 +255,7 @@ namespace AddonWars2.App.ViewModels
 
         #region LoadNewsCommand Logic
 
-        // TODO: Move out logic to services. This VM does way to much.
+        // TODO: Move out logic to services. This VM does way too much.
 
         // LoadNewsCommand command logic.
         private async Task ExecuteReloadNewsAsync()
@@ -259,48 +263,51 @@ namespace AddonWars2.App.ViewModels
             Logger.LogDebug("Executing command.");
 
             SetState(NewsViewModelState.Fetching);
-
             RssFeedCollection.Clear();
 
-            Logger.LogInformation("Requesting RSS data.");
-
-            HttpResponseMessage response;
+            HttpResponseMessage? response = null;
             try
             {
+                Logger.LogInformation("Requesting RSS data.");
+
+                if (!HttpClientService.IsNetworkAvailable())
+                {
+                    // No internet connection.
+                    SetState(NewsViewModelState.FailedToUpdate);
+                    UpdateErrorCode = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Error.NoInternetConnection");
+
+                    Logger.LogError($"{UpdateErrorCode}");
+
+                    return;
+                }
+
                 response = await HttpClientService.GetAsync(AppConfig.UserData.Gw2Rss);
             }
             catch (HttpRequestException e)
             {
-                // No internet connection.
                 SetState(NewsViewModelState.FailedToUpdate);
-                UpdateErrorCode = e.Message;
+                UpdateErrorCode = $"{e.Message}";
+                if (response != null)
+                {
+                    Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
+                }
 
-                Logger.LogError($"{UpdateErrorCode}");
-
-                return;
-            }
-
-            // Bad code returned.
-            if (!response.IsSuccessStatusCode)
-            {
-                SetState(NewsViewModelState.FailedToUpdate);
-                UpdateErrorCode = $"{response}";
-
-                Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
+                Logger.LogError($"{e.Message}");
+                Logger.LogError($"Exception: {e}");
 
                 return;
             }
 
             SetState(NewsViewModelState.Updating);
 
+            // Read response content and store as a list of RssFeedItem.
             var feed = await ParseResponseDataAsync(response);
-            if (feed == null)
-            {
-                return;
-            }
+            if (feed == null) { return; }
 
-            feed = await SortRssFeedCollectionAsync(feed);
+            // Sort by date while keeping the sticky item on top.
+            feed = await SortRssFeedCollectionAsync(feed); // TODO: Don't create a new one after sorting?
 
+            // Access content and inject style.
             var cssFileName = "style.css";  // TODO: move out hardcoding
             foreach (var item in feed)
             {
@@ -308,11 +315,15 @@ namespace AddonWars2.App.ViewModels
                 item.ContentEncoded = RssFeedService.InjectCssIntoHtml(item.ContentEncoded ?? string.Empty, cssFileName);
             }
 
+            // Copy CSS file into the RSS feed directory.
             var rssDirPath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppStaticData.RSS_FEED_DIR_NAME ?? string.Empty);
             var rssFilePath = Path.Combine(rssDirPath, cssFileName);
-            await IOHelper.ResourceCopyToAsync($"AddonWars2.App.Resources.{cssFileName}", rssFilePath);  // copy CSS embedded resource
+            await IOHelper.ResourceCopyToAsync($"AddonWars2.App.Resources.{cssFileName}", rssFilePath);  // TODO: Do not copy if exists?
 
+            // Save HTML pages into the RSS feed directory.
             await WriteRssItemsAsync(feed, rssDirPath);
+
+            // Add to the observable collection with some delay for animation purposes.
             await FillRssItemsAsync(feed, RssFeedCollection);
 
             SetState(NewsViewModelState.Ready);
@@ -321,7 +332,7 @@ namespace AddonWars2.App.ViewModels
         }
 
         // Parse response data.
-        private async Task<IList<Gw2RssFeedItem>> ParseResponseDataAsync(HttpResponseMessage response)
+        private async Task<IList<Gw2RssFeedItem>?> ParseResponseDataAsync(HttpResponseMessage response)
         {
             // TODO: "Root element missing" exception is thrown from XDocument.LoadAsync(...) method
             //       in some scenarios when the internet connection is interrupted.
@@ -345,7 +356,7 @@ namespace AddonWars2.App.ViewModels
 
                 Logger.LogError($"Failed to parse data.");
 
-                return new List<Gw2RssFeedItem>();
+                return null;
             }
         }
 

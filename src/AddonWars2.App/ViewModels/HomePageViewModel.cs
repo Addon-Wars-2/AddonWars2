@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Windows;
@@ -48,8 +49,8 @@ namespace AddonWars2.App.ViewModels
             AddonsService addonsManager)
             : base(logger)
         {
-            _applicationConfig = appConfig;
-            AddonsManager = addonsManager;
+            _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            AddonsManager = addonsManager ?? throw new ArgumentNullException(nameof(addonsManager));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);

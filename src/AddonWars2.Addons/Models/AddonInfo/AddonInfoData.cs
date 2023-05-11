@@ -7,78 +7,7 @@
 
 namespace AddonWars2.Addons.Models.AddonInfo
 {
-    using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-
-    /// <summary>
-    /// Specifies the addon host type.
-    /// </summary>
-    public enum HostType
-    {
-        /// <summary>
-        /// The addon is hosted on some website.
-        /// </summary>
-        [EnumMember(Value = "standalone")]
-        Standalone,
-
-        /// <summary>
-        /// The addon is hosted on github.
-        /// </summary>
-        [EnumMember(Value = "github")]
-        GitHub,
-    }
-
-    /// <summary>
-    /// Specifies the addon download type.
-    /// </summary>
-    public enum DownloadType
-    {
-        /// <summary>
-        /// The addon is distributed as a single .dll file.
-        /// </summary>
-        [EnumMember(Value = "dll")]
-        Dll,
-
-        /// <summary>
-        /// The addon is distributed as an archive.
-        /// </summary>
-        [EnumMember(Value = "archive")]
-        Archive,
-    }
-
-    /// <summary>
-    /// Specifies the addon install mode.
-    /// </summary>
-    public enum InstallMode
-    {
-        /// <summary>
-        /// The addon will be placed into Guild Wars 2 installation directory as-is.
-        /// </summary>
-        /// <remarks>
-        /// In this mode, whether an addon contains a single .dll file or multiple files and directories,
-        /// it will be merely copied into the Guild Wars 2 root directory.
-        /// </remarks>
-        [EnumMember(Value = "root")]
-        Root,
-
-        /// <summary>
-        /// The addon is installed into its own sub-directory within "addons" directory.
-        /// </summary>
-        /// <remarks>
-        /// In this mode the addon name is left as-is.
-        /// </remarks>
-        [EnumMember(Value = "binary")]
-        Binary,
-
-        /// <summary>
-        /// The addon is installed as an ArcDPS plugin.
-        /// </summary>
-        /// <remarks>
-        /// In this mode, the addon will be placed into the "arcdps" directory.
-        /// </remarks>
-        [EnumMember(Value = "arc")]
-        Arc,
-    }
 
     /// <summary>
     /// Represents a Guild Wars 2 add-on, encapsulating the information about it.
@@ -94,13 +23,12 @@ namespace AddonWars2.Addons.Models.AddonInfo
         private string _tooltip = string.Empty;
         private string _authors = string.Empty;
         private string _website = string.Empty;
-        private HostType _hostType = HostType.Standalone;
-        private string _hostUrl = string.Empty;
+        private IEnumerable<AddonInfoHost>? _hosts;
         private DownloadType _downloadType = DownloadType.Archive;
         private InstallMode _installMode = InstallMode.Binary;
-        private ArcPluginInfo _arcModInfo = ArcPluginInfo.Empty;
-        private List<string> _requiredAddons = new List<string>();
-        private List<string> _conflicts = new List<string>();
+        ////private ArcPluginInfo _arcModInfo = ArcPluginInfo.Empty;
+        private IEnumerable<string>? _requiredAddons;
+        private IEnumerable<string>? _conflicts;
 
         #endregion Fields
 
@@ -183,23 +111,13 @@ namespace AddonWars2.Addons.Models.AddonInfo
         }
 
         /// <summary>
-        /// Gets or sets the addon host type.
+        /// Gets or sets the addon host list.
         /// </summary>
-        [JsonPropertyName("host_type")]
-        public HostType HostType
+        [JsonPropertyName("hosts")]
+        public IEnumerable<AddonInfoHost>? Hosts
         {
-            get => _hostType;
-            set => _hostType = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the addon host URL string.
-        /// </summary>
-        [JsonPropertyName("host_url")]
-        public string HostUrl
-        {
-            get => _hostUrl;
-            set => _hostUrl = value;
+            get => _hosts;
+            set => _hosts = value;
         }
 
         /// <summary>
@@ -222,25 +140,25 @@ namespace AddonWars2.Addons.Models.AddonInfo
             set => _installMode = value;
         }
 
-        /// <summary>
-        /// Gets or sets the additional information for ArcDPS addons.
-        /// </summary>
-        /// <remarks>
-        /// If an addon is not an ArcDPS plugin, its data will be empty.
-        /// </remarks>
-        [JsonPropertyName("arc_modinfo")]
-        public ArcPluginInfo ArcModInfo
-        {
-            get => _arcModInfo;
-            set => _arcModInfo = value;
-        }
+        /////// <summary>
+        /////// Gets or sets the additional information for ArcDPS addons.
+        /////// </summary>
+        /////// <remarks>
+        /////// If an addon is not an ArcDPS plugin, its data will be empty.
+        /////// </remarks>
+        ////[JsonPropertyName("arc_modinfo")]
+        ////public ArcPluginInfo ArcModInfo
+        ////{
+        ////    get => _arcModInfo;
+        ////    set => _arcModInfo = value;
+        ////}
 
         /// <summary>
         /// Gets or sets a list of addons which are required to be installed
         /// to make the current addon work.
         /// </summary>
         [JsonPropertyName("required_addons")]
-        public List<string> RequiredAddons
+        public IEnumerable<string>? RequiredAddons
         {
             get => _requiredAddons;
             set => _requiredAddons = value;
@@ -254,7 +172,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         /// the current one conflicts with.
         /// </remarks>
         [JsonPropertyName("conflicts")]
-        public List<string> Conflicts
+        public IEnumerable<string>? Conflicts
         {
             get => _conflicts;
             set => _conflicts = value;

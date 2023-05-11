@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="AddonsInfoStorageBase.cs" company="Addon-Wars-2">
+// <copyright file="GithubRegistryProvider.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -12,11 +12,12 @@ namespace AddonWars2.Addons.AddonLibProvider
     using Octokit;
 
     /// <summary>
-    /// Represents a base class for addons storage.
+    /// Represents a Github storage that keeps the information about addons.
     /// </summary>
-    public abstract class AddonsInfoStorageBase : IAddonsInfoStorage
+    public class GithubRegistryProvider : IRegistryProvider
     {
         #region Fields
+
         private readonly GitHubClient _gitHubClient;
 
         #endregion Fields
@@ -24,12 +25,12 @@ namespace AddonWars2.Addons.AddonLibProvider
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddonsInfoStorageBase"/> class.
+        /// Initializes a new instance of the <see cref="GithubRegistryProvider"/> class.
         /// </summary>
-        /// <param name="gitHubClient">A reference to <see cref="GitHubClient"/> instance.</param>
-        public AddonsInfoStorageBase(GitHubClient gitHubClient)
+        /// <param name="gitHubClient">A reference to <see cref="Octokit.GitHubClient"/> instance.</param>
+        public GithubRegistryProvider(GitHubClient gitHubClient)
         {
-            _gitHubClient = gitHubClient;
+            _gitHubClient = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
         }
 
         #endregion Constructors
@@ -46,7 +47,10 @@ namespace AddonWars2.Addons.AddonLibProvider
         #region Methods
 
         /// <inheritdoc/>
-        public abstract IEnumerable<AddonInfo> GetAddonsInfo();
+        public IEnumerable<AddonInfo> GetAddonsInfo()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion Methods
     }

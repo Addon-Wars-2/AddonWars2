@@ -46,9 +46,9 @@ namespace AddonWars2.App.ViewModels
             IMessageBoxService messageBoxService)
             : base(logger)
         {
-            _logsAggregator = logsAggregator;
-            _applicationConfig = appConfig;
-            _messageBoxService = messageBoxService;
+            _logsAggregator = logsAggregator ?? throw new ArgumentNullException(nameof(logsAggregator));
+            _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _messageBoxService = messageBoxService ?? throw new ArgumentNullException(nameof(messageBoxService));
 
             OpenLogFileCommand = new RelayCommand(ExecuteOpenLogFileCommand);
 

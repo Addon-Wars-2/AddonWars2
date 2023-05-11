@@ -20,6 +20,7 @@
 
     <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Install">Install</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.News">News</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
 
@@ -32,7 +33,8 @@
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
     <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Updating...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Failed to update.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Failed to update.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">No internet connection.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
 

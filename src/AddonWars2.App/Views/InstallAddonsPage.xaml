@@ -24,8 +24,8 @@
     <Page.Resources>
         <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
         <CollectionViewSource
-            x:Key="AddonsCollectionView"
-            Source="{Binding InstalledAddonsCollection}">
+            x:Key="ProvidersCollectionView"
+            Source="{Binding ProvidersCollection}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name"/>
             </CollectionViewSource.SortDescriptions>
@@ -35,7 +35,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="95"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -62,22 +62,21 @@
                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
-                assist:HintAssist.Hint="Select the Library Provider"
-                
-                
+                assist:HintAssist.Hint="Select a Library Provider"
+                ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
+                SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}}"
                 Style="{StaticResource ComboBoxStyle}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=ShortName}"/>
+                        <TextBlock Text="{Binding Path=Name}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="DropDownOpened">
                         <i:InvokeCommandAction
-                            Command="{Binding Path=DataContext.ChangeLanguageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            PassEventArgsToCommand="True"/>
+                            Command="{Binding Path=DataContext.GetProvidersListCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </i:EventTrigger>
-                </i:Interaction.Triggers>-->
+                </i:Interaction.Triggers>
             </ComboBox>
         </Grid>
         <Border

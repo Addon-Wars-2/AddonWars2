@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="AddonInfoSchema.cs" company="Addon-Wars-2">
+// <copyright file="AddonInfoHost.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,23 +10,23 @@ namespace AddonWars2.Addons.Models.AddonInfo
     using System.Text.Json.Serialization;
 
     /// <summary>
-    /// Encapsulates "modinfo" schema information.
+    /// Encapsulates the information about addons host.
     /// </summary>
-    public class AddonInfoSchema
+    public class AddonInfoHost
     {
         #region Fields
 
-        private string _templateName = string.Empty;
-        private uint _templateVersion = 1;
+        private HostType _hostType = HostType.Standalone;
+        private string _hostUrl = string.Empty;
 
         #endregion Fields
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddonInfoSchema"/> class.
+        /// Initializes a new instance of the <see cref="AddonInfoHost"/> class.
         /// </summary>
-        public AddonInfoSchema()
+        public AddonInfoHost()
         {
             // Blank.
         }
@@ -36,23 +36,23 @@ namespace AddonWars2.Addons.Models.AddonInfo
         #region Properties
 
         /// <summary>
-        /// Gets or sets the template schema name.
+        /// Gets or sets the addon host type.
         /// </summary>
-        [JsonPropertyName("name")]
-        public string TemplateName
+        [JsonPropertyName("host_type")]
+        public HostType HostType
         {
-            get => _templateName;
-            set => _templateName = value;
+            get => _hostType;
+            set => _hostType = value;
         }
 
         /// <summary>
-        /// Gets or sets the template schema version.
+        /// Gets or sets the addon host URL string.
         /// </summary>
-        [JsonPropertyName("template_ver")]
-        public uint TemplateVersion
+        [JsonPropertyName("host_url")]
+        public string HostUrl
         {
-            get => _templateVersion;
-            set => _templateVersion = value;
+            get => _hostUrl;
+            set => _hostUrl = value;
         }
 
         #endregion Properties
