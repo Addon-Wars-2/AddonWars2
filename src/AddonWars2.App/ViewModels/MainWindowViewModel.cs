@@ -27,6 +27,8 @@ namespace AddonWars2.App.ViewModels
 
         private readonly ApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
+        private readonly IAppStaticData _appStaticData;
+        private readonly IWebStaticData _webStaticData;
 
         #endregion Fields
 
@@ -38,14 +40,20 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
         /// <param name="commonCommands">A reference to a common commands class.</param>
+        /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
+        /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
             ApplicationConfig appConfig,
-            CommonCommands commonCommands)
+            CommonCommands commonCommands,
+            IAppStaticData appStaticData,
+            IWebStaticData webStaticData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
+            _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
+            _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
 
@@ -67,9 +75,19 @@ namespace AddonWars2.App.ViewModels
         public CommonCommands CommonCommands => _commonCommands;
 
         /// <summary>
+        /// Gets the application static data.
+        /// </summary>
+        public IAppStaticData AppStaticData => _appStaticData;
+
+        /// <summary>
+        /// Gets a reference to the application web-related static data.
+        /// </summary>
+        public IWebStaticData WebStaticData => _webStaticData;
+
+        /// <summary>
         /// Gets a list of available cultures.
         /// </summary>
-        public ObservableCollection<CultureInfo> AvailableCultures => new ObservableCollection<CultureInfo>(AppStaticData.APP_SUPPORTED_CULTURES);
+        public ObservableCollection<CultureInfo> AvailableCultures => new ObservableCollection<CultureInfo>(AppStaticData.AppSupportedCultures);
 
         /// <summary>
         /// Gets a value indicating whether the application
@@ -90,12 +108,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the project URL.
         /// </summary>
-        public string ProjectLink => WebStaticData.PROJECT_REPOSITORY_URL_GITHUB;
+        public string ProjectLink => WebStaticData.GitHubProjectRepositoryUrl;
 
         /// <summary>
         /// Gets the project wiki URL.
         /// </summary>
-        public string ProjectWikiLink => WebStaticData.PROJECT_WIKI_URL_GITHUB;
+        public string ProjectWikiLink => WebStaticData.GitHubProjectWikiUrl;
 
         /// <summary>
         /// Gets or sets the selected culture.

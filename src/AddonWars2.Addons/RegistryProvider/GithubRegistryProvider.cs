@@ -5,20 +5,21 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.AddonLibProvider
+namespace AddonWars2.Addons.RegistryProvider
 {
-    using AddonWars2.Addons.AddonLibProvider.Interfaces;
+    using AddonWars2.Addons.AddonLibProvider;
     using AddonWars2.Addons.Models.AddonInfo;
+    using AddonWars2.Addons.RegistryProvider.Models;
     using Octokit;
 
     /// <summary>
     /// Represents a Github storage that keeps the information about addons.
     /// </summary>
-    public class GithubRegistryProvider : IRegistryProvider
+    public class GithubRegistryProvider : RegistryProviderBase
     {
         #region Fields
 
-        private readonly GitHubClient _gitHubClient;
+        ////private readonly GitHubClient _gitHubClient;
 
         #endregion Fields
 
@@ -29,25 +30,26 @@ namespace AddonWars2.Addons.AddonLibProvider
         /// </summary>
         /// <param name="gitHubClient">A reference to <see cref="Octokit.GitHubClient"/> instance.</param>
         public GithubRegistryProvider(GitHubClient gitHubClient)
+            : base(gitHubClient)
         {
-            _gitHubClient = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
+            // Blank.
         }
 
         #endregion Constructors
 
         #region Properties
 
-        /// <summary>
-        /// Gets GitHub client.
-        /// </summary>
-        protected GitHubClient GitHubClient => _gitHubClient;
+        /////// <summary>
+        /////// Gets GitHub client.
+        /////// </summary>
+        ////protected GitHubClient GitHubClient => _gitHubClient;
 
         #endregion Properties
 
         #region Methods
 
         /// <inheritdoc/>
-        public IEnumerable<AddonInfo> GetAddonsInfo()
+        public override async Task<IEnumerable<AddonInfo>> GetAddonsFromAsync(ProviderInfo provider)
         {
             throw new NotImplementedException();
         }

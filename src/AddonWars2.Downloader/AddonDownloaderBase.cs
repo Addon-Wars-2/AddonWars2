@@ -48,7 +48,7 @@ namespace AddonWars2.Downloader
         //{
         //    _defaultProductName = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyTitleAttribute>()?.Title ?? string.Empty;
         //    _defaultProductVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? string.Empty;
-        //    _defaultProductComment = $"+{WebStaticData.PROJECT_WIKI_URL_GITHUB}";
+        //    _defaultProductComment = $"+{WebStaticData.GITHUB_PROJECT_WIKI_URL}";
         //}
 
         /// <summary>

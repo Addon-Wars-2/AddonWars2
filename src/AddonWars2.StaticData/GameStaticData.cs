@@ -10,21 +10,8 @@ namespace AddonWars2.SharedData
     /// <summary>
     /// Encapsulates the Guild Wars 2 game-related static data.
     /// </summary>
-    public class GameStaticData
+    public class GameStaticData : IGameStaticData
     {
-        /// <summary>
-        /// Gets the extension of GW2 executable.
-        /// </summary>
-        public const string GW2_EXECUTABLE_EXTENSION = ".exe";
-
-        /// <summary>
-        /// Gets the product name of GW2 executable.
-        /// </summary>
-        public const string GW2_PRODUCT_NAME = "Guild Wars 2";
-
-        /// <summary>
-        /// Gets the file description of GW2 executable.
-        /// </summary>
-        public const string GW2_FILE_DESC = "Guild Wars 2 Game Client";
+        // Blank.
     }
 }

@@ -13,8 +13,8 @@ namespace AddonWars2.App.Models.Application
     using System.Linq;
     using System.Xml.Serialization;
     using AddonWars2.Services.XmlSerializerService.Interfaces;
-    using AddonWars2.SharedData.Entities;
     using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Entities;
     using CommunityToolkit.Mvvm.ComponentModel;
     using Microsoft.Extensions.Logging;
 
@@ -28,6 +28,8 @@ namespace AddonWars2.App.Models.Application
 
         private static ILogger _logger;
 
+        private readonly IAppStaticData _appStaticData;
+        private readonly IWebStaticData _webStaticData;
         private readonly IXmlSerializationService _xmlSerializationService;
 
         private bool _isDebugMode;
@@ -45,14 +47,23 @@ namespace AddonWars2.App.Models.Application
         /// Initializes a new instance of the <see cref="ApplicationConfig"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
+        /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
+        /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         /// <param name="xmlSerializationService">A reference to <see cref="IXmlSerializationService"/> instance.</param>
-        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
-        public ApplicationConfig(ILogger<ApplicationConfig> logger, IXmlSerializationService xmlSerializationService)
+        public ApplicationConfig(
+            ILogger<ApplicationConfig> logger,
+            IAppStaticData appStaticData,
+            IWebStaticData webStaticData,
+            IXmlSerializationService xmlSerializationService)
         {
             _logger = logger;
+            _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
+            _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
             _xmlSerializationService = xmlSerializationService;
 
-            _selectedCulture = AppStaticData.DEFAULT_CULTURE;
+            _selectedCulture = AppStaticData.DefaultCulture;
+
+            UserData.SetDefaultConfiguration(AppStaticData, WebStaticData);  // IMPORTANT! Configure default data first. Should be done once.
             _userData = UserData.Default;
 
             // To track culture change.
@@ -123,7 +134,7 @@ namespace AddonWars2.App.Models.Application
         /// <summary>
         /// Gets the application config file path.
         /// </summary>
-        public string ConfigFilePath => Path.Join(AppDataDir, AppStaticData.CONFIG_FILE_NAME);
+        public string ConfigFilePath => Path.Join(AppDataDir, AppStaticData.ConfigFileName);
 
 
         /// <summary>
@@ -186,6 +197,16 @@ namespace AddonWars2.App.Models.Application
         /// </summary>
         protected IXmlSerializationService XmlSerializationService => _xmlSerializationService;
 
+        /// <summary>
+        /// Gets the application static data.
+        /// </summary>
+        protected IAppStaticData AppStaticData => _appStaticData;
+
+        /// <summary>
+        /// Gets a reference to the application web-related static data.
+        /// </summary>
+        protected IWebStaticData WebStaticData => _webStaticData;
+
         #endregion Properties
 
         #region Methods
@@ -226,16 +247,16 @@ namespace AddonWars2.App.Models.Application
             ArgumentNullException.ThrowIfNull(e, nameof(e));
 
             // Set the requested culture string inside the local data.
-            var culture = AppStaticData.APP_SUPPORTED_CULTURES.FirstOrDefault(x => x.Culture == SelectedCulture.Culture, AppStaticData.DEFAULT_CULTURE);
+            var culture = AppStaticData.AppSupportedCultures.FirstOrDefault(x => x.Culture == SelectedCulture.Culture, AppStaticData.DefaultCulture);
             UserData.SelectedCultureString = culture.Culture;
 
             Logger.LogInformation($"Selected culture was changed to: {culture.Culture}");
 
             // ANet webside supports only several languages. If the requested culture is not supported by ANet,
             // then use global (en) version of ANet services.
-            if (!AppStaticData.ANET_SUPPORTED_CULTURES.Any(x => x.Culture == culture.Culture))
+            if (!AppStaticData.AnetSupportedCultures.Any(x => x.Culture == culture.Culture))
             {
-                culture = AppStaticData.DEFAULT_CULTURE;
+                culture = AppStaticData.DefaultCulture;
                 Logger.LogWarning($"The requested culture is not supported by ANet services. The default one ({culture.Culture}) will be set for them.");
             }
 

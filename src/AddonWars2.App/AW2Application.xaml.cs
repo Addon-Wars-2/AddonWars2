@@ -82,6 +82,16 @@ namespace AddonWars2.App
         /// </summary>
         public ILogger Logger { get; private set; }
 
+        /// <summary>
+        /// Gets the application static data.
+        /// </summary>
+        public IAppStaticData AppStaticData { get; private set; }
+
+        /// <summary>
+        /// Gets the application web-related static data.
+        /// </summary>
+        public IWebStaticData WebStaticData { get; private set; }
+
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
         {
@@ -146,6 +156,9 @@ namespace AddonWars2.App
             Services = AW2ServiceProvider.ConfigureServices();
             ApplicationConfig = Services.GetRequiredService<ApplicationConfig>();
             ApplicationConfig.StartupDateTime = startupDateTime;
+
+            AppStaticData = Services.GetRequiredService<IAppStaticData>();
+            WebStaticData = Services.GetRequiredService<IWebStaticData>();
 
             foreach (var arg in e.Args)
             {
@@ -252,7 +265,7 @@ namespace AddonWars2.App
             ApplicationConfig.AppDataDir = appDataDir;
 
             // Locate the logs directory within the application directory.
-            var logsDirPath = Path.Join(appDataDir, AppStaticData.LOG_DIR_NAME);
+            var logsDirPath = Path.Join(appDataDir, AppStaticData.LogDirName);
             if (!Directory.Exists(logsDirPath))
             {
                 Directory.CreateDirectory(logsDirPath);
@@ -260,7 +273,7 @@ namespace AddonWars2.App
 
             // Session log file will contain startup datetime in milliseconds format.
             var unixMsDateTime = ((DateTimeOffset)ApplicationConfig.StartupDateTime).ToUnixTimeMilliseconds();
-            var prefix = ApplicationConfig.IsDebugMode ? AppStaticData.LOG_FILE_PREFIX_DEBUG : AppStaticData.LOG_FILE_PREFIX;
+            var prefix = ApplicationConfig.IsDebugMode ? AppStaticData.LogFilePrefixDebug : AppStaticData.LogFilePrefix;
             ApplicationConfig.LogFilePath = Path.Join(logsDirPath, $"{prefix}{unixMsDateTime}.txt");
 
             if (ApplicationConfig.IsDebugMode)
@@ -364,7 +377,7 @@ namespace AddonWars2.App
             }
 
             // Now we should replace it in both places since config file may contain invalid culture string.
-            ApplicationConfig.SelectedCulture = AppStaticData.APP_SUPPORTED_CULTURES.FirstOrDefault(x => x.Culture == actuallySelected, AppStaticData.DEFAULT_CULTURE);
+            ApplicationConfig.SelectedCulture = AppStaticData.AppSupportedCultures.FirstOrDefault(x => x.Culture == actuallySelected, AppStaticData.DefaultCulture);
             ApplicationConfig.UserData.SelectedCultureString = ApplicationConfig.SelectedCulture.Culture;
 
             Logger.Information($"Culture selected: {actuallySelected}");

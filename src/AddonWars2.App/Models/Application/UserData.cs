@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.Models.Application
 {
+    using System;
     using System.Xml.Serialization;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.ComponentModel;
@@ -18,6 +19,9 @@ namespace AddonWars2.App.Models.Application
     {
         #region Fields
 
+        private static readonly Lazy<UserDataDefaultState> _defaultStateLazy = new Lazy<UserDataDefaultState>(() => InitializeDefaultStateLazy(AppStaticData, WebStaticData));
+        private static IAppStaticData? _appStaticData;
+        private static IWebStaticData? _webStaticData;
         private string _selectedCultureString = string.Empty;
         private string _anetHome = string.Empty;
         private string _gw2Home = string.Empty;
@@ -55,9 +59,31 @@ namespace AddonWars2.App.Models.Application
         {
             get
             {
-                var obj = new UserData();
-                obj.SetDefaultValues();
-                return obj;
+                // TODO: This is not the best approach, since it enforces to set defaults first.
+                //       At the same time, we don't gulp the runtime error and indicate that default
+                //       data must be injected (configured) before calling this property.
+
+                if (AppStaticData == null)
+                {
+                    throw new InvalidOperationException($"App static data is not initialized. Use {nameof(SetDefaultConfiguration)} method to set a default configuration.");
+                }
+
+                if (WebStaticData == null)
+                {
+                    throw new InvalidOperationException($"Web static data is not initialized.  Use {nameof(SetDefaultConfiguration)} method to set a default configuration.");
+                }
+
+                return new UserData()
+                {
+                    SelectedCultureString = UserDataDefaultStateInstance.SelectedCultureString,
+                    AnetHome = UserDataDefaultStateInstance.AnetHome,
+                    Gw2Home = UserDataDefaultStateInstance.Gw2Home,
+                    Gw2Rss = UserDataDefaultStateInstance.Gw2Rss,
+                    Gw2WikiHome = UserDataDefaultStateInstance.Gw2WikiHome,
+                    Gw2Api2 = UserDataDefaultStateInstance.Gw2Api2,
+                    Gw2FilePath = UserDataDefaultStateInstance.Gw2FilePath,
+                    Gw2DirPath = UserDataDefaultStateInstance.Gw2DirPath,
+                };
             }
         }
 
@@ -146,38 +172,61 @@ namespace AddonWars2.App.Models.Application
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string AnetHomeTemplate => UserDataDefaultState.Gw2HomeTemplate;
+        internal static string AnetHomeTemplate => UserDataDefaultStateInstance.Gw2HomeTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2HomeTemplate => UserDataDefaultState.Gw2HomeTemplate;
+        internal static string Gw2HomeTemplate => UserDataDefaultStateInstance.Gw2HomeTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2RssTemplate => UserDataDefaultState.Gw2RssTemplate;
+        internal static string Gw2RssTemplate => UserDataDefaultStateInstance.Gw2RssTemplate;
 
         /// <summary>
         /// Gets a template string that contanins a single format item that can be
         /// substituted with a culture string in a short format, i.e. "en", "de", etc.
         /// </summary>
         [XmlIgnore]
-        internal static string Gw2WikiHomeTemplate => UserDataDefaultState.Gw2WikiHomeTemplate;
+        internal static string Gw2WikiHomeTemplate => UserDataDefaultStateInstance.Gw2WikiHomeTemplate;
+
+        // Application static data.
+        [XmlIgnore]
+        private static IAppStaticData? AppStaticData => _appStaticData;
+
+        // Application web-related static data.
+        [XmlIgnore]
+        private static IWebStaticData? WebStaticData => _webStaticData;
+
+        // Default state.
+        [XmlIgnore]
+        private static UserDataDefaultState UserDataDefaultStateInstance => _defaultStateLazy.Value;
 
         #endregion Properties
 
         #region Methods
 
         /// <summary>
+        /// Sets the default values for all new <see cref="UserData"/> instances.
+        /// </summary>
+        /// <param name="appStaticData"><see cref="IAppStaticData"/> reference.</param>
+        /// <param name="webStaticData"><see cref="IWebStaticData"/> reference.</param>
+        public static void SetDefaultConfiguration(IAppStaticData appStaticData, IWebStaticData webStaticData)
+        {
+            _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
+            _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
+        }
+
+        /// <summary>
         /// Determines if the current state is valid.
         /// </summary>
         /// <remarks>
-        /// This methods should be used after deserialization to ensure the input file contained
+        /// This methods should be used after deserialization to ensure the input file contains
         /// the required and valid data.
         /// </remarks>
         /// <param name="obj"><see cref="UserData"/> reference to check for validity.</param>
@@ -197,17 +246,10 @@ namespace AddonWars2.App.Models.Application
                 !string.IsNullOrEmpty(obj.Gw2Api2);
         }
 
-        // Sets default values.
-        private void SetDefaultValues()
+        // Initialized a new instance of a default state and returns a reference to it.
+        private static UserDataDefaultState InitializeDefaultStateLazy(IAppStaticData appStaticData, IWebStaticData webStaticData)
         {
-            SelectedCultureString = UserDataDefaultState.SelectedCultureString;
-            AnetHome = UserDataDefaultState.AnetHome;
-            Gw2Home = UserDataDefaultState.Gw2Home;
-            Gw2Rss = UserDataDefaultState.Gw2Rss;
-            Gw2WikiHome = UserDataDefaultState.Gw2WikiHome;
-            Gw2Api2 = UserDataDefaultState.Gw2Api2;
-            Gw2FilePath = UserDataDefaultState.Gw2FilePath;
-            Gw2DirPath = UserDataDefaultState.Gw2DirPath;
+            return new UserDataDefaultState(appStaticData, webStaticData);
         }
 
         #endregion Methods
@@ -215,31 +257,52 @@ namespace AddonWars2.App.Models.Application
         #region Inner Classes
 
         // Encapsulates the default state of the class.
-        private static class UserDataDefaultState
+        private class UserDataDefaultState
         {
-            internal static string AnetHomeTemplate => WebStaticData.ANET_HOME_TEMPLATE;
+            #region Fields
 
-            internal static string Gw2HomeTemplate => WebStaticData.GW2_HOME_TEMPLATE;
+            private readonly IAppStaticData _appStaticData;
+            private readonly IWebStaticData _webStaticData;
 
-            internal static string Gw2RssTemplate => WebStaticData.GW2_RSS_TEMPLATE;
+            #endregion Fields
 
-            internal static string Gw2WikiHomeTemplate => WebStaticData.GW2_WIKI_TEMPLATE;
+            #region Constructors
 
-            internal static string SelectedCultureString => AppStaticData.DEFAULT_CULTURE.Culture;
+            internal UserDataDefaultState(IAppStaticData appStaticData, IWebStaticData webStaticData)
+            {
+                _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
+                _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
+            }
 
-            internal static string AnetHome => string.Format(AnetHomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
+            #endregion Constructors
 
-            internal static string Gw2Home => string.Format(Gw2HomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
+            #region Properties
 
-            internal static string Gw2WikiHome => string.Format(Gw2WikiHomeTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
+            internal string AnetHomeTemplate => _webStaticData.AnetHomeTemplate;
 
-            internal static string Gw2Rss => string.Format(Gw2RssTemplate, AppStaticData.DEFAULT_CULTURE.ShortName.ToLower());
+            internal string Gw2HomeTemplate => _webStaticData.Gw2HomeTemplate;
 
-            internal static string Gw2Api2 => WebStaticData.GW2_APIV2_ENDPOINT;
+            internal string Gw2RssTemplate => _webStaticData.Gw2RssHomeTemplate;
 
-            internal static string Gw2FilePath => string.Empty;
+            internal string Gw2WikiHomeTemplate => _webStaticData.Gw2WikiHomeTemplate;
 
-            internal static string Gw2DirPath => string.Empty;
+            internal string SelectedCultureString => _appStaticData.DefaultCulture.Culture;
+
+            internal string AnetHome => string.Format(AnetHomeTemplate, _appStaticData.DefaultCulture.ShortName.ToLower());
+
+            internal string Gw2Home => string.Format(Gw2HomeTemplate, _appStaticData.DefaultCulture.ShortName.ToLower());
+
+            internal string Gw2WikiHome => string.Format(Gw2WikiHomeTemplate, _appStaticData.DefaultCulture.ShortName.ToLower());
+
+            internal string Gw2Rss => string.Format(Gw2RssTemplate, _appStaticData.DefaultCulture.ShortName.ToLower());
+
+            internal string Gw2Api2 => _webStaticData.Gw2ApiV2Endpoint;
+
+            internal string Gw2FilePath => string.Empty;
+
+            internal string Gw2DirPath => string.Empty;
+
+            #endregion Properties
         }
 
         #endregion Inner Classes

@@ -10,7 +10,7 @@ namespace AddonWars2.App.Services
     using System;
     using System.Net.Http;
     using System.Reflection;
-    using AddonWars2.Addons.AddonLibProvider;
+    using AddonWars2.Addons.RegistryProvider;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
@@ -48,10 +48,15 @@ namespace AddonWars2.App.Services
 
             var defaultProductName = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyTitleAttribute>()?.Title.Replace(" ", "-") ?? string.Empty;
             var defaultProductVersion = Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString() ?? string.Empty;
-            var defaultProductComment = $"{WebStaticData.PROJECT_WIKI_URL_GITHUB}";
+            var defaultProductComment = $"https://github.com/Addon-Wars-2/AddonWars2";  // TODO: retrieve from static data
 
             // Models.
             services.AddSingleton<ApplicationConfig>();
+
+            // Static data.
+            services.AddSingleton<IAppStaticData, AppStaticData>();
+            services.AddSingleton<IWebStaticData, WebStaticData>();
+            services.AddSingleton<IGameStaticData, GameStaticData>();
 
             // View models.
             services.AddSingleton<MainWindowViewModel>();

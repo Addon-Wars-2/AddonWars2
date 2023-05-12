@@ -5,9 +5,10 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Addons.AddonLibProvider.Interfaces
+namespace AddonWars2.Addons.RegistryProvider.Interfaces
 {
     using AddonWars2.Addons.Models.AddonInfo;
+    using AddonWars2.Addons.RegistryProvider.Models;
 
     /// <summary>
     /// Provides a contract for addon libraries.
@@ -25,9 +26,20 @@ namespace AddonWars2.Addons.AddonLibProvider.Interfaces
     public interface IRegistryProvider
     {
         /// <summary>
+        /// Gets a collection of approved registry providers.
+        /// It will be requested from the project repository as it's the only source
+        /// of approved providers.
+        /// </summary>
+        /// <param name="repositoryId">A repository ID a list will be searched in.</param>
+        /// <param name="path">A repository path pointing to a list of approved providers.</param>
+        /// <returns>A collection of registry providers.</returns>
+        public Task<IEnumerable<ProviderInfo>> GetApprovedProvidersAsync(long repositoryId, string path);
+
+        /// <summary>
         /// Gets a collection of addons data stored within the library.
         /// </summary>
+        /// <param name="provider">A provider to use.</param>
         /// <returns>A collection of addons.</returns>
-        public IEnumerable<AddonInfo> GetAddonsInfo();
+        public Task<IEnumerable<AddonInfo>> GetAddonsFromAsync(ProviderInfo provider);
     }
 }

@@ -29,6 +29,7 @@ namespace AddonWars2.App.ViewModels
         private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
 
         private readonly ApplicationConfig _applicationConfig;
+        private readonly IGameStaticData _gameStaticData;
 
         private bool _isActuallyLoaded = false;
         private AddonInfoData? _selectedAddon;
@@ -42,14 +43,17 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
+        /// <param name="gameStaticData">A reference to <see cref="IGameStaticData"/> instance.</param>
         /// <param name="addonsManager">A reference to <see cref="AddonsService"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
             ApplicationConfig appConfig,
+            IGameStaticData gameStaticData,
             AddonsService addonsManager)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _gameStaticData = gameStaticData ?? throw new ArgumentNullException(nameof(gameStaticData));
             AddonsManager = addonsManager ?? throw new ArgumentNullException(nameof(addonsManager));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
@@ -66,6 +70,11 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to the application config.
         /// </summary>
         public ApplicationConfig AppConfig => _applicationConfig;
+
+        /// <summary>
+        /// Gets the game-related static data.
+        /// </summary>
+        public IGameStaticData GameStaticData => _gameStaticData;
 
         /// <summary>
         /// Gets a reference to the application config.
@@ -119,17 +128,17 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the GW2 exe file extension from the config object.
         /// </summary>
-        public string Gw2FileExtension => GameStaticData.GW2_EXECUTABLE_EXTENSION;
+        public string Gw2FileExtension => GameStaticData.Gw2ExecutableExtension;
 
         /// <summary>
         /// Gets the GW2 exe product name from the config object.
         /// </summary>
-        public string Gw2ProductName => GameStaticData.GW2_PRODUCT_NAME;
+        public string Gw2ProductName => GameStaticData.Gw2ProductName;
 
         /// <summary>
         /// Gets the GW2 exe file description from the config object.
         /// </summary>
-        public string Gw2FileDescription => GameStaticData.GW2_FILE_DESC;
+        public string Gw2FileDescription => GameStaticData.Gw2FileDescription;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
