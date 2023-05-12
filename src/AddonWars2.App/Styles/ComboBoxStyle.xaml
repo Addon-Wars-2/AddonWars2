@@ -100,7 +100,6 @@
                                         Content="{DynamicResource Path.Icon.ArrowDown}"/>
                                 </Border>
                             </Grid>
-                            
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>

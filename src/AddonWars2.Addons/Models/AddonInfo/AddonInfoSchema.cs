@@ -12,6 +12,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Encapsulates "modinfo" schema information.
     /// </summary>
+    [Serializable]
     public class AddonInfoSchema
     {
         #region Fields

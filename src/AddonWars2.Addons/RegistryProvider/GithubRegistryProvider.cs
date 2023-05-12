@@ -7,9 +7,11 @@
 
 namespace AddonWars2.Addons.RegistryProvider
 {
+    using System.Text.Json;
     using AddonWars2.Addons.AddonLibProvider;
     using AddonWars2.Addons.Models.AddonInfo;
     using AddonWars2.Addons.RegistryProvider.Models;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 
     /// <summary>
@@ -19,8 +21,6 @@ namespace AddonWars2.Addons.RegistryProvider
     {
         #region Fields
 
-        ////private readonly GitHubClient _gitHubClient;
-
         #endregion Fields
 
         #region Constructors
@@ -29,8 +29,9 @@ namespace AddonWars2.Addons.RegistryProvider
         /// Initializes a new instance of the <see cref="GithubRegistryProvider"/> class.
         /// </summary>
         /// <param name="gitHubClient">A reference to <see cref="Octokit.GitHubClient"/> instance.</param>
-        public GithubRegistryProvider(GitHubClient gitHubClient)
-            : base(gitHubClient)
+        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
+        public GithubRegistryProvider(GitHubClient gitHubClient, IHttpClientWrapper httpClientWrapper)
+            : base(gitHubClient, httpClientWrapper)
         {
             // Blank.
         }
@@ -39,19 +40,21 @@ namespace AddonWars2.Addons.RegistryProvider
 
         #region Properties
 
-        /////// <summary>
-        /////// Gets GitHub client.
-        /////// </summary>
-        ////protected GitHubClient GitHubClient => _gitHubClient;
-
         #endregion Properties
 
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<IEnumerable<AddonInfo>> GetAddonsFromAsync(ProviderInfo provider)
+        public override async Task<AddonInfo> GetAddonsFromAsync(ProviderInfo provider)
         {
-            throw new NotImplementedException();
+            ArgumentException.ThrowIfNullOrEmpty(nameof(provider));
+
+            var response = await HttpClientWrapper.GetAsync(provider.Link);
+            using (var content = await response.Content.ReadAsStreamAsync())
+            {
+                var providers = await JsonSerializer.DeserializeAsync<AddonInfo>(content);
+                return providers ?? new AddonInfo();
+            }
         }
 
         #endregion Methods

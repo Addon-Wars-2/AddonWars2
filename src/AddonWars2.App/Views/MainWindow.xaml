@@ -261,7 +261,7 @@
                             Grid.Row="2" Grid.Column="0"
                             Grid.ColumnSpan="3"
                             Margin="20,-10,0,0"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level3}"
                             FontFamily="{DynamicResource Menomonia}"
                             Text="{DynamicResource S.MainWindow.Header.Text.AppDescription}"
                             IsHitTestVisible="False"/>

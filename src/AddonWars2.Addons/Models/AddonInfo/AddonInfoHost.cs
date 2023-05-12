@@ -12,6 +12,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Encapsulates the information about addons host.
     /// </summary>
+    [Serializable]
     public class AddonInfoHost
     {
         #region Fields

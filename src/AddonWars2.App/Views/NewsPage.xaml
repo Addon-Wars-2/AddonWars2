@@ -183,7 +183,8 @@
                                     Height="0.5"
                                     Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                                     SnapsToDevicePixels="True"
-                                    IsHitTestVisible="False">
+                                    IsHitTestVisible="False"
+                                    Visibility="Visible">
                                     <Separator.OpacityMask>
                                         <LinearGradientBrush StartPoint="0.0,0.0" EndPoint="1.0,1.0">
                                             <LinearGradientBrush.GradientStops>

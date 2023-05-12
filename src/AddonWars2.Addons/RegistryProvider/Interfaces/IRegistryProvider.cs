@@ -40,6 +40,6 @@ namespace AddonWars2.Addons.RegistryProvider.Interfaces
         /// </summary>
         /// <param name="provider">A provider to use.</param>
         /// <returns>A collection of addons.</returns>
-        public Task<IEnumerable<AddonInfo>> GetAddonsFromAsync(ProviderInfo provider);
+        public Task<AddonInfo> GetAddonsFromAsync(ProviderInfo provider);
     }
 }

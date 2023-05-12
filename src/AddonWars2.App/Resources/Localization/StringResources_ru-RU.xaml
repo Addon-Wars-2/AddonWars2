@@ -38,6 +38,14 @@
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Загрузка содержимого...</s:String>
 
+    <!-- InstallAddons Page -->
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Выбран провайдер:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Загрузка списка провайдеров...</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
+
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
 

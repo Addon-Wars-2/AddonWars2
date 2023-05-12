@@ -13,6 +13,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Specifies the addon host type.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum HostType
     {
         /// <summary>
@@ -31,6 +32,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Specifies the addon download type.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DownloadType
     {
         /// <summary>
@@ -49,6 +51,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Specifies the addon install mode.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum InstallMode
     {
         /// <summary>
@@ -83,6 +86,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Represents a Guild Wars 2 add-on "modinfo" file.
     /// </summary>
+    [Serializable]
     public class AddonInfo
     {
         #region Fields

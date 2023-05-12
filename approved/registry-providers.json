@@ -1,9 +1,0 @@
-{
-  "approved": [
-    {
-      "name": "AW2_AddonsLib",
-      "type": "github",
-      "link": "https://api.github.com/repos/Addon-Wars-2/AddonsLib/registry.json"
-    }
-  ]
-}

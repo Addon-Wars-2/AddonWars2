@@ -26,11 +26,22 @@
         <CollectionViewSource
             x:Key="ProvidersCollectionView"
             Source="{Binding ProvidersCollection}">
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Name"/>
-            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource
+            x:Key="AddonsCollectionView"
+            Source="{Binding AddonInfoDataCollection}">
         </CollectionViewSource>
     </Page.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction  Command="{Binding Path=DataContext.GetProvidersListCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <i:ChangePropertyAction
+                TargetObject="{Binding}"
+                PropertyName="IsActuallyLoaded"
+                Value="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -50,31 +61,40 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ComboBox
+                x:Name="SelectProviderComboBox"
                 Grid.Row="1"
                 Margin="0,0,0,2"
                 Height="20" Width="{Binding ElementName=AddonsListBorder, Path=ActualWidth}"
                 IsTabStop="False"
                 Cursor="Hand"
                 Focusable="False"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
+                HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                VerticalAlignment="Center" VerticalContentAlignment="Center"
                 TextBlock.FontFamily="{DynamicResource Menomonia}"
                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
-                assist:HintAssist.Hint="Select a Library Provider"
+                assist:HintAssist.Hint="{DynamicResource S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint}"
                 ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
-                SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}}"
+                SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                 Style="{StaticResource ComboBoxStyle}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=Name}"/>
+                        <Grid Height="20">
+                            <Border
+                                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                BorderThickness="0">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path=Name}"/>
+                            </Border>
+                        </Grid>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="DropDownOpened">
-                        <i:InvokeCommandAction
-                            Command="{Binding Path=DataContext.GetProvidersListCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.GetAddonsFromProviderCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
@@ -84,7 +104,6 @@
             Grid.Row="2" Grid.Column="0"
             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
             BorderThickness="1"
-            SnapsToDevicePixels="True"
             Focusable="False">
             <Border.Style>
                 <Style TargetType="Border">
@@ -96,16 +115,54 @@
                 </Style>
             </Border.Style>
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border
+                    x:Name="SelectedProviderBorder"
+                    Grid.Row="0"
+                    Height="20"
+                    Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
+                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                    BorderThickness="0,0,0,1">
+                    <StackPanel
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="{DynamicResource Menomonia}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                            Text="{DynamicResource S.InstallAddonsPage.AddonsList.UsingProvider}"/>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="{DynamicResource Menomonia}"
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                            Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
+                    </StackPanel>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SelectedItem, ElementName=SelectProviderComboBox, Mode=OneWay}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
                 <ListBox
                     x:Name="AddonsList"
-                    
-                    
+                    Grid.Row="1"
+                    ItemsSource="{Binding Source={StaticResource AddonsCollectionView}}"
+                    SelectedItem="{Binding DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>-->
                     <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
@@ -142,6 +199,35 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
+                                <Grid.Resources>
+                                    <Storyboard x:Key="AddonItemSlideInStoryboard">
+                                        <DoubleAnimation
+                                            From="0" To="1"
+                                            BeginTime="00:00:00" Duration="00:00:0.3"
+                                            Storyboard.TargetName="DataTemplateRootBorder"
+                                            Storyboard.TargetProperty="Opacity">
+                                        </DoubleAnimation>
+                                        <DoubleAnimation
+                                            From="100" To="0"
+                                            FillBehavior="HoldEnd"
+                                            BeginTime="00:00:00" Duration="00:00:0.3"
+                                            AccelerationRatio="0.2" DecelerationRatio="0.1"
+                                            Storyboard.TargetName="DataTemplateRootBorder"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                            <DoubleAnimation.EasingFunction>
+                                                <ExponentialEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </Grid.Resources>
+                                <Grid.RenderTransform>
+                                    <TranslateTransform/>
+                                </Grid.RenderTransform>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
+                                        <i:ControlStoryboardAction Storyboard="{StaticResource AddonItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Separator
                                     x:Name="ItemSeparator"
                                     Grid.Row="0"
@@ -149,7 +235,8 @@
                                     Height="0.5"
                                     Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                                     SnapsToDevicePixels="True"
-                                    IsHitTestVisible="False">
+                                    IsHitTestVisible="False"
+                                    Visibility="Visible">
                                     <Separator.OpacityMask>
                                         <LinearGradientBrush StartPoint="0.0,0.0" EndPoint="1.0,1.0">
                                             <LinearGradientBrush.GradientStops>
@@ -166,22 +253,52 @@
                                     Grid.Row="1"
                                     Margin="10,5.8,0,5.8">
                                     <!-- TODO: An ugly workaround to fit in items propertly. -->
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border
-                                        x:Name="ItemRootBorder"
-                                        Grid.Column="0">
-                                        <TextBlock
-                                            x:Name="NameText"
-                                            Margin="0,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            FontFamily="{DynamicResource Menomonia}"
-                                            Text="{Binding Name}"
-                                            TextWrapping="NoWrap"
-                                            IsHitTestVisible="False">
-                                        </TextBlock>
+                                    <Border x:Name="ItemRootBorder">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock
+                                                x:Name="DisplayNameText"
+                                                Grid.Row="0" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontSize="16"
+                                                FontWeight="Normal"
+                                                Text="{Binding DisplayName}"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False"/>
+                                            <TextBlock
+                                                x:Name="AuthorsText"
+                                                Grid.Row="1" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                                                Text="{Binding Authors}"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False"/>
+                                            <TextBlock
+                                                x:Name="TooltipText"
+                                                Grid.Row="2" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                                                Text="{Binding Tooltip}"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False"/>
+                                        </Grid>
                                     </Border>
                                 </Grid>
                             </Grid>
@@ -191,13 +308,17 @@
                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
                                         <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                 </MultiDataTrigger>
                                 <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Cursor" Value="Hand"/>
@@ -223,23 +344,88 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    FontFamily="{DynamicResource Menomonia}"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="{DynamicResource S.HomePage.AddonsList.NoInstalledAddonsFound}">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=HasItems, ElementName=InstalledAddonsList}" Value="False">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                <Grid Grid.Row="1">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="RequestingApprovedProviders">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="LoadingAddonsList">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToLoadProviders">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToLoadAddons">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

@@ -38,6 +38,14 @@
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
 
+    <!-- InstallAddons Page -->
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Provider selected:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Requesting approved providers...</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Failed to load providers.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to laod addons.</s:String>
+
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
 

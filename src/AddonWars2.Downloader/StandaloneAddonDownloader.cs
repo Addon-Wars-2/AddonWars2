@@ -35,16 +35,15 @@ namespace AddonWars2.Downloader
         /// <inheritdoc/>
         public override async Task<DownloadedObject> Download(DownloadRequest request)
         {
-            using (var response = await HttpClientService.GetAsync(request.Url, request.Headers))
+            using (var response = await HttpClientService.GetAsync(request.Url))
             {
                 return await DownloadFromResponse(response);
             }
         }
 
+        // Downloads content using the specified response message.
         private async Task<DownloadedObject> DownloadFromResponse(HttpResponseMessage response)
         {
-            response.EnsureSuccessStatusCode();
-
             var filename = response.Headers.Location?.AbsoluteUri.ToString() ?? string.Empty;
             var contentLength = response.Content.Headers.ContentLength ?? 0L;
 
@@ -54,7 +53,7 @@ namespace AddonWars2.Downloader
             }
 
             byte[] content = Array.Empty<byte>();
-            byte[] buffer = new byte[4096];  // 4k is considered to be optimal
+            byte[] buffer = new byte[4096];  // default 4k is considered to be optimal
             var totalBytesRead = 0L;
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())

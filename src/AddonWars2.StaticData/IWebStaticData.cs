@@ -18,8 +18,11 @@ namespace AddonWars2.SharedData
 
         private const string _gitHubProjectRepositoryUrl = "https://github.com/Addon-Wars-2/AddonWars2";
         private const long _gitHubProjectRepositoryId = 582041038;
-        private const string _gitHubProjectApprovedProviders = @"approved\registry-providers.json";
         private const string _gitHubProjectWikiUrl = "https://github.com/Addon-Wars-2/AddonWars2/wiki";
+
+        private const string _gitHubAddonsLibRepositoryUrl = "https://github.com/Addon-Wars-2/AddonsLib";
+        private const long _gitHubAddonsLibRepositoryId = 590107405;
+        private const string _gitHubAddonsLibApprovedProviders = "registry-providers.json";
 
         #endregion GitHub
 
@@ -40,6 +43,12 @@ namespace AddonWars2.SharedData
         private const string _gw2RssHomeTemplate = "https://www.guildwars2.com/{0}/feed";
         private const string _gw2ApiV2Endpoint = "https://api.guildwars2.com/v2";
 
+        #endregion GuildWars2
+
+        #endregion Fields and Constants
+
+        #region Properties
+
         /// <summary>
         /// Gets the project repository URL (GitHub).
         /// </summary>
@@ -51,9 +60,19 @@ namespace AddonWars2.SharedData
         public long GitHubProjectRepositoryId => _gitHubProjectRepositoryId;
 
         /// <summary>
+        /// Gets the addons lib repository URL (GitHub).
+        /// </summary>
+        public string GitHubAddonsLibRepositoryUrl => _gitHubAddonsLibRepositoryUrl;
+
+        /// <summary>
+        /// Gets the addons lib repository ID (GitHub).
+        /// </summary>
+        public long GitHubAddonsLibRepositoryId => _gitHubAddonsLibRepositoryId;
+
+        /// <summary>
         /// Gets a path to the list of approved registry providers.
         /// </summary>
-        public string GitHubProjectApprovedProviders => _gitHubProjectApprovedProviders;
+        public string GitHubAddonsLibApprovedProviders => _gitHubAddonsLibApprovedProviders;
 
         /// <summary>
         /// Gets the project wiki URL (GitHub).
@@ -105,8 +124,6 @@ namespace AddonWars2.SharedData
         /// </summary>
         public string Gw2ApiV2Endpoint => _gw2ApiV2Endpoint;
 
-        #endregion GuildWars2
-
-        #endregion Fields and Constants
+        #endregion Properties
     }
 }

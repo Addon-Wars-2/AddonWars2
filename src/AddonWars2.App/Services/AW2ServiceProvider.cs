@@ -69,7 +69,6 @@ namespace AddonWars2.App.Services
             services.AddSingleton<CommonCommands>();
 
             // Services.
-            services.AddSingleton<ILogsAggregator, LogsAggregator>();
             services.AddSingleton<AddonsService>();
             services.AddSingleton<DialogService>();
             services.AddSingleton<IMessageBoxService, MessageBoxService>();
@@ -77,9 +76,11 @@ namespace AddonWars2.App.Services
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
+            services.AddSingleton<GithubRegistryProvider>();
+
             services.AddSingleton<GitHubClient>(
                 new GitHubClient(new ProductHeaderValue(defaultProductName, defaultProductVersion)));
-            services.AddSingleton<GithubRegistryProvider>();
+
             services.AddSingleton<HttpClient>(
                 builder =>
                 {
@@ -90,6 +91,7 @@ namespace AddonWars2.App.Services
             services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
 
             // Logging.
+            services.AddSingleton<ILogsAggregator, LogsAggregator>();
             services.AddSingleton<SerilogLogsAggregatorSink>();
             services.AddLogging(builder =>
             {

@@ -64,7 +64,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         /// Gets or sets the addon display name.
         /// </summary>
         [JsonPropertyName("display_name")]
-        public string DispayName
+        public string DisplayName
         {
             get => _displayName;
             set => _displayName = value;

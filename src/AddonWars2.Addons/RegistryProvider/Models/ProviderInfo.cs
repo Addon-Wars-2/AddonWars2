@@ -7,17 +7,38 @@
 
 namespace AddonWars2.Addons.RegistryProvider.Models
 {
+    using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
+
+    /// <summary>
+    /// Specified a type of the registry host.
+    /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ProviderInfoHostType
+    {
+        /// <summary>
+        /// This provider points to a GitHub repository.
+        /// </summary>
+        [EnumMember(Value = "github")]
+        GitHub,
+
+        /// <summary>
+        /// This provider points to some standalone source.
+        /// </summary>
+        [EnumMember(Value = "standalone")]
+        Standalone,
+    }
 
     /// <summary>
     /// Encapsulates the information about a provider of addons.
     /// </summary>
+    [Serializable]
     public class ProviderInfo
     {
         #region Fields
 
         private string _name = string.Empty;
-        private string _type = string.Empty;
+        private ProviderInfoHostType _type = ProviderInfoHostType.GitHub;
         private string _link = string.Empty;
 
         #endregion Fields
@@ -47,17 +68,17 @@ namespace AddonWars2.Addons.RegistryProvider.Models
         }
 
         /// <summary>
-        /// Gets or sets the addon provider type.
+        /// Gets or sets the addon registry type.
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type
+        public ProviderInfoHostType Type
         {
             get => _type;
             set => _type = value;
         }
 
         /// <summary>
-        /// Gets or sets the addon provider link.
+        /// Gets or sets the addon registry link.
         /// </summary>
         [JsonPropertyName("link")]
         public string Link
