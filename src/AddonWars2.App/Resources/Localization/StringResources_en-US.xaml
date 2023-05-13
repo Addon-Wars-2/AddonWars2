@@ -25,9 +25,9 @@
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
 
     <!-- Home Page -->
-    <s:String x:Key="S.HomePage.AddonsList.Header">Installed Add-Ons</s:String>
+    <s:String x:Key="S.HomePage.AddonsList.Header">My Add-Ons</s:String>
     <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">No installed add-ons found.</s:String>
-    <s:String x:Key="S.HomePage.AddonDesc.Header">Add-On Description</s:String>
+    <s:String x:Key="S.HomePage.AddonDesc.Header">Description</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>
 
     <!-- News Page -->
@@ -45,6 +45,7 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Failed to load providers.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to laod addons.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Description</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>

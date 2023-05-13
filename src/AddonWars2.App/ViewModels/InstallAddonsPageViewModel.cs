@@ -8,10 +8,9 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
+    using System.ComponentModel;
     using System.Linq;
     using System.Net.Http;
     using System.Text.Json;
@@ -20,6 +19,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Addons.RegistryProvider;
     using AddonWars2.Addons.RegistryProvider.Models;
     using AddonWars2.App.Models.Application;
+    using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
@@ -33,8 +33,10 @@ namespace AddonWars2.App.ViewModels
         #region Fields
 
         private readonly ApplicationConfig _applicationConfig;
+        private readonly CommonCommands _commonCommands;
         private readonly IWebStaticData _webStaticData;
         private readonly GithubRegistryProvider _githubRegistryProvider;
+
         private string _viewModelState = string.Empty;
         private bool _isActuallyLoaded = false;
         private InstallAddonsViewModelState _viewModelStateInternal = InstallAddonsViewModelState.Ready;
@@ -52,16 +54,19 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
+        /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
         /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         /// <param name="githubRegistryProvider">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
         public InstallAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
+            CommonCommands commonCommands,
             IWebStaticData webStaticData,
             GithubRegistryProvider githubRegistryProvider)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
             _githubRegistryProvider = githubRegistryProvider ?? throw new ArgumentNullException(nameof(githubRegistryProvider));
             _providers = new ObservableCollection<ProviderInfo>();
@@ -69,6 +74,8 @@ namespace AddonWars2.App.ViewModels
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListCommand);
             GetAddonsFromProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromProviderCommand);
+
+            PropertyChangedEventManager.AddHandler(this, InstallAddonsPageViewModel_SelectedAddonChanged, nameof(SelectedAddonInfoData));
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -120,6 +127,11 @@ namespace AddonWars2.App.ViewModels
         public ApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
+        /// Gets a reference to a common commands class.
+        /// </summary>
+        public CommonCommands CommonCommands => _commonCommands;
+
+        /// <summary>
         /// Gets a reference to the application web-related static data.
         /// </summary>
         public IWebStaticData WebStaticData => _webStaticData;
@@ -167,7 +179,7 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _selectedProvider, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}, name={value?.Name}");
             }
         }
 
@@ -193,7 +205,87 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _selectedAddonInfoData, value);
-                Logger.LogDebug($"Property set: {value}");
+                Logger.LogDebug($"Property set: {value}, internal_name={value?.InternalName}");
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected addon description.
+        /// </summary>
+        public string SelectedAddonDescription
+        {
+            get
+            {
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Description))
+                {
+                    return "None";
+                }
+
+                return SelectedAddonInfoData.Description;
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected addon website.
+        /// </summary>
+        public string SelectedAddonWebsite
+        {
+            get
+            {
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Website))
+                {
+                    return "None";
+                }
+
+                return SelectedAddonInfoData.Website;
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected addon authors.
+        /// </summary>
+        public string SelectedAddonAuthors
+        {
+            get
+            {
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Authors))
+                {
+                    return "None";
+                }
+
+                return SelectedAddonInfoData.Authors;
+            }
+        }
+
+        /// <summary>
+        /// Getsa a list of required addons for the selected addon.
+        /// </summary>
+        public string SelectedAddonRequired
+        {
+            get
+            {
+                if (SelectedAddonInfoData == null || SelectedAddonInfoData.RequiredAddons == null)
+                {
+                    return "None";
+                }
+
+                return string.Join(", ", SelectedAddonInfoData.RequiredAddons) ?? "None";
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of conflicts with the selected addon authors.
+        /// </summary>
+        public string SelectedAddonConflicts
+        {
+            get
+            {
+                if (SelectedAddonInfoData == null || SelectedAddonInfoData.Conflicts == null)
+                {
+                    return "None";
+                }
+
+                return string.Join(", ", SelectedAddonInfoData.Conflicts) ?? "None";
             }
         }
 
@@ -252,6 +344,8 @@ namespace AddonWars2.App.ViewModels
         {
             // TODO: Do we need the ability to refresh the list similar to news feed?
 
+            Logger.LogDebug("Executing command.");
+
             // Update only once when empty.
             if (ProvidersCollection?.Count != 0)
             {
@@ -267,6 +361,7 @@ namespace AddonWars2.App.ViewModels
 
             try
             {
+                Logger.LogDebug("Getting providers...");
                 var providers = await GithubRegistryProvider.GetApprovedProvidersAsync(id, path);
                 ProvidersCollection = new ObservableCollection<ProviderInfo>(providers);
             }
@@ -293,11 +388,15 @@ namespace AddonWars2.App.ViewModels
             }
 
             SetState(InstallAddonsViewModelState.Ready);
+
+            Logger.LogInformation("Providers list updated.");
         }
 
         // GetAddonsFromProviderCommand command logic.
         private async Task ExecuteGetAddonsFromProviderCommand()
         {
+            Logger.LogDebug("Executing command.");
+
             if (SelectedProvider == null)
             {
                 return;
@@ -309,20 +408,23 @@ namespace AddonWars2.App.ViewModels
             switch (SelectedProvider.Type)
             {
                 case ProviderInfoHostType.GitHub:
+                    Logger.LogDebug("Getting addons from a GitHub host...");
                     SetState(InstallAddonsViewModelState.FailedToLoadAddons);
                     addonInfo = await GithubRegistryProvider.GetAddonsFromAsync(SelectedProvider);
                     break;
                 case ProviderInfoHostType.Standalone:
+                    Logger.LogDebug("Getting addons from a standalone host...");
                     throw new NotSupportedException();  // TODO: implementation
                 default:
                     SetState(InstallAddonsViewModelState.FailedToLoadAddons);
-                    throw new NotSupportedException();
+                    Logger.LogWarning("Unsupported host type.");
+                    return;
             }
 
             if (addonInfo.Data == null || addonInfo.Schema == null)
             {
                 SetState(InstallAddonsViewModelState.FailedToLoadAddons);
-                Logger.LogError($"{nameof(addonInfo)} returned invalid data or schema (null value).");
+                Logger.LogWarning($"{nameof(addonInfo)} returned invalid data or schema (null value).");
                 return;
             }
 
@@ -338,11 +440,14 @@ namespace AddonWars2.App.ViewModels
             }
 
             SetState(InstallAddonsViewModelState.Ready);
+
+            Logger.LogInformation("Addons list updated.");
         }
 
         // Sorts the addon collection.
         private async Task<IEnumerable<AddonInfoData>> SortAddonsCollection(IEnumerable<AddonInfoData> collection)
         {
+            Logger.LogDebug("Sorting...");
             return await Task.Run(() => collection.OrderByDescending(x => x.DisplayName).ToList());
         }
 
@@ -363,6 +468,20 @@ namespace AddonWars2.App.ViewModels
 
             ViewModelState = stateString;
             Logger.LogDebug($"ViewModel state set: {state}");
+        }
+
+        private void InstallAddonsPageViewModel_SelectedAddonChanged(object? sender, PropertyChangedEventArgs? e)
+        {
+            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
+
+            OnPropertyChanged(nameof(SelectedAddonDescription));
+            OnPropertyChanged(nameof(SelectedAddonWebsite));
+            OnPropertyChanged(nameof(SelectedAddonAuthors));
+            OnPropertyChanged(nameof(SelectedAddonRequired));
+            OnPropertyChanged(nameof(SelectedAddonConflicts));
+
+            Logger.LogDebug($"Handled.");
         }
 
         #endregion Methods

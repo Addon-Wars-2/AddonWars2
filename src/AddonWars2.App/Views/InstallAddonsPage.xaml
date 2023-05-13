@@ -46,7 +46,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="90"/>
+            <RowDefinition Height="85"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -426,6 +426,156 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Grid>
+            </Grid>
+        </Border>
+        <TextBlock
+            x:Name="SelectedAddonDescHeaderText"
+            Grid.Row="1" Grid.Column="2"
+            Margin="0,0,0,2"
+            VerticalAlignment="Bottom"
+            FontWeight="Light"
+            FontStyle="Normal"
+            FontSize="16"
+            FontFamily="{DynamicResource Menomonia}"
+            Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Header}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <Border
+            x:Name="SelectedAddonDescBorder"
+            Grid.Row="2" Grid.Column="2"
+            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+            BorderThickness="1"
+            SnapsToDevicePixels="True"
+            Focusable="False">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0" Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="{Binding Path=DataContext.SelectedAddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                    IsHitTestVisible="False"
+                    TextWrapping="Wrap"/>
+                <TextBlock
+                    Grid.Row="1" Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    IsHitTestVisible="False"/>
+                <TextBlock
+                    Grid.Row="2" Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="Website: "
+                    IsHitTestVisible="False"
+                    TextWrapping="NoWrap"/>
+                <TextBlock
+                    Grid.Row="2" Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    IsHitTestVisible="True"
+                    TextWrapping="Wrap">
+                    <Hyperlink
+                        NavigateUri="{Binding Path=DataContext.SelectedAddonInfoData.Website, RelativeSource={RelativeSource AncestorType=Page}}"
+                        TextDecorations="None"
+                        FocusVisualStyle="{x:Null}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="RequestNavigate">
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.CommonCommands.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <TextBlock Text="{Binding Path=DataContext.SelectedAddonInfoData.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock
+                    Grid.Row="4" Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="Authors: "
+                    IsHitTestVisible="False"
+                    TextWrapping="NoWrap"/>
+                <TextBlock
+                    Grid.Row="4" Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="{Binding Path=DataContext.SelectedAddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                    IsHitTestVisible="False"
+                    TextWrapping="Wrap"/>
+                <TextBlock
+                    Grid.Row="5" Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="Required: "
+                    IsHitTestVisible="False"
+                    TextWrapping="NoWrap"/>
+                <TextBlock
+                    Grid.Row="5" Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="{Binding Path=DataContext.SelectedAddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                    IsHitTestVisible="False"
+                    TextWrapping="Wrap"/>
+                <TextBlock
+                    Grid.Row="6" Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="Conflicts: "
+                    IsHitTestVisible="False"
+                    TextWrapping="NoWrap"/>
+                <TextBlock
+                    Grid.Row="6" Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                    Text="{Binding Path=DataContext.SelectedAddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                    IsHitTestVisible="False"
+                    TextWrapping="Wrap"/>
             </Grid>
         </Border>
     </Grid>

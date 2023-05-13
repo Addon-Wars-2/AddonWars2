@@ -376,6 +376,7 @@ namespace AddonWars2.App.ViewModels
         {
             ArgumentNullException.ThrowIfNull(collection, nameof(collection));
 
+            Logger.LogDebug("Sorting...");
             return await Task.Run(() => collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList());
         }
 

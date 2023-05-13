@@ -25,9 +25,9 @@
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Логи</s:String>
 
     <!-- Home Page -->
-    <s:String x:Key="S.HomePage.AddonsList.Header">Установленные Аддоны</s:String>
+    <s:String x:Key="S.HomePage.AddonsList.Header">Мои Аддоны</s:String>
     <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">Не обнаружено установленных аддонов.</s:String>
-    <s:String x:Key="S.HomePage.AddonDesc.Header">Описание Аддона</s:String>
+    <s:String x:Key="S.HomePage.AddonDesc.Header">Описание</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
 
     <!-- News Page -->
@@ -45,6 +45,7 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Описание</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>

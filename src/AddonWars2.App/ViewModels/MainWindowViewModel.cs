@@ -39,7 +39,7 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
-        /// <param name="commonCommands">A reference to a common commands class.</param>
+        /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/>.</param>
         /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
         /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         public MainWindowViewModel(
