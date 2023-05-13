@@ -264,7 +264,9 @@ namespace AddonWars2.App.ViewModels
         {
             get
             {
-                if (SelectedAddonInfoData == null || SelectedAddonInfoData.RequiredAddons == null)
+                if (SelectedAddonInfoData == null
+                    || SelectedAddonInfoData.RequiredAddons == null
+                    || SelectedAddonInfoData.RequiredAddons.Count() == 0)
                 {
                     return "None";
                 }
@@ -280,7 +282,9 @@ namespace AddonWars2.App.ViewModels
         {
             get
             {
-                if (SelectedAddonInfoData == null || SelectedAddonInfoData.Conflicts == null)
+                if (SelectedAddonInfoData == null
+                    || SelectedAddonInfoData.Conflicts == null
+                    || SelectedAddonInfoData.Conflicts.Count() == 0)
                 {
                     return "None";
                 }
@@ -448,7 +452,7 @@ namespace AddonWars2.App.ViewModels
         private async Task<IEnumerable<AddonInfoData>> SortAddonsCollection(IEnumerable<AddonInfoData> collection)
         {
             Logger.LogDebug("Sorting...");
-            return await Task.Run(() => collection.OrderByDescending(x => x.DisplayName).ToList());
+            return await Task.Run(() => collection.OrderBy(x => x.DisplayName).ToList());
         }
 
         #endregion Commdans Logic
