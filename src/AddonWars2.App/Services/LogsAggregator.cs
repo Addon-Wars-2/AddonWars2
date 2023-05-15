@@ -18,7 +18,7 @@ namespace AddonWars2.App.Services
     {
         #region Fields
 
-        private readonly ObservableCollection<ILogEntry> _logEntries;
+        private readonly ObservableCollection<LogEntry> _logEntries;
 
         #endregion Fields
 
@@ -29,7 +29,7 @@ namespace AddonWars2.App.Services
         /// </summary>
         public LogsAggregator()
         {
-            _logEntries = new ObservableCollection<ILogEntry>();
+            _logEntries = new ObservableCollection<LogEntry>();
         }
 
         #endregion Constructors
@@ -37,7 +37,7 @@ namespace AddonWars2.App.Services
         #region Properties
 
         /// <inheritdoc/>
-        public ObservableCollection<ILogEntry> LogEntries => _logEntries;
+        public ObservableCollection<LogEntry> LogEntries => _logEntries;
 
         #endregion Properties
     }

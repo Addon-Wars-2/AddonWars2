@@ -22,8 +22,8 @@ namespace AddonWars2.Addons.AddonLibProvider
         #region Fields
 
         private static readonly string _approvedProvidersBranchName = "main";
-        private readonly GitHubClient _gitHubClient;
-        private readonly IHttpClientWrapper _httpClientWrapper;
+        private readonly IHttpClientWrapper _httpClientService;
+        private readonly GitHubClient _gitHubClientService;
 
         #endregion Fields
 
@@ -32,12 +32,12 @@ namespace AddonWars2.Addons.AddonLibProvider
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistryProviderBase"/> class.
         /// </summary>
+        /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="gitHubClient">A reference to <see cref="Octokit.GitHubClient"/> instance.</param>
-        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        public RegistryProviderBase(GitHubClient gitHubClient, IHttpClientWrapper httpClientWrapper)
+        public RegistryProviderBase(IHttpClientWrapper httpClientService, GitHubClient gitHubClient)
         {
-            _gitHubClient = gitHubClient;
-            _httpClientWrapper = httpClientWrapper;
+            _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
+            _gitHubClientService = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
         }
 
         #endregion Constructors
@@ -50,14 +50,14 @@ namespace AddonWars2.Addons.AddonLibProvider
         public static string ApprovedProvidersBranchName => _approvedProvidersBranchName;
 
         /// <summary>
-        /// Gets GitHub client.
-        /// </summary>
-        protected GitHubClient GitHubClient => _gitHubClient;
-
-        /// <summary>
         /// Gets a HTTP client wrapper.
         /// </summary>
-        protected IHttpClientWrapper HttpClientWrapper => _httpClientWrapper;
+        protected IHttpClientWrapper HttpClientWrapper => _httpClientService;
+
+        /// <summary>
+        /// Gets GitHub client.
+        /// </summary>
+        protected GitHubClient GitHubClientService => _gitHubClientService;
 
         #endregion Properties
 
@@ -68,8 +68,8 @@ namespace AddonWars2.Addons.AddonLibProvider
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(path));
 
-            var repository = await GitHubClient.Repository.Branch.Get(repositoryId, ApprovedProvidersBranchName);
-            var contentList = await GitHubClient.Repository.Content.GetAllContents(repositoryId);
+            var repository = await GitHubClientService.Repository.Branch.Get(repositoryId, ApprovedProvidersBranchName);
+            var contentList = await GitHubClientService.Repository.Content.GetAllContents(repositoryId);
 
             var repositoryContent = contentList.FirstOrDefault(x => x?.Path == path, null);
             if (repositoryContent == null)

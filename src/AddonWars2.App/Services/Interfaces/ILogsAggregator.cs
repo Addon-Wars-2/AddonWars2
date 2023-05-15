@@ -18,6 +18,6 @@ namespace AddonWars2.App.Services.Interfaces
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<ILogEntry> LogEntries { get; }
+        public ObservableCollection<LogEntry> LogEntries { get; }
     }
 }

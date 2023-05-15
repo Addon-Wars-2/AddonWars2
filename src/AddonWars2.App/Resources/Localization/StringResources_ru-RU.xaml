@@ -6,9 +6,6 @@
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String>
 
-    <!-- Exceptions -->
-    <s:String x:Key="S.Application.Exception.NoInternetConnection">Не удалось установить соединение.</s:String>
-
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Язык</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>
@@ -45,7 +42,14 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">установлен</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">не установлен</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">изменен</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Описание</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Required">Требуется:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Conflicts">Конфликты:</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
@@ -68,5 +72,6 @@
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Добавить новые аддоны.</s:String>
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Обновить ленту новостей.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Открыть лог-файл.</s:String>
+    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
 
 </ResourceDictionary>

@@ -44,6 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Installers\" />
+    <Folder Include="Extractors\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

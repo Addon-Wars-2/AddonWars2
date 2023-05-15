@@ -16,8 +16,9 @@ namespace AddonWars2.App.ViewModels
     using System.Text.Json;
     using System.Threading.Tasks;
     using AddonWars2.Addons.Models.AddonInfo;
-    using AddonWars2.Addons.RegistryProvider;
+    using AddonWars2.Addons.RegistryProvider.Interfaces;
     using AddonWars2.Addons.RegistryProvider.Models;
+    using AddonWars2.App.Models.Addons;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.SharedData;
@@ -35,15 +36,15 @@ namespace AddonWars2.App.ViewModels
         private readonly ApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IWebStaticData _webStaticData;
-        private readonly GithubRegistryProvider _githubRegistryProvider;
+        private readonly IRegistryProviderFactory _registryProviderFactory;
 
         private string _viewModelState = string.Empty;
         private bool _isActuallyLoaded = false;
         private InstallAddonsViewModelState _viewModelStateInternal = InstallAddonsViewModelState.Ready;
         private ObservableCollection<ProviderInfo> _providers;
         private ProviderInfo? _selectedProvider;
-        private ObservableCollection<AddonInfoData> _addonInfoDataCollection;
-        private AddonInfoData? _selectedAddonInfoData;
+        private ObservableCollection<AddonItemModel> _addonInfoDataCollection;
+        private AddonItemModel? _selectedAddonInfoData;
 
         #endregion Fields
 
@@ -56,21 +57,21 @@ namespace AddonWars2.App.ViewModels
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
         /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
-        /// <param name="githubRegistryProvider">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
+        /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
         public InstallAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             CommonCommands commonCommands,
             IWebStaticData webStaticData,
-            GithubRegistryProvider githubRegistryProvider)
+            IRegistryProviderFactory registryProviderFactory)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
-            _githubRegistryProvider = githubRegistryProvider ?? throw new ArgumentNullException(nameof(githubRegistryProvider));
+            _registryProviderFactory = registryProviderFactory ?? throw new ArgumentNullException(nameof(registryProviderFactory));
             _providers = new ObservableCollection<ProviderInfo>();
-            _addonInfoDataCollection = new ObservableCollection<AddonInfoData>();
+            _addonInfoDataCollection = new ObservableCollection<AddonItemModel>();
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListCommand);
             GetAddonsFromProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromProviderCommand);
@@ -186,7 +187,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets a list of addons.
         /// </summary>
-        public ObservableCollection<AddonInfoData> AddonInfoDataCollection
+        public ObservableCollection<AddonItemModel> AddonInfoDataCollection
         {
             get => _addonInfoDataCollection;
             set
@@ -199,13 +200,13 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets the selected addon.
         /// </summary>
-        public AddonInfoData? SelectedAddonInfoData
+        public AddonItemModel? SelectedAddonInfoData
         {
             get => _selectedAddonInfoData;
             set
             {
                 SetProperty(ref _selectedAddonInfoData, value);
-                Logger.LogDebug($"Property set: {value}, internal_name={value?.InternalName}");
+                Logger.LogDebug($"Property set: {value}, internal_name={value?.Data.InternalName}");
             }
         }
 
@@ -216,12 +217,12 @@ namespace AddonWars2.App.ViewModels
         {
             get
             {
-                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Description))
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Data.Description))
                 {
                     return "None";
                 }
 
-                return SelectedAddonInfoData.Description;
+                return SelectedAddonInfoData.Data.Description;
             }
         }
 
@@ -232,12 +233,12 @@ namespace AddonWars2.App.ViewModels
         {
             get
             {
-                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Website))
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Data.Website))
                 {
                     return "None";
                 }
 
-                return SelectedAddonInfoData.Website;
+                return SelectedAddonInfoData.Data.Website;
             }
         }
 
@@ -248,12 +249,12 @@ namespace AddonWars2.App.ViewModels
         {
             get
             {
-                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Authors))
+                if (SelectedAddonInfoData == null || string.IsNullOrEmpty(SelectedAddonInfoData.Data.Authors))
                 {
                     return "None";
                 }
 
-                return SelectedAddonInfoData.Authors;
+                return SelectedAddonInfoData.Data.Authors;
             }
         }
 
@@ -265,13 +266,13 @@ namespace AddonWars2.App.ViewModels
             get
             {
                 if (SelectedAddonInfoData == null
-                    || SelectedAddonInfoData.RequiredAddons == null
-                    || SelectedAddonInfoData.RequiredAddons.Count() == 0)
+                    || SelectedAddonInfoData.Data.RequiredAddons == null
+                    || SelectedAddonInfoData.Data.RequiredAddons.Count() == 0)
                 {
                     return "None";
                 }
 
-                return string.Join(", ", SelectedAddonInfoData.RequiredAddons) ?? "None";
+                return string.Join(", ", SelectedAddonInfoData.Data.RequiredAddons) ?? "None";
             }
         }
 
@@ -283,13 +284,13 @@ namespace AddonWars2.App.ViewModels
             get
             {
                 if (SelectedAddonInfoData == null
-                    || SelectedAddonInfoData.Conflicts == null
-                    || SelectedAddonInfoData.Conflicts.Count() == 0)
+                    || SelectedAddonInfoData.Data.Conflicts == null
+                    || SelectedAddonInfoData.Data.Conflicts.Count() == 0)
                 {
                     return "None";
                 }
 
-                return string.Join(", ", SelectedAddonInfoData.Conflicts) ?? "None";
+                return string.Join(", ", SelectedAddonInfoData.Data.Conflicts) ?? "None";
             }
         }
 
@@ -335,9 +336,9 @@ namespace AddonWars2.App.ViewModels
         public AsyncRelayCommand GetAddonsFromProviderCommand { get; private set; }
 
         /// <summary>
-        /// Gets a reference to a GitHub registry provider.
+        /// Gets a reference to a registry provider factory.
         /// </summary>
-        public GithubRegistryProvider GithubRegistryProvider => _githubRegistryProvider;
+        public IRegistryProviderFactory RegistryProviderFactory => _registryProviderFactory;
 
         #endregion Commands
 
@@ -366,7 +367,8 @@ namespace AddonWars2.App.ViewModels
             try
             {
                 Logger.LogDebug("Getting providers...");
-                var providers = await GithubRegistryProvider.GetApprovedProvidersAsync(id, path);
+                var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
+                var providers = await provider.GetApprovedProvidersAsync(id, path);
                 ProvidersCollection = new ObservableCollection<ProviderInfo>(providers);
             }
             catch (NotFoundException e)
@@ -414,7 +416,8 @@ namespace AddonWars2.App.ViewModels
                 case ProviderInfoHostType.GitHub:
                     Logger.LogDebug("Getting addons from a GitHub host...");
                     SetState(InstallAddonsViewModelState.FailedToLoadAddons);
-                    addonInfo = await GithubRegistryProvider.GetAddonsFromAsync(SelectedProvider);
+                    var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
+                    addonInfo = await provider.GetAddonsFromAsync(SelectedProvider);
                     break;
                 case ProviderInfoHostType.Standalone:
                     Logger.LogDebug("Getting addons from a standalone host...");
@@ -437,7 +440,7 @@ namespace AddonWars2.App.ViewModels
             {
                 if (item != null)
                 {
-                    AddonInfoDataCollection.Add(item);
+                    AddonInfoDataCollection.Add(new AddonItemModel(item));
                     await Task.Delay(50);  // for animation purposes
                     Logger.LogDebug($"Addon with InternalName={item.InternalName} added.");
                 }
@@ -474,6 +477,7 @@ namespace AddonWars2.App.ViewModels
             Logger.LogDebug($"ViewModel state set: {state}");
         }
 
+        // Updates VM value whenever the selected addon changes.
         private void InstallAddonsPageViewModel_SelectedAddonChanged(object? sender, PropertyChangedEventArgs? e)
         {
             ArgumentNullException.ThrowIfNull(sender, nameof(sender));

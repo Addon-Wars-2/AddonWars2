@@ -26,9 +26,9 @@ namespace AddonWars2.Addons.Models.AddonInfo
         private IEnumerable<AddonInfoHost>? _hosts;
         private DownloadType _downloadType = DownloadType.Archive;
         private InstallMode _installMode = InstallMode.Binary;
-        ////private ArcPluginInfo _arcModInfo = ArcPluginInfo.Empty;
         private IEnumerable<string>? _requiredAddons;
         private IEnumerable<string>? _conflicts;
+        Dictionary<string, string> _additional;
 
         #endregion Fields
 
@@ -140,19 +140,6 @@ namespace AddonWars2.Addons.Models.AddonInfo
             set => _installMode = value;
         }
 
-        /////// <summary>
-        /////// Gets or sets the additional information for ArcDPS addons.
-        /////// </summary>
-        /////// <remarks>
-        /////// If an addon is not an ArcDPS plugin, its data will be empty.
-        /////// </remarks>
-        ////[JsonPropertyName("arc_modinfo")]
-        ////public ArcPluginInfo ArcModInfo
-        ////{
-        ////    get => _arcModInfo;
-        ////    set => _arcModInfo = value;
-        ////}
-
         /// <summary>
         /// Gets or sets a list of addons which are required to be installed
         /// to make the current addon work.
@@ -176,6 +163,16 @@ namespace AddonWars2.Addons.Models.AddonInfo
         {
             get => _conflicts;
             set => _conflicts = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a disctionary of additional flags and metadata.
+        /// </summary>
+        [JsonPropertyName("additional")]
+        public Dictionary<string, string> Additional
+        {
+            get => _additional;
+            set => _additional = value;
         }
 
         #endregion Properties

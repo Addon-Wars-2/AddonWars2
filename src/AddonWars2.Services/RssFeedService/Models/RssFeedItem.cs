@@ -7,12 +7,10 @@
 
 namespace AddonWars2.Services.RssFeedService.Models
 {
-    using AddonWars2.Services.RssFeedService.Interfaces;
-
     /// <summary>
     /// Represents a class for RSS feed items.
     /// </summary>
-    public class RssFeedItem : IRssFeedItem
+    public class RssFeedItem
     {
         #region Fields
 
@@ -46,14 +44,18 @@ namespace AddonWars2.Services.RssFeedService.Models
 
         #region Properties
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets or sets the name of the channel.
+        /// </summary>
         public string Title
         {
             get => _title;
             set => _title = value;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets or sets the channel description.
+        /// </summary>
         public string Description
         {
             get => _description;

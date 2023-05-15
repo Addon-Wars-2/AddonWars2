@@ -52,7 +52,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="1.85*"/>
+            <ColumnDefinition Width="1.55*"/>
         </Grid.ColumnDefinitions>
         <Grid
             Grid.Row="1" Grid.Column="0"
@@ -78,6 +78,25 @@
                 ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
                 SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                 Style="{StaticResource ComboBoxStyle}">
+                <ComboBox.ToolTip>
+                    <ToolTip>
+                        <ToolTip.Style>
+                            <Style TargetType="ToolTip">
+                                <Setter Property="Content" Value="{DynamicResource S.ToolTip.ComboBox.AddonProviderSelection}"/>
+                                <Setter Property="MaxWidth" Value="300"/>
+                                <Style.Resources>
+                                    <Style TargetType="ContentPresenter">
+                                        <Style.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                            </Style>
+                                        </Style.Resources>
+                                    </Style>
+                                </Style.Resources>
+                            </Style>
+                        </ToolTip.Style>
+                    </ToolTip>
+                </ComboBox.ToolTip>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="20">
@@ -262,40 +281,59 @@
                                             </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock
                                                 x:Name="DisplayNameText"
                                                 Grid.Row="0" Grid.Column="0"
-                                                Margin="0,0,0,0"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 FontSize="16"
                                                 FontWeight="Normal"
-                                                Text="{Binding DisplayName}"
+                                                Text="{Binding Data.DisplayName}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                             <TextBlock
+                                                x:Name="InstalledStatusText"
+                                                Grid.Row="0" Grid.Column="1"
+                                                Margin="0,0,5,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontWeight="Normal"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False">
+                                                <!--<TextBlock.Effect>
+                                                    <DropShadowEffect
+                                                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
+                                                        ShadowDepth="0.5"
+                                                        Direction="-90"
+                                                        BlurRadius="1"
+                                                        Opacity="0.8"/>
+                                                </TextBlock.Effect>-->
+                                            </TextBlock>
+                                            <TextBlock
                                                 x:Name="AuthorsText"
                                                 Grid.Row="1" Grid.Column="0"
-                                                Margin="0,0,0,0"
+                                                Grid.ColumnSpan="2"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 FontSize="10"
                                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
-                                                Text="{Binding Authors}"
+                                                Text="{Binding Data.Authors, StringFormat='{}by {0}'}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                             <TextBlock
                                                 x:Name="TooltipText"
                                                 Grid.Row="2" Grid.Column="0"
-                                                Margin="0,0,0,0"
+                                                Grid.ColumnSpan="2"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center"
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
-                                                Text="{Binding Tooltip}"
+                                                Text="{Binding Data.Tooltip}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                         </Grid>
@@ -325,6 +363,18 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="Installed">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus1}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="NotInstalled">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus2}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="Modified">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus3}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
@@ -471,51 +521,52 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Row="0" Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="{Binding Path=DataContext.SelectedAddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
-                    IsHitTestVisible="False"
-                    TextWrapping="Wrap"/>
-                <TextBlock
-                    Grid.Row="1" Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    IsHitTestVisible="False"/>
-                <TextBlock
-                    Grid.Row="2" Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="Website: "
-                    IsHitTestVisible="False"
-                    TextWrapping="NoWrap"/>
-                <TextBlock
-                    Grid.Row="2" Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    IsHitTestVisible="True"
-                    TextWrapping="Wrap">
+            <ScrollViewer
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Visible"
+                Style="{StaticResource ScrollViewerStyle}">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Row="0" Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{Binding Path=DataContext.SelectedAddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        TextWrapping="Wrap"/>
+                    <TextBlock
+                        Grid.Row="1" Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"/>
+                    <TextBlock
+                        Grid.Row="2" Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Website}"
+                        TextWrapping="NoWrap"/>
+                    <TextBlock
+                        Grid.Row="2" Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        TextWrapping="Wrap">
                     <Hyperlink
-                        NavigateUri="{Binding Path=DataContext.SelectedAddonInfoData.Website, RelativeSource={RelativeSource AncestorType=Page}}"
+                        NavigateUri="{Binding Path=DataContext.SelectedAddonInfoData.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"
                         TextDecorations="None"
                         FocusVisualStyle="{x:Null}">
                     <i:Interaction.Triggers>
@@ -525,58 +576,53 @@
                                 PassEventArgsToCommand="True"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <TextBlock Text="{Binding Path=DataContext.SelectedAddonInfoData.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    <TextBlock Text="{Binding Path=DataContext.SelectedAddonInfoData.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </Hyperlink>
                 </TextBlock>
-                <TextBlock
-                    Grid.Row="4" Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="Authors: "
-                    IsHitTestVisible="False"
-                    TextWrapping="NoWrap"/>
-                <TextBlock
-                    Grid.Row="4" Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="{Binding Path=DataContext.SelectedAddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
-                    IsHitTestVisible="False"
-                    TextWrapping="Wrap"/>
-                <TextBlock
-                    Grid.Row="5" Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="Required: "
-                    IsHitTestVisible="False"
-                    TextWrapping="NoWrap"/>
-                <TextBlock
-                    Grid.Row="5" Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="{Binding Path=DataContext.SelectedAddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
-                    IsHitTestVisible="False"
-                    TextWrapping="Wrap"/>
-                <TextBlock
-                    Grid.Row="6" Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="Conflicts: "
-                    IsHitTestVisible="False"
-                    TextWrapping="NoWrap"/>
-                <TextBlock
-                    Grid.Row="6" Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                    Text="{Binding Path=DataContext.SelectedAddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
-                    IsHitTestVisible="False"
-                    TextWrapping="Wrap"/>
-            </Grid>
+                    <TextBlock
+                        Grid.Row="4" Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Authors}"
+                        TextWrapping="NoWrap"/>
+                    <TextBlock
+                        Grid.Row="4" Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{Binding Path=DataContext.SelectedAddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        TextWrapping="Wrap"/>
+                    <TextBlock
+                        Grid.Row="5" Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Required}"
+                        TextWrapping="NoWrap"/>
+                    <TextBlock
+                        Grid.Row="5" Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{Binding Path=DataContext.SelectedAddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        TextWrapping="Wrap"/>
+                    <TextBlock
+                        Grid.Row="6" Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Conflicts}"
+                        TextWrapping="NoWrap"/>
+                    <TextBlock
+                        Grid.Row="6" Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{Binding Path=DataContext.SelectedAddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        TextWrapping="Wrap"/>
+                </Grid>
+            </ScrollViewer>
         </Border>
     </Grid>
     

@@ -136,7 +136,6 @@ namespace AddonWars2.App.Models.Application
         /// </summary>
         public string ConfigFilePath => Path.Join(AppDataDir, AppStaticData.ConfigFileName);
 
-
         /// <summary>
         /// Gets or sets the selected application culture.
         /// </summary>

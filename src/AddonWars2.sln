@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.App", "AddonWars2.App\AddonWars2.App.csproj", "{8FB2A03B-0F7E-43DE-BFED-C6B816F04600}"
-	ProjectSection(ProjectDependencies) = postProject
-		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE} = {146DBC27-3A35-4D17-BE9E-548DED9FE5EE}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23EE9FC2-9909-446D-B9A9-2840E403AD34}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,12 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Addons", "AddonW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloader", "AddonWars2.Downloader\AddonWars2.Downloader.csproj", "{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D} = {9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.SharedData", "AddonWars2.StaticData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.StaticData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +40,6 @@ Global
 		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{146DBC27-3A35-4D17-BE9E-548DED9FE5EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU

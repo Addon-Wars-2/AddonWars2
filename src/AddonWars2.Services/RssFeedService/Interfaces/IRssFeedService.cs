@@ -7,12 +7,14 @@
 
 namespace AddonWars2.Services.RssFeedService.Interfaces
 {
+    using AddonWars2.Services.RssFeedService.Models;
+
     /// <summary>
     /// Represents a contract for RSS feed services.
     /// </summary>
     /// <typeparam name="T"><see cref="IRssFeedItem"/> type.</typeparam>
     public interface IRssFeedService<T>
-        where T : class, IRssFeedItem, new()
+        where T : RssFeedItem, new()
     {
         /// <summary>
         /// Asynchronously reads an XML stream representing an RSS feed

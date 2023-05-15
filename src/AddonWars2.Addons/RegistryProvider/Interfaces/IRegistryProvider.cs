@@ -25,6 +25,13 @@ namespace AddonWars2.Addons.RegistryProvider.Interfaces
     /// </remarks>
     public interface IRegistryProvider
     {
+        // TODO: Currently a list of approved providers is stored on GitHub repo and
+        //       is accessed directly. It acts as the main entry point for addons search,
+        //       and the search path is hardcoded within the application config data.
+        //       Because multiple entry points are possible (all hardcoded or supplied by
+        //       external config), I would prefer to separate "GetProviders" and "GetAddons"
+        //       logic since these are two different tasks.
+
         /// <summary>
         /// Gets a collection of approved registry providers.
         /// It will be requested from the project repository as it's the only source

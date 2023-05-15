@@ -28,10 +28,10 @@ namespace AddonWars2.Addons.RegistryProvider
         /// <summary>
         /// Initializes a new instance of the <see cref="GithubRegistryProvider"/> class.
         /// </summary>
+        /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="gitHubClient">A reference to <see cref="Octokit.GitHubClient"/> instance.</param>
-        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        public GithubRegistryProvider(GitHubClient gitHubClient, IHttpClientWrapper httpClientWrapper)
-            : base(gitHubClient, httpClientWrapper)
+        public GithubRegistryProvider(IHttpClientWrapper httpClientService, GitHubClient gitHubClient)
+            : base(httpClientService, gitHubClient)
         {
             // Blank.
         }

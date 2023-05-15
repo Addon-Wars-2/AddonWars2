@@ -5,13 +5,13 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Downloader
+namespace AddonWars2.Addons.Downloaders
 {
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AddonWars2.Downloader.Events;
-    using AddonWars2.Downloader.Interfaces;
-    using AddonWars2.Downloader.Models;
+    using AddonWars2.Addons.Downloaders.Events;
+    using AddonWars2.Addons.Downloaders.Interfaces;
+    using AddonWars2.Addons.Downloaders.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace AddonWars2.Downloader
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         public AddonDownloaderBase(IHttpClientWrapper httpClientService)
         {
-            _httpClientService = httpClientService;
+            _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
         }
 
         #endregion Constructors

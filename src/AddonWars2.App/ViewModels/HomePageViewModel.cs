@@ -48,13 +48,11 @@ namespace AddonWars2.App.ViewModels
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
             ApplicationConfig appConfig,
-            IGameStaticData gameStaticData,
-            AddonsService addonsManager)
+            IGameStaticData gameStaticData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _gameStaticData = gameStaticData ?? throw new ArgumentNullException(nameof(gameStaticData));
-            AddonsManager = addonsManager ?? throw new ArgumentNullException(nameof(addonsManager));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
@@ -75,11 +73,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets the game-related static data.
         /// </summary>
         public IGameStaticData GameStaticData => _gameStaticData;
-
-        /// <summary>
-        /// Gets a reference to the application config.
-        /// </summary>
-        public AddonsService AddonsManager { get; private set; }
 
         /// <summary>
         /// Gets or sets GW2 executable location.
@@ -110,7 +103,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of installed add-ons.
         /// </summary>
-        public ObservableCollection<AddonInfoData> InstalledAddonsCollection => AddonsManager.InstalledAddonsCollection;
+        public ObservableCollection<AddonInfoData> InstalledAddonsCollection => new ObservableCollection<AddonInfoData>(); // TODO: replace
 
         /// <summary>
         /// Gets or sets the currently selected add-on.

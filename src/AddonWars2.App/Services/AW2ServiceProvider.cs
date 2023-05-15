@@ -10,7 +10,10 @@ namespace AddonWars2.App.Services
     using System;
     using System.Net.Http;
     using System.Reflection;
+    using AddonWars2.Addons.Downloaders;
+    using AddonWars2.Addons.Downloaders.Interfaces;
     using AddonWars2.Addons.RegistryProvider;
+    using AddonWars2.Addons.RegistryProvider.Interfaces;
     using AddonWars2.App.Models.Application;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
@@ -69,14 +72,14 @@ namespace AddonWars2.App.Services
             services.AddSingleton<CommonCommands>();
 
             // Services.
-            services.AddSingleton<AddonsService>();
             services.AddSingleton<DialogService>();
             services.AddSingleton<IMessageBoxService, MessageBoxService>();
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
-            services.AddSingleton<GithubRegistryProvider>();
+            services.AddSingleton<IRegistryProviderFactory, RegistryProviderFactory>();
+            services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
 
             services.AddSingleton<GitHubClient>(
                 new GitHubClient(new ProductHeaderValue(defaultProductName, defaultProductVersion)));

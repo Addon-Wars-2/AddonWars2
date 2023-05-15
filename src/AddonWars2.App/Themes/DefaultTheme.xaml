@@ -14,6 +14,8 @@
     <Color x:Key="Color.AccentPalette.Accent01">#CE2029</Color>
     <Color x:Key="Color.AccentPalette.Accent02">#4682B4</Color>
     <Color x:Key="Color.AccentPalette.Accent02a">#6CA6CD</Color>
+    <Color x:Key="Color.AccentPalette.Accent03">#6B8E23</Color>
+    <Color x:Key="Color.AccentPalette.Accent04">#DAA520</Color>
 
     <!-- Solid Color Brushes -->
     <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Level0" Color="{StaticResource Color.PrimaryPalette.Level0}"/>
@@ -26,6 +28,8 @@
     <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent01" Color="{StaticResource Color.AccentPalette.Accent01}"/>
     <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent02" Color="{StaticResource Color.AccentPalette.Accent02}"/>
     <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent02a" Color="{StaticResource Color.AccentPalette.Accent02a}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent03" Color="{StaticResource Color.AccentPalette.Accent03}"/>
+    <SolidColorBrush x:Key="SolidColorBrush.PrimaryPalette.Accent04" Color="{StaticResource Color.AccentPalette.Accent04}"/>
 
     <!-- Accent Colors Gradient Brushes -->
     <LinearGradientBrush

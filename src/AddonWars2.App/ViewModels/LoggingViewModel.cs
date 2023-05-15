@@ -77,7 +77,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of log entries.
         /// </summary>
-        public ObservableCollection<ILogEntry> LogEntries => LogsAggregator.LogEntries;
+        public ObservableCollection<LogEntry> LogEntries => LogsAggregator.LogEntries;
 
         #endregion Properties
 

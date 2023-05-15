@@ -5,9 +5,6 @@
     
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String> <!-- NO TRANSLATION -->
-    
-    <!-- Exceptions -->
-    <s:String x:Key="S.Application.Exception.NoInternetConnection">No internet connection.</s:String>
 
     <!-- MainWindow | Header -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
@@ -45,7 +42,14 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Failed to load providers.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to laod addons.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">installed</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">not installed</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">modified</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Description</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Website:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Required">Required:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Conflicts">Conflicts:</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
@@ -68,5 +72,6 @@
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Install new add-ons.</s:String>
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh news feed.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
+    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
 
 </ResourceDictionary>
