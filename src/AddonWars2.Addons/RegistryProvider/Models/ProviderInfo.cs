@@ -27,6 +27,12 @@ namespace AddonWars2.Addons.RegistryProvider.Models
         /// </summary>
         [EnumMember(Value = "standalone")]
         Standalone,
+
+        /// <summary>
+        /// This provider points to some local (cached) source.
+        /// </summary>
+        [EnumMember(Value = "local")]
+        Local,
     }
 
     /// <summary>
@@ -75,6 +81,24 @@ namespace AddonWars2.Addons.RegistryProvider.Models
         {
             get => _type;
             set => _type = value;
+        }
+
+        /// <summary>
+        /// Gets a string value which mirrors <see cref="Type"/> enum value.
+        /// </summary>
+        [JsonIgnore]
+        public string TypeString
+        {
+            get
+            {
+                var stringValue = Enum.GetName(typeof(ProviderInfoHostType), Type);
+                if (string.IsNullOrEmpty(stringValue))
+                {
+                    throw new InvalidOperationException("Invalid enum value.");
+                }
+
+                return stringValue;
+            }
         }
 
         /// <summary>

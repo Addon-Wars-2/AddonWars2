@@ -26,6 +26,33 @@ namespace AddonWars2.App.ViewModels
     using Microsoft.Extensions.Logging;
 
     /// <summary>
+    /// Represents <see cref="NewsPageViewModel"/> states.
+    /// </summary>
+    public enum NewsViewModelState
+    {
+        /// <summary>
+        /// View model is ready. Default state.
+        /// </summary>
+        Ready,
+
+        /// <summary>
+        /// View model is fetching RSS data from a source (web or local).
+        /// </summary>
+        Fetching,
+
+        /// <summary>
+        /// View model is updating its content to be presented in View.
+        /// </summary>
+        Updating,
+
+        /// <summary>
+        /// View model failed to update its data.
+        /// Similar to Ready, but is used to indicate there is an error occured.
+        /// </summary>
+        FailedToUpdate,
+    }
+
+    /// <summary>
     /// View model used by news view.
     /// </summary>
     public class NewsPageViewModel : BaseViewModel
@@ -40,8 +67,8 @@ namespace AddonWars2.App.ViewModels
         private readonly IHttpClientWrapper _httpClientService;
 
         private string _updateErrorCode = string.Empty;
-        private string _viewModelState = string.Empty;
-        private NewsViewModelState _viewModelStateInternal = NewsViewModelState.Ready;
+        private NewsViewModelState _viewModelState = NewsViewModelState.Ready;
+        ////private NewsViewModelState _viewModelStateInternal = NewsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
         private ObservableCollection<Gw2RssFeedItem> _rssFeedCollection = new ObservableCollection<Gw2RssFeedItem>();
         private Gw2RssFeedItem? _displayedRssFeedItem;
@@ -75,46 +102,15 @@ namespace AddonWars2.App.ViewModels
             LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
             RefreshNewsCommand = new AsyncRelayCommand(
                 ExecuteReloadNewsAsync,
-                () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
+                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.FailedToUpdate);
             LoadRssItemContentCommand = new RelayCommand(
                 ExecuteLoadRssItemContentCommand,
-                () => ViewModelStateInternal == NewsViewModelState.Ready || ViewModelStateInternal == NewsViewModelState.FailedToUpdate);
+                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.FailedToUpdate);
 
             Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
-
-        #region Enums
-
-        /// <summary>
-        /// Represents <see cref="NewsPageViewModel"/> states.
-        /// </summary>
-        private enum NewsViewModelState
-        {
-            /// <summary>
-            /// View model is ready. Default state.
-            /// </summary>
-            Ready,
-
-            /// <summary>
-            /// View model is fetching RSS data from a source (web or local).
-            /// </summary>
-            Fetching,
-
-            /// <summary>
-            /// View model is updating its content to be presented in View.
-            /// </summary>
-            Updating,
-
-            /// <summary>
-            /// View model failed to update its data.
-            /// Similar to Ready, but is used to indicate there is an error occured.
-            /// </summary>
-            FailedToUpdate,
-        }
-
-        #endregion Enums
 
         #region Properties
 
@@ -213,28 +209,14 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the view model state as a string representation
-        /// of <see cref="NewsViewModelState"/> value.
+        /// Gets or sets the view model state.
         /// </summary>
-        public string ViewModelState
+        public NewsViewModelState ViewModelState
         {
             get => _viewModelState;
             set
             {
                 SetProperty(ref _viewModelState, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the view model state.
-        /// </summary>
-        private NewsViewModelState ViewModelStateInternal
-        {
-            get => _viewModelStateInternal;
-            set
-            {
-                SetProperty(ref _viewModelStateInternal, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -271,7 +253,7 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug("Executing command.");
 
-            SetState(NewsViewModelState.Fetching);
+            ViewModelState = NewsViewModelState.Fetching;
             RssFeedCollection.Clear();
 
             HttpResponseMessage? response = null;
@@ -282,7 +264,7 @@ namespace AddonWars2.App.ViewModels
                 if (!HttpClientService.IsNetworkAvailable())
                 {
                     // No internet connection.
-                    SetState(NewsViewModelState.FailedToUpdate);
+                    ViewModelState = NewsViewModelState.FailedToUpdate;
                     UpdateErrorCode = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Error.NoInternetConnection");
 
                     Logger.LogError($"{UpdateErrorCode}");
@@ -294,7 +276,7 @@ namespace AddonWars2.App.ViewModels
             }
             catch (HttpRequestException e)
             {
-                SetState(NewsViewModelState.FailedToUpdate);
+                ViewModelState = NewsViewModelState.FailedToUpdate;
                 UpdateErrorCode = $"{e.Message}";
                 if (response != null)
                 {
@@ -307,7 +289,7 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            SetState(NewsViewModelState.Updating);
+            ViewModelState = NewsViewModelState.Updating;
 
             // Read response content and store as a list of RssFeedItem.
             var feed = await ParseResponseDataAsync(response);
@@ -335,7 +317,7 @@ namespace AddonWars2.App.ViewModels
             // Add to the observable collection with some delay for animation purposes.
             await FillRssItemsAsync(feed, RssFeedCollection);
 
-            SetState(NewsViewModelState.Ready);
+            ViewModelState = NewsViewModelState.Ready;
 
             Logger.LogInformation("News feed updated.");
         }
@@ -360,7 +342,7 @@ namespace AddonWars2.App.ViewModels
             }
             catch (Exception e)
             {
-                SetState(NewsViewModelState.FailedToUpdate);
+                ViewModelState = NewsViewModelState.FailedToUpdate;
                 UpdateErrorCode = $"{e.Message}";
 
                 Logger.LogError($"Failed to parse data.");
@@ -445,21 +427,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Commands Logic
 
         #region Methods
-
-        // Sets the view model state.
-        private void SetState(NewsViewModelState state)
-        {
-            ViewModelStateInternal = state;
-
-            var stateString = Enum.GetName(typeof(NewsViewModelState), state);
-            if (string.IsNullOrEmpty(stateString))
-            {
-                throw new InvalidOperationException("Unknown view model state.");
-            }
-
-            ViewModelState = stateString;
-            Logger.LogDebug($"ViewModel state set: {state}");
-        }
 
         #endregion Methods
     }

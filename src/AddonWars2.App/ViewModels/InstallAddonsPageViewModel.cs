@@ -27,6 +27,39 @@ namespace AddonWars2.App.ViewModels
     using Octokit;
 
     /// <summary>
+    /// Represents <see cref="InstallAddonsPageViewModel"/> states.
+    /// </summary>
+    public enum InstallAddonsViewModelState
+    {
+        /// <summary>
+        /// View model is ready. Default state.
+        /// </summary>
+        Ready,
+
+        /// <summary>
+        /// View model is fetching a list of approved providers.
+        /// </summary>
+        RequestingApprovedProviders,
+
+        /// <summary>
+        /// View model is a list of addons from a selected provider.
+        /// </summary>
+        LoadingAddonsList,
+
+        /// <summary>
+        /// View model failed to update the list of approved providers.
+        /// Similar to Ready, but is used to indicate there is an error occured.
+        /// </summary>
+        FailedToLoadProviders,
+
+        /// <summary>
+        /// View model failed to update the list of approved providers.
+        /// Similar to Ready, but is used to indicate there is an error occured.
+        /// </summary>
+        FailedToLoadAddons,
+    }
+
+    /// <summary>
     /// View model used by install addons view.
     /// </summary>
     public class InstallAddonsPageViewModel : BaseViewModel
@@ -38,9 +71,8 @@ namespace AddonWars2.App.ViewModels
         private readonly IWebStaticData _webStaticData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
 
-        private string _viewModelState = string.Empty;
+        private InstallAddonsViewModelState _viewModelState = InstallAddonsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
-        private InstallAddonsViewModelState _viewModelStateInternal = InstallAddonsViewModelState.Ready;
         private ObservableCollection<ProviderInfo> _providers;
         private ProviderInfo? _selectedProvider;
         private ObservableCollection<AddonItemModel> _addonInfoDataCollection;
@@ -82,43 +114,6 @@ namespace AddonWars2.App.ViewModels
         }
 
         #endregion Constructors
-
-        #region Enums
-
-        /// <summary>
-        /// Represents <see cref="InstallAddonsPageViewModel"/> states.
-        /// </summary>
-        private enum InstallAddonsViewModelState
-        {
-            /// <summary>
-            /// View model is ready. Default state.
-            /// </summary>
-            Ready,
-
-            /// <summary>
-            /// View model is fetching a list of approved providers.
-            /// </summary>
-            RequestingApprovedProviders,
-
-            /// <summary>
-            /// View model is a list of addons from a selected provider.
-            /// </summary>
-            LoadingAddonsList,
-
-            /// <summary>
-            /// View model failed to update the list of approved providers.
-            /// Similar to Ready, but is used to indicate there is an error occured.
-            /// </summary>
-            FailedToLoadProviders,
-
-            /// <summary>
-            /// View model failed to update the list of approved providers.
-            /// Similar to Ready, but is used to indicate there is an error occured.
-            /// </summary>
-            FailedToLoadAddons,
-        }
-
-        #endregion Enums
 
         #region Properties
 
@@ -295,28 +290,14 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the view model state as a string representation
-        /// of <see cref="InstallAddonsViewModelState"/> value.
+        /// Gets or sets the view model state.
         /// </summary>
-        public string ViewModelState
+        public InstallAddonsViewModelState ViewModelState
         {
             get => _viewModelState;
             set
             {
                 SetProperty(ref _viewModelState, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the view model state.
-        /// </summary>
-        private InstallAddonsViewModelState ViewModelStateInternal
-        {
-            get => _viewModelStateInternal;
-            set
-            {
-                SetProperty(ref _viewModelStateInternal, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -359,7 +340,7 @@ namespace AddonWars2.App.ViewModels
 
             ProvidersCollection.Clear();
 
-            SetState(InstallAddonsViewModelState.RequestingApprovedProviders);
+            ViewModelState = InstallAddonsViewModelState.RequestingApprovedProviders;
 
             var id = WebStaticData.GitHubAddonsLibRepositoryId;
             var path = WebStaticData.GitHubAddonsLibApprovedProviders;
@@ -374,26 +355,26 @@ namespace AddonWars2.App.ViewModels
             catch (NotFoundException e)
             {
                 // Repo or branch is not found.
-                SetState(InstallAddonsViewModelState.FailedToLoadProviders);
+                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{Addons.AddonLibProvider.RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
                 return;
             }
             catch (HttpRequestException e)
             {
                 // Bad code from download URL request.
-                SetState(InstallAddonsViewModelState.FailedToLoadProviders);
+                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, "Unable to download the list of approved providers.");
                 return;
             }
             catch (JsonException e)
             {
                 // Deserialization error.
-                SetState(InstallAddonsViewModelState.FailedToLoadProviders);
+                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
                 return;
             }
 
-            SetState(InstallAddonsViewModelState.Ready);
+            ViewModelState = InstallAddonsViewModelState.Ready;
 
             Logger.LogInformation("Providers list updated.");
         }
@@ -408,14 +389,14 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            SetState(InstallAddonsViewModelState.LoadingAddonsList);
+            ViewModelState = InstallAddonsViewModelState.LoadingAddonsList;
 
             AddonInfo addonInfo;
             switch (SelectedProvider.Type)
             {
                 case ProviderInfoHostType.GitHub:
                     Logger.LogDebug("Getting addons from a GitHub host...");
-                    SetState(InstallAddonsViewModelState.FailedToLoadAddons);
+                    ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
                     var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
                     addonInfo = await provider.GetAddonsFromAsync(SelectedProvider);
                     break;
@@ -423,14 +404,14 @@ namespace AddonWars2.App.ViewModels
                     Logger.LogDebug("Getting addons from a standalone host...");
                     throw new NotSupportedException();  // TODO: implementation
                 default:
-                    SetState(InstallAddonsViewModelState.FailedToLoadAddons);
+                    ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
                     Logger.LogWarning("Unsupported host type.");
                     return;
             }
 
             if (addonInfo.Data == null || addonInfo.Schema == null)
             {
-                SetState(InstallAddonsViewModelState.FailedToLoadAddons);
+                ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
                 Logger.LogWarning($"{nameof(addonInfo)} returned invalid data or schema (null value).");
                 return;
             }
@@ -446,7 +427,7 @@ namespace AddonWars2.App.ViewModels
                 }
             }
 
-            SetState(InstallAddonsViewModelState.Ready);
+            ViewModelState = InstallAddonsViewModelState.Ready;
 
             Logger.LogInformation("Addons list updated.");
         }
@@ -461,21 +442,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Commdans Logic
 
         #region Methods
-
-        // Sets the view model state.
-        private void SetState(InstallAddonsViewModelState state)
-        {
-            ViewModelStateInternal = state;
-
-            var stateString = Enum.GetName(typeof(InstallAddonsViewModelState), state);
-            if (string.IsNullOrEmpty(stateString))
-            {
-                throw new InvalidOperationException("Unknown view model state.");
-            }
-
-            ViewModelState = stateString;
-            Logger.LogDebug($"ViewModel state set: {state}");
-        }
 
         // Updates VM value whenever the selected addon changes.
         private void InstallAddonsPageViewModel_SelectedAddonChanged(object? sender, PropertyChangedEventArgs? e)

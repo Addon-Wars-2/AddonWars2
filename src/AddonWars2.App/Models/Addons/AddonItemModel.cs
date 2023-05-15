@@ -88,7 +88,6 @@ namespace AddonWars2.App.Models.Addons
             set
             {
                 SetProperty(ref _installedStatus, value);
-                InstalledStatusString = IntalledStatusToString(value);
             }
         }
 
@@ -98,25 +97,18 @@ namespace AddonWars2.App.Models.Addons
         /// </summary>
         public string InstalledStatusString
         {
-            get => _installedStatusString;
-            private set => SetProperty(ref _installedStatusString, value);
+            get
+            {
+                var stringValue = Enum.GetName(typeof(AddonInstalledStatus), InstalledStatus);
+                if (string.IsNullOrEmpty(stringValue))
+                {
+                    throw new InvalidOperationException("Invalid enum value.");
+                }
+
+                return stringValue;
+            }
         }
 
         #endregion Properties
-
-        #region Methods
-
-        private string IntalledStatusToString(AddonInstalledStatus status)
-        {
-            var stringValue = Enum.GetName(typeof(AddonInstalledStatus), status);
-            if (string.IsNullOrEmpty(stringValue))
-            {
-                throw new InvalidOperationException("Invalid enum value.");
-            }
-
-            return stringValue;
-        }
-
-        #endregion Methods
     }
 }

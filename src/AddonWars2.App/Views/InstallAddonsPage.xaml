@@ -23,6 +23,7 @@
 
     <Page.Resources>
         <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
+        <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
         <CollectionViewSource
             x:Key="ProvidersCollectionView"
             Source="{Binding ProvidersCollection}">
@@ -52,7 +53,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="1.55*"/>
+            <ColumnDefinition Width="1.35*"/>
         </Grid.ColumnDefinitions>
         <Grid
             Grid.Row="1" Grid.Column="0"
@@ -103,10 +104,15 @@
                             <Border
                                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                                 BorderThickness="0">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Path=Name}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Run Text="{Binding Path=Name, Mode=OneWay}"/>
+                                        <Run Text="|"/>
+                                        <Run Text="{Binding Path=TypeString, Mode=OneWay, StringFormat={}&lt;{0}&gt;}"/>
+                                    </TextBlock>
+                                </StackPanel>
                             </Border>
                         </Grid>
                     </DataTemplate>
@@ -158,8 +164,11 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontFamily="{DynamicResource Menomonia}"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                            Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
+                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}">
+                            <Run Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
+                            <Run Text="|"/>
+                            <Run Text="{Binding Path=SelectedItem.TypeString, ElementName=SelectProviderComboBox, Mode=OneWay, StringFormat={}&lt;{0}&gt;}"/>
+                        </TextBlock>
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
@@ -270,7 +279,7 @@
                                 <Grid
                                     x:Name="ItemRootGrid"
                                     Grid.Row="1"
-                                    Margin="10,5.8,0,5.8">
+                                    Margin="10,5.8,10,5.8">
                                     <!-- TODO: An ugly workaround to fit in items propertly. -->
                                     <Border x:Name="ItemRootBorder">
                                         <Grid>
@@ -295,25 +304,6 @@
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                             <TextBlock
-                                                x:Name="InstalledStatusText"
-                                                Grid.Row="0" Grid.Column="1"
-                                                Margin="0,0,5,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                FontFamily="{DynamicResource Menomonia}"
-                                                FontWeight="Normal"
-                                                TextWrapping="NoWrap"
-                                                IsHitTestVisible="False">
-                                                <!--<TextBlock.Effect>
-                                                    <DropShadowEffect
-                                                        Color="{DynamicResource Color.PrimaryPalette.Level0}"
-                                                        ShadowDepth="0.5"
-                                                        Direction="-90"
-                                                        BlurRadius="1"
-                                                        Opacity="0.8"/>
-                                                </TextBlock.Effect>-->
-                                            </TextBlock>
-                                            <TextBlock
                                                 x:Name="AuthorsText"
                                                 Grid.Row="1" Grid.Column="0"
                                                 Grid.ColumnSpan="2"
@@ -336,6 +326,16 @@
                                                 Text="{Binding Data.Tooltip}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
+                                            <TextBlock
+                                                x:Name="InstalledStatusText"
+                                                Grid.Row="0" Grid.Column="1"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontWeight="Normal"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False">
+                                            </TextBlock>
                                         </Grid>
                                     </Border>
                                 </Grid>
@@ -364,15 +364,15 @@
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="Installed">
+                                <DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus1}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="NotInstalled">
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus2}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData.InstalledStatusString, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}" Value="Modified">
+                                </DataTrigger>-->
+                                <DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus3}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
                                 </DataTrigger>
@@ -408,7 +408,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="RequestingApprovedProviders">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="RequestingApprovedProviders">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -428,7 +428,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="LoadingAddonsList">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="LoadingAddonsList">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -448,7 +448,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToLoadProviders">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToLoadProviders">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -468,7 +468,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToLoadAddons">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToLoadAddons">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>

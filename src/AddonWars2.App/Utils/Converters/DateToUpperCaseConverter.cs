@@ -22,7 +22,7 @@ namespace AddonWars2.App.Utils.Converters
         {
             if (targetType != typeof(string))
             {
-                throw new InvalidOperationException($"Target type must be string. Received: {targetType.GetType}");
+                throw new InvalidOperationException($"Target type must be string. Received: {targetType.GetType()}");
             }
 
             return ((DateTime)value).ToString((string)parameter).ToUpperInvariant();

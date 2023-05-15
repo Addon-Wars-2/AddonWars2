@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="InverseBooleanConverter.cs" company="Addon-Wars-2">
+// <copyright file="EnumToStringConverter.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -12,19 +12,28 @@ namespace AddonWars2.App.Utils.Converters
     using System.Windows.Data;
 
     /// <summary>
-    /// Inverts a boolean value.
+    /// Converts a given enumeration to string.
     /// </summary>
-    public class InverseBooleanConverter : IValueConverter
+    public class EnumToStringConverter : IValueConverter
     {
         /// <inheritdoc/>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (targetType != typeof(bool))
+            string? enumString;
+            try
             {
-                throw new InvalidOperationException($"Target type must be a boolean. Received: {targetType.GetType()}");
+                enumString = Enum.GetName(value.GetType(), value);
+                if (string.IsNullOrEmpty(enumString))
+                {
+                    return string.Empty;
+                }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
             }
 
-            return !(bool)value;
+            return enumString;
         }
 
         /// <inheritdoc/>

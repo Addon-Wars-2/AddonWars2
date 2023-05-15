@@ -24,6 +24,7 @@
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
         <convert:DateToUpperCaseConverter x:Key="DateToUpperConverter"/>
         <CollectionViewSource
             x:Key="RssItemsCollectionView"
@@ -319,7 +320,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="Fetching">
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Fetching">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -343,7 +344,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
+                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToUpdate">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -364,7 +365,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}}" Value="FailedToUpdate">
+                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToUpdate">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
