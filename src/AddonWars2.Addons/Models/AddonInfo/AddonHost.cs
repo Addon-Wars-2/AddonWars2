@@ -17,8 +17,10 @@ namespace AddonWars2.Addons.Models.AddonInfo
     {
         #region Fields
 
-        private HostType _hostType = HostType.Standalone;
+        private HostType _hostType;
         private string _hostUrl = string.Empty;
+        private HostVersioning _versioning;
+        private string? _versionUrl = string.Empty;
 
         #endregion Fields
 
@@ -54,6 +56,26 @@ namespace AddonWars2.Addons.Models.AddonInfo
         {
             get => _hostUrl;
             set => _hostUrl = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the addon versioning type.
+        /// </summary>
+        [JsonPropertyName("versioning")]
+        public HostVersioning Versioning
+        {
+            get => _versioning;
+            set => _versioning = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the addon version URL.
+        /// </summary>
+        [JsonPropertyName("version_url")]
+        public string? VersionUrl
+        {
+            get => _versionUrl;
+            set => _versionUrl = value;
         }
 
         #endregion Properties

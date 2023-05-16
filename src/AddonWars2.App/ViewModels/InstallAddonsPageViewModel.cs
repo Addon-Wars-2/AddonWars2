@@ -377,6 +377,7 @@ namespace AddonWars2.App.ViewModels
             }
             catch (RateLimitExceededException e)
             {
+                // TODO: Add GitHub limit counter when GitHub provider is selected.
                 // GitHub API rate limit exceeded.
                 ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");

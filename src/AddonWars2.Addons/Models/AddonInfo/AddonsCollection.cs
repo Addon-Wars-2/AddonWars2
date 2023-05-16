@@ -13,7 +13,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Specifies the addon host type.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum HostType
     {
         /// <summary>
@@ -30,9 +30,28 @@ namespace AddonWars2.Addons.Models.AddonInfo
     }
 
     /// <summary>
+    /// Specifies the addon host versioning type.
+    /// </summary>
+    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
+    public enum HostVersioning
+    {
+        /// <summary>
+        /// The addon version should be determined from the latest commit hash.
+        /// </summary>
+        [EnumMember(Value = "commit_sha")]
+        CommitSha,
+
+        /// <summary>
+        /// The addonversion should be determined from the MD5 hash sum.
+        /// </summary>
+        [EnumMember(Value = "md5sum")]
+        Md5,
+    }
+
+    /// <summary>
     /// Specifies the addon download type.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum DownloadType
     {
         /// <summary>
@@ -51,7 +70,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// <summary>
     /// Specifies the addon install mode.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum InstallMode
     {
         /// <summary>

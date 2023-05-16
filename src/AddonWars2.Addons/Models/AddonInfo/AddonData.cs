@@ -24,11 +24,11 @@ namespace AddonWars2.Addons.Models.AddonInfo
         private string _authors = string.Empty;
         private string _website = string.Empty;
         private IEnumerable<AddonHost>? _hosts;
-        private DownloadType _downloadType = DownloadType.Archive;
-        private InstallMode _installMode = InstallMode.Binary;
+        private DownloadType _downloadType;
+        private InstallMode _installMode;
         private IEnumerable<string>? _requiredAddons;
         private IEnumerable<string>? _conflicts;
-        Dictionary<string, string> _additional;
+        private Dictionary<string, string> _additional;
 
         #endregion Fields
 
