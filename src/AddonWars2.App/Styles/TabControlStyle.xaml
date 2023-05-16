@@ -76,11 +76,11 @@
                             FocusVisualStyle="{TemplateBinding FocusVisualStyle}">
                             <Border
                                 x:Name="InnerBorder"
-                                Margin="10,0,10,0"
+                                Margin="5,0,5,0"
                                 BorderBrush="Transparent"
                                 BorderThickness="0,0,0,2">
                                 <ContentPresenter
-                                    Margin="5,0,5,1"
+                                    Margin="{TemplateBinding Padding}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     ContentSource="Header"/>

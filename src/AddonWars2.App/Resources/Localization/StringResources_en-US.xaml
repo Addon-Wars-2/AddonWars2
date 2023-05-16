@@ -6,7 +6,7 @@
     <!-- Application -->
     <s:String x:Key="S.Application.Title">Addon Wars 2</s:String> <!-- NO TRANSLATION -->
 
-    <!-- MainWindow | Header -->
+    <!-- MainWindow -->
     <s:String x:Key="S.MainWindow.Header.Menu.Language">Language</s:String>
     <s:String x:Key="S.MainWindow.Header.Text.AppName">AddonWars2</s:String>  <!-- NO TRANSLATION -->
     <s:String x:Key="S.MainWindow.Header.Text.AppDescription">Guild Wars 2™: Rindaar's Unofficial Add-On Manager</s:String> <!-- NO TRANSLATION -->
@@ -14,11 +14,10 @@
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Home">GW2 HOME</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">HELP</s:String>
-
-    <!-- MainWindow | Tab Menu -->
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
-    <s:String x:Key="S.MainWindow.TabMenu.Header.Install">Install</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Manage">Manage</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.News">News</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Settings">Settings</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
 
     <!-- Home Page -->
@@ -26,14 +25,6 @@
     <s:String x:Key="S.HomePage.AddonsList.NoInstalledAddonsFound">No installed add-ons found.</s:String>
     <s:String x:Key="S.HomePage.AddonDesc.Header">Description</s:String>
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>
-
-    <!-- News Page -->
-    <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Updating...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Failed to update.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">No internet connection.</s:String>
-    <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
-    <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
 
     <!-- InstallAddons Page -->
     <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
@@ -50,6 +41,18 @@
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Required">Required:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Conflicts">Conflicts:</s:String>
+
+    <!-- News Page -->
+    <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Updating...</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Failed to update.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">No internet connection.</s:String>
+    <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
+    <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
+    
+    <!-- Settings -->
+    <s:String x:Key="S.SettingsPage.TabMenu.Header.General">General</s:String>
+    <s:String x:Key="S.SettingsPage.TabMenu.Header.API">API</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>

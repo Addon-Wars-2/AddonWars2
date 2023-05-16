@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="InstallAddonsPageViewModel.cs" company="Addon-Wars-2">
+// <copyright file="ManageAddonsPageViewModel.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -27,9 +27,9 @@ namespace AddonWars2.App.ViewModels
     using Octokit;
 
     /// <summary>
-    /// Represents <see cref="InstallAddonsPageViewModel"/> states.
+    /// Represents <see cref="ManageAddonsPageViewModel"/> states.
     /// </summary>
-    public enum InstallAddonsViewModelState
+    public enum ManageAddonsViewModelState
     {
         /// <summary>
         /// View model is ready. Default state.
@@ -60,9 +60,9 @@ namespace AddonWars2.App.ViewModels
     }
 
     /// <summary>
-    /// View model used by install addons view.
+    /// View model used by manage addons view.
     /// </summary>
-    public class InstallAddonsPageViewModel : BaseViewModel
+    public class ManageAddonsPageViewModel : BaseViewModel
     {
         #region Fields
 
@@ -71,7 +71,7 @@ namespace AddonWars2.App.ViewModels
         private readonly IWebStaticData _webStaticData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
 
-        private InstallAddonsViewModelState _viewModelState = InstallAddonsViewModelState.Ready;
+        private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
         private ObservableCollection<ProviderInfo> _providers;
         private Dictionary<string, ObservableCollection<AddonItemModel>> _cachedProviders;
@@ -84,14 +84,14 @@ namespace AddonWars2.App.ViewModels
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InstallAddonsPageViewModel"/> class.
+        /// Initializes a new instance of the <see cref="ManageAddonsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
         /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
-        public InstallAddonsPageViewModel(
+        public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             ApplicationConfig appConfig,
             CommonCommands commonCommands,
@@ -111,9 +111,9 @@ namespace AddonWars2.App.ViewModels
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListCommand, () => IsActuallyLoaded == false);
             ReloadProvidersListCommand = new AsyncRelayCommand(
                 ExecuteGetProvidersListCommand,
-                () => ViewModelState == InstallAddonsViewModelState.Ready
-                    || ViewModelState == InstallAddonsViewModelState.FailedToLoadProviders
-                    || ViewModelState == InstallAddonsViewModelState.FailedToLoadAddons);
+                () => ViewModelState == ManageAddonsViewModelState.Ready
+                    || ViewModelState == ManageAddonsViewModelState.FailedToLoadProviders
+                    || ViewModelState == ManageAddonsViewModelState.FailedToLoadAddons);
             GetAddonsFromProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromProviderCommand);
 
             PropertyChangedEventManager.AddHandler(this, InstallAddonsPageViewModel_SelectedAddonChanged, nameof(SelectedAddon));
@@ -316,7 +316,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets the view model state.
         /// </summary>
-        public InstallAddonsViewModelState ViewModelState
+        public ManageAddonsViewModelState ViewModelState
         {
             get => _viewModelState;
             set
@@ -363,7 +363,7 @@ namespace AddonWars2.App.ViewModels
             ProvidersCollection.Clear();
             AddonsCollection.Clear();
 
-            ViewModelState = InstallAddonsViewModelState.RequestingApprovedProviders;
+            ViewModelState = ManageAddonsViewModelState.RequestingApprovedProviders;
 
             var id = WebStaticData.GitHubAddonsLibRepositoryId;
             var path = WebStaticData.GitHubAddonsLibApprovedProviders;
@@ -379,33 +379,33 @@ namespace AddonWars2.App.ViewModels
             {
                 // TODO: Add GitHub limit counter when GitHub provider is selected.
                 // GitHub API rate limit exceeded.
-                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");
                 return;
             }
             catch (NotFoundException e)
             {
                 // Repo or branch is not found.
-                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{Addons.AddonLibProvider.RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
                 return;
             }
             catch (HttpRequestException e)
             {
                 // Bad code from download URL request.
-                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, "Unable to download the list of approved providers.");
                 return;
             }
             catch (JsonException e)
             {
                 // Deserialization error.
-                ViewModelState = InstallAddonsViewModelState.FailedToLoadProviders;
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
                 return;
             }
 
-            ViewModelState = InstallAddonsViewModelState.Ready;
+            ViewModelState = ManageAddonsViewModelState.Ready;
 
             Logger.LogInformation("Providers list updated.");
         }
@@ -420,7 +420,7 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            ViewModelState = InstallAddonsViewModelState.LoadingAddonsList;
+            ViewModelState = ManageAddonsViewModelState.LoadingAddonsList;
 
             // If cached already - load from there.
             if (CachedProvidersCollection.ContainsKey(SelectedProvider.Name))
@@ -432,7 +432,7 @@ namespace AddonWars2.App.ViewModels
                 await LoadAddonsFromWebAndCache(SelectedProvider);
             }
 
-            ViewModelState = InstallAddonsViewModelState.Ready;
+            ViewModelState = ManageAddonsViewModelState.Ready;
 
             Logger.LogInformation("Addons list updated.");
         }
@@ -453,7 +453,7 @@ namespace AddonWars2.App.ViewModels
             {
                 case ProviderInfoHostType.GitHub:
                     Logger.LogDebug("Getting addons from a GitHub host...");
-                    ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
+                    ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
                     var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
                     addonsCollection = await provider.GetAddonsFromAsync(selectedProvider);
                     break;
@@ -461,7 +461,7 @@ namespace AddonWars2.App.ViewModels
                     Logger.LogDebug("Getting addons from a standalone host...");
                     throw new NotSupportedException();  // TODO: implementation
                 default:
-                    ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
+                    ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
                     Logger.LogError("Unsupported host type.");
                     return;
             }
@@ -469,7 +469,7 @@ namespace AddonWars2.App.ViewModels
             // Ensure data was deserialized normally.
             if (addonsCollection.Data == null || addonsCollection.Schema == null)
             {
-                ViewModelState = InstallAddonsViewModelState.FailedToLoadAddons;
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
                 Logger.LogError($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
                 return;
             }

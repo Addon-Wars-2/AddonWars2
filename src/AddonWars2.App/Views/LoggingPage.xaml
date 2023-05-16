@@ -15,7 +15,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="45"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -51,7 +51,7 @@
             BorderThickness="1"
             SnapsToDevicePixels="True">
             <Border.Background>
-                <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level4}" Opacity="0.9"/>
+                <SolidColorBrush Color="{DynamicResource Color.PrimaryPalette.Level5}" Opacity="0.9"/>
             </Border.Background>
             <Grid>
                 <ItemsControl

@@ -115,11 +115,6 @@
                     ItemsSource="{Binding Source={StaticResource InstalledAddonsCollectionView}}"
                     SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
-                    <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
                     <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
@@ -313,14 +308,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <!--<TextBlock
-                    Grid.Row="0"
-                    Margin="0,0,0,9"
-                    VerticalAlignment="Bottom"
-                    FontWeight="Light"
-                    FontStyle="Normal"
-                    FontFamily="{DynamicResource Menomonia}"
-                    Text="Select"/>-->
             <TextBox
                 x:Name="GW2ExecTextBox"
                 Grid.Row="1" Grid.Column="0"

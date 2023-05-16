@@ -289,18 +289,18 @@
                                 Storyboard.TargetName="HomePageTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
-                                    <ExponentialEase EasingMode="EaseOut"/>
+                                    <ExponentialEase EasingMode="EaseInOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
-                        <Storyboard x:Key="InstallAddonsTabStoryboard">
+                        <Storyboard x:Key="ManageAddonsTabStoryboard">
                             <DoubleAnimation
                                 From="0" To="1"
                                 BeginTime="00:00:00" Duration="00:00:0.3"
-                                Storyboard.TargetName="InstallAddonsTab"
+                                Storyboard.TargetName="ManageAddonsTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
-                                    <ExponentialEase EasingMode="EaseOut"/>
+                                    <ExponentialEase EasingMode="EaseInOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
@@ -311,7 +311,18 @@
                                 Storyboard.TargetName="NewsPageTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
-                                    <ExponentialEase EasingMode="EaseOut"/>
+                                    <ExponentialEase EasingMode="EaseInOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                        <Storyboard x:Key="SettingsPageTabStoryboard">
+                            <DoubleAnimation
+                                From="0" To="1"
+                                BeginTime="00:00:00" Duration="00:00:0.3"
+                                Storyboard.TargetName="SettingsPageTab"
+                                Storyboard.TargetProperty="Opacity">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseInOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
@@ -322,12 +333,13 @@
                                 Storyboard.TargetName="LoggingPageTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
-                                    <ExponentialEase EasingMode="EaseOut"/>
+                                    <ExponentialEase EasingMode="EaseInOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
                     </TabControl.Resources>
                     <TabItem
+                        Padding="5,0,5,1"
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Home}"
                         FontFamily="{DynamicResource Menomonia}">
                         <AdornerDecorator>
@@ -344,20 +356,22 @@
                         </AdornerDecorator>
                     </TabItem>
                     <TabItem
-                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Install}"
+                        Padding="5,0,5,1"
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Manage}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
-                            x:Name="InstallAddonsTab"
-                            Source="InstallAddonsPage.xaml"
+                            x:Name="ManageAddonsTab"
+                            Source="ManageAddonsPage.xaml"
                             FocusVisualStyle="{x:Null}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=InstallAddonsTab}">
-                                    <i:ControlStoryboardAction Storyboard="{StaticResource InstallAddonsTabStoryboard}"/>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=ManageAddonsTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource ManageAddonsTabStoryboard}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Frame>
                     </TabItem>
                     <TabItem
+                        Padding="5,0,5,1"
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.News}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
@@ -372,6 +386,22 @@
                         </Frame>
                     </TabItem>
                     <TabItem
+                        Padding="5,0,5,1"
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Settings}"
+                        FontFamily="{DynamicResource Menomonia}">
+                        <Frame
+                            x:Name="SettingsPageTab"
+                            Source="SettingsPage.xaml"
+                            FocusVisualStyle="{x:Null}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=SettingsPageTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource SettingsPageTabStoryboard}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Frame>
+                    </TabItem>
+                    <TabItem
+                        Padding="5,0,5,1"
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame

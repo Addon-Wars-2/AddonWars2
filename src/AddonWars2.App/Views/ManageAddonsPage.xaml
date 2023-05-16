@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="AddonWars2.App.Views.InstallAddonsPage"
+    x:Class="AddonWars2.App.Views.ManageAddonsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,8 +17,8 @@
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
-    Title="InstallAddonsPage"
-    DataContext="{markupex:DISource Type=vm:InstallAddonsPageViewModel}"
+    Title="ManageAddonsPage"
+    DataContext="{markupex:DISource Type=vm:ManageAddonsPageViewModel}"
     ShowsNavigationUI="False">
 
     <Page.Resources>
