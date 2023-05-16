@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="AddonInfo.cs" company="Addon-Wars-2">
+// <copyright file="AddonsCollection.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -87,21 +87,21 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// Represents a Guild Wars 2 add-on "modinfo" file.
     /// </summary>
     [Serializable]
-    public class AddonInfo
+    public class AddonsCollection
     {
         #region Fields
 
-        private IEnumerable<AddonInfoData>? _data;
-        private AddonInfoSchema? _schema;
+        private IEnumerable<AddonData>? _data;
+        private AddonsCollectionSchema? _schema;
 
         #endregion Fields
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddonInfo"/> class.
+        /// Initializes a new instance of the <see cref="AddonsCollection"/> class.
         /// </summary>
-        public AddonInfo()
+        public AddonsCollection()
         {
             // Blank.
         }
@@ -114,7 +114,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         /// Gets or sets the addon data.
         /// </summary>
         [JsonPropertyName("data")]
-        public IEnumerable<AddonInfoData>? Data
+        public IEnumerable<AddonData>? Data
         {
             get => _data;
             set => _data = value;
@@ -124,7 +124,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         /// Gets or sets the template schema.
         /// </summary>
         [JsonPropertyName("schema")]
-        public AddonInfoSchema? Schema
+        public AddonsCollectionSchema? Schema
         {
             get => _schema;
             set => _schema = value;

@@ -68,9 +68,7 @@ namespace AddonWars2.Addons.AddonLibProvider
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(path));
 
-            var repository = await GitHubClientService.Repository.Branch.Get(repositoryId, ApprovedProvidersBranchName);
             var contentList = await GitHubClientService.Repository.Content.GetAllContents(repositoryId);
-
             var repositoryContent = contentList.FirstOrDefault(x => x?.Path == path, null);
             if (repositoryContent == null)
             {
@@ -86,7 +84,7 @@ namespace AddonWars2.Addons.AddonLibProvider
         }
 
         /// <inheritdoc/>
-        public abstract Task<AddonInfo> GetAddonsFromAsync(ProviderInfo provider);
+        public abstract Task<AddonsCollection> GetAddonsFromAsync(ProviderInfo provider);
 
         #endregion Methods
     }

@@ -34,13 +34,13 @@ namespace AddonWars2.App.Models.Addons
 
     /// <summary>
     /// Represents an addon item model inside Install Addons page
-    /// and acts as a wrapper around <see cref="AddonInfoData"/>.
+    /// and acts as a wrapper around <see cref="AddonData"/>.
     /// </summary>
     public class AddonItemModel : ObservableObject
     {
         #region Fields
 
-        private readonly AddonInfoData _data;
+        private readonly AddonData _data;
         private bool _isMarkedToInstall = false;
         private AddonInstalledStatus _installedStatus = AddonInstalledStatus.NotInstalled;
         private string _installedStatusString = string.Empty;
@@ -53,7 +53,7 @@ namespace AddonWars2.App.Models.Addons
         /// Initializes a new instance of the <see cref="AddonItemModel"/> class.
         /// </summary>
         /// <param name="data">Deserialized addon info.</param>
-        public AddonItemModel(AddonInfoData data)
+        public AddonItemModel(AddonData data)
         {
             _data = data ?? throw new ArgumentNullException(nameof(data));
         }
@@ -65,7 +65,7 @@ namespace AddonWars2.App.Models.Addons
         /// <summary>
         /// Gets deserialized addon info.
         /// </summary>
-        public AddonInfoData Data => _data;
+        public AddonData Data => _data;
 
         /// <summary>
         /// Gets or sets a value indicating whether the addon is marked for installation.

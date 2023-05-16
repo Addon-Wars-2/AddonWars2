@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="AddonInfoData.cs" company="Addon-Wars-2">
+// <copyright file="AddonData.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -13,7 +13,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
     /// Represents a Guild Wars 2 add-on, encapsulating the information about it.
     /// </summary>
     [Serializable]
-    public class AddonInfoData
+    public class AddonData
     {
         #region Fields
 
@@ -23,7 +23,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         private string _tooltip = string.Empty;
         private string _authors = string.Empty;
         private string _website = string.Empty;
-        private IEnumerable<AddonInfoHost>? _hosts;
+        private IEnumerable<AddonHost>? _hosts;
         private DownloadType _downloadType = DownloadType.Archive;
         private InstallMode _installMode = InstallMode.Binary;
         private IEnumerable<string>? _requiredAddons;
@@ -35,9 +35,9 @@ namespace AddonWars2.Addons.Models.AddonInfo
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddonInfoData"/> class.
+        /// Initializes a new instance of the <see cref="AddonData"/> class.
         /// </summary>
-        public AddonInfoData()
+        public AddonData()
         {
             // Blank.
         }
@@ -114,7 +114,7 @@ namespace AddonWars2.Addons.Models.AddonInfo
         /// Gets or sets the addon host list.
         /// </summary>
         [JsonPropertyName("hosts")]
-        public IEnumerable<AddonInfoHost>? Hosts
+        public IEnumerable<AddonHost>? Hosts
         {
             get => _hosts;
             set => _hosts = value;

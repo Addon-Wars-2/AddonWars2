@@ -84,24 +84,6 @@ namespace AddonWars2.Addons.RegistryProvider.Models
         }
 
         /// <summary>
-        /// Gets a string value which mirrors <see cref="Type"/> enum value.
-        /// </summary>
-        [JsonIgnore]
-        public string TypeString
-        {
-            get
-            {
-                var stringValue = Enum.GetName(typeof(ProviderInfoHostType), Type);
-                if (string.IsNullOrEmpty(stringValue))
-                {
-                    throw new InvalidOperationException("Invalid enum value.");
-                }
-
-                return stringValue;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the addon registry link.
         /// </summary>
         [JsonPropertyName("link")]

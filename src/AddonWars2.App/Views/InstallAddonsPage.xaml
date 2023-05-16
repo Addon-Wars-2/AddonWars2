@@ -30,7 +30,7 @@
         </CollectionViewSource>
         <CollectionViewSource
             x:Key="AddonsCollectionView"
-            Source="{Binding AddonInfoDataCollection}">
+            Source="{Binding AddonsCollection}">
         </CollectionViewSource>
     </Page.Resources>
 
@@ -57,19 +57,21 @@
         </Grid.ColumnDefinitions>
         <Grid
             Grid.Row="1" Grid.Column="0"
+            Margin="0,0,0,2"
             VerticalAlignment="Bottom">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <ComboBox
                 x:Name="SelectProviderComboBox"
-                Grid.Row="1"
-                Margin="0,0,0,2"
-                Height="20" Width="{Binding ElementName=AddonsListBorder, Path=ActualWidth}"
+                Grid.Column="0"
+                Margin="0,0,2,0"
+                Height="20"
                 IsTabStop="False"
                 Cursor="Hand"
                 Focusable="False"
-                HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                 VerticalAlignment="Center" VerticalContentAlignment="Center"
                 TextBlock.FontFamily="{DynamicResource Menomonia}"
                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
@@ -78,7 +80,8 @@
                 assist:HintAssist.Hint="{DynamicResource S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint}"
                 ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
                 SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
-                Style="{StaticResource ComboBoxStyle}">
+                Style="{StaticResource ComboBoxStyle}"
+                SnapsToDevicePixels="True">
                 <ComboBox.ToolTip>
                     <ToolTip>
                         <ToolTip.Style>
@@ -109,8 +112,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
                                         <Run Text="{Binding Path=Name, Mode=OneWay}"/>
-                                        <Run Text="|"/>
-                                        <Run Text="{Binding Path=TypeString, Mode=OneWay, StringFormat={}&lt;{0}&gt;}"/>
+                                        <Run Text="{Binding Path=Type, Converter={StaticResource EnumToStringConverter}, Mode=OneWay, StringFormat={}&lt;{0}&gt;}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </Border>
@@ -123,12 +125,28 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
+            <Button
+                x:Name="RefreshProvidersListButton"
+                Grid.Column="1"
+                Padding="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Height="20"
+                Cursor="Hand"
+                Focusable="False"
+                Content="{DynamicResource Path.Icon.Refresh}"
+                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                BorderThickness="1"
+                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                Command="{Binding Path=DataContext.ReloadProvidersListCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                ToolTip="{DynamicResource S.ToolTip.Button.ReloadAddonProviders}"/>
         </Grid>
         <Border
             x:Name="AddonsListBorder"
             Grid.Row="2" Grid.Column="0"
             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
             BorderThickness="1"
+            SnapsToDevicePixels="True"
             Focusable="False">
             <Border.Style>
                 <Style TargetType="Border">
@@ -150,7 +168,8 @@
                     Height="20"
                     Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0,0,0,1"
+                    SnapsToDevicePixels="True">
                     <StackPanel
                         Orientation="Horizontal">
                         <TextBlock
@@ -166,8 +185,7 @@
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}">
                             <Run Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
-                            <Run Text="|"/>
-                            <Run Text="{Binding Path=SelectedItem.TypeString, ElementName=SelectProviderComboBox, Mode=OneWay, StringFormat={}&lt;{0}&gt;}"/>
+                            <Run Text="{Binding Path=SelectedItem.Type, ElementName=SelectProviderComboBox, Mode=OneWay, Converter={StaticResource EnumToStringConverter}, StringFormat={}&lt;{0}&gt;}"/>
                         </TextBlock>
                     </StackPanel>
                     <Border.Style>
@@ -184,13 +202,8 @@
                     x:Name="AddonsList"
                     Grid.Row="1"
                     ItemsSource="{Binding Source={StaticResource AddonsCollectionView}}"
-                    SelectedItem="{Binding DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
-                    <!--<i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.LoadRssItemContentCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>-->
                     <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
@@ -492,7 +505,7 @@
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Visible"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
+                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -515,7 +528,7 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddonInfoData, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
+                        <DataTrigger Binding="{Binding Path=DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -566,7 +579,7 @@
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                         TextWrapping="Wrap">
                     <Hyperlink
-                        NavigateUri="{Binding Path=DataContext.SelectedAddonInfoData.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"
+                        NavigateUri="{Binding Path=DataContext.SelectedAddon.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"
                         TextDecorations="None"
                         FocusVisualStyle="{x:Null}">
                     <i:Interaction.Triggers>
@@ -576,7 +589,7 @@
                                 PassEventArgsToCommand="True"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <TextBlock Text="{Binding Path=DataContext.SelectedAddonInfoData.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    <TextBlock Text="{Binding Path=DataContext.SelectedAddon.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </Hyperlink>
                 </TextBlock>
                     <TextBlock

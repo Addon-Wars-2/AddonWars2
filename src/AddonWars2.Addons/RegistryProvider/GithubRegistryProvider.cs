@@ -45,15 +45,15 @@ namespace AddonWars2.Addons.RegistryProvider
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<AddonInfo> GetAddonsFromAsync(ProviderInfo provider)
+        public override async Task<AddonsCollection> GetAddonsFromAsync(ProviderInfo provider)
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(provider));
 
             var response = await HttpClientWrapper.GetAsync(provider.Link);
             using (var content = await response.Content.ReadAsStreamAsync())
             {
-                var providers = await JsonSerializer.DeserializeAsync<AddonInfo>(content);
-                return providers ?? new AddonInfo();
+                var providers = await JsonSerializer.DeserializeAsync<AddonsCollection>(content);
+                return providers ?? new AddonsCollection();
             }
         }
 

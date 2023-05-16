@@ -32,7 +32,7 @@ namespace AddonWars2.App.ViewModels
         private readonly IGameStaticData _gameStaticData;
 
         private bool _isActuallyLoaded = false;
-        private AddonInfoData? _selectedAddon;
+        private AddonData? _selectedAddon;
 
         #endregion Fields
 
@@ -103,12 +103,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a collection of installed add-ons.
         /// </summary>
-        public ObservableCollection<AddonInfoData> InstalledAddonsCollection => new ObservableCollection<AddonInfoData>(); // TODO: replace
+        public ObservableCollection<AddonData> InstalledAddonsCollection => new ObservableCollection<AddonData>(); // TODO: replace
 
         /// <summary>
         /// Gets or sets the currently selected add-on.
         /// </summary>
-        public AddonInfoData? SelectedAddon
+        public AddonData? SelectedAddon
         {
             get => _selectedAddon;
             set

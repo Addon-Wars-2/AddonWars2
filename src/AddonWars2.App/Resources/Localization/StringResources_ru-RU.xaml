@@ -73,5 +73,6 @@
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Обновить ленту новостей.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Открыть лог-файл.</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
+    <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
 
 </ResourceDictionary>
