@@ -10,7 +10,7 @@ namespace AddonWars2.App.Views
     using System;
     using System.Diagnostics;
     using System.Windows.Controls;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Web.WebView2.Core;
     using Microsoft.Web.WebView2.Wpf;
@@ -46,8 +46,8 @@ namespace AddonWars2.App.Views
         public async void InitializeWebView2Async()
         {
             // TODO: Is there a better way to inject this?
-            var appConfig = AW2Application.Current?.Services?.GetRequiredService<ApplicationConfig>();
-            var appDataDir = appConfig.AppDataDir;
+            var appConfig = AW2Application.Current?.Services?.GetRequiredService<IApplicationConfig>();
+            var appDataDir = appConfig!.SessionData.AppDataDir;
 
             // HACK: https://github.com/MicrosoftEdge/WebView2Feedback/issues/299#issuecomment-648812482
             var options = new CoreWebView2EnvironmentOptions("--disk-cache-size=1");

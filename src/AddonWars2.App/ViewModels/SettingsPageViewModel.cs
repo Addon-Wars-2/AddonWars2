@@ -8,7 +8,7 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -18,7 +18,7 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
 
         #endregion Fields
 
@@ -31,7 +31,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
         public SettingsPageViewModel(
             ILogger<NewsPageViewModel> logger,
-            ApplicationConfig appConfig)
+            IApplicationConfig appConfig)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
@@ -44,7 +44,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         #endregion Properties
     }

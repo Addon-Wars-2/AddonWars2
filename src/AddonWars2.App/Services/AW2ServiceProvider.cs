@@ -8,15 +8,17 @@
 namespace AddonWars2.App.Services
 {
     using System;
+    using System.IO;
     using System.Net.Http;
     using System.Reflection;
     using AddonWars2.Addons.Downloaders;
     using AddonWars2.Addons.Downloaders.Interfaces;
     using AddonWars2.Addons.RegistryProvider;
     using AddonWars2.Addons.RegistryProvider.Interfaces;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.Services.HttpClientWrapper;
@@ -29,6 +31,7 @@ namespace AddonWars2.App.Services
     using AddonWars2.Services.XmlSerializerService;
     using AddonWars2.Services.XmlSerializerService.Interfaces;
     using AddonWars2.SharedData;
+    using Config.Net;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Octokit;
@@ -53,8 +56,15 @@ namespace AddonWars2.App.Services
             var defaultProductVersion = Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString() ?? string.Empty;
             var defaultProductComment = $"https://github.com/Addon-Wars-2/AddonWars2";  // TODO: retrieve from static data
 
-            // Models.
-            services.AddSingleton<ApplicationConfig>();
+            // Config.
+            services.AddSingleton<IApplicationConfig>(
+                builder =>
+                {
+                    var settings = new ConfigurationBuilder<IApplicationConfig>()
+                        .UseJsonFile(Path.Join(IOHelper.GenerateApplicationDataDirectory(), "config.json"))
+                        .Build();
+                    return settings;
+                });
 
             // Static data.
             services.AddSingleton<IAppStaticData, AppStaticData>();

@@ -41,7 +41,6 @@ namespace AddonWars2.SharedData
         private const string _gw2WikiHomeTemplate = "https://wiki-{0}.guildwars2.com";
         private const string _gw2RssHome = "https://www.guildwars2.com/feed";
         private const string _gw2RssHomeTemplate = "https://www.guildwars2.com/{0}/feed";
-        private const string _gw2ApiV2Endpoint = "https://api.guildwars2.com/v2";
 
         #endregion GuildWars2
 
@@ -118,11 +117,6 @@ namespace AddonWars2.SharedData
         /// Gets the Guild Wars 2 RSS URL template.
         /// </summary>
         public string Gw2RssHomeTemplate => _gw2RssHomeTemplate;
-
-        /// <summary>
-        /// Gets the Guild Wars 2 API v2 endpoint URL.
-        /// </summary>
-        public string Gw2ApiV2Endpoint => _gw2ApiV2Endpoint;
 
         #endregion Properties
     }

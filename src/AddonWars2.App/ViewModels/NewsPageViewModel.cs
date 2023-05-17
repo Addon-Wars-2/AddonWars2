@@ -15,7 +15,7 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
@@ -61,14 +61,13 @@ namespace AddonWars2.App.ViewModels
 
         private const string URI_DEFAULT = "about:blank";
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
         private readonly IAppStaticData _appStaticData;
         private readonly Gw2RssFeedService _rssFeedService;
         private readonly IHttpClientWrapper _httpClientService;
 
         private string _updateErrorCode = string.Empty;
         private NewsViewModelState _viewModelState = NewsViewModelState.Ready;
-        ////private NewsViewModelState _viewModelStateInternal = NewsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
         private ObservableCollection<Gw2RssFeedItem> _rssFeedCollection = new ObservableCollection<Gw2RssFeedItem>();
         private Gw2RssFeedItem? _displayedRssFeedItem;
@@ -88,7 +87,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="httpClientService">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
-            ApplicationConfig appConfig,
+            IApplicationConfig appConfig,
             IAppStaticData appStaticData,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
             IHttpClientWrapper httpClientService)
@@ -117,7 +116,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets the application static data.
@@ -307,7 +306,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             // Copy CSS file into the RSS feed directory.
-            var rssDirPath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppStaticData.RssFeedDirName ?? string.Empty);
+            var rssDirPath = Path.Combine(AppConfig.SessionData.AppDataDir ?? string.Empty, AppStaticData.RssFeedDirName ?? string.Empty);
             var rssFilePath = Path.Combine(rssDirPath, cssFileName);
             await IOHelper.ResourceCopyToAsync($"AddonWars2.App.Resources.{cssFileName}", rssFilePath);  // TODO: Do not copy if exists?
 
@@ -401,7 +400,7 @@ namespace AddonWars2.App.ViewModels
             }
 
             var extension = ".html";
-            var dirpath = Path.Combine(AppConfig.AppDataDir ?? string.Empty, AppStaticData.RssFeedDirName);
+            var dirpath = Path.Combine(AppConfig.SessionData.AppDataDir ?? string.Empty, AppStaticData.RssFeedDirName);
             var filepath = Path.Combine(dirpath, DisplayedRssFeedItem.Guid ?? string.Empty) + extension;
 
             if (File.Exists(filepath))

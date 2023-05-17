@@ -9,9 +9,10 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Reflection;
     using System.Windows.Controls;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.SharedData;
     using AddonWars2.SharedData.Entities;
@@ -25,10 +26,12 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IAppStaticData _appStaticData;
         private readonly IWebStaticData _webStaticData;
+
+        private CultureInfo _selectedCulture;
 
         #endregion Fields
 
@@ -38,13 +41,13 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/>.</param>
         /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
         /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
-            ApplicationConfig appConfig,
+            IApplicationConfig appConfig,
             CommonCommands commonCommands,
             IAppStaticData appStaticData,
             IWebStaticData webStaticData)
@@ -54,6 +57,8 @@ namespace AddonWars2.App.ViewModels
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
             _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
+
+            _selectedCulture = appStaticData.AppSupportedCultures.First(x => x.Culture == appConfig.UserData.SelectedCultureString);
 
             ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
 
@@ -67,7 +72,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets a reference to a common commands class.
@@ -93,7 +98,7 @@ namespace AddonWars2.App.ViewModels
         /// Gets a value indicating whether the application
         /// was executed in debug or normal mode.
         /// </summary>
-        public bool IsDebugMode => AppConfig.IsDebugMode;
+        public bool IsDebugMode => AppConfig.SessionData.IsDebugMode;
 
         /// <summary>
         /// Gets the GW2 website URL.
@@ -120,10 +125,11 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public CultureInfo SelectedCulture
         {
-            get => AppConfig.SelectedCulture;
+            get => _selectedCulture;
             set
             {
-                SetProperty(AppConfig.SelectedCulture, value, AppConfig, (model, culture) => model.SelectedCulture = culture);
+                SetProperty(ref _selectedCulture, value);
+                AppConfig.UserData.SelectedCultureString = value.Culture;
                 Logger.LogDebug($"Property set: {value}. Culture: {value.Culture}");
             }
         }

@@ -11,7 +11,7 @@ namespace AddonWars2.App.ViewModels
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Windows;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Models.Logging;
     using AddonWars2.App.Services.Interfaces;
     using CommunityToolkit.Mvvm.Input;
@@ -24,7 +24,7 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
         private readonly ILogsAggregator _logsAggregator;
         private readonly IMessageBoxService _messageBoxService;
 
@@ -37,12 +37,12 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/> instance.</param>
         /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> instance.</param>
-        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="messageBoxService">A reference to <see cref="IMessageBoxService"/> instance.</param>
         public LoggingViewModel(
             ILogger<LoggingViewModel> logger,
             ILogsAggregator logsAggregator,
-            ApplicationConfig appConfig,
+            IApplicationConfig appConfig,
             IMessageBoxService messageBoxService)
             : base(logger)
         {
@@ -62,7 +62,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets a reference to <see cref="ILogsAggregator"/> service.
@@ -97,7 +97,7 @@ namespace AddonWars2.App.ViewModels
         {
             try
             {
-                Process.Start(new ProcessStartInfo(AppConfig.LogFilePath)
+                Process.Start(new ProcessStartInfo(AppConfig.SessionData.LogFilePath)
                 {
                     Verb = "open",
                     UseShellExecute = true,

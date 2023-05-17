@@ -12,7 +12,7 @@ namespace AddonWars2.App.ViewModels
     using System.IO;
     using System.Windows;
     using AddonWars2.Addons.Models.AddonInfo;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Services;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.SharedData;
@@ -28,7 +28,7 @@ namespace AddonWars2.App.ViewModels
 
         private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
         private readonly IGameStaticData _gameStaticData;
 
         private bool _isActuallyLoaded = false;
@@ -42,12 +42,11 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         /// <param name="gameStaticData">A reference to <see cref="IGameStaticData"/> instance.</param>
-        /// <param name="addonsManager">A reference to <see cref="AddonsService"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
-            ApplicationConfig appConfig,
+            IApplicationConfig appConfig,
             IGameStaticData gameStaticData)
             : base(logger)
         {
@@ -67,7 +66,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets the game-related static data.

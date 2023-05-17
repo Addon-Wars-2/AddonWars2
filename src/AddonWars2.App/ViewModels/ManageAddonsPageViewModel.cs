@@ -19,7 +19,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Addons.RegistryProvider.Interfaces;
     using AddonWars2.Addons.RegistryProvider.Models;
     using AddonWars2.App.Models.Addons;
-    using AddonWars2.App.Models.Application;
+    using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
@@ -66,7 +66,7 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private readonly ApplicationConfig _applicationConfig;
+        private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IWebStaticData _webStaticData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
@@ -93,7 +93,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
         public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
-            ApplicationConfig appConfig,
+            IApplicationConfig appConfig,
             CommonCommands commonCommands,
             IWebStaticData webStaticData,
             IRegistryProviderFactory registryProviderFactory)
@@ -128,7 +128,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
-        public ApplicationConfig AppConfig => _applicationConfig;
+        public IApplicationConfig AppConfig => _applicationConfig;
 
         /// <summary>
         /// Gets a reference to a common commands class.
