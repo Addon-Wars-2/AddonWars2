@@ -85,12 +85,12 @@ namespace AddonWars2.App
         /// <summary>
         /// Gets the application static data.
         /// </summary>
-        public IAppStaticData AppStaticData { get; private set; }
+        public IAppSharedData AppStaticData { get; private set; }
 
         /// <summary>
         /// Gets the application web-related static data.
         /// </summary>
-        public IWebStaticData WebStaticData { get; private set; }
+        public IWebSharedData WebStaticData { get; private set; }
 
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
@@ -151,8 +151,8 @@ namespace AddonWars2.App
             Services = AW2ServiceProvider.ConfigureServices();
 
             ApplicationConfig = Services.GetRequiredService<IApplicationConfig>();
-            AppStaticData = Services.GetRequiredService<IAppStaticData>();
-            WebStaticData = Services.GetRequiredService<IWebStaticData>();
+            AppStaticData = Services.GetRequiredService<IAppSharedData>();
+            WebStaticData = Services.GetRequiredService<IWebSharedData>();
 
             bool isDebug = false;
             foreach (var arg in e.Args)
@@ -251,7 +251,7 @@ namespace AddonWars2.App
         // Setups logging.
         private void AW2App_SetupLogger()
         {
-            // Locate AppStaticData\Roaming application directory.
+            // Locate AppSharedData\Roaming application directory.
             var appDataDir = IOHelper.GenerateApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
             {
@@ -317,7 +317,7 @@ namespace AddonWars2.App
             ApplicationConfig.SessionData.LogFilePath = logFilePath;
 
             Logger.Information($"Logging started: {logFilePath}");
-            Logger.Information($"Using AppStaticData directory: {appDataDir}");
+            Logger.Information($"Using AppSharedData directory: {appDataDir}");
         }
 
         // Setups the application config and local data.

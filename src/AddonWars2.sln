@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Addons", "AddonW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.StaticData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.SharedData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -68,7 +68,7 @@ namespace AddonWars2.App.ViewModels
 
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
-        private readonly IWebStaticData _webStaticData;
+        private readonly IWebSharedData _webStaticData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
@@ -89,13 +89,13 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
-        /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
+        /// <param name="webStaticData">A reference to <see cref="IWebSharedData"/> instance.</param>
         /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
         public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
-            IWebStaticData webStaticData,
+            IWebSharedData webStaticData,
             IRegistryProviderFactory registryProviderFactory)
             : base(logger)
         {
@@ -138,7 +138,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application web-related static data.
         /// </summary>
-        public IWebStaticData WebStaticData => _webStaticData;
+        public IWebSharedData WebStaticData => _webStaticData;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.

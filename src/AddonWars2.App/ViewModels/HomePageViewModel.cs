@@ -29,7 +29,7 @@ namespace AddonWars2.App.ViewModels
         private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
 
         private readonly IApplicationConfig _applicationConfig;
-        private readonly IGameStaticData _gameStaticData;
+        private readonly IGameSharedData _gameStaticData;
 
         private bool _isActuallyLoaded = false;
         private AddonData? _selectedAddon;
@@ -43,11 +43,11 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
-        /// <param name="gameStaticData">A reference to <see cref="IGameStaticData"/> instance.</param>
+        /// <param name="gameStaticData">A reference to <see cref="IGameSharedData"/> instance.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
             IApplicationConfig appConfig,
-            IGameStaticData gameStaticData)
+            IGameSharedData gameStaticData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
@@ -71,7 +71,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the game-related static data.
         /// </summary>
-        public IGameStaticData GameStaticData => _gameStaticData;
+        public IGameSharedData GameStaticData => _gameStaticData;
 
         /// <summary>
         /// Gets or sets GW2 executable location.

@@ -28,8 +28,8 @@ namespace AddonWars2.App.ViewModels
 
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
-        private readonly IAppStaticData _appStaticData;
-        private readonly IWebStaticData _webStaticData;
+        private readonly IAppSharedData _appStaticData;
+        private readonly IWebSharedData _webStaticData;
 
         private CultureInfo _selectedCulture;
 
@@ -43,14 +43,14 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/>.</param>
-        /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
-        /// <param name="webStaticData">A reference to <see cref="IWebStaticData"/> instance.</param>
+        /// <param name="appStaticData">A reference to <see cref="IAppSharedData"/>.</param>
+        /// <param name="webStaticData">A reference to <see cref="IWebSharedData"/> instance.</param>
         public MainWindowViewModel(
             ILogger<MainWindowViewModel> logger,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
-            IAppStaticData appStaticData,
-            IWebStaticData webStaticData)
+            IAppSharedData appStaticData,
+            IWebSharedData webStaticData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
@@ -82,12 +82,12 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the application static data.
         /// </summary>
-        public IAppStaticData AppStaticData => _appStaticData;
+        public IAppSharedData AppStaticData => _appStaticData;
 
         /// <summary>
         /// Gets a reference to the application web-related static data.
         /// </summary>
-        public IWebStaticData WebStaticData => _webStaticData;
+        public IWebSharedData WebStaticData => _webStaticData;
 
         /// <summary>
         /// Gets a list of available cultures.

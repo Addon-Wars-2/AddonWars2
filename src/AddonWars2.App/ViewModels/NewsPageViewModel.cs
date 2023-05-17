@@ -62,7 +62,7 @@ namespace AddonWars2.App.ViewModels
         private const string URI_DEFAULT = "about:blank";
 
         private readonly IApplicationConfig _applicationConfig;
-        private readonly IAppStaticData _appStaticData;
+        private readonly IAppSharedData _appStaticData;
         private readonly Gw2RssFeedService _rssFeedService;
         private readonly IHttpClientWrapper _httpClientService;
 
@@ -82,13 +82,13 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
-        /// <param name="appStaticData">A reference to <see cref="IAppStaticData"/>.</param>
+        /// <param name="appStaticData">A reference to <see cref="IAppSharedData"/>.</param>
         /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
         /// <param name="httpClientService">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             IApplicationConfig appConfig,
-            IAppStaticData appStaticData,
+            IAppSharedData appStaticData,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
             IHttpClientWrapper httpClientService)
             : base(logger)
@@ -121,7 +121,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the application static data.
         /// </summary>
-        public IAppStaticData AppStaticData => _appStaticData;
+        public IAppSharedData AppStaticData => _appStaticData;
 
         /// <summary>
         /// Gets a reference to the application config.

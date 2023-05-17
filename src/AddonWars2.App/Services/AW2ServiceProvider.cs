@@ -67,9 +67,9 @@ namespace AddonWars2.App.Services
                 });
 
             // Static data.
-            services.AddSingleton<IAppStaticData, AppStaticData>();
-            services.AddSingleton<IWebStaticData, WebStaticData>();
-            services.AddSingleton<IGameStaticData, GameStaticData>();
+            services.AddSingleton<IAppSharedData, AppSharedData>();
+            services.AddSingleton<IWebSharedData, WebSharedData>();
+            services.AddSingleton<IGameSharedData, GameSharedData>();
 
             // View models.
             services.AddSingleton<MainWindowViewModel>();

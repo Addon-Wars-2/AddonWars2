@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="IWebStaticData.cs" company="Addon-Wars-2">
+// <copyright file="IWebSharedData.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,7 +10,7 @@ namespace AddonWars2.SharedData
     /// <summary>
     /// Represents a contract with web-related static data.
     /// </summary>
-    public interface IWebStaticData
+    public interface IWebSharedData
     {
         #region Fields and Constants
 
