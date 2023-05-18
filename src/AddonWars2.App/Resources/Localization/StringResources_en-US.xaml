@@ -28,7 +28,8 @@
 
     <!-- InstallAddons Page -->
     <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Provider selected:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Using:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.GitHubAPILimit">API limit:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Requesting approved providers...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Failed to load providers.</s:String>
@@ -53,6 +54,11 @@
     <!-- Settings -->
     <s:String x:Key="S.SettingsPage.TabMenu.Header.General">General</s:String>
     <s:String x:Key="S.SettingsPage.TabMenu.Header.API">API</s:String>
+    
+    <!-- Settings | General -->
+    <!-- Settings | API -->
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">GitHub API Token</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Enter your API token...</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
@@ -69,6 +75,7 @@
     <s:String x:Key="S.Common.ValidationText.FileExists">Must be an existing file.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2Exe">Must be a Guild Wars 2 executable.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2WriteAccessToDir">No write access to the executable directory.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GitHubAPIToken">Invalid GitHub API token.</s:String>
 
     <!-- ToolTips -->
     <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Click to select the Guild Wars 2 executable path (.exe).</s:String>

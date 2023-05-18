@@ -28,7 +28,8 @@
 
     <!-- InstallAddons Page -->
     <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Выбран провайдер:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Загрузка списка провайдеров...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
@@ -54,6 +55,11 @@
     <s:String x:Key="S.SettingsPage.TabMenu.Header.General">Общее</s:String>
     <s:String x:Key="S.SettingsPage.TabMenu.Header.API">API</s:String>
 
+    <!-- Settings | General -->
+    <!-- Settings | API -->
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">GitHub API токен</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Введите API токен...</s:String>
+
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
 
@@ -69,6 +75,7 @@
     <s:String x:Key="S.Common.ValidationText.FileExists">Путь должен указывать на существующий файл.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2Exe">Путь должен указывать на исполняемый файл Guild Wars 2.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2WriteAccessToDir">Нет прав на запись в директорию указанного файла.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GitHubAPIToken">Указанный GitHub API токен является недействительным.</s:String>
 
     <!-- ToolTips -->
     <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Нажмите, чтобы выбрать путь по исполняемого файла Guild Wars 2 (.exe).</s:String>

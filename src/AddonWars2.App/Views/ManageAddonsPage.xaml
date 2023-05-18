@@ -170,24 +170,62 @@
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="0,0,0,1"
                     SnapsToDevicePixels="True">
-                    <StackPanel
-                        Orientation="Horizontal">
-                        <TextBlock
-                            Margin="5,0,5,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="{DynamicResource Menomonia}"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                            Text="{DynamicResource S.InstallAddonsPage.AddonsList.UsingProvider}"/>
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="{DynamicResource Menomonia}"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}">
-                            <Run Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
-                            <Run Text="{Binding Path=SelectedItem.Type, ElementName=SelectProviderComboBox, Mode=OneWay, Converter={StaticResource EnumToStringConverter}, StringFormat={}&lt;{0}&gt;}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel
+                            Grid.Column="0"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontFamily="{DynamicResource Menomonia}"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                                Text="{DynamicResource S.InstallAddonsPage.AddonsList.UsingProvider}"/>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontFamily="{DynamicResource Menomonia}"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}">
+                                <Run Text="{Binding Path=SelectedItem.Name, ElementName=SelectProviderComboBox, Mode=OneWay}"/>
+                                <Run Text="{Binding Path=SelectedItem.Type, ElementName=SelectProviderComboBox, Mode=OneWay, Converter={StaticResource EnumToStringConverter}, StringFormat={}&lt;{0}&gt;}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontFamily="{DynamicResource Menomonia}"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                                Text="{DynamicResource S.InstallAddonsPage.AddonsList.GitHubAPILimit}"/>
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontFamily="{DynamicResource Menomonia}"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}">
+                                <Run Text="{Binding Path=DataContext.GitHubProviderRateLimitRemaining, RelativeSource={RelativeSource AncestorType=Page},Mode=OneWay}"/>
+                                <Run Text="/"/>
+                                <Run Text="{Binding Path=DataContext.GitHubProviderRateLimit, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"/>
+                            </TextBlock>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedItem.Type, ElementName=SelectProviderComboBox, Mode=OneWay, Converter={StaticResource EnumToStringConverter}}" Value="GitHub">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                        </StackPanel>
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>

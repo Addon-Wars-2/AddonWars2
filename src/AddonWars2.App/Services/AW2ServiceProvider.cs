@@ -21,6 +21,8 @@ namespace AddonWars2.App.Services
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.Services.GitHubClientWrapper;
+    using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
@@ -91,6 +93,7 @@ namespace AddonWars2.App.Services
             services.AddSingleton<IXmlSerializationService, XmlSerializationService>();
             services.AddSingleton<IRegistryProviderFactory, RegistryProviderFactory>();
             services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
+            services.AddSingleton<IGitHubClientWrapper, GitHubClientWrapper>();
 
             services.AddSingleton<GitHubClient>(
                 new GitHubClient(new ProductHeaderValue(defaultProductName, defaultProductVersion)));

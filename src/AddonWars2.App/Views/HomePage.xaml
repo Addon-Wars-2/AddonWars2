@@ -13,6 +13,7 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
+    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -350,6 +351,9 @@
                         <i:CallMethodAction MethodName="UpdateLayout" TargetObject="{Binding ElementName=GW2ExecTextBox}"/>
                     </i:DataTrigger>
                 </i:Interaction.Triggers>
+                <i:Interaction.Behaviors>
+                    <behaviors:UIElementRemoveFocusBehavior/>
+                </i:Interaction.Behaviors>
             </TextBox>
             <Button
                 x:Name="SelectButton"

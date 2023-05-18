@@ -9,6 +9,7 @@ namespace AddonWars2.Addons.RegistryProvider.Interfaces
 {
     using AddonWars2.Addons.Models.AddonInfo;
     using AddonWars2.Addons.RegistryProvider.Models;
+    using Octokit;
 
     /// <summary>
     /// Provides a contract for addon libraries.

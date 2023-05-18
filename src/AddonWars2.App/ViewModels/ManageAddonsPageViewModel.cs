@@ -21,6 +21,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Models.Addons;
     using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
@@ -68,11 +69,14 @@ namespace AddonWars2.App.ViewModels
 
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
-        private readonly IWebSharedData _webStaticData;
+        private readonly IWebSharedData _webSharedData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
+        private readonly IGitHubClientWrapper _gitHubClientWrapper;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
+        private int _gitHubProviderRateLimit = 0;
+        private int _gitHubProviderRateLimitRemaining = 0;
         private ObservableCollection<ProviderInfo> _providers;
         private Dictionary<string, ObservableCollection<AddonItemModel>> _cachedProviders;
         private ProviderInfo? _selectedProvider;
@@ -87,22 +91,25 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="ManageAddonsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
-        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/> instance.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
-        /// <param name="webStaticData">A reference to <see cref="IWebSharedData"/> instance.</param>
+        /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/> instance.</param>
         /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
+        /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
         public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
-            IWebSharedData webStaticData,
-            IRegistryProviderFactory registryProviderFactory)
+            IWebSharedData webSharedData,
+            IRegistryProviderFactory registryProviderFactory,
+            IGitHubClientWrapper gitHubClientWrapper)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
-            _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
+            _webSharedData = webSharedData ?? throw new ArgumentNullException(nameof(webSharedData));
             _registryProviderFactory = registryProviderFactory ?? throw new ArgumentNullException(nameof(registryProviderFactory));
+            _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
 
             _providers = new ObservableCollection<ProviderInfo>();
             _cachedProviders = new Dictionary<string, ObservableCollection<AddonItemModel>>();
@@ -138,7 +145,20 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the application web-related static data.
         /// </summary>
-        public IWebSharedData WebStaticData => _webStaticData;
+        public IWebSharedData WebSharedData => _webSharedData;
+
+        /// <summary>
+        /// Gets or sets the view model state.
+        /// </summary>
+        public ManageAddonsViewModelState ViewModelState
+        {
+            get => _viewModelState;
+            set
+            {
+                SetProperty(ref _viewModelState, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -158,6 +178,34 @@ namespace AddonWars2.App.ViewModels
                     SetProperty(ref _isActuallyLoaded, value);
                     Logger.LogDebug($"Property set: {value}");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of GitHub API requests which
+        /// can be made until the limit reset.
+        /// </summary>
+        public int GitHubProviderRateLimit
+        {
+            get => _gitHubProviderRateLimit;
+            set
+            {
+                SetProperty(ref _gitHubProviderRateLimit, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the remained amount of GitHub API requests which
+        /// can be made until the limit reset.
+        /// </summary>
+        public int GitHubProviderRateLimitRemaining
+        {
+            get => _gitHubProviderRateLimitRemaining;
+            set
+            {
+                SetProperty(ref _gitHubProviderRateLimitRemaining, value);
+                Logger.LogDebug($"Property set: {value}");
             }
         }
 
@@ -313,19 +361,6 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets the view model state.
-        /// </summary>
-        public ManageAddonsViewModelState ViewModelState
-        {
-            get => _viewModelState;
-            set
-            {
-                SetProperty(ref _viewModelState, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
         #endregion Properties
 
         #region Commands
@@ -350,6 +385,11 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public IRegistryProviderFactory RegistryProviderFactory => _registryProviderFactory;
 
+        /// <summary>
+        /// Gets a reference to GitHub client wrapper.
+        /// </summary>
+        public IGitHubClientWrapper GitHubClientWrapper => _gitHubClientWrapper;
+
         #endregion Commands
 
         #region Commands Logic
@@ -365,15 +405,19 @@ namespace AddonWars2.App.ViewModels
 
             ViewModelState = ManageAddonsViewModelState.RequestingApprovedProviders;
 
-            var id = WebStaticData.GitHubAddonsLibRepositoryId;
-            var path = WebStaticData.GitHubAddonsLibApprovedProviders;
+            var id = WebSharedData.GitHubAddonsLibRepositoryId;
+            var path = WebSharedData.GitHubAddonsLibApprovedProviders;
 
             try
             {
                 Logger.LogDebug("Getting providers...");
+
                 var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
                 var providers = await provider.GetApprovedProvidersAsync(id, path);
                 ProvidersCollection = new ObservableCollection<ProviderInfo>(providers);
+
+                GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
+                GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;
             }
             catch (RateLimitExceededException e)
             {
@@ -381,6 +425,13 @@ namespace AddonWars2.App.ViewModels
                 // GitHub API rate limit exceeded.
                 ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
                 Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");
+                return;
+            }
+            catch (AuthorizationException e)
+            {
+                // Invalid API token.
+                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
+                Logger.LogError(e, "Invalid GitHub API token.");
                 return;
             }
             catch (NotFoundException e)

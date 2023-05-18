@@ -12,6 +12,7 @@
     xmlns:convert="clr-namespace:AddonWars2.App.Utils.Converters"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
+    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
@@ -20,6 +21,11 @@
     Title="SettingsPage"
     DataContext="{markupex:DISource Type=vm:SettingsPageViewModel}"
     ShowsNavigationUI="False">
+
+    <Page.Resources>
+        <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
+        <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -85,13 +91,27 @@
                                 Style="{StaticResource ScrollViewerStyle}">
                                 <Grid
                                     x:Name="SettingsGeneralTabInnerGrid"
-                                    Margin="10">
+                                    Margin="10"
+                                    VerticalAlignment="Center">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=SettingsGeneralTabInnerGrid}">
                                             <i:ControlStoryboardAction Storyboard="{StaticResource SettingsGeneralTabStoryboard}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
                                     <TextBlock
+                                        Grid.Row="0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontFamily="{DynamicResource Menomonia}"
+                                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                                        Text="Under construction."/>
+                                    <TextBlock
+                                        Grid.Row="1"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         FontSize="16"
@@ -146,13 +166,13 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock
                                             Grid.Row="0" Grid.Column="0"
-                                            Margin="0,0,0,5"
+                                            Margin="0,0,0,2"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="12"
                                             FontFamily="{DynamicResource Menomonia}"
                                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                                            Text="GitHub API token"/>
+                                            Text="{DynamicResource S.SettingsPage.API.GitHubToken.TextBox.Header}"/>
                                         <TextBox
                                             x:Name="GitHubAPITokenTextBox"
                                             Grid.Row="1" Grid.Column="0"
@@ -163,8 +183,32 @@
                                             Focusable="True"
                                             IsTabStop="False"
                                             IsReadOnly="False"
-                                            assist:HintAssist.Hint="Enter your API token..."
+                                            assist:HintAssist.Hint="{DynamicResource S.SettingsPage.API.GitHubToken.TextBox.Placeholder}"
                                             Style="{DynamicResource TextBoxStyle}">
+                                            <Binding
+                                                Path="DataContext.GitHubApiToken"
+                                                RelativeSource="{RelativeSource AncestorType=Page}"
+                                                Mode="TwoWay"
+                                                UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <validation:GitHubTokenValidityRule ValidatesOnTargetUpdated="True">
+                                                        <validation:GitHubTokenValidityRule.GitHubClientBindingWrapper>
+                                                            <validation:GitHubTokenValidityRuleBindingWrapper GitHubClientWrapper="{Binding Path=Data.GitHubClientWrapper, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
+                                                        </validation:GitHubTokenValidityRule.GitHubClientBindingWrapper>
+                                                    </validation:GitHubTokenValidityRule>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                            <i:Interaction.Triggers>
+                                                <i:DataTrigger Binding="{Binding ElementName=GitHubAPITokenTextBox, Mode=OneWay, Path=(Validation.HasError)}" Value="True">
+                                                    <i:CallMethodAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" MethodName="UpdateLayout"/>
+                                                </i:DataTrigger>
+                                                <!--<i:DataTrigger Binding="{Binding Path=DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Validating">
+                                                    <i:ChangePropertyAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" PropertyName="IsReadOnly" Value="True"/>
+                                                </i:DataTrigger>-->
+                                            </i:Interaction.Triggers>
+                                            <i:Interaction.Behaviors>
+                                                <behaviors:UIElementRemoveFocusBehavior/>
+                                            </i:Interaction.Behaviors>
                                         </TextBox>
                                     </Grid>
                                 </StackPanel>

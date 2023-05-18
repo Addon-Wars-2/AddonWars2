@@ -32,14 +32,14 @@ namespace AddonWars2.App.Utils.Validation
 
         #endregion Constructors
 
-        #region Property
+        #region Properties
 
         /// <summary>
         /// Gets or sets <see cref="Gw2ExecRule"/> parameters wrapper to enable binding.
         /// </summary>
         public Gw2ExecRuleParams ParamsWrapper { get; set; } = new Gw2ExecRuleParams();
 
-        #endregion Property
+        #endregion Properties
 
         #region Methods
 

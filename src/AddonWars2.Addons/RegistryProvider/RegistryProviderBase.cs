@@ -21,7 +21,8 @@ namespace AddonWars2.Addons.AddonLibProvider
     {
         #region Fields
 
-        private static readonly string _approvedProvidersBranchName = "main";
+        private static readonly string _approvedProvidersBranchName = "main";  // TODO: hardcoding
+
         private readonly IHttpClientWrapper _httpClientService;
         private readonly GitHubClient _gitHubClientService;
 
