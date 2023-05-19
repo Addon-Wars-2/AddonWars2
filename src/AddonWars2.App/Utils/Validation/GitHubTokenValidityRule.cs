@@ -8,6 +8,7 @@
 namespace AddonWars2.App.Utils.Validation
 {
     using System;
+    using System.ComponentModel;
     using System.Globalization;
     using System.Threading.Tasks;
     using System.Windows;
@@ -25,8 +26,22 @@ namespace AddonWars2.App.Utils.Validation
 
         // Backing field for the validation error message.
         private readonly string _errorMessage = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.GitHubAPIToken");
+        private readonly BackgroundWorker worker = new BackgroundWorker();
+        private ValidationResult result = ValidationResult.ValidResult;
 
         #endregion Fields
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GitHubTokenValidityRule"/> class.
+        /// </summary>
+        public GitHubTokenValidityRule()
+        {
+            worker.DoWork += worker_DoWork;
+        }
+
+        #endregion Constructors
 
         #region Properties
 
@@ -53,6 +68,35 @@ namespace AddonWars2.App.Utils.Validation
                 return ValidationResult.ValidResult;
             }
 
+            worker.RunWorkerAsync(stringValue);
+
+            //IGitHubClientWrapper? wrapper = null;
+            //Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    wrapper = GitHubClientBindingWrapper.GitHubClientWrapper;
+            //});
+
+            //if (wrapper == null)
+            //{
+            //    return new ValidationResult(false, _errorMessage);
+            //}
+
+            //var isValid = Task.Run(() => CheckValidityAsync(wrapper, stringValue)).GetAwaiter().GetResult();
+            //if (!isValid)
+            //{
+            //    return new ValidationResult(false, _errorMessage);
+            //}
+
+            return result;
+        }
+
+        private async Task<bool> CheckValidityAsync(IGitHubClientWrapper wrapper, string token)
+        {
+            return await wrapper.CheckTokenValidityAsync(token);
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
             IGitHubClientWrapper? wrapper = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -61,21 +105,14 @@ namespace AddonWars2.App.Utils.Validation
 
             if (wrapper == null)
             {
-                return new ValidationResult(false, _errorMessage);
+                result = new ValidationResult(false, _errorMessage);
             }
 
-            var isValid = Task.Run(() => CheckValidityAsync(wrapper, stringValue)).GetAwaiter().GetResult();
+            var isValid = Task.Run(() => CheckValidityAsync(wrapper, (string)e.Argument)).GetAwaiter().GetResult();
             if (!isValid)
             {
-                return new ValidationResult(false, _errorMessage);
+                result = new ValidationResult(false, _errorMessage);
             }
-
-            return ValidationResult.ValidResult;
-        }
-
-        private async Task<bool> CheckValidityAsync(IGitHubClientWrapper wrapper, string token)
-        {
-            return await wrapper.CheckTokenValidityAsync(token);
         }
 
         #endregion Methods

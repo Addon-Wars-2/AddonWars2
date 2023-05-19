@@ -16,9 +16,15 @@ namespace AddonWars2.App.Models.Configuration
     public interface IUserSettings : INotifyPropertyChanged
     {
         /// <summary>
-        /// Gets or sets GitHub API token.
+        /// Gets or sets user settings from General section.
         /// </summary>
-        [Option(Alias = "GitHubApiToken", DefaultValue = "")]
-        public string GitHubApiToken { get; set; }
+        [Option(Alias = "General")]
+        IUserSettingsGeneral UserSettingsGeneral { get; set; }
+
+        /// <summary>
+        /// Gets or sets user settings from API section.
+        /// </summary>
+        [Option(Alias = "API")]
+        IUserSettingsApi UserSettingsApi { get; set; }
     }
 }

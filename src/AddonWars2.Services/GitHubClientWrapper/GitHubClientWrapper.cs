@@ -73,10 +73,13 @@ namespace AddonWars2.Services.GitHubClientWrapper
         #region Methods
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// <see langword="true"/> will be returned if <paramref name="token"/> is equal to <see cref="string.Empty"/>.
+        /// Even though the empty <paramref name="token"/> is invalid itself, setting an empty string to <see cref="ApiToken"/>
+        /// will force <see cref="GitHubClient"/> to perform requests anonymously.
+        /// </remarks>
         public async Task<bool> CheckTokenValidityAsync(string token)
         {
-            // Empty token is valid and means that there is no token and API
-            // access is done anonymously.
             if (token == null)
             {
                 return false;

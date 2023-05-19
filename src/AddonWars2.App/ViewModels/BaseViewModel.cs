@@ -14,7 +14,7 @@ namespace AddonWars2.App.ViewModels
     /// <summary>
     /// A base view model class all application view models should be derived from.
     /// </summary>
-    public class BaseViewModel : ObservableObject
+    public class BaseViewModel : ObservableValidator
     {
         #region Fields
 

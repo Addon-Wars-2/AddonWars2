@@ -13,22 +13,6 @@ namespace AddonWars2.App.ViewModels
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents <see cref="ManageAddonsPageViewModel"/> states.
-    /// </summary>
-    public enum SettingsPageViewModelState
-    {
-        /// <summary>
-        /// View model is ready. Default state.
-        /// </summary>
-        Ready,
-
-        /// <summary>
-        /// View model is validating a value provided to a field.
-        /// </summary>
-        Validating,
-    }
-
-    /// <summary>
     /// View model used by Settings view.
     /// </summary>
     public class SettingsPageViewModel : BaseViewModel
@@ -37,9 +21,8 @@ namespace AddonWars2.App.ViewModels
 
         private readonly IApplicationConfig _applicationConfig;
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
-
-        private SettingsPageViewModelState _viewModelState = SettingsPageViewModelState.Ready;
-        private string _gitHubApiToken = string.Empty;
+        private readonly SettingsGeneralPageViewModel _settingsGeneralPageViewModel;
+        private readonly SettingsApiPageViewModel _settingsApiPageViewModel;
 
         #endregion Fields
 
@@ -51,16 +34,20 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
+        /// <param name="settingsGeneralPageViewModel">A reference to <see cref="ViewModels.SettingsGeneralPageViewModel"/> child view model.</param>
+        /// <param name="settingsApiPageViewModel">A reference to <see cref="ViewModels.SettingsApiPageViewModel"/> child view model.</param>
         public SettingsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             IApplicationConfig appConfig,
-            IGitHubClientWrapper gitHubClientWrapper)
+            IGitHubClientWrapper gitHubClientWrapper,
+            SettingsGeneralPageViewModel settingsGeneralPageViewModel,
+            SettingsApiPageViewModel settingsApiPageViewModel)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
-
-            LoadSettings();
+            _settingsGeneralPageViewModel = settingsGeneralPageViewModel ?? throw new ArgumentNullException(nameof(settingsGeneralPageViewModel));
+            _settingsApiPageViewModel = settingsApiPageViewModel ?? throw new ArgumentNullException(nameof(settingsApiPageViewModel));
         }
 
         #endregion Constructors
@@ -78,57 +65,18 @@ namespace AddonWars2.App.ViewModels
         public IGitHubClientWrapper GitHubClientWrapper => _gitHubClientWrapper;
 
         /// <summary>
-        /// Gets or sets the view model state.
+        /// Gets a reference to the General child view model.
         /// </summary>
-        public SettingsPageViewModelState ViewModelState
-        {
-            get => _viewModelState;
-            set
-            {
-                SetProperty(ref _viewModelState, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        #region Settings.General
-
-        #endregion Settings.General
-
-        #region Settings.API
+        public SettingsGeneralPageViewModel SettingsGeneralPageViewModel => _settingsGeneralPageViewModel;
 
         /// <summary>
-        /// Gets or sets GitHubAPI token.
+        /// Gets a reference to the API child view model.
         /// </summary>
-        public string GitHubApiToken
-        {
-            get => _gitHubApiToken;
-            set
-            {
-                SetProperty(ref _gitHubApiToken, value);
-                AppConfig.UserSettings.GitHubApiToken = value;
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        #endregion Settings.API
+        public SettingsApiPageViewModel SettingsApiPageViewModel => _settingsApiPageViewModel;
 
         #endregion Properties
 
         #region Methods
-
-        private void LoadSettings()
-        {
-            GitHubApiToken = AppConfig.UserSettings.GitHubApiToken;
-            GitHubClientWrapper.ApiToken = GitHubApiToken;
-        }
-
-        #region Settings.General
-
-        #endregion Settings.General
-
-        #region Settings.API
-
-        #endregion Settings.API
 
         #endregion Methods
     }

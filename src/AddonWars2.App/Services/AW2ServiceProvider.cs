@@ -80,6 +80,9 @@ namespace AddonWars2.App.Services
             services.AddSingleton<LoggingViewModel>();
             services.AddSingleton<ManageAddonsPageViewModel>();
             services.AddSingleton<SettingsPageViewModel>();
+            services.AddSingleton<SettingsGeneralPageViewModel>();
+            services.AddSingleton<SettingsApiPageViewModel>();
+
 
             // Commands.
             services.AddSingleton<CommonCommands>();
