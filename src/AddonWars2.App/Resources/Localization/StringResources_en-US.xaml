@@ -75,7 +75,7 @@
     <s:String x:Key="S.Common.ValidationText.FileExists">Must be an existing file.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2Exe">Must be a Guild Wars 2 executable.</s:String>
     <s:String x:Key="S.Common.ValidationText.GW2WriteAccessToDir">No write access to the executable directory.</s:String>
-    <s:String x:Key="S.Common.ValidationText.GitHubAPIToken">Invalid GitHub API token.</s:String>
+    <s:String x:Key="S.Common.ValidationText.GitHubAPIToken">The token is invalid.</s:String>
 
     <!-- ToolTips -->
     <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Click to select the Guild Wars 2 executable path (.exe).</s:String>

@@ -48,6 +48,8 @@ namespace AddonWars2.App.ViewModels
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
             _settingsGeneralPageViewModel = settingsGeneralPageViewModel ?? throw new ArgumentNullException(nameof(settingsGeneralPageViewModel));
             _settingsApiPageViewModel = settingsApiPageViewModel ?? throw new ArgumentNullException(nameof(settingsApiPageViewModel));
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

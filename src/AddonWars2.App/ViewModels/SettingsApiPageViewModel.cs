@@ -50,6 +50,8 @@ namespace AddonWars2.App.ViewModels
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
 
             LoadSettingsFromConfig();
+
+            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors
@@ -121,7 +123,9 @@ namespace AddonWars2.App.ViewModels
         // Loads settings from config on VM init.
         private void LoadSettingsFromConfig()
         {
-            GitHubApiToken = AppConfig.UserSettings.UserSettingsApi.GitHubApiToken;
+            // Do not validate.
+            _gitHubApiToken = AppConfig.UserSettings.UserSettingsApi.GitHubApiToken;
+            OnPropertyChanged(GitHubApiToken);
             GitHubClientWrapper.ApiToken = GitHubApiToken;
         }
 
