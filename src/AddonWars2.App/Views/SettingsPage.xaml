@@ -191,7 +191,7 @@
                                                 Mode="TwoWay"
                                                 UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
-                                                    <validation:GitHubTokenValidityRule ValidatesOnTargetUpdated="True">
+                                                    <validation:GitHubTokenValidityRule ValidatesOnTargetUpdated="False">
                                                         <validation:GitHubTokenValidityRule.GitHubClientBindingWrapper>
                                                             <validation:GitHubTokenValidityRuleBindingWrapper GitHubClientWrapper="{Binding Path=Data.GitHubClientWrapper, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
                                                         </validation:GitHubTokenValidityRule.GitHubClientBindingWrapper>
@@ -202,9 +202,6 @@
                                                 <i:DataTrigger Binding="{Binding ElementName=GitHubAPITokenTextBox, Mode=OneWay, Path=(Validation.HasError)}" Value="True">
                                                     <i:CallMethodAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" MethodName="UpdateLayout"/>
                                                 </i:DataTrigger>
-                                                <!--<i:DataTrigger Binding="{Binding Path=DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Validating">
-                                                    <i:ChangePropertyAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" PropertyName="IsReadOnly" Value="True"/>
-                                                </i:DataTrigger>-->
                                             </i:Interaction.Triggers>
                                             <i:Interaction.Behaviors>
                                                 <behaviors:UIElementRemoveFocusBehavior/>

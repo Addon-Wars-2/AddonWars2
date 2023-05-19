@@ -119,6 +119,7 @@ namespace AddonWars2.App.ViewModels
         private void LoadSettings()
         {
             GitHubApiToken = AppConfig.UserSettings.GitHubApiToken;
+            GitHubClientWrapper.ApiToken = GitHubApiToken;
         }
 
         #region Settings.General

@@ -48,6 +48,11 @@ namespace AddonWars2.App.Utils.Validation
                 return new ValidationResult(false, _errorMessage);
             }
 
+            if (stringValue == string.Empty)
+            {
+                return ValidationResult.ValidResult;
+            }
+
             IGitHubClientWrapper? wrapper = null;
             Application.Current.Dispatcher.Invoke(() =>
             {

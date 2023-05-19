@@ -32,28 +32,28 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </Window.Resources>
 
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                        From="0" To="1"
+                        BeginTime="00:00:00" Duration="00:00:0.3"
+                        RepeatBehavior="1x"
+                        Storyboard.TargetProperty="Opacity"/>
+                    <ObjectAnimationUsingKeyFrames
+                        Storyboard.TargetName="BackgroundImage"
+                        Storyboard.TargetProperty="OpacityMask"
+                        RepeatBehavior="1x" Duration="00:00:0.8"
+                        KeyFrames="{StaticResource BgOpacityMaskDiscreteAnimation}"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
     <Grid>
-        <Grid.Triggers>
-            <EventTrigger RoutedEvent="Loaded">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation
-                            From="0" To="1"
-                            BeginTime="00:00:00" Duration="00:00:0.3"
-                            RepeatBehavior="1x"
-                            Storyboard.TargetProperty="Opacity"/>
-                        <ObjectAnimationUsingKeyFrames
-                            Storyboard.TargetName="BackgroundImage"
-                            Storyboard.TargetProperty="OpacityMask"
-                            RepeatBehavior="1x" Duration="00:00:0.6"
-                            KeyFrames="{StaticResource BgOpacityMaskDiscreteAnimation}"/>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-        </Grid.Triggers>
         <Image x:Name="BackgroundImage" Source="/Assets/Images/aw2_bg_default.png">
             <Image.OpacityMask>
-                <!-- Opacity="0.0" is important: setting it to 1.0 causes a visible lag on appearance. -->
                 <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png" Opacity="0.0"/>
             </Image.OpacityMask>
         </Image>
