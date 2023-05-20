@@ -49,6 +49,8 @@ namespace AddonWars2.App.ViewModels
             _settingsGeneralPageViewModel = settingsGeneralPageViewModel ?? throw new ArgumentNullException(nameof(settingsGeneralPageViewModel));
             _settingsApiPageViewModel = settingsApiPageViewModel ?? throw new ArgumentNullException(nameof(settingsApiPageViewModel));
 
+            InitializeAllSettings();
+
             Logger.LogDebug("Instance initialized.");
         }
 
@@ -69,16 +71,33 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the General child view model.
         /// </summary>
-        public SettingsGeneralPageViewModel SettingsGeneralPageViewModel => _settingsGeneralPageViewModel;
+        public SettingsGeneralPageViewModel SettingsGeneralPageViewModelInstance => _settingsGeneralPageViewModel;
 
         /// <summary>
         /// Gets a reference to the API child view model.
         /// </summary>
-        public SettingsApiPageViewModel SettingsApiPageViewModel => _settingsApiPageViewModel;
+        public SettingsApiPageViewModel SettingsApiPageViewModelInstance => _settingsApiPageViewModel;
 
         #endregion Properties
 
+        #region Commands
+
+        #endregion Commands
+
+        #region Commands Logic
+
+        #endregion Commands Logic
+
         #region Methods
+
+        /// <summary>
+        /// Loads settings from a config file when the view model is loaded for the first time.
+        /// </summary>
+        internal void InitializeAllSettings()
+        {
+            SettingsGeneralPageViewModelInstance.Initialize();
+            SettingsApiPageViewModelInstance.Initialize();
+        }
 
         #endregion Methods
     }

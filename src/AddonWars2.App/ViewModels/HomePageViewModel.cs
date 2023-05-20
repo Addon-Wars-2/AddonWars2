@@ -9,11 +9,13 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Windows;
     using AddonWars2.Addons.Models.AddonInfo;
     using AddonWars2.App.Models.Configuration;
-    using AddonWars2.App.Services;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
@@ -26,13 +28,15 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private const string GW2_REGISTRY_DIR = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
-
+        private static readonly string _fileNotExistsErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.FileExists");
+        private static readonly string _fileNotGw2ExeErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.GW2Exe");
         private readonly IApplicationConfig _applicationConfig;
-        private readonly IGameSharedData _gameStaticData;
+        private readonly IGameSharedData _gameSharedData;
 
         private bool _isActuallyLoaded = false;
         private AddonData? _selectedAddon;
+        private string _gw2ExecPath = string.Empty;
+        private string _gw2DirPath = string.Empty;
 
         #endregion Fields
 
@@ -43,15 +47,15 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
-        /// <param name="gameStaticData">A reference to <see cref="IGameSharedData"/> instance.</param>
+        /// <param name="gameSharedData">A reference to <see cref="IGameSharedData"/> instance.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
             IApplicationConfig appConfig,
-            IGameSharedData gameStaticData)
+            IGameSharedData gameSharedData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
-            _gameStaticData = gameStaticData ?? throw new ArgumentNullException(nameof(gameStaticData));
+            _gameSharedData = gameSharedData ?? throw new ArgumentNullException(nameof(gameSharedData));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
@@ -71,18 +75,29 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets the game-related static data.
         /// </summary>
-        public IGameSharedData GameStaticData => _gameStaticData;
+        public IGameSharedData GameSharedData => _gameSharedData;
 
         /// <summary>
         /// Gets or sets GW2 executable location.
         /// </summary>
+        [CustomValidation(typeof(HomePageViewModel), nameof(ValidateGw2ExecPath_FileExists))]
+        [CustomValidation(typeof(HomePageViewModel), nameof(ValidateGw2ExecPath_IsGw2Executable))]
         public string Gw2ExecPath
         {
-            get => AppConfig.UserData.Gw2FilePath;
+            get => _gw2ExecPath;
             set
             {
-                SetProperty(AppConfig.UserData.Gw2FilePath, value, AppConfig.UserData, (model, filepath) => model.Gw2FilePath = filepath);
-                Logger.LogDebug($"Property set: {value}");
+                SetProperty(ref _gw2ExecPath, value, validate: true);
+
+                if (!GetErrors(nameof(Gw2ExecPath)).Any())
+                {
+                    AppConfig.UserData.Gw2FilePath = value;
+                    Logger.LogDebug($"Property set: {value}");
+                    Gw2DirPath = Path.GetDirectoryName(value) ?? string.Empty;
+                    return;
+                }
+
+                Logger.LogDebug($"Property is invalid and only changed in the UI: {value}");
             }
         }
 
@@ -91,10 +106,11 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         public string Gw2DirPath
         {
-            get => AppConfig.UserData.Gw2DirPath;
+            get => _gw2DirPath;
             set
             {
-                SetProperty(AppConfig.UserData.Gw2DirPath, value, AppConfig.UserData, (model, dirpath) => model.Gw2DirPath = dirpath);
+                SetProperty(ref _gw2DirPath, value);
+                AppConfig.UserData.Gw2DirPath = value;
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -116,21 +132,6 @@ namespace AddonWars2.App.ViewModels
                 Logger.LogDebug($"Property set: {value}");
             }
         }
-
-        /// <summary>
-        /// Gets the GW2 exe file extension from the config object.
-        /// </summary>
-        public string Gw2FileExtension => GameStaticData.Gw2ExecutableExtension;
-
-        /// <summary>
-        /// Gets the GW2 exe product name from the config object.
-        /// </summary>
-        public string Gw2ProductName => GameStaticData.Gw2ProductName;
-
-        /// <summary>
-        /// Gets the GW2 exe file description from the config object.
-        /// </summary>
-        public string Gw2FileDescription => GameStaticData.Gw2FileDescription;
 
         /// <summary>
         /// Gets or sets a value indicating whether the current view model was loaded or not.
@@ -180,16 +181,16 @@ namespace AddonWars2.App.ViewModels
             Logger.LogDebug("Executing command.");
 
             // First try to get the file location from the registry.
-            var regDir = GW2_REGISTRY_DIR;
-            var gw2exe = IOHelper.SearchRegistryKey(regDir, "DisplayIcon") as string;
+            var regKey = GameSharedData.Gw2RegistryKey;
+            var gw2exe = IOHelper.SearchRegistryKey(regKey, "DisplayIcon") as string;
             if (string.IsNullOrEmpty(gw2exe))
             {
                 Logger.LogWarning("Couldn't find GW2 string in the registry.");
                 gw2exe = string.Empty;
             }
 
-            Gw2ExecPath = gw2exe;
             Gw2DirPath = Path.GetDirectoryName(gw2exe) ?? string.Empty;
+            Gw2ExecPath = gw2exe;
 
             Logger.LogInformation("GW2 executable location was set automatically.");
         }
@@ -218,14 +219,53 @@ namespace AddonWars2.App.ViewModels
             // We do this, because the text box could be changed manually, but failed to pass validation.
             // The actual property value does not change in such case, and re-selecting the same file again will not
             // update the text box, since SetProperty internally compares old and new values, which are still the same.
-            OnPropertyChanged(nameof(Gw2ExecPath));
-
-            Gw2DirPath = Path.GetDirectoryName(path) ?? string.Empty;
+            OnPropertyChanged(nameof(Gw2ExecPath));  // TODO: is it still a thing?
         }
 
         #endregion Commands Logic
 
         #region Methods
+
+        #region Validation
+
+        /// <summary>
+        /// Validates <see cref="Gw2ExecPath"/> property.
+        /// </summary>
+        /// <param name="path">GW2 executable path.</param>
+        /// <param name="context">Validation context.</param>
+        /// <returns><see cref="ValidationResult"/> object.</returns>
+        public static ValidationResult? ValidateGw2ExecPath_FileExists(string path, ValidationContext context)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                return new ValidationResult(_fileNotExistsErrorMsg);
+            }
+
+            return ValidationResult.Success;
+        }
+
+        /// <summary>
+        /// Validates <see cref="Gw2ExecPath"/> property.
+        /// </summary>
+        /// <param name="path">GW2 executable path.</param>
+        /// <param name="context">Validation context.</param>
+        /// <returns><see cref="ValidationResult"/> object.</returns>
+        public static ValidationResult? ValidateGw2ExecPath_IsGw2Executable(string path, ValidationContext context)
+        {
+            var instance = (HomePageViewModel)context.ObjectInstance;
+
+            if (string.IsNullOrEmpty(path) ||
+                !(Path.GetExtension(path) == instance.GameSharedData.Gw2ExecutableExtension) ||
+                !(FileVersionInfo.GetVersionInfo(path)?.ProductName?.ToString() == instance.GameSharedData.Gw2ProductName) ||
+                !(FileVersionInfo.GetVersionInfo(path)?.FileDescription?.ToString() == instance.GameSharedData.Gw2FileDescription))
+            {
+                return new ValidationResult(_fileNotGw2ExeErrorMsg);
+            }
+
+            return ValidationResult.Success;
+        }
+
+        #endregion Validation
 
         #endregion Methods
     }

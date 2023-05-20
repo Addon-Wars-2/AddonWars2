@@ -52,6 +52,14 @@ namespace AddonWars2.App.ViewModels
 
         #region Methods
 
+        /// <summary>
+        /// Loads settings from a config file when the view model is loaded for the first time.
+        /// </summary>
+        internal void Initialize()
+        {
+            // Blank.
+        }
+
         #endregion Methods
     }
 }

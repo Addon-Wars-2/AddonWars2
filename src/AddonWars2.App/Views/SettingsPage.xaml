@@ -14,7 +14,6 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
@@ -40,8 +39,7 @@
             TabStripPlacement="Left"
             Focusable="False"
             IsTabStop="False"
-            Style="{DynamicResource MainTabControlStyle}"
-            ItemContainerStyle="{DynamicResource MainWindowTabItemStyle}">
+            Style="{DynamicResource MainTabControlStyle}">
             <TabControl.Resources>
                 <Storyboard x:Key="SettingsGeneralTabStoryboard">
                     <DoubleAnimation
@@ -66,10 +64,22 @@
                     </DoubleAnimation>
                 </Storyboard>
             </TabControl.Resources>
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem" BasedOn="{StaticResource MainWindowTabItemStyle}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentControl
+                                    Content="{Binding Header, RelativeSource={RelativeSource AncestorType=TabItem}}"
+                                    FontFamily="{DynamicResource Menomonia}"/>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.ItemContainerStyle>
             <TabItem
                 Padding="5,0,5,1"
-                Header="{DynamicResource S.SettingsPage.TabMenu.Header.General}"
-                FontFamily="{DynamicResource Menomonia}">
+                Header="{DynamicResource S.SettingsPage.TabMenu.Header.General}">
                 <Grid
                     x:Name="SettingsGeneralTab"
                     FocusVisualStyle="{x:Null}">
@@ -125,8 +135,7 @@
             </TabItem>
             <TabItem
                 Padding="5,15,5,1"
-                Header="{DynamicResource S.SettingsPage.TabMenu.Header.API}"
-                FontFamily="{DynamicResource Menomonia}">
+                Header="{DynamicResource S.SettingsPage.TabMenu.Header.API}">
                 <Grid
                     x:Name="SettingsAPITab"
                     FocusVisualStyle="{x:Null}">
@@ -169,6 +178,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="12"
+                                            FontWeight="Normal"
                                             FontFamily="{DynamicResource Menomonia}"
                                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                                             Text="{DynamicResource S.SettingsPage.API.GitHubToken.TextBox.Header}"/>
@@ -176,7 +186,7 @@
                                             x:Name="GitHubAPITokenTextBox"
                                             Grid.Row="1" Grid.Column="0"
                                             Grid.ColumnSpan="2"
-                                            Width="500" Height="30"
+                                            Width="600" Height="30"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Focusable="True"
@@ -184,7 +194,7 @@
                                             IsReadOnly="False"
                                             assist:HintAssist.Hint="{DynamicResource S.SettingsPage.API.GitHubToken.TextBox.Placeholder}"
                                             Style="{DynamicResource TextBoxStyle}"
-                                            Text="{Binding Path=DataContext.SettingsApiPageViewModel.GitHubApiToken, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
+                                            Text="{Binding Path=DataContext.SettingsApiPageViewModelInstance.GitHubApiToken, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
                                             <i:Interaction.Triggers>
                                                 <i:DataTrigger Binding="{Binding ElementName=GitHubAPITokenTextBox, Mode=OneWay, Path=(Validation.HasError)}" Value="True">
                                                     <i:CallMethodAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" MethodName="UpdateLayout"/>

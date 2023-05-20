@@ -8,9 +8,11 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Utils.Helpers;
@@ -49,8 +51,6 @@ namespace AddonWars2.App.ViewModels
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
 
-            LoadSettingsFromConfig();
-
             Logger.LogDebug("Instance initialized.");
         }
 
@@ -88,13 +88,15 @@ namespace AddonWars2.App.ViewModels
                 }
 
                 GitHubClientWrapper.ApiToken = string.Empty;
-                Logger.LogDebug($"Property set, but invalid: <REDACTED>");
+                Logger.LogDebug($"Property is invalid and only changed in the UI: <REDACTED>");
             }
         }
 
         #endregion Properties
 
         #region Methods
+
+        #region Validation
 
         /// <summary>
         /// Validates <see cref="GitHubApiToken"/> property.
@@ -115,18 +117,27 @@ namespace AddonWars2.App.ViewModels
             }
 
             var instance = (SettingsApiPageViewModel)context.ObjectInstance;
-            var isValid = Task.Run(() => instance.GitHubClientWrapper.CheckTokenValidityAsync(token)).GetAwaiter().GetResult();
+            var isValid = Task.Run(async () => await instance.Validate(token)).GetAwaiter().GetResult();
 
             return isValid ? ValidationResult.Success : new ValidationResult(_gitHubApiTokenErrorMsg);
         }
 
-        // Loads settings from config on VM init.
-        private void LoadSettingsFromConfig()
+        private async Task<bool> Validate(string token)
         {
-            // Do not validate.
+            return await GitHubClientWrapper.CheckTokenValidityAsync(token);
+        }
+
+        #endregion Validation
+
+        /// <summary>
+        /// Loads settings from a config file when the view model is loaded for the first time.
+        /// </summary>
+        internal void Initialize()
+        {
+            //// Do not validate.
             _gitHubApiToken = AppConfig.UserSettings.UserSettingsApi.GitHubApiToken;
-            OnPropertyChanged(GitHubApiToken);
-            GitHubClientWrapper.ApiToken = GitHubApiToken;
+            OnPropertyChanged(nameof(GitHubApiToken));
+            GitHubClientWrapper.ApiToken = _gitHubApiToken;
         }
 
         #endregion Methods

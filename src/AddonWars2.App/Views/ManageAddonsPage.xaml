@@ -13,7 +13,6 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 

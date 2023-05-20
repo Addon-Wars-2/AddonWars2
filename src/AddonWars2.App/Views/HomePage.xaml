@@ -14,7 +14,6 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
-    xmlns:validation="clr-namespace:AddonWars2.App.Utils.Validation"
     xmlns:services="clr-namespace:AddonWars2.App.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
@@ -235,6 +234,7 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
+                    FontSize="16"
                     FontFamily="{DynamicResource Menomonia}"
                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                     Text="{DynamicResource S.HomePage.AddonsList.NoInstalledAddonsFound}">
@@ -319,29 +319,12 @@
                 IsTabStop="False"
                 IsReadOnly="False"
                 assist:HintAssist.Hint="{StaticResource S.Controls.TextBox.SelectGW2ExePlaceholder}"
-                Style="{DynamicResource TextBoxStyle}">
-                <Binding
-                    Path="DataContext.Gw2ExecPath"
-                    RelativeSource="{RelativeSource AncestorType=Page}"
-                    Mode="TwoWay"
-                    UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <validation:FileExistsRule ValidatesOnTargetUpdated="True"/>
-                        <validation:Gw2ExecRule ValidatesOnTargetUpdated="True">
-                            <validation:Gw2ExecRule.ParamsWrapper>
-                                <validation:Gw2ExecRuleParams
-                                    Gw2FileExtension="{Binding Path=Data.Gw2FileExtension, Source={StaticResource DataContextProxy}, Mode=OneWay}"
-                                    Gw2ProductName="{Binding Path=Data.Gw2ProductName, Source={StaticResource DataContextProxy}, Mode=OneWay}"
-                                    Gw2FileDescription="{Binding Path=Data.Gw2FileDescription, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
-                            </validation:Gw2ExecRule.ParamsWrapper>
-                        </validation:Gw2ExecRule>
-                        <validation:Gw2WriteAccessToDirRule ValidatesOnTargetUpdated="True"/>
-                    </Binding.ValidationRules>
-                </Binding>
+                Style="{DynamicResource TextBoxStyle}"
+                Text="{Binding Path=DataContext.Gw2ExecPath, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <!--
                 TODO: Find out the root of the problem and why this workaround works.
                 This is a stupid workaround (need to test though) to resolve Error Template visual problem (idk why it works).
-                It turned out that for some reason if Gw2ExecRule validation passed, only the text error is removed, but not the red border.
+                It turned out that for some reason if validation passed, only the text error is removed, but not the red border.
                 Switching between tabs doesn't help, neither playing around with Loaded event and binding.
                 Somehow forcing the text box to update its layout again WHEN THERE ARE ERRORS resolved the issue.
                 Maybe there is a problem with adorner layers. Maybe there is some racing inside the framework. Maybe I'm just missing something (likely).

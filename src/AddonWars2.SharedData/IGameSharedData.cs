@@ -17,6 +17,7 @@ namespace AddonWars2.SharedData
         private const string _gw2ExecutableExtension = ".exe";
         private const string _gw2ProductName = "Guild Wars 2";
         private const string _gw2FileDescription = "Guild Wars 2 Game Client";
+        private const string _gw2RegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
 
         #endregion Fields and Constants.
 
@@ -36,6 +37,11 @@ namespace AddonWars2.SharedData
         /// Gets the file description of GW2 executable.
         /// </summary>
         public string Gw2FileDescription => _gw2FileDescription;
+
+        /// <summary>
+        /// Gets the GW2 executable registry dir path.
+        /// </summary>
+        public string Gw2RegistryKey => _gw2RegistryKey;
 
         #endregion Properties
     }
