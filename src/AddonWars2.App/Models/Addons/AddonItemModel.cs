@@ -8,29 +8,30 @@
 namespace AddonWars2.App.Models.Addons
 {
     using System;
-    using AddonWars2.Addons.Models.AddonInfo;
+    using System.Linq;
+    using AddonWars2.Core.DTO;
     using CommunityToolkit.Mvvm.ComponentModel;
 
-    /// <summary>
-    /// Specifies addon installation status.
-    /// </summary>
-    public enum AddonInstalledStatus
-    {
-        /// <summary>
-        /// The addon is installed.
-        /// </summary>
-        Installed,
+    ///// <summary>
+    ///// Specifies addon installation status.
+    ///// </summary>
+    //public enum AddonInstalledStatus
+    //{
+    //    /// <summary>
+    //    /// The addon is installed.
+    //    /// </summary>
+    //    Installed,
 
-        /// <summary>
-        /// The addon is not installed.
-        /// </summary>
-        NotInstalled,
+    //    /// <summary>
+    //    /// The addon is not installed.
+    //    /// </summary>
+    //    NotInstalled,
 
-        /// <summary>
-        /// One or more of the addon files were modified.
-        /// </summary>
-        Modified,
-    }
+    //    /// <summary>
+    //    /// One or more of the addon files were modified.
+    //    /// </summary>
+    //    Modified,
+    //}
 
     /// <summary>
     /// Represents an addon item model inside Install Addons page
@@ -41,9 +42,10 @@ namespace AddonWars2.App.Models.Addons
         #region Fields
 
         private readonly AddonData _data;
-        private bool _isMarkedToInstall = false;
-        private AddonInstalledStatus _installedStatus = AddonInstalledStatus.NotInstalled;
-        private string _installedStatusString = string.Empty;
+        private bool _isMarked = false;
+        private bool _isInstalled = false;
+        //private bool _canBeMarked = true;
+        //private AddonInstalledStatus _installedStatus = AddonInstalledStatus.NotInstalled;
 
         #endregion Fields
 
@@ -68,44 +70,134 @@ namespace AddonWars2.App.Models.Addons
         public AddonData Data => _data;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the addon is marked for installation.
+        /// Gets or sets a value indicating whether the addon is marked.
         /// </summary>
-        public bool IsMarkedToInstall
+        public bool IsMarked
         {
-            get => _isMarkedToInstall;
+            get => _isMarked;
             set
             {
-                SetProperty(ref _isMarkedToInstall, value);
+                SetProperty(ref _isMarked, value);
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the addon is already installed.
+        /// Gets or sets a value indicating whether the addon is installed.
         /// </summary>
-        public AddonInstalledStatus InstalledStatus
+        public bool IsInstalled
         {
-            get => _installedStatus;
+            get => _isInstalled;
             set
             {
-                SetProperty(ref _installedStatus, value);
+                SetProperty(ref _isInstalled, value);
             }
         }
 
+        ///// <summary>
+        ///// Gets or sets a value indicating whether the addon can be marked.
+        ///// </summary>
+        //public bool CanBeMarked
+        //{
+        //    get => _canBeMarked;
+        //    set
+        //    {
+        //        SetProperty(ref _canBeMarked, value);
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Gets or sets a value indicating whether the addon is already installed.
+        ///// </summary>
+        //public AddonInstalledStatus InstalledStatus
+        //{
+        //    get => _installedStatus;
+        //    set
+        //    {
+        //        SetProperty(ref _installedStatus, value);
+        //    }
+        //}
+
         /// <summary>
-        /// Gets a value indicating whether the addon is already installed.
-        /// This is a string value which mirrors <see cref="InstalledStatus"/> enum value.
+        /// Gets the addon description.
         /// </summary>
-        public string InstalledStatusString
+        public string AddonDescription
         {
             get
             {
-                var stringValue = Enum.GetName(typeof(AddonInstalledStatus), InstalledStatus);
-                if (string.IsNullOrEmpty(stringValue))
+                if (Data == null || string.IsNullOrEmpty(Data.Description))
                 {
-                    throw new InvalidOperationException("Invalid enum value.");
+                    return string.Empty;
                 }
 
-                return stringValue;
+                return Data.Description;
+            }
+        }
+
+        /// <summary>
+        /// Gets the addon website.
+        /// </summary>
+        public string AddonWebsite
+        {
+            get
+            {
+                if (Data == null || string.IsNullOrEmpty(Data.Website))
+                {
+                    return string.Empty;
+                }
+
+                return Data.Website;
+            }
+        }
+
+        /// <summary>
+        /// Gets the addon authors.
+        /// </summary>
+        public string AddonAuthors
+        {
+            get
+            {
+                if (Data == null || string.IsNullOrEmpty(Data.Authors))
+                {
+                    return string.Empty;
+                }
+
+                return Data.Authors;
+            }
+        }
+
+        /// <summary>
+        /// Getsa a list of required addons for the addon.
+        /// </summary>
+        public string AddonRequired
+        {
+            get
+            {
+                if (Data == null
+                    || Data.RequiredAddons == null
+                    || !Data.RequiredAddons.Any())
+                {
+                    return string.Empty;
+                }
+
+                return string.Join(", ", Data.RequiredAddons) ?? string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of conflicts for the addon.
+        /// </summary>
+        public string AddonConflicts
+        {
+            get
+            {
+                if (Data == null
+                    || Data.Conflicts == null
+                    || !Data.Conflicts.Any())
+                {
+                    return string.Empty;
+                }
+
+                return string.Join(", ", Data.Conflicts) ?? string.Empty;
             }
         }
 

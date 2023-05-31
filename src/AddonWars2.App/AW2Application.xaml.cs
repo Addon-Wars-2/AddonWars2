@@ -17,8 +17,8 @@ namespace AddonWars2.App
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Models.Logging;
-    using AddonWars2.App.Services;
-    using AddonWars2.App.Services.Interfaces;  // Do NOT remove even if shown as unused.
+    using AddonWars2.App.UIServices;
+    using AddonWars2.App.UIServices.Interfaces;  // Do NOT remove even if shown as unused.
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.SharedData;
     using Microsoft.Extensions.DependencyInjection;
@@ -85,12 +85,12 @@ namespace AddonWars2.App
         /// <summary>
         /// Gets the application static data.
         /// </summary>
-        public IAppSharedData AppStaticData { get; private set; }
+        public IAppSharedData AppSharedData { get; private set; }
 
         /// <summary>
         /// Gets the application web-related static data.
         /// </summary>
-        public IWebSharedData WebStaticData { get; private set; }
+        public IWebSharedData WebSharedData { get; private set; }
 
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
@@ -151,8 +151,8 @@ namespace AddonWars2.App
             Services = AW2ServiceProvider.ConfigureServices();
 
             ApplicationConfig = Services.GetRequiredService<IApplicationConfig>();
-            AppStaticData = Services.GetRequiredService<IAppSharedData>();
-            WebStaticData = Services.GetRequiredService<IWebSharedData>();
+            AppSharedData = Services.GetRequiredService<IAppSharedData>();
+            WebSharedData = Services.GetRequiredService<IWebSharedData>();
 
             bool isDebug = false;
             foreach (var arg in e.Args)
@@ -259,7 +259,7 @@ namespace AddonWars2.App
             }
 
             // Locate the logs directory within the application directory.
-            var logsDirPath = Path.Join(appDataDir, AppStaticData.LogDirName);
+            var logsDirPath = Path.Join(appDataDir, AppSharedData.LogDirName);
             if (!Directory.Exists(logsDirPath))
             {
                 Directory.CreateDirectory(logsDirPath);
@@ -267,7 +267,7 @@ namespace AddonWars2.App
 
             // Session log file will contain startup datetime in milliseconds format.
             var unixMsDateTime = ((DateTimeOffset)StartupDateTime).ToUnixTimeMilliseconds();
-            var prefix = ApplicationConfig.SessionData.IsDebugMode ? AppStaticData.LogFilePrefixDebug : AppStaticData.LogFilePrefix;
+            var prefix = ApplicationConfig.SessionData.IsDebugMode ? AppSharedData.LogFilePrefixDebug : AppSharedData.LogFilePrefix;
             var logFilePath = Path.Join(logsDirPath, $"{prefix}{unixMsDateTime}.txt");
 
             if (ApplicationConfig.SessionData.IsDebugMode)
@@ -329,7 +329,7 @@ namespace AddonWars2.App
             Logger.Information($"Application culture selected: {actuallySelected}");
 
             // Double check to make sure shared data contains the information about this culture.
-            if (AppStaticData.AppSupportedCultures.FindIndex(x => x.Culture == actuallySelected) < 0)
+            if (AppSharedData.AppSupportedCultures.FindIndex(x => x.Culture == actuallySelected) < 0)
             {
                 throw new NotSupportedException($"Could not find the provider culture ({ApplicationConfig.UserData.SelectedCultureString}) in shared data.");
             }
@@ -339,16 +339,21 @@ namespace AddonWars2.App
 
             // For the rest ANet and GW2 services we also check if the selected culture is supported by them.
             // That means, that the app selected culture may differ from the one used for ANet and GW2 services.
-            var culture = AppStaticData.AnetSupportedCultures.FirstOrDefault(x => x.Culture == ApplicationConfig.UserData.SelectedCultureString, AppStaticData.DefaultCulture);
+            var culture = AppSharedData.AnetSupportedCultures.FirstOrDefault(x => x.Culture == ApplicationConfig.UserData.SelectedCultureString, AppSharedData.DefaultCulture);
 
             Logger.Information($"A culture for ANet and GW2 selected: {culture}");
 
-            // Now use templates to setup ANet and GW2 service links with the selected culture.
-            ApplicationConfig.UserData.AnetHome = string.Format(WebStaticData.AnetHomeTemplate, culture.ShortName.ToLower());
-            ApplicationConfig.UserData.Gw2Home = string.Format(WebStaticData.Gw2HomeTemplate, culture.ShortName.ToLower());
-            ApplicationConfig.UserData.Gw2WikiHome = string.Format(WebStaticData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
-            ApplicationConfig.UserData.Gw2Rss = string.Format(WebStaticData.Gw2RssHomeTemplate, culture.ShortName.ToLower());
-            ApplicationConfig.UserData.AnetHome = string.Format(WebStaticData.AnetHomeTemplate, culture.ShortName.ToLower());
+            // Now use templates to setup ANet and GW2 service links with the selected culture. 
+            ApplicationConfig.UserData.AnetHome = string.Format(WebSharedData.AnetHomeTemplate, culture.ShortName.ToLower());
+            ApplicationConfig.UserData.Gw2Home = string.Format(WebSharedData.Gw2HomeTemplate, culture.ShortName.ToLower());
+            ApplicationConfig.UserData.Gw2WikiHome = string.Format(WebSharedData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
+            ApplicationConfig.UserData.Gw2Rss = string.Format(WebSharedData.Gw2RssHomeTemplate, culture.ShortName.ToLower());
+            ApplicationConfig.UserData.AnetHome = string.Format(WebSharedData.AnetHomeTemplate, culture.ShortName.ToLower());
+
+            // Setup the rest.
+            // TODO: maybe move out to its own method?
+            ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
+            ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
 
             Logger.Debug($"Configurated.");
         }

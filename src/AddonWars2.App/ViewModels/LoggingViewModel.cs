@@ -13,7 +13,7 @@ namespace AddonWars2.App.ViewModels
     using System.Windows;
     using AddonWars2.App.Models.Configuration;
     using AddonWars2.App.Models.Logging;
-    using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.UIServices.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 

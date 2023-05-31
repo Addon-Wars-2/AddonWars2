@@ -14,7 +14,7 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
-    xmlns:services="clr-namespace:AddonWars2.App.Services"
+    xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     DataContext="{markupex:DISource Type=vm:HomePageViewModel}"
@@ -235,6 +235,7 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     FontSize="16"
+                    FontWeight="Light"
                     FontFamily="{DynamicResource Menomonia}"
                     Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                     Text="{DynamicResource S.HomePage.AddonsList.NoInstalledAddonsFound}">
@@ -356,9 +357,8 @@
                 ToolTip="{DynamicResource S.ToolTip.Button.SelectGw2Path}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
-                        <i:CallMethodAction
-                            TargetObject="{Binding RelativeSource={RelativeSource AncestorType=Page}}"
-                            MethodName="OpenFileDialog_OnClick"/>
+                        <i:InvokeCommandAction
+                            Command="{Binding OpenFileDialogCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                         <i:InvokeCommandAction
                             Command="{Binding Path=DataContext.UpdateGw2ExePathCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                             CommandParameter="{Binding Path=(assist:DialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>

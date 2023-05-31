@@ -398,4 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 # ADDONWARS2
-[Aa]ssets-source/
+_[Aa]ssets/
+_[Tt]ools/

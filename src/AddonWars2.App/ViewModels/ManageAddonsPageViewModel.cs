@@ -10,18 +10,23 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.Linq;
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using AddonWars2.Addons.Models.AddonInfo;
-    using AddonWars2.Addons.RegistryProvider.Interfaces;
-    using AddonWars2.Addons.RegistryProvider.Models;
     using AddonWars2.App.Models.Addons;
     using AddonWars2.App.Models.Configuration;
+    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.DependencyResolver.Enums;
+    using AddonWars2.DependencyResolver.Interfaces;
+    using AddonWars2.DependencyResolver.Models;
+    using AddonWars2.Provider;
+    using AddonWars2.Provider.Enums;
+    using AddonWars2.Provider.Interfaces;
+    using AddonWars2.Provider.Models;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
+    using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.SharedData;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
@@ -48,16 +53,14 @@ namespace AddonWars2.App.ViewModels
         LoadingAddonsList,
 
         /// <summary>
-        /// View model failed to update the list of approved providers.
-        /// Similar to Ready, but is used to indicate there is an error occured.
+        /// View model is in a process of resolving selected addons dependencies.
         /// </summary>
-        FailedToLoadProviders,
+        ResolvingDependencies,
 
         /// <summary>
-        /// View model failed to update the list of approved providers.
-        /// Similar to Ready, but is used to indicate there is an error occured.
+        /// View model has failed to perform an operation.
         /// </summary>
-        FailedToLoadAddons,
+        Error,
     }
 
     /// <summary>
@@ -67,20 +70,31 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private static readonly string _networkConnectionErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.NoInternetConnection");
+        private static readonly string _requestingApprovedProvidersMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder");
+        private static readonly string _requestingApprovedProvidersErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder");
+        private static readonly string _loadingAddonsListMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder");
+        private static readonly string _loadingAddonsListErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder");
+        private static readonly string _resolvingDependenciesErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder");
+
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IWebSharedData _webSharedData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
+        private readonly IDependencyResolverFactory _dependencyResolverFactory;
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
+        private readonly IHttpClientWrapper _httpClientWrapper;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
+        private string _viewModelStatusString = string.Empty;
         private bool _isActuallyLoaded = false;
         private int _gitHubProviderRateLimit = 0;
         private int _gitHubProviderRateLimitRemaining = 0;
-        private ObservableCollection<ProviderInfo> _providers;
-        private Dictionary<string, ObservableCollection<AddonItemModel>> _cachedProviders;
+        private ObservableCollection<ProviderInfo> _providers = new ObservableCollection<ProviderInfo>();
+        private ObservableCollection<AddonItemModel> _selectedProviderAddonsCollection = new ObservableCollection<AddonItemModel>();
+        private Dictionary<string, ObservableCollection<AddonItemModel>> _cachedAddonsCollection = new Dictionary<string, ObservableCollection<AddonItemModel>>();
+        private DGraph<IDNode> _dependencyGraph = new DGraph<IDNode>();
         private ProviderInfo? _selectedProvider;
-        private ObservableCollection<AddonItemModel> _addonsCollection;
         private AddonItemModel? _selectedAddon;
 
         #endregion Fields
@@ -94,36 +108,39 @@ namespace AddonWars2.App.ViewModels
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
         /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/> instance.</param>
-        /// <param name="registryProviderFactory">A reference to <see cref="Addons.RegistryProvider.GithubRegistryProvider"/> instance.</param>
+        /// <param name="registryProviderFactory">A reference to <see cref="GithubRegistryProvider"/> instance.</param>
+        /// <param name="dependencyResolverFactory">A reference to <see cref="IDependencyResolverFactory"/> instance.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
+        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
             IWebSharedData webSharedData,
             IRegistryProviderFactory registryProviderFactory,
-            IGitHubClientWrapper gitHubClientWrapper)
+            IDependencyResolverFactory dependencyResolverFactory,
+            IGitHubClientWrapper gitHubClientWrapper,
+            IHttpClientWrapper httpClientWrapper)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _webSharedData = webSharedData ?? throw new ArgumentNullException(nameof(webSharedData));
             _registryProviderFactory = registryProviderFactory ?? throw new ArgumentNullException(nameof(registryProviderFactory));
+            _dependencyResolverFactory = dependencyResolverFactory ?? throw new ArgumentNullException(nameof(dependencyResolverFactory));
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
+            _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
 
-            _providers = new ObservableCollection<ProviderInfo>();
-            _cachedProviders = new Dictionary<string, ObservableCollection<AddonItemModel>>();
-            _addonsCollection = new ObservableCollection<AddonItemModel>();
-
-            GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListCommand, () => IsActuallyLoaded == false);
+            GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
             ReloadProvidersListCommand = new AsyncRelayCommand(
-                ExecuteGetProvidersListCommand,
+                ExecuteGetProvidersListAsyncCommand,
                 () => ViewModelState == ManageAddonsViewModelState.Ready
-                    || ViewModelState == ManageAddonsViewModelState.FailedToLoadProviders
-                    || ViewModelState == ManageAddonsViewModelState.FailedToLoadAddons);
-            GetAddonsFromProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromProviderCommand);
-
-            PropertyChangedEventManager.AddHandler(this, InstallAddonsPageViewModel_SelectedAddonChanged, nameof(SelectedAddon));
+                    || ViewModelState == ManageAddonsViewModelState.Error);
+            GetAddonsFromSelectedProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromSelectedProviderAsyncCommand);
+            ResolveAddonDependenciesCommand = new RelayCommand<AddonItemModel>(
+                ExecuteResolveAddonDependenciesCommand,
+                (item) => ViewModelState == ManageAddonsViewModelState.Ready
+                    || ViewModelState == ManageAddonsViewModelState.Error);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -148,6 +165,26 @@ namespace AddonWars2.App.ViewModels
         public IWebSharedData WebSharedData => _webSharedData;
 
         /// <summary>
+        /// Gets a reference to a registry provider factory.
+        /// </summary>
+        public IRegistryProviderFactory RegistryProviderFactory => _registryProviderFactory;
+
+        /// <summary>
+        /// Gets a reference to a dependency resolver factory.
+        /// </summary>
+        public IDependencyResolverFactory DependencyResolverFactory => _dependencyResolverFactory;
+
+        /// <summary>
+        /// Gets a reference to GitHub client wrapper.
+        /// </summary>
+        public IGitHubClientWrapper GitHubClientWrapper => _gitHubClientWrapper;
+
+        /// <summary>
+        /// Gets a reference to Http client wrapper.
+        /// </summary>
+        public IHttpClientWrapper HttpClientWrapper => _httpClientWrapper;
+
+        /// <summary>
         /// Gets or sets the view model state.
         /// </summary>
         public ManageAddonsViewModelState ViewModelState
@@ -156,6 +193,19 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _viewModelState, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a general status message.
+        /// </summary>
+        public string ViewModelStatusString
+        {
+            get => _viewModelStatusString;
+            set
+            {
+                SetProperty(ref _viewModelStatusString, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -210,22 +260,6 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a cached list of addon providers.
-        /// </summary>
-        /// <remarks>
-        /// Providers and addons data are cached in the dictionary when loaded once.
-        /// </remarks>
-        public Dictionary<string, ObservableCollection<AddonItemModel>> CachedProvidersCollection
-        {
-            get => _cachedProviders;
-            set
-            {
-                SetProperty(ref _cachedProviders, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a list of loaded addon providers.
         /// </summary>
         public ObservableCollection<ProviderInfo> ProvidersCollection
@@ -254,12 +288,36 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets or sets a list of addons.
         /// </summary>
-        public ObservableCollection<AddonItemModel> AddonsCollection
+        public ObservableCollection<AddonItemModel> SelectedProviderAddonsCollection
         {
-            get => _addonsCollection;
+            get => _selectedProviderAddonsCollection;
             set
             {
-                SetProperty(ref _addonsCollection, value);
+                SetProperty(ref _selectedProviderAddonsCollection, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a list of cached addons.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Each key represents a provider's name since is it unique.
+        /// The key's value represents a cached collection of addons previously loaded from this provider.
+        /// </para>
+        /// <para>
+        /// Addons are added in this dictionary once they were loaded from a selected provider.
+        /// This is done to avoid sending web requests for web-hosted providers every time
+        /// it is selected from the list of available providers.
+        /// </para>
+        /// </remarks>
+        public Dictionary<string, ObservableCollection<AddonItemModel>> CachedAddonsCollection
+        {
+            get => _cachedAddonsCollection;
+            set
+            {
+                SetProperty(ref _cachedAddonsCollection, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -274,90 +332,6 @@ namespace AddonWars2.App.ViewModels
             {
                 SetProperty(ref _selectedAddon, value);
                 Logger.LogDebug($"Property set: {value}, internal_name={value?.Data.InternalName}");
-            }
-        }
-
-        /// <summary>
-        /// Gets the selected addon description.
-        /// </summary>
-        public string SelectedAddonDescription
-        {
-            get
-            {
-                if (SelectedAddon == null || string.IsNullOrEmpty(SelectedAddon.Data.Description))
-                {
-                    return "None";
-                }
-
-                return SelectedAddon.Data.Description;
-            }
-        }
-
-        /// <summary>
-        /// Gets the selected addon website.
-        /// </summary>
-        public string SelectedAddonWebsite
-        {
-            get
-            {
-                if (SelectedAddon == null || string.IsNullOrEmpty(SelectedAddon.Data.Website))
-                {
-                    return "None";
-                }
-
-                return SelectedAddon.Data.Website;
-            }
-        }
-
-        /// <summary>
-        /// Gets the selected addon authors.
-        /// </summary>
-        public string SelectedAddonAuthors
-        {
-            get
-            {
-                if (SelectedAddon == null || string.IsNullOrEmpty(SelectedAddon.Data.Authors))
-                {
-                    return "None";
-                }
-
-                return SelectedAddon.Data.Authors;
-            }
-        }
-
-        /// <summary>
-        /// Getsa a list of required addons for the selected addon.
-        /// </summary>
-        public string SelectedAddonRequired
-        {
-            get
-            {
-                if (SelectedAddon == null
-                    || SelectedAddon.Data.RequiredAddons == null
-                    || SelectedAddon.Data.RequiredAddons.Count() == 0)
-                {
-                    return "None";
-                }
-
-                return string.Join(", ", SelectedAddon.Data.RequiredAddons) ?? "None";
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of conflicts with the selected addon authors.
-        /// </summary>
-        public string SelectedAddonConflicts
-        {
-            get
-            {
-                if (SelectedAddon == null
-                    || SelectedAddon.Data.Conflicts == null
-                    || SelectedAddon.Data.Conflicts.Count() == 0)
-                {
-                    return "None";
-                }
-
-                return string.Join(", ", SelectedAddon.Data.Conflicts) ?? "None";
             }
         }
 
@@ -378,35 +352,42 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a command which loads a list of addons from a selected provider.
         /// </summary>
-        public AsyncRelayCommand GetAddonsFromProviderCommand { get; private set; }
+        public AsyncRelayCommand GetAddonsFromSelectedProviderCommand { get; private set; }
 
         /// <summary>
-        /// Gets a reference to a registry provider factory.
+        /// Gets a command which marks or unmarks addons based of their dependencies (required addons).
         /// </summary>
-        public IRegistryProviderFactory RegistryProviderFactory => _registryProviderFactory;
-
-        /// <summary>
-        /// Gets a reference to GitHub client wrapper.
-        /// </summary>
-        public IGitHubClientWrapper GitHubClientWrapper => _gitHubClientWrapper;
+        public RelayCommand<AddonItemModel> ResolveAddonDependenciesCommand { get; private set; }
 
         #endregion Commands
 
         #region Commands Logic
 
+        #region GetProvidersListCommand
+
         // GetProvidersListCommand command logic.
-        private async Task ExecuteGetProvidersListCommand()
+        private async Task ExecuteGetProvidersListAsyncCommand()
         {
             Logger.LogDebug("Executing command.");
 
-            CachedProvidersCollection.Clear();
             ProvidersCollection.Clear();
-            AddonsCollection.Clear();
+            SelectedProviderAddonsCollection.Clear();
+            CachedAddonsCollection.Clear();
 
-            ViewModelState = ManageAddonsViewModelState.RequestingApprovedProviders;
+            SetViewModelState(ManageAddonsViewModelState.RequestingApprovedProviders, _requestingApprovedProvidersMsg);
+
+            if (!HttpClientWrapper.IsNetworkAvailable())
+            {
+                SetViewModelState(ManageAddonsViewModelState.Error, _networkConnectionErrorMsg);
+                Logger.LogError($"{ViewModelStatusString}");
+
+                return;
+            }
 
             var id = WebSharedData.GitHubAddonsLibRepositoryId;
             var path = WebSharedData.GitHubAddonsLibApprovedProviders;
+            var finalState = ManageAddonsViewModelState.Ready;
+            var finalStatusString = string.Empty;
 
             try
             {
@@ -414,55 +395,72 @@ namespace AddonWars2.App.ViewModels
 
                 var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
                 var providers = await provider.GetApprovedProvidersAsync(id, path);
-                ProvidersCollection = new ObservableCollection<ProviderInfo>(providers);
+                foreach (var item in providers)
+                {
+                    ProvidersCollection.Add(item);
+                }
 
                 GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
                 GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;
             }
             catch (RateLimitExceededException e)
             {
-                // TODO: Add GitHub limit counter when GitHub provider is selected.
                 // GitHub API rate limit exceeded.
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
+                finalState = ManageAddonsViewModelState.Error;
+                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");
-                return;
             }
             catch (AuthorizationException e)
             {
                 // Invalid API token.
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
+                finalState = ManageAddonsViewModelState.Error;
+                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Invalid GitHub API token.");
-                return;
             }
             catch (NotFoundException e)
             {
                 // Repo or branch is not found.
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
-                Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{Addons.AddonLibProvider.RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
-                return;
+                finalState = ManageAddonsViewModelState.Error;
+                finalStatusString = _requestingApprovedProvidersErrorMsg;
+                Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
             }
             catch (HttpRequestException e)
             {
                 // Bad code from download URL request.
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
+                finalState = ManageAddonsViewModelState.Error;
+                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Unable to download the list of approved providers.");
-                return;
             }
             catch (JsonException e)
             {
                 // Deserialization error.
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadProviders;
+                finalState = ManageAddonsViewModelState.Error;
+                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
-                return;
             }
 
-            ViewModelState = ManageAddonsViewModelState.Ready;
+            // Even if we got an error, we always load cached library.
+            var cachedProviderInfo = new ProviderInfo()
+            {
+                Name = "LIBCACHE",  // TODO: Move out to config
+                Type = ProviderInfoHostType.Local,
+                Link = AppConfig.UserData.CachedLibFilePath,
+            };
+
+            ProvidersCollection.Add(cachedProviderInfo);
+            SelectedProvider = ProvidersCollection.Count > 0 ? ProvidersCollection.First() : null;
+
+            SetViewModelState(finalState, finalStatusString);
 
             Logger.LogInformation("Providers list updated.");
         }
 
-        // GetAddonsFromProviderCommand command logic.
-        private async Task ExecuteGetAddonsFromProviderCommand()
+        #endregion GetProvidersListCommand
+
+        #region GetAddonsFromSelectedProviderAsyncCommand
+
+        // GetAddonsFromSelectedProviderCommand command logic.
+        private async Task ExecuteGetAddonsFromSelectedProviderAsyncCommand()
         {
             Logger.LogDebug("Executing command.");
 
@@ -471,19 +469,22 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            ViewModelState = ManageAddonsViewModelState.LoadingAddonsList;
+            SelectedProviderAddonsCollection = new ObservableCollection<AddonItemModel>();
 
-            // If cached already - load from there.
-            if (CachedProvidersCollection.ContainsKey(SelectedProvider.Name))
+            SetViewModelState(ManageAddonsViewModelState.LoadingAddonsList, _loadingAddonsListMsg);
+
+            if (CachedAddonsCollection.ContainsKey(SelectedProvider.Name))
             {
                 LoadAddonsFromCache(SelectedProvider);
             }
             else
             {
-                await LoadAddonsFromWebAndCache(SelectedProvider);
+                await LoadAddonsFromProviderAsync(SelectedProvider);
             }
 
-            ViewModelState = ManageAddonsViewModelState.Ready;
+            _dependencyGraph = GenerateDependencyGraph(SelectedProviderAddonsCollection);
+
+            SetViewModelState(ManageAddonsViewModelState.Ready);
 
             Logger.LogInformation("Addons list updated.");
         }
@@ -492,83 +493,178 @@ namespace AddonWars2.App.ViewModels
         private void LoadAddonsFromCache(ProviderInfo selectedProvider)
         {
             Logger.LogDebug("Loading addons from the cache...");
-            AddonsCollection = CachedProvidersCollection[selectedProvider.Name];  // key check is done beforehand
+
+            // key check is done beforehand - no exception will be thrown
+            SelectedProviderAddonsCollection = CachedAddonsCollection[selectedProvider.Name];
         }
 
-        // Loads addons from web source and caches the collection.
-        private async Task LoadAddonsFromWebAndCache(ProviderInfo selectedProvider)
+        // Loads addons from a source.
+        private async Task LoadAddonsFromProviderAsync(ProviderInfo selectedProvider)
         {
-            // Request addons.
-            AddonsCollection addonsCollection;
-            switch (selectedProvider.Type)
-            {
-                case ProviderInfoHostType.GitHub:
-                    Logger.LogDebug("Getting addons from a GitHub host...");
-                    ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
-                    var provider = RegistryProviderFactory.GetProvider(ProviderInfoHostType.GitHub);  // TODO: for now we use only one entry point
-                    addonsCollection = await provider.GetAddonsFromAsync(selectedProvider);
-                    break;
-                case ProviderInfoHostType.Standalone:
-                    Logger.LogDebug("Getting addons from a standalone host...");
-                    throw new NotSupportedException();  // TODO: implementation
-                default:
-                    ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
-                    Logger.LogError("Unsupported host type.");
-                    return;
-            }
+            Logger.LogDebug("Loading addons from the selected provider since it wasn't cached yet...");
+
+            SetViewModelState(ManageAddonsViewModelState.LoadingAddonsList, _loadingAddonsListMsg);
+
+            var providerType = selectedProvider.Type;
+            Logger.LogDebug($"Getting addons from a provider with type \"{Enum.GetName(providerType.GetType(), providerType)}\"...");
+
+            var provider = RegistryProviderFactory.GetProvider(providerType);
+            var addonsCollection = await provider.GetAddonsFromAsync(selectedProvider);
 
             // Ensure data was deserialized normally.
             if (addonsCollection.Data == null || addonsCollection.Schema == null)
             {
-                ViewModelState = ManageAddonsViewModelState.FailedToLoadAddons;
+                SetViewModelState(ManageAddonsViewModelState.Error, _loadingAddonsListErrorMsg);
                 Logger.LogError($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
                 return;
             }
 
-            // Sort and add with animation delay.
-            var sorted = await SortAddonsCollection(addonsCollection.Data);
-            foreach (var item in sorted)
+            // Create a new collection to present in a view.
+            SelectedProviderAddonsCollection = new ObservableCollection<AddonItemModel>();
+            foreach (var item in addonsCollection.Data)
             {
                 if (item != null)
                 {
-                    AddonsCollection.Add(new AddonItemModel(item));
-                    await Task.Delay(50);  // for animation purposes
-                    Logger.LogDebug($"Addon with InternalName={item.InternalName} added.");
+                    SelectedProviderAddonsCollection.Add(new AddonItemModel(item));
+                    await Task.Delay(50);
+                    Logger.LogDebug($"Addon with internal name \"{item.InternalName}\" added.");
                 }
             }
 
-            // Cache addons.
-            var isCached = CachedProvidersCollection.TryAdd(selectedProvider.Name, AddonsCollection);
+            TryCacheAddonsCollection(selectedProvider);
+        }
+
+        // Caches addons collection.
+        private void TryCacheAddonsCollection(ProviderInfo provider)
+        {
+            var isCached = CachedAddonsCollection.TryAdd(provider.Name, SelectedProviderAddonsCollection);
             if (!isCached)
             {
-                Logger.LogError("Unable to cache the addons collection.");
+                Logger.LogError($"Unable to cache the addons collection. Provider={provider.Name}.");
+            }
+            else
+            {
+                Logger.LogDebug($"Cached. Provider={provider.Name}.");
             }
         }
 
-        // Sorts the addon collection.
-        private async Task<IEnumerable<AddonData>> SortAddonsCollection(IEnumerable<AddonData> collection)
+        #endregion GetAddonsFromSelectedProviderAsyncCommand
+
+        // UpdateMarkAddonsStatusCommand command logic.
+        private void ExecuteResolveAddonDependenciesCommand(AddonItemModel addonItemModel)
         {
-            Logger.LogDebug("Sorting...");
-            return await Task.Run(() => collection.OrderBy(x => x.DisplayName).ToList());
+            Logger.LogDebug("Executing command.");
+
+            SetViewModelState(ManageAddonsViewModelState.ResolvingDependencies);
+
+            // Walk through all marked addons and collect the required addon names for all marked addons.
+            var requiredInternalNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var addon in SelectedProviderAddonsCollection)
+            {
+                if (addon?.Data?.RequiredAddons != null && addon.IsMarked == true)
+                {
+                    foreach (var requiredAddonName in addon.Data.RequiredAddons)
+                    {
+                        requiredInternalNames.Add(requiredAddonName);
+                    }
+                }
+            }
+
+            var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, _dependencyGraph);
+            var startNode = _dependencyGraph.Nodes.First(x => x.Name == addonItemModel.Data.InternalName);
+            resolver.Resolve(startNode);
+
+            //foreach (var item in resolver.Resolved)
+            //{
+            //    Debug.WriteLine(item.Name);
+            //}
+
+            //foreach (var item in resolver.Resolved)
+            //{
+            //    Debug.WriteLine(item.Name);
+            //}
+
+            //// Build a dependency graph for the marked addons.
+            //var graph = new DGrpah<IDNode>();
+            //foreach (var addon in SelectedProviderAddonsCollection)
+            //{
+            //    if (requiredInternalNames.Contains(addon.Data.InternalName))
+            //    {
+
+            //    }
+
+            //    var node = new DNode(addonName);
+            //    var wasAdded = graph.TryAddNode(node);
+            //    if (!wasAdded)
+            //    {
+            //        SetViewModelState(ManageAddonsViewModelState.Error, _resolvingDependenciesErrorMsg);
+            //        Logger.LogError($"Unable to resolve addon dependencies, because a node with the name \"{node.Name}\" is already in the graph.");
+            //    }
+            //}
+
+            //if (graph.IsEmpty)
+            //{
+            //    SetViewModelState(ManageAddonsViewModelState.Ready);
+            //    Logger.LogDebug("Graph is empty and won't be resolved.");
+            //    return;
+            //}
+
+            //var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, graph);
+            //resolver.Resolve();
+
+
+
+            //// Walk through the list again and mark all addons collected in hash set.
+            //foreach (var addon in SelectedProviderAddonsCollection)
+            //{
+            //    if (requiredInternalNames.Contains(addon.Data.InternalName))
+            //    {
+            //        addon.IsMarked = true;
+            //    }
+            //}
+
+            SetViewModelState(ManageAddonsViewModelState.Ready);
         }
 
         #endregion Commdans Logic
 
         #region Methods
 
-        // Updates VM value whenever the selected addon changes.
-        private void InstallAddonsPageViewModel_SelectedAddonChanged(object? sender, PropertyChangedEventArgs? e)
+        // Sets the model state and status string.
+        private void SetViewModelState(ManageAddonsViewModelState state, string message = "")
         {
-            ArgumentNullException.ThrowIfNull(sender, nameof(sender));
-            ArgumentNullException.ThrowIfNull(e, nameof(e));
+            ViewModelState = state;
+            ViewModelStatusString = message ?? string.Empty;
+        }
 
-            OnPropertyChanged(nameof(SelectedAddonDescription));
-            OnPropertyChanged(nameof(SelectedAddonWebsite));
-            OnPropertyChanged(nameof(SelectedAddonAuthors));
-            OnPropertyChanged(nameof(SelectedAddonRequired));
-            OnPropertyChanged(nameof(SelectedAddonConflicts));
+        // Generates a new dependency graph for a collection of addons.
+        private DGraph<IDNode> GenerateDependencyGraph(IEnumerable<AddonItemModel> addonItems)
+        {
+            Logger.LogDebug("Generating dependency graph.");
 
-            Logger.LogDebug($"Handled.");
+            var graph = new DGraph<IDNode>();
+            foreach (var addon in addonItems)
+            {
+                var node = new DNode(addon.Data.InternalName);
+                foreach (var required in addon.Data.RequiredAddons)
+                {
+                    var dependency = new DNode(required);
+                    node.AddDependency(dependency);
+                }
+
+                graph.AddNode(node);
+            }
+
+            //foreach (var n in graph.Nodes)
+            //{
+            //    Debug.WriteLine($"node={n.Name}");
+            //    foreach (var e in n.Edges)
+            //    {
+            //        Debug.WriteLine($" edges={e.Name}");
+            //    }
+            //}
+
+            return graph;
         }
 
         #endregion Methods

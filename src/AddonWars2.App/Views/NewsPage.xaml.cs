@@ -59,6 +59,7 @@ namespace AddonWars2.App.Views
             {
                 await webView2.EnsureCoreWebView2Async(task);
 
+                // TODO: Apparently this doesn't disable M4 and M5 buttons (or touchpad gestures).
                 webView2.CoreWebView2.Settings.IsStatusBarEnabled = true;
                 webView2.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
                 webView2.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;

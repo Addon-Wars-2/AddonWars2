@@ -117,11 +117,12 @@ namespace AddonWars2.App.ViewModels
             }
 
             var instance = (SettingsApiPageViewModel)context.ObjectInstance;
-            var isValid = Task.Run(async () => await instance.Validate(token)).GetAwaiter().GetResult();
+            var isValid = Task.Run(async () => await instance.Validate(token)).GetAwaiter().GetResult();  // TODO: that's really bad.
 
             return isValid ? ValidationResult.Success : new ValidationResult(_gitHubApiTokenErrorMsg);
         }
 
+        // ValidateGitHubApiToken back-end logic.
         private async Task<bool> Validate(string token)
         {
             return await GitHubClientWrapper.CheckTokenValidityAsync(token);

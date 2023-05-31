@@ -15,7 +15,7 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:services="clr-namespace:AddonWars2.App.Services"
+    xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     mc:Ignorable="d" 
     Title="NewsPage"
     DataContext="{markupex:DISource Type=vm:NewsPageViewModel}"
@@ -338,7 +338,7 @@
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{DynamicResource S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder}">
+                            Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>

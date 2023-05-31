@@ -7,7 +7,7 @@
 	<StartupObject>AddonWars2.App.AW2Application</StartupObject>
 
 	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
-	<BaseOutputPath></BaseOutputPath>
+	<BaseOutputPath>..\..\bld\</BaseOutputPath>
 	<GenerateDocumentationFile>False</GenerateDocumentationFile>
 	<SignAssembly>False</SignAssembly>
 	<Configurations>Debug;Release</Configurations>
@@ -90,7 +90,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AddonWars2.Addons\AddonWars2.Addons.csproj" />
+    <ProjectReference Include="..\AddonWars2.Core\AddonWars2.Core.csproj" />
+    <ProjectReference Include="..\AddonWars2.DependencyResolver\AddonWars2.DependencyResolver.csproj" />
+    <ProjectReference Include="..\AddonWars2.Downloader\AddonWars2.Downloader.csproj" />
+    <ProjectReference Include="..\AddonWars2.Provider\AddonWars2.Provider.csproj" />
     <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
     <ProjectReference Include="..\AddonWars2.SharedData\AddonWars2.SharedData.csproj" />
   </ItemGroup>

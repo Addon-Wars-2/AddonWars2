@@ -30,13 +30,15 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.NoInternetConnection">Нет соединения.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Загрузка списка провайдеров...</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">установлен</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder">Не удалось разрешить зависимости для выбранных аддонов.</s:String>
+    <!--<s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">установлен</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">не установлен</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">изменен</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">изменен</s:String>-->
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Описание</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
@@ -46,8 +48,8 @@
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
     <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Обновление...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">Нет соединения.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.NoInternetConnection">Нет соединения.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Загрузка содержимого...</s:String>
 
@@ -62,6 +64,9 @@
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
+
+    <!-- Dialogs -->
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Подтвердите действие</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.ComboBox.Placeholder">пусто...</s:String>
@@ -84,5 +89,7 @@
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Открыть лог-файл.</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
+    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать аддон через выбранный провайдер и добавить его в очередь установки.</s:String>
+    <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Удалить установленный аддон.</s:String>
 
 </ResourceDictionary>

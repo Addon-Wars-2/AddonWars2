@@ -30,13 +30,15 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Using:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.GitHubAPILimit">API limit:</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.NoInternetConnection">No internet connection.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Requesting approved providers...</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Failed to load providers.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to laod addons.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">installed</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to load addons.</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder">Failed to resolve the selected addons dependencies.</s:String>
+    <!--<s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">installed</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">not installed</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">modified</s:String>
+    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">modified</s:String>-->
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Description</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Website:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
@@ -46,8 +48,8 @@
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
     <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Updating...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.FailedToUpdatePlaceholder">Failed to update.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Error.NoInternetConnection">No internet connection.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Failed to update.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.NoInternetConnection">No internet connection.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
     <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
     
@@ -62,6 +64,9 @@
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
+    
+    <!-- Dialogs -->
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Confirm Action</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>
@@ -84,5 +89,7 @@
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Reload addon providers.</s:String>
+    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Get this addon from the selected provider and add it to the installation queue.</s:String>
+    <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Remove the installed addon.</s:String>
 
 </ResourceDictionary>

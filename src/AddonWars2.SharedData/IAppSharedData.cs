@@ -20,8 +20,10 @@ namespace AddonWars2.SharedData
         private const string LOG_DIR_NAME = "logs";
         private const string LOG_FILE_PREFIX = "aw2_log_";
         private const string LOG_FILE_PREFIX_DEBUG = "debug_aw2_log_";
-        private const string CONFIG_FILE_NAME = "config.xml";
+        private const string CONFIG_FILE_NAME = "config.json";
         private const string RSS_FEED_DIR_NAME = "rss";
+        private const string CACHED_DIR_NAME = "local";
+        private const string CACHED_LIB_FILE_NAME = "libcache.json";
 
         private static readonly CultureInfo _defaultCulture = new CultureInfo("en-US", "EN", "English");
 
@@ -63,6 +65,16 @@ namespace AddonWars2.SharedData
         /// Gets the directory name used to store GW2 RSS feed pages in HTML format.
         /// </summary>
         public string RssFeedDirName => RSS_FEED_DIR_NAME;
+
+        /// <summary>
+        /// Gets the directory name used to cache downloaded addons.
+        /// </summary>
+        public string CachedDirName => CACHED_DIR_NAME;
+
+        /// <summary>
+        /// Gets the cached addons file name.
+        /// </summary>
+        public string CachedLibFileName => CACHED_LIB_FILE_NAME;
 
         /// <summary>
         /// Gets a default culture.

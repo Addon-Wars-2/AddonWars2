@@ -262,9 +262,8 @@ namespace AddonWars2.App.ViewModels
 
                 if (!HttpClientService.IsNetworkAvailable())
                 {
-                    // No internet connection.
                     ViewModelState = NewsViewModelState.FailedToUpdate;
-                    UpdateErrorCode = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Error.NoInternetConnection");
+                    UpdateErrorCode = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.NoInternetConnection");
 
                     Logger.LogError($"{UpdateErrorCode}");
 
@@ -292,7 +291,10 @@ namespace AddonWars2.App.ViewModels
 
             // Read response content and store as a list of RssFeedItem.
             var feed = await ParseResponseDataAsync(response);
-            if (feed == null) { return; }
+            if (feed == null)
+            {
+                return;
+            }
 
             // Sort by date while keeping the sticky item on top.
             feed = await SortRssFeedCollectionAsync(feed); // TODO: Don't create a new one after sorting?

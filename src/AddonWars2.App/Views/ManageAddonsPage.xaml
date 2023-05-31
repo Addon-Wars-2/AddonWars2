@@ -13,23 +13,28 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:services="clr-namespace:AddonWars2.App.Services"
+    xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
     Title="ManageAddonsPage"
     DataContext="{markupex:DISource Type=vm:ManageAddonsPageViewModel}"
+    assist:WindowAssist.WindowService="{markupex:DISource Type=services:WindowService}"
     ShowsNavigationUI="False">
 
     <Page.Resources>
         <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
         <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
+        <convert:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <CollectionViewSource
             x:Key="ProvidersCollectionView"
             Source="{Binding ProvidersCollection}">
         </CollectionViewSource>
         <CollectionViewSource
             x:Key="AddonsCollectionView"
-            Source="{Binding AddonsCollection}">
+            Source="{Binding SelectedProviderAddonsCollection}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Data.DisplayName"/>
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Page.Resources>
 
@@ -120,7 +125,7 @@
                 </ComboBox.ItemTemplate>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.GetAddonsFromProviderCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.GetAddonsFromSelectedProviderCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
@@ -331,8 +336,14 @@
                                     Grid.Row="1"
                                     Margin="10,5.8,10,5.8">
                                     <!-- TODO: An ugly workaround to fit in items propertly. -->
-                                    <Border x:Name="ItemRootBorder">
-                                        <Grid>
+                                    <Grid x:Name="ItemRoot">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid
+                                            x:Name="ItemInfoGrid"
+                                            Grid.Column="0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="*"/>
@@ -374,9 +385,41 @@
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
                                                 Text="{Binding Data.Tooltip}"
-                                                TextWrapping="NoWrap"
+                                                TextWrapping="Wrap"
                                                 IsHitTestVisible="False"/>
-                                            <TextBlock
+                                            <!--<CheckBox
+                                                x:Name="IsAddonMarkedCheckbox"
+                                                Grid.Row="0" Grid.Column="1"
+                                                Grid.RowSpan="3"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsChecked="{Binding IsMarked, Mode=TwoWay}"
+                                                IsThreeState="False"
+                                                IsEnabled="{Binding CanBeMarked, Mode=TwoWay}"
+                                                FocusVisualStyle="{x:Null}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Checked">
+                                                        <i:InvokeCommandAction
+                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    </i:EventTrigger>
+                                                    <i:EventTrigger EventName="Unchecked">
+                                                        <i:InvokeCommandAction
+                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="ResolvingDependencies">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </CheckBox.Style>
+                                            </CheckBox>-->
+                                            <!--<TextBlock
                                                 x:Name="InstalledStatusText"
                                                 Grid.Row="0" Grid.Column="1"
                                                 HorizontalAlignment="Left"
@@ -385,9 +428,57 @@
                                                 FontWeight="Normal"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False">
-                                            </TextBlock>
+                                            </TextBlock>-->
                                         </Grid>
-                                    </Border>
+                                        <Grid
+                                            x:Name="ItemButtonsGrid"
+                                            Grid.Column="1"
+                                            Background="Transparent"
+                                            Width="20">
+                                            <Grid.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform x:Name="AddonItemScaleTransform" ScaleX="-1" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform x:Name="AddonItemTranslateTransform" X="20"/>
+                                                </TransformGroup>
+                                            </Grid.RenderTransform>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Button
+                                                x:Name="InstallAddonButton"
+                                                Grid.Row="0"
+                                                Padding="0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Height="20" Width="20"
+                                                Cursor="Hand"
+                                                Focusable="False"
+                                                Content="{DynamicResource Path.Icon.InstallAddon}"
+                                                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                BorderThickness="1"
+                                                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                                                Command="{Binding ShowInstallAddonDependenciesDialogCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                ToolTip="{DynamicResource S.ToolTip.Button.InstallAddonButton}"
+                                                IsEnabled="{Binding IsInstalled, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+                                            <Button
+                                                x:Name="RemoveAddonButton"
+                                                Grid.Row="1"
+                                                Padding="0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Height="20" Width="20"
+                                                Cursor="Hand"
+                                                Focusable="False"
+                                                Content="{DynamicResource Path.Icon.RemoveAddon}"
+                                                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                BorderThickness="1"
+                                                Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                                                Command=""
+                                                ToolTip="{DynamicResource S.ToolTip.Button.RemoveAddonButton}"
+                                                IsEnabled="{Binding IsInstalled, Mode=OneWay}"/>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <DataTemplate.Triggers>
@@ -396,36 +487,57 @@
                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
                                         <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="AddonItemScaleTransform"
+                                                    Storyboard.TargetProperty="ScaleX"
+                                                    From="0" To="-1" Duration="00:00:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </MultiDataTrigger.EnterActions>
                                     <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                     <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                     <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
+                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
+                                        <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                    <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                     <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                     <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
-                                </MultiDataTrigger>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Cursor" Value="Hand"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus1}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
-                                </DataTrigger>
+                                </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus2}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                 </DataTrigger>-->
-                                <DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
                                     <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus3}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
-                                </DataTrigger>
+                                </DataTrigger>-->
                             </DataTemplate.Triggers>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -452,74 +564,17 @@
                         FontWeight="Light"
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder}">
+                        Text="{Binding Path=DataContext.ViewModelStatusString, RelativeSource={RelativeSource AncestorType=Page}}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="RequestingApprovedProviders">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Ready">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="Light"
-                        FontStyle="Normal"
-                        FontFamily="{DynamicResource Menomonia}"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder}">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Hidden"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="LoadingAddonsList">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="Light"
-                        FontStyle="Normal"
-                        FontFamily="{DynamicResource Menomonia}"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder}">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Hidden"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToLoadProviders">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="Light"
-                        FontStyle="Normal"
-                        FontFamily="{DynamicResource Menomonia}"
-                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder}">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Hidden"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToLoadAddons">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Error">
+                                        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -596,7 +651,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        Text="{Binding Path=DataContext.SelectedAddon.AddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="1" Grid.Column="0"
@@ -641,7 +696,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        Text="{Binding Path=DataContext.SelectedAddon.AddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="5" Grid.Column="0"
@@ -655,7 +710,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        Text="{Binding Path=DataContext.SelectedAddon.AddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="6" Grid.Column="0"
@@ -669,7 +724,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"
+                        Text="{Binding Path=DataContext.SelectedAddon.AddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                 </Grid>
             </ScrollViewer>

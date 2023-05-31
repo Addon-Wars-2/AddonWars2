@@ -8,7 +8,7 @@
 namespace AddonWars2.App.Extensions.Assists
 {
     using System.Windows;
-    using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.UIServices.Interfaces;
 
     /// <summary>
     /// Provides attached properties for opening with dialogs.

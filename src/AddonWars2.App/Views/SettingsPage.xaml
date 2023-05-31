@@ -14,7 +14,7 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
-    xmlns:services="clr-namespace:AddonWars2.App.Services"
+    xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
     Title="SettingsPage"

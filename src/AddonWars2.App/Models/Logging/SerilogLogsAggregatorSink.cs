@@ -8,7 +8,7 @@
 namespace AddonWars2.App.Models.Logging
 {
     using System.IO;
-    using AddonWars2.App.Services.Interfaces;
+    using AddonWars2.App.UIServices.Interfaces;
     using Serilog.Core;
     using Serilog.Events;
     using Serilog.Formatting;

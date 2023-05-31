@@ -74,7 +74,7 @@ namespace AddonWars2.Services.HttpClientWrapper
         /// <inheritdoc/>
         public async Task<HttpResponseMessage> PostAsync(string uri, object data)
         {
-            throw new NotImplementedException();  // TODO:
+            throw new NotImplementedException();  // TODO: implementation
         }
 
         #endregion Methods
