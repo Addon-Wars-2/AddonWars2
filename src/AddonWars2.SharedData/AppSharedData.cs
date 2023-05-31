@@ -5,6 +5,8 @@
 // </copyright>
 // ==================================================================================================
 
+using AddonWars2.SharedData.Interfaces;
+
 namespace AddonWars2.SharedData
 {
     /// <summary>

@@ -14,10 +14,10 @@ namespace AddonWars2.App.ViewModels
     using System.IO;
     using System.Linq;
     using System.Windows;
-    using AddonWars2.App.Models.Configuration;
+    using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.Core.DTO;
-    using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 

@@ -8,7 +8,7 @@
 namespace AddonWars2.App.UIServices
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices.Interfaces;
 
     /// <summary>

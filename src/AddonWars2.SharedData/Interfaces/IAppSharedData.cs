@@ -5,10 +5,10 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.SharedData
+namespace AddonWars2.SharedData.Interfaces
 {
     using System.Collections.Immutable;
-    using AddonWars2.SharedData.Entities;
+    using AddonWars2.SharedData.Models;
 
     /// <summary>
     /// Represents a contact for Application static data implementations.

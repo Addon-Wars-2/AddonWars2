@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Provider.Models
+namespace AddonWars2.Provider.DTO
 {
     using System.Text.Json.Serialization;
 

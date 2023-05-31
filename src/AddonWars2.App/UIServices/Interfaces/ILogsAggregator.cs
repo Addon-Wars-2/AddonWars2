@@ -8,7 +8,7 @@
 namespace AddonWars2.App.UIServices.Interfaces
 {
     using System.Collections.ObjectModel;
-    using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Logging;
 
     /// <summary>
     /// Represents a contract for log messages aggregator.

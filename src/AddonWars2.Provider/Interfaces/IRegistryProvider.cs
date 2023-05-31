@@ -8,7 +8,7 @@
 namespace AddonWars2.Provider.Interfaces
 {
     using AddonWars2.Core.DTO;
-    using AddonWars2.Provider.Models;
+    using AddonWars2.Provider.DTO;
 
     /// <summary>
     /// Provides a contract for addon libraries.

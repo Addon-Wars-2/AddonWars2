@@ -14,13 +14,13 @@ namespace AddonWars2.App
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
+    using AddonWars2.App.Configuration;
     using AddonWars2.App.Extensions.Markup;
-    using AddonWars2.App.Models.Configuration;
-    using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices;
     using AddonWars2.App.UIServices.Interfaces;  // Do NOT remove even if shown as unused.
     using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
     using Serilog.Enrichers.CallerInfo;

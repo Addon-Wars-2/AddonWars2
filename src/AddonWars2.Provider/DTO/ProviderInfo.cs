@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Provider.Models
+namespace AddonWars2.Provider.DTO
 {
     using System.Text.Json.Serialization;
     using AddonWars2.Provider.Enums;
@@ -59,7 +59,7 @@ namespace AddonWars2.Provider.Models
         }
 
         /// <summary>
-        /// Gets or sets the addon registry link.
+        /// Gets or sets the addon provider link.
         /// </summary>
         /// <remarks>
         /// If a provider is <see cref="ProviderInfoHostType.Local"/> then <see cref="Link"/>

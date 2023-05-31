@@ -8,7 +8,7 @@
 namespace AddonWars2.Services.GitHubClientWrapper
 {
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
-    using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Interfaces;
     using Octokit;
 
     /// <summary>

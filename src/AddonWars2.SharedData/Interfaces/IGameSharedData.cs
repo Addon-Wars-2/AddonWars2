@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.SharedData
+namespace AddonWars2.SharedData.Interfaces
 {
     /// <summary>
     /// Represents a contract for game-related static data.

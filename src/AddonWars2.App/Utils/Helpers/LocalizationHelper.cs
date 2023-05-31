@@ -10,7 +10,7 @@ namespace AddonWars2.App.Utils.Helpers
     using System;
     using System.Linq;
     using System.Threading;
-    using AddonWars2.SharedData.Entities;
+    using AddonWars2.SharedData.Models;
 
     /// <summary>
     /// Provides various methods to manage localization problems within the application.

@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Models.Logging
+namespace AddonWars2.App.Logging
 {
     /// <summary>
     /// Represents a single log entry.

@@ -1,30 +1,32 @@
 ﻿// ==================================================================================================
-// <copyright file="IUserSettings.cs" company="Addon-Wars-2">
+// <copyright file="IApplicationConfig.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Models.Configuration
+namespace AddonWars2.App.Configuration
 {
     using System.ComponentModel;
-    using Config.Net;
 
     /// <summary>
-    /// Represents a contract for user settings config.
+    /// Represents a contract for application config instance.
     /// </summary>
-    public interface IUserSettings : INotifyPropertyChanged
+    public interface IApplicationConfig : INotifyPropertyChanged
     {
         /// <summary>
-        /// Gets or sets user settings from General section.
+        /// Gets or sets the recent session data.
         /// </summary>
-        [Option(Alias = "General")]
-        IUserSettingsGeneral UserSettingsGeneral { get; set; }
+        ISessionData SessionData { get; set; }
 
         /// <summary>
-        /// Gets or sets user settings from API section.
+        /// Gets or sets user data.
         /// </summary>
-        [Option(Alias = "API")]
-        IUserSettingsApi UserSettingsApi { get; set; }
+        IUserData UserData { get; set; }
+
+        /// <summary>
+        /// Gets or sets user settings.
+        /// </summary>
+        IUserSettings UserSettings { get; set; }
     }
 }

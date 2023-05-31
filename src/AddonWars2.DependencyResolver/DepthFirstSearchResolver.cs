@@ -7,7 +7,6 @@
 
 namespace AddonWars2.DependencyResolver
 {
-    using System.Diagnostics;
     using AddonWars2.DependencyResolver.Interfaces;
     using AddonWars2.DependencyResolver.Models;
 
@@ -74,7 +73,6 @@ namespace AddonWars2.DependencyResolver
         // Resolve(...) main logic.
         private void ResolveInternal(T node)
         {
-            //Debug.WriteLine(node.Name);
             foreach (var edge in node.Edges)
             {
                 ResolveInternal((T)edge);

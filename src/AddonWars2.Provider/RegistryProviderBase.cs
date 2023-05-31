@@ -9,8 +9,8 @@ namespace AddonWars2.Provider
 {
     using System.Text.Json;
     using AddonWars2.Core.DTO;
+    using AddonWars2.Provider.DTO;
     using AddonWars2.Provider.Interfaces;
-    using AddonWars2.Provider.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 

@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.App.Models.Configuration
+namespace AddonWars2.App.Configuration
 {
     /// <summary>
     /// Represents a contract for user settings config (General section).

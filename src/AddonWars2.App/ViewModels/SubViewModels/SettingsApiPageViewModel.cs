@@ -8,13 +8,10 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
-    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
-    using AddonWars2.App.Models.Configuration;
+    using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;

@@ -11,8 +11,8 @@ namespace AddonWars2.App.UIServices
     using System.IO;
     using System.Net.Http;
     using System.Reflection;
-    using AddonWars2.App.Models.Configuration;
-    using AddonWars2.App.Models.Logging;
+    using AddonWars2.App.Configuration;
+    using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices.Interfaces;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
@@ -36,6 +36,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.Services.XmlSerializerService;
     using AddonWars2.Services.XmlSerializerService.Interfaces;
     using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Interfaces;
     using Config.Net;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;

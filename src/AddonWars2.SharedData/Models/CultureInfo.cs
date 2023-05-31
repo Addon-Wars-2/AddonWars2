@@ -5,7 +5,7 @@
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.SharedData.Entities
+namespace AddonWars2.SharedData.Models
 {
     using System;
 

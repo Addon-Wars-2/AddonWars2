@@ -8,7 +8,7 @@
 namespace AddonWars2.App.ViewModels
 {
     using System;
-    using AddonWars2.App.Models.Configuration;
+    using AddonWars2.App.Configuration;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;
 

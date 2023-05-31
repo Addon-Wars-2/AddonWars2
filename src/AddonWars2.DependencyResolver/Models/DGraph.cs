@@ -8,6 +8,7 @@
 namespace AddonWars2.DependencyResolver.Models
 {
     using System.Collections.ObjectModel;
+    using System.Xml.Linq;
     using AddonWars2.DependencyResolver.Interfaces;
 
     /// <summary>
@@ -68,6 +69,44 @@ namespace AddonWars2.DependencyResolver.Models
         #region Methods
 
         /// <summary>
+        /// Gets a node with the specified name.
+        /// </summary>
+        /// <param name="name">A node name to get.</param>
+        /// <returns>A now with the requested name.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="name"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="InvalidOperationException">Is thrown if <paramref name="name"/> doesn't exist in the graph.</exception>
+        public T GetNode(string name)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(nameof(name));
+
+            var node = 
+                _nodes.FirstOrDefault(x => x?.Name == name, null)
+                ?? throw new InvalidOperationException($"The specified node with the name \"{name}\" wasn't found in the graph.");
+
+            return node;
+        }
+
+        /// <summary>
+        /// Performs an attempt to get a node with the specified name.
+        /// </summary>
+        /// <remarks>
+        /// This operation doesn't throw <see cref="InvalidOperationException"/> if <paramref name="name"/> was not found
+        /// and returns <see langword="null"/> instead.
+        /// </remarks>
+        /// <param name="name">A node name to get.</param>
+        /// <returns>A now with the requested name.</returns>
+        /// <exception cref="ArgumentNullException">Is thrown if <paramref name="name"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="InvalidOperationException">Is thrown if <paramref name="name"/> doesn't exist in the graph.</exception>
+        public T? TryGetNode(string name)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(nameof(name));
+
+            var node = _nodes.FirstOrDefault(x => x?.Name == name, null);
+
+            return node;
+        }
+
+        /// <summary>
         /// Adds a new node to this graph.
         /// </summary>
         /// <param name="node">A graph node to add.</param>
@@ -108,6 +147,7 @@ namespace AddonWars2.DependencyResolver.Models
             }
 
             _nodes.Add(node);
+
             return true;
         }
 
@@ -155,6 +195,7 @@ namespace AddonWars2.DependencyResolver.Models
             }
 
             _nodes.RemoveAt(index);
+
             return true;
         }
 

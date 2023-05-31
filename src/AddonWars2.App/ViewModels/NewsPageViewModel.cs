@@ -15,13 +15,13 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows;
-    using AddonWars2.App.Models.Configuration;
+    using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
     using AddonWars2.Services.RssFeedService.Models;
-    using AddonWars2.SharedData;
+    using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
 

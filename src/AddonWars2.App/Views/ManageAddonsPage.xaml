@@ -31,9 +31,9 @@
         </CollectionViewSource>
         <CollectionViewSource
             x:Key="AddonsCollectionView"
-            Source="{Binding SelectedProviderAddonsCollection}">
+            Source="{Binding SelectedAddonsCollection}">
             <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Data.DisplayName"/>
+                <scm:SortDescription PropertyName="DisplayName"/>
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Page.Resources>
@@ -244,7 +244,7 @@
                     x:Name="AddonsList"
                     Grid.Row="1"
                     ItemsSource="{Binding Source={StaticResource AddonsCollectionView}}"
-                    SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <ListBox.Template>
                         <ControlTemplate>
@@ -361,7 +361,7 @@
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 FontSize="16"
                                                 FontWeight="Normal"
-                                                Text="{Binding Data.DisplayName}"
+                                                Text="{Binding DisplayName}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                             <TextBlock
@@ -373,7 +373,7 @@
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 FontSize="10"
                                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
-                                                Text="{Binding Data.Authors, StringFormat='{}by {0}'}"
+                                                Text="{Binding Authors, StringFormat='{}by {0}'}"
                                                 TextWrapping="NoWrap"
                                                 IsHitTestVisible="False"/>
                                             <TextBlock
@@ -384,7 +384,7 @@
                                                 VerticalAlignment="Center"
                                                 FontFamily="{DynamicResource Menomonia}"
                                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
-                                                Text="{Binding Data.Tooltip}"
+                                                Text="{Binding Tooltip}"
                                                 TextWrapping="Wrap"
                                                 IsHitTestVisible="False"/>
                                             <!--<CheckBox
@@ -458,9 +458,16 @@
                                                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                                                 BorderThickness="1"
                                                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                                                Command="{Binding ShowInstallAddonDependenciesDialogCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                                                 ToolTip="{DynamicResource S.ToolTip.Button.InstallAddonButton}"
-                                                IsEnabled="{Binding IsInstalled, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+                                                IsEnabled="{Binding IsInstalled, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click">
+                                                        <i:InvokeCommandAction
+                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                            CommandParameter="{Binding}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </Button>
                                             <Button
                                                 x:Name="RemoveAddonButton"
                                                 Grid.Row="1"
@@ -651,7 +658,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddon.AddonDescription, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
+                        Text="{Binding Path=DataContext.SelectedAddon.Description, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="1" Grid.Column="0"
@@ -671,7 +678,7 @@
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
                         TextWrapping="Wrap">
                     <Hyperlink
-                        NavigateUri="{Binding Path=DataContext.SelectedAddon.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"
+                        NavigateUri="{Binding Path=DataContext.SelectedAddon.Website, RelativeSource={RelativeSource AncestorType=Page}}"
                         TextDecorations="None"
                         FocusVisualStyle="{x:Null}">
                     <i:Interaction.Triggers>
@@ -681,7 +688,7 @@
                                 PassEventArgsToCommand="True"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <TextBlock Text="{Binding Path=DataContext.SelectedAddon.Data.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                    <TextBlock Text="{Binding Path=DataContext.SelectedAddon.Website, RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </Hyperlink>
                 </TextBlock>
                     <TextBlock
@@ -696,7 +703,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddon.AddonAuthors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
+                        Text="{Binding Path=DataContext.SelectedAddon.Authors, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="5" Grid.Column="0"
@@ -710,7 +717,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddon.AddonRequired, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
+                        Text="{Binding Path=DataContext.SelectedAddon.Required, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Grid.Row="6" Grid.Column="0"
@@ -724,7 +731,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{Binding Path=DataContext.SelectedAddon.AddonConflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
+                        Text="{Binding Path=DataContext.SelectedAddon.Conflicts, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay, FallbackValue={x:Static sys:String.Empty}}"
                         TextWrapping="Wrap"/>
                 </Grid>
             </ScrollViewer>
