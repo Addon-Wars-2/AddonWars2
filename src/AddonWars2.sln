@@ -22,15 +22,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "Addo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.SharedData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloader", "AddonWars2.Downloader\AddonWars2.Downloader.csproj", "{4F1D225A-22F8-4BBB-957D-A40E55B97147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloaders", "AddonWars2.Downloaders\AddonWars2.Downloaders.csproj", "{4F1D225A-22F8-4BBB-957D-A40E55B97147}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.DependencyResolver", "AddonWars2.DependencyResolver\AddonWars2.DependencyResolver.csproj", "{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.DependencyResolvers", "AddonWars2.DependencyResolvers\AddonWars2.DependencyResolvers.csproj", "{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Extractor", "AddonWars2.Extractor\AddonWars2.Extractor.csproj", "{EF0557D6-A3ED-4725-9303-C5487FC6EB28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Extractors", "AddonWars2.Extractors\AddonWars2.Extractors.csproj", "{EF0557D6-A3ED-4725-9303-C5487FC6EB28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Installer", "AddonWars2.Installer\AddonWars2.Installer.csproj", "{35975256-B5F9-4758-97A6-223B9E3BEF29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Installers", "AddonWars2.Installers\AddonWars2.Installers.csproj", "{35975256-B5F9-4758-97A6-223B9E3BEF29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Provider", "AddonWars2.Provider\AddonWars2.Provider.csproj", "{E9A7FF2A-D883-49F2-978B-463E7D6F3AA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Providers", "AddonWars2.Providers\AddonWars2.Providers.csproj", "{E9A7FF2A-D883-49F2-978B-463E7D6F3AA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

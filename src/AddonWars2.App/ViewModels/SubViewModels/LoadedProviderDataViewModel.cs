@@ -10,10 +10,10 @@ namespace AddonWars2.App.ViewModels.SubViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using AddonWars2.DependencyResolver.Interfaces;
-    using AddonWars2.DependencyResolver.Models;
-    using AddonWars2.Provider.DTO;
-    using AddonWars2.Provider.Enums;
+    using AddonWars2.DependencyResolvers.Interfaces;
+    using AddonWars2.DependencyResolvers.Models;
+    using AddonWars2.Providers.DTO;
+    using AddonWars2.Providers.Enums;
     using CommunityToolkit.Mvvm.ComponentModel;
 
     /// <summary>

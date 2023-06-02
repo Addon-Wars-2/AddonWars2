@@ -18,12 +18,12 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.App.ViewModels.Dialogs;
-    using AddonWars2.DependencyResolver.Factories;
-    using AddonWars2.DependencyResolver.Interfaces;
-    using AddonWars2.Downloader.Factories;
-    using AddonWars2.Downloader.Interfaces;
-    using AddonWars2.Provider.Factories;
-    using AddonWars2.Provider.Interfaces;
+    using AddonWars2.DependencyResolvers.Factories;
+    using AddonWars2.DependencyResolvers.Interfaces;
+    using AddonWars2.Downloaders.Factories;
+    using AddonWars2.Downloaders.Interfaces;
+    using AddonWars2.Providers.Factories;
+    using AddonWars2.Providers.Interfaces;
     using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper;

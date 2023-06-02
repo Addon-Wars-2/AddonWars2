@@ -18,12 +18,12 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.App.ViewModels.SubViewModels;
-    using AddonWars2.DependencyResolver.Enums;
-    using AddonWars2.DependencyResolver.Interfaces;
-    using AddonWars2.Provider;
-    using AddonWars2.Provider.DTO;
-    using AddonWars2.Provider.Enums;
-    using AddonWars2.Provider.Interfaces;
+    using AddonWars2.DependencyResolvers.Enums;
+    using AddonWars2.DependencyResolvers.Interfaces;
+    using AddonWars2.Providers;
+    using AddonWars2.Providers.DTO;
+    using AddonWars2.Providers.Enums;
+    using AddonWars2.Providers.Interfaces;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.SharedData.Interfaces;
@@ -282,14 +282,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets or sets a list of addons.
         /// </summary>
         public ObservableCollection<LoadedAddonDataViewModel> SelectedAddonsCollection => SelectedProvider?.Addons ?? new ObservableCollection<LoadedAddonDataViewModel>();
-        //{
-        //    get => _selectedAddonsCollection;
-        //    set
-        //    {
-        //        SetProperty(ref _selectedAddonsCollection, value);
-        //        Logger.LogDebug($"Property set: {value}");
-        //    }
-        //}
 
         /// <summary>
         /// Gets or sets a list of cached addons.

@@ -91,9 +91,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AddonWars2.Core\AddonWars2.Core.csproj" />
-    <ProjectReference Include="..\AddonWars2.DependencyResolver\AddonWars2.DependencyResolver.csproj" />
-    <ProjectReference Include="..\AddonWars2.Downloader\AddonWars2.Downloader.csproj" />
-    <ProjectReference Include="..\AddonWars2.Provider\AddonWars2.Provider.csproj" />
+    <ProjectReference Include="..\AddonWars2.DependencyResolvers\AddonWars2.DependencyResolvers.csproj" />
+    <ProjectReference Include="..\AddonWars2.Downloaders\AddonWars2.Downloaders.csproj" />
+    <ProjectReference Include="..\AddonWars2.Extractors\AddonWars2.Extractors.csproj" />
+    <ProjectReference Include="..\AddonWars2.Installers\AddonWars2.Installers.csproj" />
+    <ProjectReference Include="..\AddonWars2.Providers\AddonWars2.Providers.csproj" />
     <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
     <ProjectReference Include="..\AddonWars2.SharedData\AddonWars2.SharedData.csproj" />
   </ItemGroup>

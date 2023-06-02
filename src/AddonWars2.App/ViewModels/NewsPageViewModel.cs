@@ -374,8 +374,8 @@ namespace AddonWars2.App.ViewModels
             }
         }
 
-        // Update the destination list with new items using some delay.
-        private async Task FillRssItemsAsync(IList<Gw2RssFeedItem> source, IList<Gw2RssFeedItem> destination, int delay = 50)
+        // Update the destination list with new items.
+        private async Task FillRssItemsAsync(IList<Gw2RssFeedItem> source, IList<Gw2RssFeedItem> destination)
         {
             ArgumentNullException.ThrowIfNull(source, nameof(source));
             ArgumentNullException.ThrowIfNull(destination, nameof(destination));
@@ -383,7 +383,6 @@ namespace AddonWars2.App.ViewModels
             foreach (var item in source)
             {
                 destination.Add(item);
-                await Task.Delay(delay);  // for animation purposes
                 Logger.LogDebug($"RSS item with guid={item.Guid} added.");
             }
         }

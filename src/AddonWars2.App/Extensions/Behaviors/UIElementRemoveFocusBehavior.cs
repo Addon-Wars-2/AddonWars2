@@ -31,8 +31,8 @@ namespace AddonWars2.App.Extensions.Behaviors
         {
             if (AssociatedObject != null)
             {
-                AssociatedObject.KeyDown -= AssociatedObject_KeyDown;
                 base.OnDetaching();
+                AssociatedObject.KeyDown -= AssociatedObject_KeyDown;
             }
         }
 

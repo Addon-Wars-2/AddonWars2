@@ -47,6 +47,7 @@ namespace AddonWars2.App.Extensions.Assists
         {
             obj.SetValue(WindowServiceProperty, value);
         }
+
         #endregion Attached Properties
     }
 }

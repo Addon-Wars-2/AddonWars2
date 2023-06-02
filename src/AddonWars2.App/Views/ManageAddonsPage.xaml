@@ -12,6 +12,7 @@
     xmlns:convert="clr-namespace:AddonWars2.App.Utils.Converters"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
+    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -246,6 +247,29 @@
                     ItemsSource="{Binding Source={StaticResource AddonsCollectionView}}"
                     SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:AnimatedItemOnLoadedBehavior Delay="0.05">
+                            <behaviors:AnimatedItemOnLoadedBehavior.Animations>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        From="0" To="1"
+                                        BeginTime="00:00:00" Duration="00:00:0.3"
+                                        Storyboard.TargetProperty="Opacity">
+                                    </DoubleAnimation>
+                                    <DoubleAnimation
+                                        From="100" To="0"
+                                        FillBehavior="HoldEnd"
+                                        BeginTime="00:00:00" Duration="00:00:0.3"
+                                        AccelerationRatio="0.2" DecelerationRatio="0.1"
+                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CubicEase EasingMode="EaseOut"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </behaviors:AnimatedItemOnLoadedBehavior.Animations>
+                        </behaviors:AnimatedItemOnLoadedBehavior>
+                    </i:Interaction.Behaviors>
                     <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
@@ -282,35 +306,6 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Grid.Resources>
-                                    <Storyboard x:Key="AddonItemSlideInStoryboard">
-                                        <DoubleAnimation
-                                            From="0" To="1"
-                                            BeginTime="00:00:00" Duration="00:00:0.3"
-                                            Storyboard.TargetName="DataTemplateRootBorder"
-                                            Storyboard.TargetProperty="Opacity">
-                                        </DoubleAnimation>
-                                        <DoubleAnimation
-                                            From="100" To="0"
-                                            FillBehavior="HoldEnd"
-                                            BeginTime="00:00:00" Duration="00:00:0.3"
-                                            AccelerationRatio="0.2" DecelerationRatio="0.1"
-                                            Storyboard.TargetName="DataTemplateRootBorder"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
-                                            <DoubleAnimation.EasingFunction>
-                                                <ExponentialEase EasingMode="EaseOut"/>
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </Grid.Resources>
-                                <Grid.RenderTransform>
-                                    <TranslateTransform/>
-                                </Grid.RenderTransform>
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DataTemplateRootBorder}">
-                                        <i:ControlStoryboardAction Storyboard="{StaticResource AddonItemSlideInStoryboard}" ControlStoryboardOption="TogglePlayPause"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
                                 <Separator
                                     x:Name="ItemSeparator"
                                     Grid.Row="0"
@@ -387,38 +382,6 @@
                                                 Text="{Binding Tooltip}"
                                                 TextWrapping="Wrap"
                                                 IsHitTestVisible="False"/>
-                                            <!--<CheckBox
-                                                x:Name="IsAddonMarkedCheckbox"
-                                                Grid.Row="0" Grid.Column="1"
-                                                Grid.RowSpan="3"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                IsChecked="{Binding IsMarked, Mode=TwoWay}"
-                                                IsThreeState="False"
-                                                IsEnabled="{Binding CanBeMarked, Mode=TwoWay}"
-                                                FocusVisualStyle="{x:Null}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="Checked">
-                                                        <i:InvokeCommandAction
-                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                            CommandParameter="{Binding}"/>
-                                                    </i:EventTrigger>
-                                                    <i:EventTrigger EventName="Unchecked">
-                                                        <i:InvokeCommandAction
-                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                            CommandParameter="{Binding}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                                <CheckBox.Style>
-                                                    <Style TargetType="CheckBox">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Path=DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="ResolvingDependencies">
-                                                                <Setter Property="IsEnabled" Value="False"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </CheckBox.Style>
-                                            </CheckBox>-->
                                             <!--<TextBlock
                                                 x:Name="InstalledStatusText"
                                                 Grid.Row="0" Grid.Column="1"
@@ -550,6 +513,11 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform/>
+                                </Setter.Value>
+                            </Setter>
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
