@@ -7,7 +7,6 @@
 
 namespace AddonWars2.App.Extensions.Behaviors
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Specialized;
@@ -322,10 +321,6 @@ namespace AddonWars2.App.Extensions.Behaviors
                     {
                         itemContainer.Visibility = Visibility.Visible;
                     }
-                }
-                else
-                {
-                    throw new NullReferenceException(nameof(itemContainer));
                 }
             }
 

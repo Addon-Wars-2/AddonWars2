@@ -7,11 +7,8 @@
 
 namespace AddonWars2.App.Views
 {
-    using System;
-    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Media.Animation;
     using AddonWars2.App.Extensions.Assists;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.Views.Dialogs;
