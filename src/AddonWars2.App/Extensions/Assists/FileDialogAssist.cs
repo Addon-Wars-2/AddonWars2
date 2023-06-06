@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="DialogAssist.cs" company="Addon-Wars-2">
+// <copyright file="FileDialogAssist.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -13,39 +13,39 @@ namespace AddonWars2.App.Extensions.Assists
     /// <summary>
     /// Provides attached properties for opening with dialogs.
     /// </summary>
-    public class DialogAssist
+    public class FileDialogAssist
     {
         #region Attached Properties
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="GetDialogService(DependencyObject)"/> getter
-        /// and <see cref="SetDialogService(DependencyObject, IDialogService)"/> setter.
+        /// <see cref="DependencyProperty"/> for <see cref="GetFileDialogService(DependencyObject)"/> getter
+        /// and <see cref="SetFileDialogService(DependencyObject, IFileDialogService)"/> setter.
         /// </summary>
-        public static readonly DependencyProperty DialogServiceProperty =
+        public static readonly DependencyProperty FileDialogServiceProperty =
             DependencyProperty.RegisterAttached(
-                "DialogService",
-                typeof(IDialogService),
-                typeof(DialogAssist),
+                "FileDialogService",
+                typeof(IFileDialogService),
+                typeof(FileDialogAssist),
                 new PropertyMetadata(null));
 
         /// <summary>
-        /// Gets the value of <see cref="DialogServiceProperty"/>.
+        /// Gets the value of <see cref="FileDialogServiceProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is get from.</param>
-        /// <returns><see cref="IDialogService"/> instance.</returns>
-        public static IDialogService GetDialogService(DependencyObject obj)
+        /// <returns><see cref="IFileDialogService"/> instance.</returns>
+        public static IFileDialogService GetFileDialogService(DependencyObject obj)
         {
-            return (IDialogService)obj.GetValue(DialogServiceProperty);
+            return (IFileDialogService)obj.GetValue(FileDialogServiceProperty);
         }
 
         /// <summary>
-        /// Sets the value of <see cref="DialogServiceProperty"/>.
+        /// Sets the value of <see cref="FileDialogServiceProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is set to.</param>
-        /// <param name="value">A reference to <see cref="IDialogService"/> instance.</param>
-        public static void SetDialogService(DependencyObject obj, IDialogService value)
+        /// <param name="value">A reference to <see cref="IFileDialogService"/> instance.</param>
+        public static void SetFileDialogService(DependencyObject obj, IFileDialogService value)
         {
-            obj.SetValue(DialogServiceProperty, value);
+            obj.SetValue(FileDialogServiceProperty, value);
         }
 
         /// <summary>
@@ -56,14 +56,14 @@ namespace AddonWars2.App.Extensions.Assists
             DependencyProperty.RegisterAttached(
                 "SelectedPaths",
                 typeof(string[]),
-                typeof(DialogAssist),
+                typeof(FileDialogAssist),
                 new PropertyMetadata(null));
 
         /// <summary>
         /// Gets the value of <see cref="SelectedPathsProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is get from.</param>
-        /// <returns><see cref="IDialogService"/> selection results (array of strings).</returns>
+        /// <returns><see cref="IFileDialogService"/> selection results (array of strings).</returns>
         public static string[] GetSelectedPaths(DependencyObject obj)
         {
             return (string[])obj.GetValue(SelectedPathsProperty);
@@ -73,7 +73,7 @@ namespace AddonWars2.App.Extensions.Assists
         /// Sets the value of <see cref="SelectedPathsProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is set to.</param>
-        /// <param name="value"><see cref="IDialogService"/> selection results (array of strings).</param>
+        /// <param name="value"><see cref="IFileDialogService"/> selection results (array of strings).</param>
         public static void SetSelectedPaths(DependencyObject obj, string[] value)
         {
             obj.SetValue(SelectedPathsProperty, value);

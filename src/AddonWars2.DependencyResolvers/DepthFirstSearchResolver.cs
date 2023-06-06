@@ -51,6 +51,8 @@ namespace AddonWars2.DependencyResolvers
 
         #region Methods
 
+        // TODO: Detect circular dependencies. A custom exception maybe?
+
         /// <inheritdoc/>
         public void Resolve(T node)
         {

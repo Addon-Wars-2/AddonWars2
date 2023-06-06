@@ -22,17 +22,17 @@ namespace AddonWars2.App.UIServices
         #region Methods
 
         /// <inheritdoc/>
-        public Window FindWindow<T>()
-            where T : Window
+        public Window FindWindow<TView>()
+            where TView : Window
         {
             // Search through all types defined in this assembly to find matching view (window) type, which:
             // a) Has the same name as provided in parameter or defined by naming convention.
             // b) Can be assigned to a type this methods return (some base Window class).
 
-            var windowTypeName = typeof(T).Name;
+            var windowTypeName = typeof(TView).Name;
             var windowType = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(
                 t => t.Name == windowTypeName && typeof(Window).IsAssignableFrom(t))
-                ?? throw new ArgumentOutOfRangeException($"Unable to locate window type for the view model: {typeof(T)}");
+                ?? throw new ArgumentOutOfRangeException($"Unable to locate window type for the view model: {typeof(TView)}");
 
             var windowTypeFullName = windowType.FullName ?? string.Empty;
             var windowInstance = Assembly.GetExecutingAssembly()?.CreateInstance(windowTypeFullName) as Window;

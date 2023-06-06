@@ -50,7 +50,8 @@
                                         <ScrollViewer
                                             x:Name="PART_ContentHost"
                                             HorizontalScrollBarVisibility="Hidden"
-                                            VerticalScrollBarVisibility="Hidden"/>
+                                            VerticalScrollBarVisibility="Hidden"
+                                            Style="{DynamicResource ScrollViewerStyle}"/>
                                     </Grid>
                                 </Border>
                                 <Border

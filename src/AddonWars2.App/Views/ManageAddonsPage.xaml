@@ -248,8 +248,8 @@
                     SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <i:Interaction.Behaviors>
-                        <behaviors:AnimatedItemOnLoadedBehavior Delay="0.05">
-                            <behaviors:AnimatedItemOnLoadedBehavior.Animations>
+                        <behaviors:AnimatedItemsControlBehavior Delay="0.05">
+                            <behaviors:AnimatedItemsControlBehavior.Animations>
                                 <Storyboard>
                                     <DoubleAnimation
                                         From="0" To="1"
@@ -267,8 +267,8 @@
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                 </Storyboard>
-                            </behaviors:AnimatedItemOnLoadedBehavior.Animations>
-                        </behaviors:AnimatedItemOnLoadedBehavior>
+                            </behaviors:AnimatedItemsControlBehavior.Animations>
+                        </behaviors:AnimatedItemsControlBehavior>
                     </i:Interaction.Behaviors>
                     <ListBox.Template>
                         <ControlTemplate>

@@ -26,7 +26,7 @@ namespace AddonWars2.App.ViewModels
 
         private readonly IApplicationConfig _applicationConfig;
         private readonly ILogsAggregator _logsAggregator;
-        private readonly IMessageBoxService _messageBoxService;
+        private readonly INativeMessageBoxService _messageBoxService;
 
         #endregion Fields
 
@@ -38,12 +38,12 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A referemnce to <see cref="ILogger"/> instance.</param>
         /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
-        /// <param name="messageBoxService">A reference to <see cref="IMessageBoxService"/> instance.</param>
+        /// <param name="messageBoxService">A reference to <see cref="INativeMessageBoxService"/> instance.</param>
         public LoggingViewModel(
             ILogger<LoggingViewModel> logger,
             ILogsAggregator logsAggregator,
             IApplicationConfig appConfig,
-            IMessageBoxService messageBoxService)
+            INativeMessageBoxService messageBoxService)
             : base(logger)
         {
             _logsAggregator = logsAggregator ?? throw new ArgumentNullException(nameof(logsAggregator));
@@ -70,9 +70,9 @@ namespace AddonWars2.App.ViewModels
         public ILogsAggregator LogsAggregator => _logsAggregator;
 
         /// <summary>
-        /// Gets a reference to <see cref="IMessageBoxService"/> service.
+        /// Gets a reference to <see cref="INativeMessageBoxService"/> service.
         /// </summary>
-        public IMessageBoxService MessageBoxService => _messageBoxService;
+        public INativeMessageBoxService MessageBoxService => _messageBoxService;
 
         /// <summary>
         /// Gets a collection of log entries.

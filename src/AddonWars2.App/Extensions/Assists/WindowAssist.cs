@@ -32,7 +32,7 @@ namespace AddonWars2.App.Extensions.Assists
         /// Gets the value of <see cref="WindowServiceProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is get from.</param>
-        /// <returns><see cref="IDialogService"/> instance.</returns>
+        /// <returns><see cref="IFileDialogService"/> instance.</returns>
         public static IWindowService GetWindowService(DependencyObject obj)
         {
             return (IWindowService)obj.GetValue(WindowServiceProperty);
@@ -42,7 +42,7 @@ namespace AddonWars2.App.Extensions.Assists
         /// Sets the value of <see cref="WindowServiceProperty"/>.
         /// </summary>
         /// <param name="obj">An object the value is set to.</param>
-        /// <param name="value">A reference to <see cref="IDialogService"/> instance.</param>
+        /// <param name="value">A reference to <see cref="IFileDialogService"/> instance.</param>
         public static void SetWindowService(DependencyObject obj, IWindowService value)
         {
             obj.SetValue(WindowServiceProperty, value);

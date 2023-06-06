@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="IMessageBoxService.cs" company="Addon-Wars-2">
+// <copyright file="INativeMessageBoxService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,9 +10,9 @@ namespace AddonWars2.App.UIServices.Interfaces
     using System.Windows;
 
     /// <summary>
-    /// Provides a contract for message box service implementation.
+    /// Provides a contract for native message box services.
     /// </summary>
-    public interface IMessageBoxService
+    public interface INativeMessageBoxService
     {
         /// <summary>
         /// Displays a native message box with specified text, caption, and style.

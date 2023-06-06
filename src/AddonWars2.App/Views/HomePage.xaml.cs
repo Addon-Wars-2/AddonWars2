@@ -57,10 +57,10 @@ namespace AddonWars2.App.Views
         // OpenFileDialogCommand command logic.
         private void ExecuteOpenFileDialogCommand()
         {
-            var ds = DialogAssist.GetDialogService(this);
+            var ds = FileDialogAssist.GetFileDialogService(this);
             if (ds == null)
             {
-                DialogAssist.SetDialogService(this, new DialogService());
+                FileDialogAssist.SetFileDialogService(this, new FileDialogService());
             }
 
             var paths = ds!.OpenFileDialog(
@@ -68,7 +68,7 @@ namespace AddonWars2.App.Views
                 filter: "GW2 .exe|*.exe|All Files|*.*",
                 multiselect: false);
 
-            DialogAssist.SetSelectedPaths(this, paths);
+            FileDialogAssist.SetSelectedPaths(this, paths);
         }
 
         // SwitchToInstallAddonsTabCommand command logic.

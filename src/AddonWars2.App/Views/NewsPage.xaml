@@ -108,8 +108,8 @@
                     SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <i:Interaction.Behaviors>
-                        <behaviors:AnimatedItemOnLoadedBehavior Delay="0.05">
-                            <behaviors:AnimatedItemOnLoadedBehavior.Animations>
+                        <behaviors:AnimatedItemsControlBehavior Delay="0.05">
+                            <behaviors:AnimatedItemsControlBehavior.Animations>
                                 <Storyboard>
                                     <DoubleAnimation
                                         From="0" To="1"
@@ -127,8 +127,8 @@
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                 </Storyboard>
-                            </behaviors:AnimatedItemOnLoadedBehavior.Animations>
-                        </behaviors:AnimatedItemOnLoadedBehavior>
+                            </behaviors:AnimatedItemsControlBehavior.Animations>
+                        </behaviors:AnimatedItemsControlBehavior>
                     </i:Interaction.Behaviors>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">

@@ -18,7 +18,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     DataContext="{markupex:DISource Type=vm:HomePageViewModel}"
-    assist:DialogAssist.DialogService="{markupex:DISource Type=services:DialogService}"
+    assist:FileDialogAssist.FileDialogService="{markupex:DISource Type=services:FileDialogService}"
     Title="HomePage"
     ShowsNavigationUI="False">
 
@@ -361,7 +361,7 @@
                             Command="{Binding OpenFileDialogCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                         <i:InvokeCommandAction
                             Command="{Binding Path=DataContext.UpdateGw2ExePathCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                            CommandParameter="{Binding Path=(assist:DialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
+                            CommandParameter="{Binding Path=(assist:FileDialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Button.Content>

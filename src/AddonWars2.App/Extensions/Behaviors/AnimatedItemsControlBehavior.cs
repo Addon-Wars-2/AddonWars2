@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="AnimatedItemOnLoadedBehavior.cs" company="Addon-Wars-2">
+// <copyright file="AnimatedItemsControlBehavior.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -20,7 +20,7 @@ namespace AddonWars2.App.Extensions.Behaviors
     /// <summary>
     /// Defines a behavior that animates <see cref="ItemsControl"/> items.
     /// </summary>
-    public class AnimatedItemOnLoadedBehavior : Behavior<ItemsControl>
+    public class AnimatedItemsControlBehavior : Behavior<ItemsControl>
     {
         #region Fields
 
@@ -41,7 +41,7 @@ namespace AddonWars2.App.Extensions.Behaviors
             DependencyProperty.Register(
                 nameof(Animations),
                 typeof(Storyboard),
-                typeof(AnimatedItemOnLoadedBehavior),
+                typeof(AnimatedItemsControlBehavior),
                 new FrameworkPropertyMetadata(default));
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace AddonWars2.App.Extensions.Behaviors
             DependencyProperty.Register(
                 nameof(Delay),
                 typeof(double),
-                typeof(AnimatedItemOnLoadedBehavior),
+                typeof(AnimatedItemsControlBehavior),
                 new FrameworkPropertyMetadata(
                     0d,
                     FrameworkPropertyMetadataOptions.None,

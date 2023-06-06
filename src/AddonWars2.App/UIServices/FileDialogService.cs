@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="DialogService.cs" company="Addon-Wars-2">
+// <copyright file="FileDialogService.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -13,7 +13,7 @@ namespace AddonWars2.App.UIServices
     /// <summary>
     /// Contains various methods to create new dialogs, such as <see cref="OpenFileDialog"/>.
     /// </summary>
-    public class DialogService : IDialogService
+    public class FileDialogService : IFileDialogService
     {
         #region Methods
 

@@ -87,15 +87,17 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<SettingsGeneralPageViewModel>();
             services.AddSingleton<SettingsApiPageViewModel>();
             services.AddTransient<InstallAddonDependenciesViewModel>();
+            services.AddTransient<ErrorDialogViewModel>();
 
             // Commands.
             services.AddSingleton<CommonCommands>();
 
             // UI Services.
-            services.AddSingleton<DialogService>();
-            services.AddSingleton<IWindowLocator, WindowLocator>();
             services.AddSingleton<WindowService>();
-            services.AddSingleton<IMessageBoxService, MessageBoxService>();
+            services.AddSingleton<FileDialogService>();
+            services.AddSingleton<IErrorDialogService, ErrorDialogService>();
+            services.AddSingleton<IWindowLocator, WindowLocator>();
+            services.AddSingleton<INativeMessageBoxService, NativeMessageBoxService>();
 
             // Other services.
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();

@@ -18,8 +18,10 @@ namespace AddonWars2.App
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices;
+    using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.UIServices.Interfaces;  // Do NOT remove even if shown as unused.
     using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.App.Views.Dialogs;
     using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
@@ -92,6 +94,11 @@ namespace AddonWars2.App
         /// </summary>
         public IWebSharedData WebSharedData { get; private set; }
 
+        /// <summary>
+        /// Gets the error dialog service.
+        /// </summary>
+        public IErrorDialogService ErrorDialogService { get; private set; }
+
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
         {
@@ -153,6 +160,7 @@ namespace AddonWars2.App
             ApplicationConfig = Services.GetRequiredService<IApplicationConfig>();
             AppSharedData = Services.GetRequiredService<IAppSharedData>();
             WebSharedData = Services.GetRequiredService<IWebSharedData>();
+            ErrorDialogService = Services.GetRequiredService<IErrorDialogService>();
 
             bool isDebug = false;
             foreach (var arg in e.Args)
@@ -364,11 +372,10 @@ namespace AddonWars2.App
             // TODO: We should be able to revert any action if an unhandled exception has occured.
             //       Like if we were updating addons, and an exception was thrown in the middle of the process.
 
-            string message = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
-            Logger.Fatal(exception, message);
+            string logMessage = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
+            Logger.Fatal(exception, logMessage);
 
-#if !DEBUG
-            // Try to open log file automatically, so a user can just copy-paste it.
+            // Try to open log file automatically, so a user can just copy - paste it.
             try
             {
                 Process.Start(new ProcessStartInfo(ApplicationConfig.SessionData.LogFilePath)
@@ -384,25 +391,19 @@ namespace AddonWars2.App
             }
 
             // Show the error message box.
-            var mbs = Services.GetRequiredService<IMessageBoxService>();
-            if (mbs != null)
-            {
-                var mbMessage =
-                    $"An unhandled exception occured.\n\n" +
+            var title = "An Unhandled Exception has occured";
+            var message =
                     $"The application will be terminated. If the log file wasn't opened automatically, " +
                     $"it can be found under the following path:\n\n{ApplicationConfig.SessionData.LogFilePath}";
+            var details = $"{exception.Message}\n{exception.StackTrace}";
 
-                mbs.Show(
-                    mbMessage,
-                    "An unhandled exception occured",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error,
-                    MessageBoxResult.OK,
-                    MessageBoxOptions.DefaultDesktopOnly);
-            }
-
-            Shutdown();
-#endif
+            ErrorDialogService.Show<ErrorDialog>(
+                MainWindowInstance,
+                title,
+                message,
+                details,
+                ErrorDialogButtons.OK,
+                (result) => Shutdown());
         }
 
         #endregion Methods

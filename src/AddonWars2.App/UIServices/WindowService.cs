@@ -49,19 +49,19 @@ namespace AddonWars2.App.UIServices
         #region Methods
 
         /// <inheritdoc/>
-        public void ShowWindow<T>(Window? owner)
-            where T : Window
+        public void ShowWindow<TView>(Window? owner)
+            where TView : Window
         {
-            var window = WindowLocator.FindWindow<T>();
+            var window = WindowLocator.FindWindow<TView>();
             window.Owner = owner;
             window.Show();
         }
 
         /// <inheritdoc/>
-        public void ShowModalWindow<T>(Window? owner)
-            where T : Window
+        public void ShowModalWindow<TView>(Window? owner)
+            where TView : Window
         {
-            var window = WindowLocator.FindWindow<T>();
+            var window = WindowLocator.FindWindow<TView>();
             window.Owner = owner;
             window.ShowDialog();
         }

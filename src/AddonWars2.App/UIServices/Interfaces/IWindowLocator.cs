@@ -7,7 +7,6 @@
 
 namespace AddonWars2.App.UIServices.Interfaces
 {
-    using System;
     using System.Windows;
 
     /// <summary>
@@ -20,10 +19,10 @@ namespace AddonWars2.App.UIServices.Interfaces
         /// <summary>
         /// Locates and returns a new instance of a window.
         /// </summary>
-        /// <typeparam name="T">A view type which is searched for.</typeparam>
+        /// <typeparam name="TView">A view type which is searched for.</typeparam>
         /// <returns><see cref="Window"/> instance.</returns>
-        public Window FindWindow<T>()
-            where T : Window;
+        public Window FindWindow<TView>()
+            where TView : Window;
 
         #endregion Methods
     }
