@@ -16,7 +16,6 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;
-    using MvvmDialogs;
 
     /// <summary>
     /// View model used by Settings.API view.

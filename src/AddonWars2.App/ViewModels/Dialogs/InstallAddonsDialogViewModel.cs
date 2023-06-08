@@ -7,9 +7,7 @@
 
 namespace AddonWars2.App.ViewModels.Dialogs
 {
-    using AddonWars2.App.ViewModels.Factories;
     using Microsoft.Extensions.Logging;
-    using MvvmDialogs;
 
     /// <summary>
     /// View model used by Install Addon Dependencies view.

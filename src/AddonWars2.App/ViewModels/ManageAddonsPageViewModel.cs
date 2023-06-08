@@ -15,6 +15,7 @@ namespace AddonWars2.App.ViewModels
     using System.Text.Json;
     using System.Threading.Tasks;
     using AddonWars2.App.Configuration;
+    using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.App.ViewModels.Factories;
@@ -44,19 +45,9 @@ namespace AddonWars2.App.ViewModels
         Ready,
 
         /// <summary>
-        /// View model is fetching a list of approved providers.
+        /// View model is updating data.
         /// </summary>
-        RequestingApprovedProviders,
-
-        /// <summary>
-        /// View model is a list of addons from a selected provider.
-        /// </summary>
-        LoadingAddonsList,
-
-        /// <summary>
-        /// View model is in a process of resolving selected addons dependencies.
-        /// </summary>
-        ResolvingDependencies,
+        Updating,
 
         /// <summary>
         /// View model has failed to perform an operation.
@@ -71,12 +62,19 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
-        private static readonly string _networkConnectionErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.NoInternetConnection");
-        private static readonly string _requestingApprovedProvidersMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder");
-        private static readonly string _requestingApprovedProvidersErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder");
-        private static readonly string _loadingAddonsListMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder");
-        private static readonly string _loadingAddonsListErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder");
-        private static readonly string _resolvingDependenciesErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder");
+        private static readonly string _networkConnectionErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title");
+        private static readonly string _networkConnectionErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message");
+        private static readonly string _gitHubRateLimitErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title");
+        private static readonly string _gitHubRateLimitErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message");
+        private static readonly string _gitHubTokenErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title");
+        private static readonly string _gitHubTokenErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message");
+        private static readonly string _gitHubNotFoundErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title");
+        private static readonly string _gitHubNotFoundErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Message");
+        private static readonly string _providersBadCodeErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title");
+        private static readonly string _providersBadCodeErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message");
+        private static readonly string _deserializationFailureErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title");
+        private static readonly string _deserializationFailureErrorMessage1 = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure1.Message");
+        private static readonly string _deserializationFailureErrorMessage2 = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure2.Message");
 
         private readonly IDialogService _dialogService;
         private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
@@ -204,19 +202,6 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _viewModelState, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a general status message.
-        /// </summary>
-        public string ViewModelStatusString
-        {
-            get => _viewModelStatusString;
-            set
-            {
-                SetProperty(ref _viewModelStatusString, value);
                 Logger.LogDebug($"Property set: {value}");
             }
         }
@@ -380,12 +365,15 @@ namespace AddonWars2.App.ViewModels
             ProvidersCollection.Clear();
             CachedProvidersCollection.Clear();
 
-            SetViewModelState(ManageAddonsViewModelState.RequestingApprovedProviders, _requestingApprovedProvidersMsg);
+            ViewModelState = ManageAddonsViewModelState.Updating;
 
             if (!HttpClientWrapper.IsNetworkAvailable())
             {
-                SetViewModelState(ManageAddonsViewModelState.Error, _networkConnectionErrorMsg);
-                Logger.LogError($"{ViewModelStatusString}");
+                ViewModelState = ManageAddonsViewModelState.Error;
+
+                Logger.LogError($"{_networkConnectionErrorTitle}");
+
+                ShowErrorDialog(_networkConnectionErrorTitle, _networkConnectionErrorMessage);
 
                 return;
             }
@@ -393,7 +381,6 @@ namespace AddonWars2.App.ViewModels
             var id = WebSharedData.GitHubAddonsLibRepositoryId;
             var path = WebSharedData.GitHubAddonsLibApprovedProviders;
             var finalState = ManageAddonsViewModelState.Ready;
-            var finalStatusString = string.Empty;
 
             try
             {
@@ -413,36 +400,36 @@ namespace AddonWars2.App.ViewModels
             {
                 // GitHub API rate limit exceeded.
                 finalState = ManageAddonsViewModelState.Error;
-                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");
+                ShowErrorDialog(_gitHubRateLimitErrorTitle, _gitHubRateLimitErrorMessage, $"The current limit: {e.Remaining}/{e.Limit}\n{e.Message}");
             }
             catch (AuthorizationException e)
             {
                 // Invalid API token.
                 finalState = ManageAddonsViewModelState.Error;
-                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Invalid GitHub API token.");
+                ShowErrorDialog(_gitHubTokenErrorTitle, _gitHubTokenErrorMessage, e.Message);
             }
             catch (NotFoundException e)
             {
                 // Repo or branch is not found.
                 finalState = ManageAddonsViewModelState.Error;
-                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
+                ShowErrorDialog(_gitHubNotFoundErrorTitle, _gitHubNotFoundErrorMessage, e.Message);
             }
             catch (HttpRequestException e)
             {
                 // Bad code from download URL request.
                 finalState = ManageAddonsViewModelState.Error;
-                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Unable to download the list of approved providers.");
+                ShowErrorDialog(_providersBadCodeErrorTitle, _providersBadCodeErrorMessage, e.Message);
             }
             catch (JsonException e)
             {
                 // Deserialization error.
                 finalState = ManageAddonsViewModelState.Error;
-                finalStatusString = _requestingApprovedProvidersErrorMsg;
                 Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
+                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage1, e.Message);
             }
 
             // Even if we got an error, we always load cached library.
@@ -456,7 +443,7 @@ namespace AddonWars2.App.ViewModels
             ProvidersCollection.Add(new LoadedProviderDataViewModel(cachedProviderInfo));
             SelectedProvider = ProvidersCollection.Count > 0 ? ProvidersCollection.First() : null;
 
-            SetViewModelState(finalState, finalStatusString);
+            ViewModelState = finalState;
 
             Logger.LogInformation("Providers list updated.");
         }
@@ -470,7 +457,7 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug("Executing command.");
 
-            SetViewModelState(ManageAddonsViewModelState.LoadingAddonsList, _loadingAddonsListMsg);
+            ViewModelState = ManageAddonsViewModelState.Updating;
 
             if (CachedProvidersCollection.ContainsKey(SelectedProvider!.Name)) // null is covered by CanExecute predicate defined in ctor
             {
@@ -481,7 +468,7 @@ namespace AddonWars2.App.ViewModels
                 await LoadAddonsFromProviderAsync(SelectedProvider);
             }
 
-            SetViewModelState(ManageAddonsViewModelState.Ready);
+            ViewModelState = ManageAddonsViewModelState.Ready;
 
             Logger.LogInformation("Addons list updated.");
         }
@@ -491,16 +478,16 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug($"Loading addons from the selected provider with type={selectedProvider.Type}.");
 
-            SetViewModelState(ManageAddonsViewModelState.LoadingAddonsList, _loadingAddonsListMsg);
-
             var provider = RegistryProviderFactory.GetProvider(selectedProvider.Type);
             var addonsCollection = await provider.GetAddonsFromAsync(selectedProvider.Data);
 
             // Ensure data was deserialized normally.
             if (addonsCollection.Data == null || addonsCollection.Schema == null)
             {
-                SetViewModelState(ManageAddonsViewModelState.Error, _loadingAddonsListErrorMsg);
+                ViewModelState = ManageAddonsViewModelState.Error;
                 Logger.LogError($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
+                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage2, $"{nameof(addonsCollection)} returned invalid data or schema (null value)");
+
                 return;
             }
 
@@ -544,86 +531,29 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug("Executing command.");
 
-            SetViewModelState(ManageAddonsViewModelState.ResolvingDependencies);
-
             var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, SelectedProvider!.DependencyGraph); // null is covered by CanExecute predicate defined in ctor
             var startNode = SelectedProvider.DependencyGraph.GetNode(addonItemModel!.InternalName);  // null is covered by CanExecute predicate defined in ctor
             resolver.Resolve(startNode);
-
-            //// Walk through all marked addons and collect the required addon names for all marked addons.
-            //var requiredInternalNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            //foreach (var addon in SelectedProviderAddonsCollection)
-            //{
-            //    if (addon?.Data?.RequiredAddons != null && addon.IsMarked == true)
-            //    {
-            //        foreach (var requiredAddonName in addon.Data.RequiredAddons)
-            //        {
-            //            requiredInternalNames.Add(requiredAddonName);
-            //        }
-            //    }
-            //}
-
-            //foreach (var item in resolver.Resolved)
-            //{
-            //    Debug.WriteLine(item.Name);
-            //}
-
-            //foreach (var item in resolver.Resolved)
-            //{
-            //    Debug.WriteLine(item.Name);
-            //}
-
-            //// Build a dependency graph for the marked addons.
-            //var graph = new DGrpah<IDNode>();
-            //foreach (var addon in SelectedProviderAddonsCollection)
-            //{
-            //    if (requiredInternalNames.Contains(addon.Data.InternalName))
-            //    {
-
-            //    }
-
-            //    var node = new DNode(addonName);
-            //    var wasAdded = graph.TryAddNode(node);
-            //    if (!wasAdded)
-            //    {
-            //        SetViewModelState(ManageAddonsViewModelState.Error, _resolvingDependenciesErrorMsg);
-            //        Logger.LogError($"Unable to resolve addon dependencies, because a node with the name \"{node.Name}\" is already in the graph.");
-            //    }
-            //}
-
-            //if (graph.IsEmpty)
-            //{
-            //    SetViewModelState(ManageAddonsViewModelState.Ready);
-            //    Logger.LogDebug("Graph is empty and won't be resolved.");
-            //    return;
-            //}
-
-            //var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, graph);
-            //resolver.Resolve();
-
-
-
-            //// Walk through the list again and mark all addons collected in hash set.
-            //foreach (var addon in SelectedProviderAddonsCollection)
-            //{
-            //    if (requiredInternalNames.Contains(addon.Data.InternalName))
-            //    {
-            //        addon.IsMarked = true;
-            //    }
-            //}
-
-            SetViewModelState(ManageAddonsViewModelState.Ready);
         }
 
         #endregion Commdans Logic
 
         #region Methods
 
-        // Sets the model state and status string.
-        private void SetViewModelState(ManageAddonsViewModelState state, string message = "")
+        /// <summary>
+        /// Shows an error dialog.
+        /// </summary>
+        /// <param name="title">Dialog window title.</param>
+        /// <param name="message">Dialog message.</param>
+        /// <param name="details">Dialog additional details.</param>
+        /// <param name="buttons">Dialog buttons to show.</param>
+        /// <returns>Dialog result.</returns>
+        protected bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
         {
-            ViewModelState = state;
-            ViewModelStatusString = message ?? string.Empty;
+            var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
+            var result = DialogService.ShowDialog(this, vm);
+
+            return result;
         }
 
         #endregion Methods

@@ -27,32 +27,41 @@
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
 
     <!-- InstallAddons Page -->
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.NoInternetConnection">Нет соединения.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.RequestingApprovedProvidersPlaceholder">Загрузка списка провайдеров...</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateProvidersPlaceholder">Не удалось загрузить список провайдеров.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder">Не удалось разрешить зависимости для выбранных аддонов.</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Описание</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Required">Требуется:</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Conflicts">Конфликты:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Header">Описание</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Required">Требуется:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Conflicts">Конфликты:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Updating">Обновление...</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Error">Ошибка.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Превышен лимит соединений GitHub API</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже. Лимит соединений через API GitHub сбрасывается каждый час.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title">Неверный токен GitHub API</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">Указанные репозиторий или ветка GitHub не найдены.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure1.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure2.Message" xml:space="preserve">В процессе загрузки списка аддонов через провайдер произошла ошибка. Возможно, значения коллекции аддонов или схемы равны null.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
+    <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
     <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Updating">Обновление...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.FailedToUpdate">Не удалось обновить.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">Нет соединения..</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Error">Ошибка.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Не удалось подключиться к серверу</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">Ошибка парсинга RSS-ленты</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Не удалось прочитать загруженные данные RSS-ленты.</s:String>
-    <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
     <s:String x:Key="S.NewsPage.WebView.StatusPlaceholders.Loading">Загрузка содержимого...</s:String>
 
     <!-- Settings -->

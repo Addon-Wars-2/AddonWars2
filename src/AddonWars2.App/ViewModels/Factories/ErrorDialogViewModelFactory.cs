@@ -11,7 +11,6 @@ namespace AddonWars2.App.ViewModels.Factories
     using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.ViewModels.Dialogs;
     using Microsoft.Extensions.Logging;
-    using MvvmDialogs;
 
     /// <summary>
     /// Represents a factory for <see cref="ErrorDialogViewModel"/> view models.

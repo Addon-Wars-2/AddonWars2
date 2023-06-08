@@ -17,7 +17,6 @@ namespace AddonWars2.App.ViewModels
     using System.Windows;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.UIServices.Enums;
-    using AddonWars2.App.UIServices.Interfaces;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
@@ -45,15 +44,10 @@ namespace AddonWars2.App.ViewModels
         Fetching,
 
         /// <summary>
-        /// View model is updating its content to be presented in View.
-        /// </summary>
-        Updating,
-
-        /// <summary>
         /// View model failed to update its data.
         /// Similar to Ready, but is used to indicate there is an error occured.
         /// </summary>
-        FailedToUpdate,
+        Error,
     }
 
     /// <summary>
@@ -119,10 +113,10 @@ namespace AddonWars2.App.ViewModels
             LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
             RefreshNewsCommand = new AsyncRelayCommand(
                 ExecuteReloadNewsAsync,
-                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.FailedToUpdate);
+                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
             LoadRssItemContentCommand = new RelayCommand(
                 ExecuteLoadRssItemContentCommand,
-                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.FailedToUpdate);
+                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -276,7 +270,7 @@ namespace AddonWars2.App.ViewModels
 
                 if (!HttpClientService.IsNetworkAvailable())
                 {
-                    ViewModelState = NewsViewModelState.FailedToUpdate;
+                    ViewModelState = NewsViewModelState.Error;
 
                     Logger.LogError($"{_networkConnectionErrorTitle}");
 
@@ -289,7 +283,7 @@ namespace AddonWars2.App.ViewModels
             }
             catch (HttpRequestException e)
             {
-                ViewModelState = NewsViewModelState.FailedToUpdate;
+                ViewModelState = NewsViewModelState.Error;
 
                 if (response != null)
                 {
@@ -307,8 +301,6 @@ namespace AddonWars2.App.ViewModels
 
                 return;
             }
-
-            ViewModelState = NewsViewModelState.Updating;
 
             // Read response content and store as a list of RssFeedItem.
             var feed = await ParseResponseDataAsync(response);
@@ -364,7 +356,7 @@ namespace AddonWars2.App.ViewModels
             }
             catch (Exception e)
             {
-                ViewModelState = NewsViewModelState.FailedToUpdate;
+                ViewModelState = NewsViewModelState.Error;
 
                 Logger.LogError($"Failed to parse data.");
 

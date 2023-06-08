@@ -15,8 +15,10 @@
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
+    md:DialogServiceViews.IsRegistered="True"
     Title="ManageAddonsPage"
     DataContext="{markupex:DISource Type=vm:ManageAddonsPageViewModel}"
     ShowsNavigationUI="False">
@@ -81,7 +83,7 @@
                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
-                assist:HintAssist.Hint="{DynamicResource S.InstallAddonsPage.AddonsList.SelectProviderComboBoxHint}"
+                assist:HintAssist.Hint="{DynamicResource S.ManageAddonsPage.AddonsList.SelectProviderComboBoxHint}"
                 ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
                 SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                 Style="{StaticResource ComboBoxStyle}"
@@ -188,7 +190,7 @@
                                 VerticalAlignment="Center"
                                 FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                                Text="{DynamicResource S.InstallAddonsPage.AddonsList.UsingProvider}"/>
+                                Text="{DynamicResource S.ManageAddonsPage.AddonsList.UsingProvider}"/>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
@@ -207,7 +209,7 @@
                                 VerticalAlignment="Center"
                                 FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                                Text="{DynamicResource S.InstallAddonsPage.AddonsList.GitHubAPILimit}"/>
+                                Text="{DynamicResource S.ManageAddonsPage.AddonsList.GitHubAPILimit}"/>
                             <TextBlock
                                 Margin="5,0,5,0"
                                 HorizontalAlignment="Right"
@@ -496,15 +498,15 @@
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus1}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus1}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus2}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus2}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.InstallAddonsPage.AddonItems.InstalledStatus3}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus3}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
                                 </DataTrigger>-->
                             </DataTemplate.Triggers>
@@ -530,7 +532,7 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-                <Grid Grid.Row="1">
+                <Grid Grid.RowSpan="2">
                     <TextBlock
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
@@ -538,17 +540,35 @@
                         FontWeight="Light"
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
-                        Text="{Binding Path=DataContext.ViewModelStatusString, RelativeSource={RelativeSource AncestorType=Page}}">
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
+                        Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.Updating}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Ready">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Updating">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Light"
+                        FontStyle="Normal"
+                        FontFamily="{DynamicResource Menomonia}"
+                        Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
+                        Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.Error}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
                                     <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Error">
-                                        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -566,7 +586,7 @@
             FontStyle="Normal"
             FontSize="16"
             FontFamily="{DynamicResource Menomonia}"
-            Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Header}">
+            Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Header}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -636,7 +656,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Website}"
+                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Website}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="2" Grid.Column="2"
@@ -663,7 +683,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Authors}"
+                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Authors}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="4" Grid.Column="2"
@@ -677,7 +697,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Required}"
+                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Required}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="5" Grid.Column="2"
@@ -691,7 +711,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.InstallAddonsPage.AddonDesc.Content.Conflicts}"
+                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Conflicts}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="6" Grid.Column="2"

@@ -18,7 +18,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
     Title="{DynamicResource S.Dialog.InstallAddonDependencies.Header}"
-    DataContext="{markupex:DISource Type=vm_dialogs:InstallAddonDependenciesViewModel}"
+    DataContext="{markupex:DISource Type=vm_dialogs:InstallAddonsDialogViewModel}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"

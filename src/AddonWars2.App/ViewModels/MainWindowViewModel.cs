@@ -14,12 +14,10 @@ namespace AddonWars2.App.ViewModels
     using System.Windows.Controls;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.ViewModels.Commands;
-    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.SharedData.Interfaces;
     using AddonWars2.SharedData.Models;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
-    using MvvmDialogs;
 
     /// <summary>
     /// The main view model used by application main window.

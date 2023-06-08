@@ -19,10 +19,10 @@
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     mc:Ignorable="d" 
+    md:DialogServiceViews.IsRegistered="True"
     Title="NewsPage"
     DataContext="{markupex:DISource Type=vm:NewsPageViewModel}"
-    ShowsNavigationUI="False"
-    md:DialogServiceViews.IsRegistered="True">
+    ShowsNavigationUI="False">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -316,7 +316,7 @@
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.Updating}">
+                        Text="{DynamicResource S.ManageAddonsPage.AddonsList.StatusPlaceholders.Updating}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
@@ -340,39 +340,18 @@
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.FailedToUpdate}">
+                            Text="{DynamicResource S.ManageAddonsPage.AddonsList.StatusPlaceholders.Error}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToUpdate">
+                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="Error">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <!--<TextBlock
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            TextWrapping="Wrap"
-                            FontSize="10"
-                            FontWeight="Light"
-                            FontStyle="Normal"
-                            FontFamily="{DynamicResource Menomonia}"
-                            Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{Binding DataContext.UpdateErrorCode, RelativeSource={RelativeSource AncestorType=Page}}">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource EnumToStringConverter}}" Value="FailedToUpdate">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>-->
                     </StackPanel>
                 </Grid>
             </Grid>

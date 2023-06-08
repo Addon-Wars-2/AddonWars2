@@ -20,7 +20,6 @@ namespace AddonWars2.App
     using AddonWars2.App.UIServices;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
-    using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
