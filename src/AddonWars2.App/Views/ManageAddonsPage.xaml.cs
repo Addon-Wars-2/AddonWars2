@@ -28,30 +28,30 @@ namespace AddonWars2.App.Views
         {
             InitializeComponent();
 
-            ShowInstallAddonDependenciesDialogCommand = new RelayCommand(ExecuteShowInstallAddonDependenciesDialogCommand);
+            //ShowInstallAddonDependenciesDialogCommand = new RelayCommand(ExecuteShowInstallAddonDependenciesDialogCommand);
         }
 
         #endregion Constructors
 
         #region Commands
 
-        /// <summary>
-        /// Gets a command that will open a new confirmation dialog
-        /// whenever a requested addon contains at least one dependency.
-        /// </summary>
-        public RelayCommand ShowInstallAddonDependenciesDialogCommand { get; private set; }
+        ///// <summary>
+        ///// Gets a command that will open a new confirmation dialog
+        ///// whenever a requested addon contains at least one dependency.
+        ///// </summary>
+        //public RelayCommand ShowInstallAddonDependenciesDialogCommand { get; private set; }
 
         #endregion Commands
 
         #region Commands Logic
 
-        // ShowInstallAddonDependenciesDialogCommand command logic.
-        private void ExecuteShowInstallAddonDependenciesDialogCommand()
-        {
-            var ws = WindowAssist.GetWindowService(this);
-            var owner = VisualTreeHelperEx.FindParent<Window>(this);
-            ws.ShowModalWindow<InstallAddonDependenciesDialog>(owner);
-        }
+        //// ShowInstallAddonDependenciesDialogCommand command logic.
+        //private void ExecuteShowInstallAddonDependenciesDialogCommand()
+        //{
+        //    var ws = WindowAssist.GetWindowService(this);
+        //    var owner = VisualTreeHelperEx.FindParent<Window>(this);
+        //    ws.ShowModalWindow<InstallAddonDependenciesDialog>(owner);
+        //}
 
         #endregion Commands Logic
 

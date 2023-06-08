@@ -36,9 +36,6 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Загрузка аддонов...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Не удалось загрузить список аддонов.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder">Не удалось разрешить зависимости для выбранных аддонов.</s:String>
-    <!--<s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">установлен</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">не установлен</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">изменен</s:String>-->
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Описание</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
@@ -47,11 +44,16 @@
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Обновление...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Не удалось обновить.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.NoInternetConnection">Нет соединения.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Updating">Обновление...</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.FailedToUpdate">Не удалось обновить.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">Нет соединения..</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Не удалось подключиться к серверу</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">Ошибка парсинга RSS-ленты</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Не удалось прочитать загруженные данные RSS-ленты.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Описание</s:String>
-    <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Загрузка содержимого...</s:String>
+    <s:String x:Key="S.NewsPage.WebView.StatusPlaceholders.Loading">Загрузка содержимого...</s:String>
 
     <!-- Settings -->
     <s:String x:Key="S.SettingsPage.TabMenu.Header.General">Общее</s:String>
@@ -64,6 +66,8 @@
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
+    <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Title">Ошибка при выполнении операции</s:String>
+    <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Message">Не далось открыть лог-файл.</s:String>
 
     <!-- Dialogs -->
     <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Подтвердите действие</s:String>

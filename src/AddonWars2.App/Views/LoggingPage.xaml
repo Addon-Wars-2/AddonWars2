@@ -8,7 +8,9 @@
     xmlns:local="clr-namespace:AddonWars2.App.Views"
     xmlns:vm="clr-namespace:AddonWars2.App.ViewModels"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     mc:Ignorable="d"
+    md:DialogServiceViews.IsRegistered="True"
     Title="LoggingPage"
     DataContext="{markupex:DISource Type=vm:LoggingViewModel}"
     ShowsNavigationUI="False">

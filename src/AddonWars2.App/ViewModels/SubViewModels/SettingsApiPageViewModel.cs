@@ -13,8 +13,10 @@ namespace AddonWars2.App.ViewModels
     using System.Threading.Tasks;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
 
     /// <summary>
     /// View model used by Settings.API view.
@@ -36,7 +38,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsApiPageViewModel"/> class.
         /// </summary>
-        /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
+        /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
         public SettingsApiPageViewModel(

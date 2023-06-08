@@ -17,6 +17,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.DependencyResolvers.Enums;
     using AddonWars2.DependencyResolvers.Interfaces;
@@ -29,6 +30,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
     using Octokit;
 
     /// <summary>
@@ -76,6 +78,8 @@ namespace AddonWars2.App.ViewModels
         private static readonly string _loadingAddonsListErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder");
         private static readonly string _resolvingDependenciesErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder");
 
+        private readonly IDialogService _dialogService;
+        private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IWebSharedData _webSharedData;
@@ -90,7 +94,6 @@ namespace AddonWars2.App.ViewModels
         private int _gitHubProviderRateLimit = 0;
         private int _gitHubProviderRateLimitRemaining = 0;
         private ObservableCollection<LoadedProviderDataViewModel> _providersCollection = new ObservableCollection<LoadedProviderDataViewModel>();
-        private ObservableCollection<LoadedAddonDataViewModel> _selectedAddonsCollection = new ObservableCollection<LoadedAddonDataViewModel>();
         private Dictionary<string, LoadedProviderDataViewModel> _cachedProvidersCollection = new Dictionary<string, LoadedProviderDataViewModel>();
         private LoadedProviderDataViewModel? _selectedProvider;
         private LoadedAddonDataViewModel? _selectedAddon;
@@ -102,16 +105,20 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageAddonsPageViewModel"/> class.
         /// </summary>
-        /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
-        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
-        /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/> instance.</param>
-        /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/> instance.</param>
-        /// <param name="registryProviderFactory">A reference to <see cref="GithubRegistryProvider"/> instance.</param>
-        /// <param name="dependencyResolverFactory">A reference to <see cref="IDependencyResolverFactory"/> instance.</param>
-        /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
-        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
+        /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
+        /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
+        /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/>.</param>
+        /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/>.</param>
+        /// <param name="registryProviderFactory">A reference to <see cref="GithubRegistryProvider"/>.</param>
+        /// <param name="dependencyResolverFactory">A reference to <see cref="IDependencyResolverFactory"/>.</param>
+        /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/>.</param>
+        /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/>.</param>
         public ManageAddonsPageViewModel(
             ILogger<NewsPageViewModel> logger,
+            IDialogService dialogService,
+            IErrorDialogViewModelFactory errorDialogViewModelFactory,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
             IWebSharedData webSharedData,
@@ -121,6 +128,8 @@ namespace AddonWars2.App.ViewModels
             IHttpClientWrapper httpClientWrapper)
             : base(logger)
         {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _webSharedData = webSharedData ?? throw new ArgumentNullException(nameof(webSharedData));
@@ -140,6 +149,16 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a reference to <see cref="IDialogService"/> service.
+        /// </summary>
+        public IDialogService DialogService => _dialogService;
+
+        /// <summary>
+        /// Gets a reference to the error dialog view model.
+        /// </summary>
+        public IErrorDialogViewModelFactory ErrorDialogViewModelFactory => _errorDialogViewModelFactory;
 
         /// <summary>
         /// Gets a reference to the application config.

@@ -7,26 +7,25 @@
 
 namespace AddonWars2.App.ViewModels.Dialogs
 {
-    using AddonWars2.App.Extensions.Assists;
+    using System;
     using AddonWars2.App.UIServices.Enums;
-    using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.App.Views.Dialogs;
+    using AddonWars2.App.ViewModels.Factories;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
-    using System;
-    using System.Windows;
+    using MvvmDialogs;
 
     /// <summary>
     /// View model used by Install Addon Dependencies view.
     /// </summary>
-    public class ErrorDialogViewModel : WindowBaseViewModel
+    public class ErrorDialogViewModel : WindowBaseViewModel, IModalDialogViewModel
     {
         #region Fields
 
         private string _title = string.Empty;
         private string _message = string.Empty;
-        private string _details = string.Empty;
+        private string? _details = string.Empty;
         private ErrorDialogResult _result = ErrorDialogResult.None;
+        private bool? _dialogResult = null;
         private ErrorDialogButtons _flags;
         private bool _isOkButtonVisible = false;
         private bool _isCancelButtonVisible = false;
@@ -71,10 +70,14 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// <summary>
         /// Gets or sets dialog additional details.
         /// </summary>
-        public string Details
+        public string? Details
         {
             get => _details;
-            set => SetProperty(ref _details, value);
+            set
+            {
+                SetProperty(ref _details, value);
+                OnPropertyChanged(nameof(IsDetailsButtonEnabled));
+            }
         }
 
         /// <summary>
@@ -85,6 +88,9 @@ namespace AddonWars2.App.ViewModels.Dialogs
             get => _result;
             set => SetProperty(ref _result, value);
         }
+
+        /// <inheritdoc/>
+        public bool? DialogResult => _dialogResult;
 
         /// <summary>
         /// Gets or sets a value indicating whether the OK button is visible.
@@ -103,6 +109,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
             get => _isCancelButtonVisible;
             set => SetProperty(ref _isCancelButtonVisible, value);
         }
+
+        /// <summary>
+        /// Gets a value indicating whether details button should be enabled.
+        /// </summary>
+        public bool IsDetailsButtonEnabled => !string.IsNullOrEmpty(_details);
 
         /// <summary>
         /// Gets or sets buttons flags.

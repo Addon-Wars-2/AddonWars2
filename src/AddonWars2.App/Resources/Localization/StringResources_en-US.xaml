@@ -36,9 +36,6 @@
     <s:String x:Key="S.InstallAddonsPage.AddonsList.LoadingAddonsListPlaceholder">Loading addons...</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedToUpdateAddonsPlaceholder">Failed to load addons.</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonsList.FailedResolveDependenciesPlaceholder">Failed to resolve the selected addons dependencies.</s:String>
-    <!--<s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus1">installed</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus2">not installed</s:String>
-    <s:String x:Key="S.InstallAddonsPage.AddonItems.InstalledStatus3">modified</s:String>-->
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Header">Description</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Website">Website:</s:String>
     <s:String x:Key="S.InstallAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
@@ -47,11 +44,16 @@
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.UpdatingPlaceholder">Updating...</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.FailedToUpdatePlaceholder">Failed to update.</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.NoInternetConnection">No internet connection.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Updating">Updating...</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.FailedToUpdate">Failed to update.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">No internet connection</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Can't connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Unable to connect to the server</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">RSS feed parsing error</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Unable to parse RSS data.</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
-    <s:String x:Key="S.NewsPage.WebView.LoadingPlaceholder">Loading content...</s:String>
+    <s:String x:Key="S.NewsPage.WebView.StatusPlaceholders.Loading">Loading content...</s:String>
     
     <!-- Settings -->
     <s:String x:Key="S.SettingsPage.TabMenu.Header.General">General</s:String>
@@ -64,6 +66,8 @@
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
+    <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Title">Operation error</s:String>
+    <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Message">Unable to open log file.</s:String>
     
     <!-- Dialogs -->
     <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Confirm Action</s:String>

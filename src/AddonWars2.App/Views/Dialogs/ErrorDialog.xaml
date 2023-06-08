@@ -15,9 +15,11 @@
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d" 
-    Title="{Binding Path=DataContext.Title, RelativeSource={RelativeSource AncestorType=Window}}"
+    mc:Ignorable="d"
+    md:DialogServiceViews.IsRegistered="True"
+    Title="{Binding Title}"
     DataContext="{markupex:DISource Type=vm_dialogs:ErrorDialogViewModel}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
@@ -124,7 +126,7 @@
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="1"
                     Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
-                    Visibility="{Binding Path=DataContext.IsOkButtonVisible, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisConverter}}">
+                    IsEnabled="{Binding Path=DataContext.IsDetailsButtonEnabled, RelativeSource={RelativeSource AncestorType=Window}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <i:ChangePropertyAction

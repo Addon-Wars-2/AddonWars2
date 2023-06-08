@@ -20,6 +20,8 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
+    using MvvmDialogs.FrameworkDialogs.OpenFile;
 
     /// <summary>
     /// View model used by home view.
@@ -30,8 +32,10 @@ namespace AddonWars2.App.ViewModels
 
         private static readonly string _fileNotExistsErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.FileExists");
         private static readonly string _fileNotGw2ExeErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.GW2Exe");
+
         private readonly IApplicationConfig _applicationConfig;
         private readonly IGameSharedData _gameSharedData;
+        private readonly IDialogService _dialogService;
 
         private bool _isActuallyLoaded = false;
         private AddonData? _selectedAddon;
@@ -46,19 +50,22 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="HomePageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
-        /// <param name="gameSharedData">A reference to <see cref="IGameSharedData"/> instance.</param>
+        /// <param name="gameSharedData">A reference to <see cref="IGameSharedData"/>.</param>
         public HomePageViewModel(
             ILogger<HomePageViewModel> logger,
+            IDialogService dialogService,
             IApplicationConfig appConfig,
             IGameSharedData gameSharedData)
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _gameSharedData = gameSharedData ?? throw new ArgumentNullException(nameof(gameSharedData));
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
-            UpdateGw2ExePathCommand = new RelayCommand<string[]>(ExecuteUpdateGw2ExePathCommand);
+            OpenFileDialogCommand = new RelayCommand(ExecuteOpenFileDialogCommand);
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -66,6 +73,11 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets the dialog service.
+        /// </summary>
+        public IDialogService DialogService => _dialogService;
 
         /// <summary>
         /// Gets a reference to the application config.
@@ -164,9 +176,9 @@ namespace AddonWars2.App.ViewModels
         public RelayCommand TryFindGw2ExeCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command that updates <see cref="Gw2ExecPath"/>.
+        /// Gets a command that opens a new file dialog.
         /// </summary>
-        public RelayCommand<string[]> UpdateGw2ExePathCommand { get; private set; }
+        public RelayCommand OpenFileDialogCommand { get; private set; }
 
         #endregion Commands
 
@@ -195,31 +207,21 @@ namespace AddonWars2.App.ViewModels
             Logger.LogInformation("GW2 executable location was set automatically.");
         }
 
-        // UpdateGw2ExePathCommand command logic.
-        private void ExecuteUpdateGw2ExePathCommand(string[]? paths)
+        // Opens a new file dialog.
+        private void ExecuteOpenFileDialogCommand()
         {
-            Logger.LogDebug("Executing command.");
-
-            if (paths?.Length == 0)
+            var settings = new OpenFileDialogSettings
             {
-                Logger.LogWarning("No paths were selected.");
-                return;
-            }
+                DefaultExt = ".exe",
+                Filter = "GW2 .exe|*.exe|All Files|*.*",
+                Multiselect = false,
+            };
 
-            var path = paths?[0];
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            var success = DialogService.ShowOpenFileDialog(this, settings);
+            if (success == true)
             {
-                Logger.LogWarning("Path is null, empty or not valid.");
-                return;
+                Gw2ExecPath = settings.FileName;
             }
-
-            Gw2ExecPath = path;
-
-            // Inform UI even if the property value is the same.
-            // We do this, because the text box could be changed manually, but failed to pass validation.
-            // The actual property value does not change in such case, and re-selecting the same file again will not
-            // update the text box, since SetProperty internally compares old and new values, which are still the same.
-            OnPropertyChanged(nameof(Gw2ExecPath));  // TODO: is it still a thing?
         }
 
         #endregion Commands Logic

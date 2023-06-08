@@ -18,12 +18,13 @@ namespace AddonWars2.App
     using AddonWars2.App.Extensions.Markup;
     using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices;
-    using AddonWars2.App.UIServices.Enums;
-    using AddonWars2.App.UIServices.Interfaces;  // Do NOT remove even if shown as unused.
     using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.App.Views.Dialogs;
+    using AddonWars2.App.ViewModels;
+    using AddonWars2.App.ViewModels.Dialogs;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
+    using MvvmDialogs;
     using Serilog;
     using Serilog.Enrichers.CallerInfo;
     using Serilog.Events;
@@ -97,7 +98,7 @@ namespace AddonWars2.App
         /// <summary>
         /// Gets the error dialog service.
         /// </summary>
-        public IErrorDialogService ErrorDialogService { get; private set; }
+        public IDialogService DialogService { get; private set; }
 
         // Event wait handle.
         private EventWaitHandle EventWaitHandle
@@ -160,7 +161,7 @@ namespace AddonWars2.App
             ApplicationConfig = Services.GetRequiredService<IApplicationConfig>();
             AppSharedData = Services.GetRequiredService<IAppSharedData>();
             WebSharedData = Services.GetRequiredService<IWebSharedData>();
-            ErrorDialogService = Services.GetRequiredService<IErrorDialogService>();
+            DialogService = Services.GetRequiredService<IDialogService>();
 
             bool isDebug = false;
             foreach (var arg in e.Args)
@@ -390,6 +391,7 @@ namespace AddonWars2.App
                 Logger.Error("Unable to open log file automatically.");
             }
 
+            // TODO: Localization.
             // Show the error message box.
             var title = "An Unhandled Exception has occured";
             var message =
@@ -397,13 +399,13 @@ namespace AddonWars2.App
                     $"it can be found under the following path:\n\n{ApplicationConfig.SessionData.LogFilePath}";
             var details = $"{exception.Message}\n{exception.StackTrace}";
 
-            ErrorDialogService.Show<ErrorDialog>(
-                MainWindowInstance,
-                title,
-                message,
-                details,
-                ErrorDialogButtons.OK,
-                (result) => Shutdown());
+            var ownerViewModel = Services.GetRequiredService<MainWindowViewModel>();
+            var dialogViewModelFactory = Services.GetRequiredService<IErrorDialogViewModelFactory>();
+            var dialogViewModel = dialogViewModelFactory.Create(title, message, details);
+
+            _ = DialogService.ShowDialog(ownerViewModel, dialogViewModel);
+
+            Shutdown();
         }
 
         #endregion Methods

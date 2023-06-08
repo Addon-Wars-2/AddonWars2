@@ -17,10 +17,12 @@
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     mc:Ignorable="d" 
     Title="NewsPage"
     DataContext="{markupex:DISource Type=vm:NewsPageViewModel}"
-    ShowsNavigationUI="False">
+    ShowsNavigationUI="False"
+    md:DialogServiceViews.IsRegistered="True">
 
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -314,7 +316,7 @@
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.NewsPage.NewsList.UpdatingPlaceholder}">
+                        Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.Updating}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
@@ -338,7 +340,7 @@
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{DynamicResource S.NewsPage.NewsList.FailedToUpdatePlaceholder}">
+                            Text="{DynamicResource S.NewsPage.NewsList.StatusPlaceholders.FailedToUpdate}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>
@@ -350,7 +352,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock
+                        <!--<TextBlock
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             TextWrapping="Wrap"
@@ -370,7 +372,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
-                        </TextBlock>
+                        </TextBlock>-->
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -435,7 +437,7 @@
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.NewsPage.WebView.LoadingPlaceholder}">
+                        Text="{DynamicResource S.NewsPage.WebView.StatusPlaceholders.Loading}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="ContentLoading" SourceObject="{Binding ElementName=WebView2Control}">
                                 <i:ChangePropertyAction PropertyName="Visibility" Value="Visible"/>

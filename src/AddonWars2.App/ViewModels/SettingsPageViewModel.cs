@@ -9,8 +9,10 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using AddonWars2.App.Configuration;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
 
     /// <summary>
     /// View model used by Settings view.

@@ -10,12 +10,15 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
-    using System.Windows;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.Logging;
+    using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.UIServices.Interfaces;
+    using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.App.ViewModels.Factories;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
 
     /// <summary>
     /// View model used by logging view.
@@ -24,9 +27,13 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private static readonly string _failedOpenLogFileErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.LoggingPage.Errors.FailedOpenLogFile.Title");
+        private static readonly string _failedOpenLogFileErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.LoggingPage.Errors.FailedOpenLogFile.Message");
+
+        private readonly IDialogService _dialogService;
+        private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
         private readonly IApplicationConfig _applicationConfig;
         private readonly ILogsAggregator _logsAggregator;
-        private readonly INativeMessageBoxService _messageBoxService;
 
         #endregion Fields
 
@@ -35,20 +42,23 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="LoggingViewModel"/> class.
         /// </summary>
-        /// <param name="logger">A referemnce to <see cref="ILogger"/> instance.</param>
-        /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/> instance.</param>
-        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
-        /// <param name="messageBoxService">A reference to <see cref="INativeMessageBoxService"/> instance.</param>
+        /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
+        /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
+        /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
+        /// <param name="logsAggregator">A rerefence to a <see cref="ILogsAggregator"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         public LoggingViewModel(
             ILogger<LoggingViewModel> logger,
+            IDialogService dialogService,
+            IErrorDialogViewModelFactory errorDialogViewModelFactory,
             ILogsAggregator logsAggregator,
-            IApplicationConfig appConfig,
-            INativeMessageBoxService messageBoxService)
+            IApplicationConfig appConfig)
             : base(logger)
         {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
             _logsAggregator = logsAggregator ?? throw new ArgumentNullException(nameof(logsAggregator));
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
-            _messageBoxService = messageBoxService ?? throw new ArgumentNullException(nameof(messageBoxService));
 
             OpenLogFileCommand = new RelayCommand(ExecuteOpenLogFileCommand);
 
@@ -60,6 +70,16 @@ namespace AddonWars2.App.ViewModels
         #region Properties
 
         /// <summary>
+        /// Gets a reference to <see cref="IDialogService"/> service.
+        /// </summary>
+        public IDialogService DialogService => _dialogService;
+
+        /// <summary>
+        /// Gets a reference to the error dialog view model.
+        /// </summary>
+        public IErrorDialogViewModelFactory ErrorDialogViewModelFactory => _errorDialogViewModelFactory;
+
+        /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
         public IApplicationConfig AppConfig => _applicationConfig;
@@ -68,11 +88,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to <see cref="ILogsAggregator"/> service.
         /// </summary>
         public ILogsAggregator LogsAggregator => _logsAggregator;
-
-        /// <summary>
-        /// Gets a reference to <see cref="INativeMessageBoxService"/> service.
-        /// </summary>
-        public INativeMessageBoxService MessageBoxService => _messageBoxService;
 
         /// <summary>
         /// Gets a collection of log entries.
@@ -105,16 +120,32 @@ namespace AddonWars2.App.ViewModels
             }
             catch (Exception e)
             {
-                MessageBoxService.Show(
-                    e.Message,
-                    "Failed to open log file",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-
                 Logger.LogError($"Failed to open log file:\n{e.Message}");
+
+                ShowErrorDialog(_failedOpenLogFileErrorTitle, _failedOpenLogFileErrorMessage, e.Message);
             }
         }
 
         #endregion Commands Logic
+
+        #region Methods
+
+        /// <summary>
+        /// Shows an error dialog.
+        /// </summary>
+        /// <param name="title">Dialog window title.</param>
+        /// <param name="message">Dialog message.</param>
+        /// <param name="details">Dialog additional details.</param>
+        /// <param name="buttons">Dialog buttons to show.</param>
+        /// <returns>Dialog result.</returns>
+        protected bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
+        {
+            var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
+            var result = DialogService.ShowDialog(this, vm);
+
+            return result;
+        }
+
+        #endregion Methods
     }
 }

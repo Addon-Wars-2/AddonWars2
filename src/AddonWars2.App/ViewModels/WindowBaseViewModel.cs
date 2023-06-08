@@ -17,13 +17,18 @@ namespace AddonWars2.App.ViewModels
     /// </summary>
     public class WindowBaseViewModel : BaseViewModel
     {
+        #region Fields
+
+        #endregion Fields
+
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowBaseViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        public WindowBaseViewModel(ILogger<WindowBaseViewModel> logger)
+        public WindowBaseViewModel(
+            ILogger<WindowBaseViewModel> logger)
             : base(logger)
         {
             // Commands.
@@ -114,5 +119,9 @@ namespace AddonWars2.App.ViewModels
         }
 
         #endregion Commands Logic
+
+        #region Methods
+
+        #endregion Methods
     }
 }

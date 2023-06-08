@@ -15,12 +15,13 @@
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
     xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     DataContext="{markupex:DISource Type=vm:HomePageViewModel}"
-    assist:FileDialogAssist.FileDialogService="{markupex:DISource Type=services:FileDialogService}"
     Title="HomePage"
-    ShowsNavigationUI="False">
+    ShowsNavigationUI="False"
+    md:DialogServiceViews.IsRegistered="True">
 
     <Page.Resources>
         <vm:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
@@ -353,15 +354,16 @@
                 BorderThickness="1"
                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
                 attached:AccentColorExtension.AccentColor="{DynamicResource LinearGradient.PrimaryPalette.Accent02to02a}"
+                Command="{Binding Path=DataContext.OpenFileDialogCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                 Style="{DynamicResource MajorButtonAccentBackgroundStyle}"
                 ToolTip="{DynamicResource S.ToolTip.Button.SelectGw2Path}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction
+                        <!--<i:InvokeCommandAction
                             Command="{Binding OpenFileDialogCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
                         <i:InvokeCommandAction
                             Command="{Binding Path=DataContext.UpdateGw2ExePathCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                            CommandParameter="{Binding Path=(assist:FileDialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>
+                            CommandParameter="{Binding Path=(assist:FileDialogAssist.SelectedPaths), RelativeSource={RelativeSource AncestorType=Page}}"/>-->
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Button.Content>

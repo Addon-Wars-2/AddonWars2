@@ -19,7 +19,6 @@
     mc:Ignorable="d" 
     Title="ManageAddonsPage"
     DataContext="{markupex:DISource Type=vm:ManageAddonsPageViewModel}"
-    assist:WindowAssist.WindowService="{markupex:DISource Type=services:WindowService}"
     ShowsNavigationUI="False">
 
     <Page.Resources>

@@ -45,5 +45,9 @@ namespace AddonWars2.App.ViewModels
         protected static ILogger Logger => _logger;
 
         #endregion Properties
+
+        #region Methods
+
+        #endregion Methods
     }
 }

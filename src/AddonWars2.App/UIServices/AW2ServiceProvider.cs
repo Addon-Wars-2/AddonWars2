@@ -18,6 +18,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.App.ViewModels.Dialogs;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.DependencyResolvers.Factories;
     using AddonWars2.DependencyResolvers.Interfaces;
     using AddonWars2.Downloaders.Factories;
@@ -40,6 +41,8 @@ namespace AddonWars2.App.UIServices
     using Config.Net;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
+    using MvvmDialogs.DialogTypeLocators;
     using Octokit;
     using Serilog;
 
@@ -86,18 +89,15 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<SettingsPageViewModel>();
             services.AddSingleton<SettingsGeneralPageViewModel>();
             services.AddSingleton<SettingsApiPageViewModel>();
-            services.AddTransient<InstallAddonDependenciesViewModel>();
+            services.AddTransient<InstallAddonsDialogViewModel>();
             services.AddTransient<ErrorDialogViewModel>();
 
             // Commands.
             services.AddSingleton<CommonCommands>();
 
             // UI Services.
-            services.AddSingleton<WindowService>();
-            services.AddSingleton<FileDialogService>();
-            services.AddSingleton<IErrorDialogService, ErrorDialogService>();
-            services.AddSingleton<IWindowLocator, WindowLocator>();
-            services.AddSingleton<INativeMessageBoxService, NativeMessageBoxService>();
+            services.AddSingleton<IDialogTypeLocator, ErrorDialogTypeLocator>();
+            services.AddSingleton<IDialogService, DialogService>(x => new DialogService(dialogTypeLocator: x.GetRequiredService<IDialogTypeLocator>()));
 
             // Other services.
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
@@ -119,6 +119,7 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IRegistryProviderFactory, RegistryProviderFactory>();
             services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
             services.AddSingleton<IDependencyResolverFactory, DependencyResolverFactory>();
+            services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
 
             // Logging.
             services.AddSingleton<ILogsAggregator, LogsAggregator>();

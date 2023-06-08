@@ -27,7 +27,6 @@ namespace AddonWars2.App.Views
         {
             InitializeComponent();
 
-            OpenFileDialogCommand = new RelayCommand(ExecuteOpenFileDialogCommand);
             SwitchToInstallAddonsTabCommand = new RelayCommand<int>(ExecuteSwitchToInstallAddonsTabCommand);
         }
 
@@ -40,11 +39,6 @@ namespace AddonWars2.App.Views
         #region Commands
 
         /// <summary>
-        /// Gets a command that will open a standard file dialog.
-        /// </summary>
-        public RelayCommand OpenFileDialogCommand { get; private set; }
-
-        /// <summary>
         /// Gets a command that will search for a parent <see cref="TabControl"/>
         /// and switch to the invisible "Install Addons" tab.
         /// </summary>
@@ -53,23 +47,6 @@ namespace AddonWars2.App.Views
         #endregion Commands
 
         #region Commands Logic
-
-        // OpenFileDialogCommand command logic.
-        private void ExecuteOpenFileDialogCommand()
-        {
-            var ds = FileDialogAssist.GetFileDialogService(this);
-            if (ds == null)
-            {
-                FileDialogAssist.SetFileDialogService(this, new FileDialogService());
-            }
-
-            var paths = ds!.OpenFileDialog(
-                defaultExt: ".exe",
-                filter: "GW2 .exe|*.exe|All Files|*.*",
-                multiselect: false);
-
-            FileDialogAssist.SetSelectedPaths(this, paths);
-        }
 
         // SwitchToInstallAddonsTabCommand command logic.
         private void ExecuteSwitchToInstallAddonsTabCommand(int tabIndex)

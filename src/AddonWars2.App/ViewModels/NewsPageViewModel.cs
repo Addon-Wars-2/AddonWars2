@@ -16,7 +16,10 @@ namespace AddonWars2.App.ViewModels
     using System.Threading.Tasks;
     using System.Windows;
     using AddonWars2.App.Configuration;
+    using AddonWars2.App.UIServices.Enums;
+    using AddonWars2.App.UIServices.Interfaces;
     using AddonWars2.App.Utils.Helpers;
+    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.Services.RssFeedService;
     using AddonWars2.Services.RssFeedService.Interfaces;
@@ -24,6 +27,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
+    using MvvmDialogs;
 
     /// <summary>
     /// Represents <see cref="NewsPageViewModel"/> states.
@@ -61,12 +65,20 @@ namespace AddonWars2.App.ViewModels
 
         private const string URI_DEFAULT = "about:blank";
 
+        private static readonly string _networkConnectionErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.NoInternetConnection.Title");
+        private static readonly string _networkConnectionErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.NoInternetConnection.Message");
+        private static readonly string _httpClientBadCodeErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.BadCode.Title");
+        private static readonly string _httpClientBadCodeErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.BadCode.Message");
+        private static readonly string _failedParseRssErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.FiledToParseRss.Title");
+        private static readonly string _failedParseRssErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.Errors.FiledToParseRss.Message");
+
+        private readonly IDialogService _dialogService;
+        private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
         private readonly IApplicationConfig _applicationConfig;
         private readonly IAppSharedData _appStaticData;
         private readonly Gw2RssFeedService _rssFeedService;
         private readonly IHttpClientWrapper _httpClientService;
 
-        private string _updateErrorCode = string.Empty;
         private NewsViewModelState _viewModelState = NewsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
         private ObservableCollection<Gw2RssFeedItem> _rssFeedCollection = new ObservableCollection<Gw2RssFeedItem>();
@@ -81,21 +93,27 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="NewsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
-        /// <param name="appConfig">A reference to <see cref="ApplicationConfig"/>.</param>
+        /// <param name="dialogService">A reference to <see cref="IErrorDialogService"/>.</param>
+        /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         /// <param name="appStaticData">A reference to <see cref="IAppSharedData"/>.</param>
         /// <param name="rssFeedService">A referemnce to <see cref="Gw2RssFeedService"/>.</param>
         /// <param name="httpClientService">A referemnce to <see cref="IHttpClientWrapper"/>.</param>
         public NewsPageViewModel(
             ILogger<NewsPageViewModel> logger,
+            IDialogService dialogService,
+            IErrorDialogViewModelFactory errorDialogViewModelFactory,
             IApplicationConfig appConfig,
             IAppSharedData appStaticData,
             IRssFeedService<Gw2RssFeedItem> rssFeedService,
             IHttpClientWrapper httpClientService)
             : base(logger)
         {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+            _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _appStaticData = appStaticData ?? throw new ArgumentNullException(nameof(appStaticData));
-            _rssFeedService = (Gw2RssFeedService)rssFeedService ?? throw new ArgumentNullException(nameof(rssFeedService));
+            _rssFeedService = rssFeedService as Gw2RssFeedService ?? throw new ArgumentNullException(nameof(rssFeedService));
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
 
             LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
@@ -114,6 +132,16 @@ namespace AddonWars2.App.ViewModels
         #region Properties
 
         /// <summary>
+        /// Gets a reference to <see cref="IDialogService"/> service.
+        /// </summary>
+        public IDialogService DialogService => _dialogService;
+
+        /// <summary>
+        /// Gets a reference to the error dialog view model.
+        /// </summary>
+        public IErrorDialogViewModelFactory ErrorDialogViewModelFactory => _errorDialogViewModelFactory;
+
+        /// <summary>
         /// Gets a reference to the application config.
         /// </summary>
         public IApplicationConfig AppConfig => _applicationConfig;
@@ -124,12 +152,12 @@ namespace AddonWars2.App.ViewModels
         public IAppSharedData AppStaticData => _appStaticData;
 
         /// <summary>
-        /// Gets a reference to the application config.
+        /// Gets a reference to the RSS feed service.
         /// </summary>
         public Gw2RssFeedService RssFeedService => _rssFeedService;
 
         /// <summary>
-        /// Gets a reference to the application config.
+        /// Gets a reference to the HTTP client service.
         /// </summary>
         public IHttpClientWrapper HttpClientService => _httpClientService;
 
@@ -194,20 +222,6 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the error code (including error message)
-        /// if an error occured on news feed update.
-        /// </summary>
-        public string UpdateErrorCode
-        {
-            get => _updateErrorCode;
-            set
-            {
-                SetProperty(ref _updateErrorCode, value);
-                Logger.LogDebug($"Property set: {value}");
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the view model state.
         /// </summary>
         public NewsViewModelState ViewModelState
@@ -263,9 +277,10 @@ namespace AddonWars2.App.ViewModels
                 if (!HttpClientService.IsNetworkAvailable())
                 {
                     ViewModelState = NewsViewModelState.FailedToUpdate;
-                    UpdateErrorCode = ResourcesHelper.GetApplicationResource<string>("S.NewsPage.NewsList.NoInternetConnection");
 
-                    Logger.LogError($"{UpdateErrorCode}");
+                    Logger.LogError($"{_networkConnectionErrorTitle}");
+
+                    ShowErrorDialog(_networkConnectionErrorTitle, _networkConnectionErrorMessage);
 
                     return;
                 }
@@ -275,14 +290,20 @@ namespace AddonWars2.App.ViewModels
             catch (HttpRequestException e)
             {
                 ViewModelState = NewsViewModelState.FailedToUpdate;
-                UpdateErrorCode = $"{e.Message}";
+
                 if (response != null)
                 {
                     Logger.LogError($"Bad code: {(int)response.StatusCode} {response.StatusCode}");
+                    Logger.LogError($"{e.Message}");
+                    Logger.LogError($"Exception: {e}");
+                    ShowErrorDialog(_httpClientBadCodeErrorTitle, _httpClientBadCodeErrorMessage, $"GET {AppConfig.UserData.Gw2Rss}\n{(int)response.StatusCode} {response.StatusCode}\n{e.Message}");
                 }
-
-                Logger.LogError($"{e.Message}");
-                Logger.LogError($"Exception: {e}");
+                else
+                {
+                    Logger.LogError($"{e.Message}");
+                    Logger.LogError($"Exception: {e}");
+                    ShowErrorDialog(_httpClientBadCodeErrorTitle, _httpClientBadCodeErrorMessage, $"GET {AppConfig.UserData.Gw2Rss}\n{e.Message}");
+                }
 
                 return;
             }
@@ -315,7 +336,7 @@ namespace AddonWars2.App.ViewModels
             // Save HTML pages into the RSS feed directory.
             await WriteRssItemsAsync(feed, rssDirPath);
 
-            // Add to the observable collection with some delay for animation purposes.
+            // Add to the observable collection.
             await FillRssItemsAsync(feed, RssFeedCollection);
 
             ViewModelState = NewsViewModelState.Ready;
@@ -344,9 +365,10 @@ namespace AddonWars2.App.ViewModels
             catch (Exception e)
             {
                 ViewModelState = NewsViewModelState.FailedToUpdate;
-                UpdateErrorCode = $"{e.Message}";
 
                 Logger.LogError($"Failed to parse data.");
+
+                ShowErrorDialog(_failedParseRssErrorTitle, _failedParseRssErrorMessage, e.Message);
 
                 return null;
             }
@@ -427,6 +449,22 @@ namespace AddonWars2.App.ViewModels
         #endregion Commands Logic
 
         #region Methods
+
+        /// <summary>
+        /// Shows an error dialog.
+        /// </summary>
+        /// <param name="title">Dialog window title.</param>
+        /// <param name="message">Dialog message.</param>
+        /// <param name="details">Dialog additional details.</param>
+        /// <param name="buttons">Dialog buttons to show.</param>
+        /// <returns>Dialog result.</returns>
+        protected bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
+        {
+            var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
+            var result = DialogService.ShowDialog(this, vm);
+
+            return result;
+        }
 
         #endregion Methods
     }
