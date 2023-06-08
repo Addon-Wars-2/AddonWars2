@@ -33,7 +33,7 @@
         </CollectionViewSource>
         <CollectionViewSource
             x:Key="AddonsCollectionView"
-            Source="{Binding SelectedAddonsCollection}">
+            Source="{Binding ProviderAddonsCollection}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="DisplayName"/>
             </CollectionViewSource.SortDescriptions>
@@ -427,7 +427,7 @@
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="Click">
                                                         <i:InvokeCommandAction
-                                                            Command="{Binding Path=DataContext.ResolveAddonDependenciesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                            Command="{Binding Path=DataContext.InstallSelectedAddonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                                                             CommandParameter="{Binding}"/>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>

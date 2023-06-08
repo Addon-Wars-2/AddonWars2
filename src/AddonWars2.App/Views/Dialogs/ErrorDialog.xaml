@@ -14,13 +14,13 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
+    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
     xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     md:DialogServiceViews.IsRegistered="True"
     Title="{Binding Title}"
-    DataContext="{markupex:DISource Type=vm_dialogs:ErrorDialogViewModel}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"
@@ -154,7 +154,7 @@
                     Height="20"
                     Cursor="Hand"
                     Focusable="False"
-                    Content="Ok"
+                    Content="{DynamicResource S.Controls.Button.Ok.Text}"
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="1"
                     Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
@@ -181,7 +181,7 @@
                     Height="20"
                     Cursor="Hand"
                     Focusable="False"
-                    Content="Cancel"
+                    Content="{DynamicResource S.Controls.Button.Cancel.Text}"
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="1"
                     Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
@@ -211,7 +211,11 @@
                     HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto"
                     TextWrapping="Wrap"
-                    Style="{DynamicResource TextBoxStyle}"/>
+                    Style="{DynamicResource TextBoxStyle}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:UIElementRemoveFocusBehavior/>
+                    </i:Interaction.Behaviors>
+                </TextBox>
             </Grid>
         </Grid>
     </Border>

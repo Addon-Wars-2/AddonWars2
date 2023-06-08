@@ -131,7 +131,7 @@ namespace AddonWars2.App.ViewModels
         public IDialogService DialogService => _dialogService;
 
         /// <summary>
-        /// Gets a reference to the error dialog view model.
+        /// Gets a reference to the error dialog factory.
         /// </summary>
         public IErrorDialogViewModelFactory ErrorDialogViewModelFactory => _errorDialogViewModelFactory;
 
@@ -442,15 +442,8 @@ namespace AddonWars2.App.ViewModels
 
         #region Methods
 
-        /// <summary>
-        /// Shows an error dialog.
-        /// </summary>
-        /// <param name="title">Dialog window title.</param>
-        /// <param name="message">Dialog message.</param>
-        /// <param name="details">Dialog additional details.</param>
-        /// <param name="buttons">Dialog buttons to show.</param>
-        /// <returns>Dialog result.</returns>
-        protected bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
+        // Shows error dialog.
+        private bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
         {
             var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
             var result = DialogService.ShowDialog(this, vm);

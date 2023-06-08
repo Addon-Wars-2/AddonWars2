@@ -89,8 +89,6 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<SettingsPageViewModel>();
             services.AddSingleton<SettingsGeneralPageViewModel>();
             services.AddSingleton<SettingsApiPageViewModel>();
-            services.AddTransient<InstallAddonsDialogViewModel>();
-            services.AddTransient<ErrorDialogViewModel>();
 
             // Commands.
             services.AddSingleton<CommonCommands>();
@@ -120,6 +118,7 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
             services.AddSingleton<IDependencyResolverFactory, DependencyResolverFactory>();
             services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
+            services.AddSingleton<IInstallAddonsDialogFactory, InstallAddonsDialogFactory>();
 
             // Logging.
             services.AddSingleton<ILogsAggregator, LogsAggregator>();

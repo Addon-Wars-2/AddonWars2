@@ -48,8 +48,7 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure1.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure2.Message" xml:space="preserve">В процессе загрузки списка аддонов через провайдер произошла ошибка. Возможно, значения коллекции аддонов или схемы равны null.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
@@ -80,8 +79,13 @@
 
     <!-- Dialogs -->
     <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Подтвердите действие</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.01">Вы пытаетесь установить аддон, для работы которого требуется установить один или несколько других аддонов.</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
 
     <!-- Controls -->
+    <s:String x:Key="S.Controls.Button.Ok.Text">Ок</s:String>
+    <s:String x:Key="S.Controls.Button.Cancel.Text">Отменить</s:String>
+    <s:String x:Key="S.Controls.Button.Agree.Text">Согласен</s:String>
     <s:String x:Key="S.Controls.ComboBox.Placeholder">пусто...</s:String>
     <s:String x:Key="S.Controls.TextBox.SelectGW2ExePlaceholder">Укажите путь до gw2-64.exe...</s:String>
 
@@ -100,9 +104,9 @@
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Добавить новые аддоны.</s:String>
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Обновить ленту новостей.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Открыть лог-файл.</s:String>
-    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать аддон через выбранный провайдер и добавить его в очередь установки.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Удалить установленный аддон.</s:String>
+    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
 
 </ResourceDictionary>

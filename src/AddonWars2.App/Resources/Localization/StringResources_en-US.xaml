@@ -48,9 +48,8 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Unable to connect to the server</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Failed to deserialize data</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure1.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure2.Message" xml:space="preserve">An error occured when loading addons from a provider. It seems, addons collection data and/or schema are null.</s:String>
-    
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
+
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
     <s:String x:Key="S.NewsPage.NewsDesc.Header">Description</s:String>
@@ -79,9 +78,14 @@
     <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Message">Unable to open log file.</s:String>
     
     <!-- Dialogs -->
-    <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Confirm Action</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Confirm action</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.01">You're attempting to install the addon that requires one or more other addons to be installed.</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.02">The addons will be installed in the following order:</s:String>
 
     <!-- Controls -->
+    <s:String x:Key="S.Controls.Button.Ok.Text">Ok</s:String>
+    <s:String x:Key="S.Controls.Button.Cancel.Text">Cancel</s:String>
+    <s:String x:Key="S.Controls.Button.Agree.Text">Agree</s:String>
     <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>
     <s:String x:Key="S.Controls.TextBox.SelectGW2ExePlaceholder">Select gw2-64.exe...</s:String>
 
@@ -100,9 +104,9 @@
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Install new add-ons.</s:String>
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh news feed.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
-    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Reload addon providers.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Get this addon from the selected provider and add it to the installation queue.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Remove the installed addon.</s:String>
+    <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
 
 </ResourceDictionary>

@@ -14,6 +14,7 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using System.Xml.Linq;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.Utils.Helpers;
@@ -73,11 +74,11 @@ namespace AddonWars2.App.ViewModels
         private static readonly string _providersBadCodeErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title");
         private static readonly string _providersBadCodeErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message");
         private static readonly string _deserializationFailureErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title");
-        private static readonly string _deserializationFailureErrorMessage1 = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure1.Message");
-        private static readonly string _deserializationFailureErrorMessage2 = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure2.Message");
+        private static readonly string _deserializationFailureErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message");
 
         private readonly IDialogService _dialogService;
         private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
+        private readonly IInstallAddonsDialogFactory _installAddonsDialogFactory;
         private readonly IApplicationConfig _applicationConfig;
         private readonly CommonCommands _commonCommands;
         private readonly IWebSharedData _webSharedData;
@@ -87,7 +88,6 @@ namespace AddonWars2.App.ViewModels
         private readonly IHttpClientWrapper _httpClientWrapper;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
-        private string _viewModelStatusString = string.Empty;
         private bool _isActuallyLoaded = false;
         private int _gitHubProviderRateLimit = 0;
         private int _gitHubProviderRateLimitRemaining = 0;
@@ -106,6 +106,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
         /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
+        /// <param name="installAddonsDialogFactory">A reference to <see cref="IInstallAddonsDialogFactory"/>.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
         /// <param name="commonCommands">A reference to <see cref="Commands.CommonCommands"/>.</param>
         /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/>.</param>
@@ -117,6 +118,7 @@ namespace AddonWars2.App.ViewModels
             ILogger<NewsPageViewModel> logger,
             IDialogService dialogService,
             IErrorDialogViewModelFactory errorDialogViewModelFactory,
+            IInstallAddonsDialogFactory installAddonsDialogFactory,
             IApplicationConfig appConfig,
             CommonCommands commonCommands,
             IWebSharedData webSharedData,
@@ -128,6 +130,7 @@ namespace AddonWars2.App.ViewModels
         {
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
+            _installAddonsDialogFactory = installAddonsDialogFactory ?? throw new ArgumentNullException(nameof(installAddonsDialogFactory));
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
             _commonCommands = commonCommands ?? throw new ArgumentNullException(nameof(commonCommands));
             _webSharedData = webSharedData ?? throw new ArgumentNullException(nameof(webSharedData));
@@ -139,7 +142,7 @@ namespace AddonWars2.App.ViewModels
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
             ReloadProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error);
             GetAddonsFromSelectedProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromSelectedProviderAsyncCommand, () => SelectedProvider != null);
-            ResolveAddonDependenciesCommand = new RelayCommand<LoadedAddonDataViewModel>(ExecuteResolveAddonDependenciesCommand, (item) => item != null && SelectedProvider != null && (ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error));
+            InstallSelectedAddonCommand = new RelayCommand<LoadedAddonDataViewModel>(ExecuteInstallSelectedAddonCommand, (item) => item != null && SelectedProvider != null && (ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error));
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -154,9 +157,14 @@ namespace AddonWars2.App.ViewModels
         public IDialogService DialogService => _dialogService;
 
         /// <summary>
-        /// Gets a reference to the error dialog view model.
+        /// Gets a reference to the error dialog factory.
         /// </summary>
         public IErrorDialogViewModelFactory ErrorDialogViewModelFactory => _errorDialogViewModelFactory;
+
+        /// <summary>
+        /// Gets a reference to the install addons dialog factory.
+        /// </summary>
+        public IInstallAddonsDialogFactory InstallAddonsDialogFactory => _installAddonsDialogFactory;
 
         /// <summary>
         /// Gets a reference to the application config.
@@ -277,15 +285,15 @@ namespace AddonWars2.App.ViewModels
             set
             {
                 SetProperty(ref _selectedProvider, value);
-                OnPropertyChanged(nameof(SelectedAddonsCollection));
+                OnPropertyChanged(nameof(ProviderAddonsCollection));
                 Logger.LogDebug($"Property set: {value}, name={value?.Name}");
             }
         }
 
         /// <summary>
-        /// Gets or sets a list of addons.
+        /// Gets a list of addons.
         /// </summary>
-        public ObservableCollection<LoadedAddonDataViewModel> SelectedAddonsCollection => SelectedProvider?.Addons ?? new ObservableCollection<LoadedAddonDataViewModel>();
+        public ObservableCollection<LoadedAddonDataViewModel> ProviderAddonsCollection => SelectedProvider?.Addons ?? new ObservableCollection<LoadedAddonDataViewModel>();
 
         /// <summary>
         /// Gets or sets a list of cached addons.
@@ -349,7 +357,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a command which marks or unmarks addons based of their dependencies (required addons).
         /// </summary>
-        public RelayCommand<LoadedAddonDataViewModel> ResolveAddonDependenciesCommand { get; private set; }
+        public RelayCommand<LoadedAddonDataViewModel> InstallSelectedAddonCommand { get; private set; }
 
         #endregion Commands
 
@@ -429,7 +437,7 @@ namespace AddonWars2.App.ViewModels
                 // Deserialization error.
                 finalState = ManageAddonsViewModelState.Error;
                 Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
-                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage1, e.Message);
+                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, e.Message);
             }
 
             // Even if we got an error, we always load cached library.
@@ -485,8 +493,7 @@ namespace AddonWars2.App.ViewModels
             if (addonsCollection.Data == null || addonsCollection.Schema == null)
             {
                 ViewModelState = ManageAddonsViewModelState.Error;
-                Logger.LogError($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
-                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage2, $"{nameof(addonsCollection)} returned invalid data or schema (null value)");
+                Logger.LogWarning($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
 
                 return;
             }
@@ -526,31 +533,88 @@ namespace AddonWars2.App.ViewModels
 
         #endregion GetAddonsFromSelectedProviderAsyncCommand
 
-        // UpdateMarkAddonsStatusCommand command logic.
-        private void ExecuteResolveAddonDependenciesCommand(LoadedAddonDataViewModel? addonItemModel)
+        #region InstallSelectedAddonCommand
+
+        // InstallSelectedAddonCommand command logic.
+        private void ExecuteInstallSelectedAddonCommand(LoadedAddonDataViewModel? addonItemModel)
         {
             Logger.LogDebug("Executing command.");
+
+            var resolved = ResolveSelectedAddonDependencies(addonItemModel);
+            var installationSequence = CreateInstallationSequence(resolved);
+
+            // Show a warning dialog if there are dependencies.
+            if (resolved.Count > 1)
+            {
+                Logger.LogDebug("Dependencies detected.");
+
+                var result = ShowInstallAddonsDialog(installationSequence);
+                if (result.HasValue == false || result.Value == true)
+                {
+                    Logger.LogDebug("Installation cancelled.");
+                    return;
+                }
+            }
+        }
+
+        // Resolves dependencies for the provided addon.
+        private IList<IDNode> ResolveSelectedAddonDependencies(LoadedAddonDataViewModel? addonItemModel)
+        {
+            Logger.LogDebug($"Resolving the addon: {addonItemModel?.InternalName}");
 
             var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, SelectedProvider!.DependencyGraph); // null is covered by CanExecute predicate defined in ctor
             var startNode = SelectedProvider.DependencyGraph.GetNode(addonItemModel!.InternalName);  // null is covered by CanExecute predicate defined in ctor
             resolver.Resolve(startNode);
+
+            return resolver.Resolved;
         }
+
+        // Walks through the addons list and collects only those which are requested by the resolver
+        // and which are not already installed.
+        private IList<LoadedAddonDataViewModel> CreateInstallationSequence(IList<IDNode> resolved)
+        {
+            Logger.LogDebug($"Creating installation sequence.");
+
+            var installationSeq = new List<LoadedAddonDataViewModel>();
+            foreach (var node in resolved)
+            {
+                var found = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
+                if (found != null && found.IsInstalled == false)
+                {
+                    installationSeq.Add(found);
+                }
+            }
+
+            return installationSeq;
+        }
+
+        #endregion InstallSelectedAddonCommand
 
         #endregion Commdans Logic
 
         #region Methods
 
-        /// <summary>
-        /// Shows an error dialog.
-        /// </summary>
-        /// <param name="title">Dialog window title.</param>
-        /// <param name="message">Dialog message.</param>
-        /// <param name="details">Dialog additional details.</param>
-        /// <param name="buttons">Dialog buttons to show.</param>
-        /// <returns>Dialog result.</returns>
-        protected bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
+        // Shows error dialog.
+        private bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
         {
             var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
+            var result = DialogService.ShowDialog(this, vm);
+
+            return result;
+        }
+
+        // Shows a dialog when attempting to install an addon with dependencies.
+        private bool? ShowInstallAddonsDialog(IList<LoadedAddonDataViewModel> dependencies)
+        {
+            var depString = string.Empty;
+            for (var i = 0; i < dependencies.Count; i++)
+            {
+                depString += $"{i + 1,2:D2} {dependencies[i].DisplayName} ({dependencies[i].InternalName})\n";
+            }
+
+            var vm = InstallAddonsDialogFactory.Create();
+            vm.DependenciesList = depString.TrimEnd(Environment.NewLine.ToCharArray());
+
             var result = DialogService.ShowDialog(this, vm);
 
             return result;

@@ -21,11 +21,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
     {
         #region Fields
 
+        private bool? _dialogResult = null;
         private string _title = string.Empty;
         private string _message = string.Empty;
         private string? _details = string.Empty;
         private ErrorDialogResult _result = ErrorDialogResult.None;
-        private bool? _dialogResult = null;
         private ErrorDialogButtons _flags;
         private bool _isOkButtonVisible = false;
         private bool _isCancelButtonVisible = false;
@@ -48,6 +48,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a value indicating whether details button should be enabled.
+        /// </summary>
+        public bool IsDetailsButtonEnabled => !string.IsNullOrEmpty(_details);
 
         /// <summary>
         /// Gets or sets dialog title.
@@ -109,11 +114,6 @@ namespace AddonWars2.App.ViewModels.Dialogs
             get => _isCancelButtonVisible;
             set => SetProperty(ref _isCancelButtonVisible, value);
         }
-
-        /// <summary>
-        /// Gets a value indicating whether details button should be enabled.
-        /// </summary>
-        public bool IsDetailsButtonEnabled => !string.IsNullOrEmpty(_details);
 
         /// <summary>
         /// Gets or sets buttons flags.

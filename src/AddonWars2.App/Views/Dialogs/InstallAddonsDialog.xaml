@@ -14,11 +14,13 @@
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
     xmlns:attached="clr-namespace:AddonWars2.App.Extensions.AttachedProperties"
     xmlns:assist="clr-namespace:AddonWars2.App.Extensions.Assists"
+    xmlns:behaviors="clr-namespace:AddonWars2.App.Extensions.Behaviors"
     xmlns:services="clr-namespace:AddonWars2.App.UIServices"
+    xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d" 
+    mc:Ignorable="d"
+    md:DialogServiceViews.IsRegistered="True"
     Title="{DynamicResource S.Dialog.InstallAddonDependencies.Header}"
-    DataContext="{markupex:DISource Type=vm_dialogs:InstallAddonsDialogViewModel}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"
@@ -31,7 +33,14 @@
     TextOptions.TextRenderingMode="ClearType"
     TextBlock.Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
     KeyboardNavigation.TabNavigation="None"
-    Height="200" Width="400">
+    Width="480"
+    MaxHeight="320"
+    SizeToContent="Height">
+
+    <Window.Resources>
+        <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
+        <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
+    </Window.Resources>
 
     <Border
         Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
@@ -49,7 +58,9 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
@@ -65,13 +76,114 @@
                 VerticalAlignment="Center"
                 Cursor="Hand"
                 Content="{DynamicResource Path.Icon.Close}"
-                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 Style="{DynamicResource FlatButtonAccentBackgroundStyle}"
                 attached:AccentColorExtension.AccentColor="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
                 Focusable="False"
                 IsTabStop="False"
-                SnapsToDevicePixels="True"/>
+                SnapsToDevicePixels="True">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{StaticResource FalseValue}"/>
+                        <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Grid
+                x:Name="DescriptionGrid"
+                Grid.Row="1"
+                Margin="5">
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap">
+                    <Run Text="{DynamicResource S.Dialog.InstallAddonDependencies.Description.01}"/>
+                    <Run Text="{DynamicResource S.Dialog.InstallAddonDependencies.Description.02}"/>
+                </TextBlock>
+            </Grid>
+            <Grid
+                x:Name="DependenciesTextBox"
+                Grid.Row="2"
+                Margin="5">
+                <TextBox
+                    IsReadOnly="True"
+                    Text="{Binding Path=DataContext.DependenciesList, RelativeSource={RelativeSource AncestorType=Window}}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto"
+                    TextWrapping="Wrap"
+                    Style="{DynamicResource TextBoxStyle}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:UIElementRemoveFocusBehavior/>
+                    </i:Interaction.Behaviors>
+                </TextBox>
+            </Grid>
+            <Grid
+                x:Name="ButtonsGrid"
+                Grid.Row="3"
+                Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="AgreeButton"
+                    Grid.Column="1"
+                    Margin="5"
+                    Padding="4,0,4,0"
+                    MinWidth="50"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Height="20"
+                    Cursor="Hand"
+                    Focusable="False"
+                    Content="{DynamicResource S.Controls.Button.Agree.Text}"
+                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                    BorderThickness="1"
+                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{StaticResource TrueValue}"/>
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button
+                    x:Name="CancelButton"
+                    Grid.Column="2"
+                    Margin="5"
+                    Padding="4,0,4,0"
+                    MinWidth="50"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Height="20"
+                    Cursor="Hand"
+                    Focusable="False"
+                    Content="{DynamicResource S.Controls.Button.Cancel.Text}"
+                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                    BorderThickness="1"
+                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{StaticResource FalseValue}"/>
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
         </Grid>
     </Border>
     

@@ -31,7 +31,6 @@ namespace AddonWars2.App.ViewModels
             ILogger<WindowBaseViewModel> logger)
             : base(logger)
         {
-            // Commands.
             MinimizeWindowCommand = new RelayCommand<Window>(ExecuteMinimizeWindow);
             MaximizeWindowCommand = new RelayCommand<Window>(ExecuteMaximizeWindow);
             RestoreWindowCommand = new RelayCommand<Window>(ExecuteRestoreWindow);
