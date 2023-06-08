@@ -8,7 +8,6 @@
 namespace AddonWars2.DependencyResolvers.Models
 {
     using System.Collections.ObjectModel;
-    using System.Xml.Linq;
     using AddonWars2.DependencyResolvers.Interfaces;
 
     /// <summary>
@@ -91,19 +90,22 @@ namespace AddonWars2.DependencyResolvers.Models
         /// </summary>
         /// <remarks>
         /// This operation doesn't throw <see cref="InvalidOperationException"/> if <paramref name="name"/> was not found
-        /// and returns <see langword="null"/> instead.
+        /// and returns <see langword="false"/> instead.
         /// </remarks>
         /// <param name="name">A node name to get.</param>
-        /// <returns>A now with the requested name.</returns>
+        /// <param name="foundNode">If a node was found, this value will be assigned to a node value, otherwise it will be assigned to <see langword="null"/>.</param>
+        /// <returns>
+        /// <see langword="true"/> if a node was successfully found, otherwise returns <see langword="false"/>.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Is thrown if <paramref name="name"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="InvalidOperationException">Is thrown if <paramref name="name"/> doesn't exist in the graph.</exception>
-        public T? TryGetNode(string name)
+        public bool TryGetNode(string name, out T? foundNode)
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(name));
 
-            var node = _nodes.FirstOrDefault(x => x?.Name == name, null);
+            foundNode = _nodes.FirstOrDefault(x => x?.Name == name, null);
 
-            return node;
+            return foundNode != null;
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace AddonWars2.DependencyResolvers.Models
             var isAlreadyAdded = _nodes.Any(n => n.Name == node.Name);
             if (isAlreadyAdded)
             {
-                throw new InvalidOperationException($"The node with the name \"{node.Name}\" is already in the graph.");
+                throw new InvalidOperationException($"A node with the name \"{node.Name}\" is already in the graph.");
             }
 
             _nodes.Add(node);

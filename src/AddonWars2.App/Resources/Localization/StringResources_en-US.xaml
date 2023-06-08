@@ -49,6 +49,8 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Failed to deserialize data</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Unavailable dependencies detected</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">The resolver returned one or more dependencies (addons) which are not available in the provider(s). The installation cannot be completed. See the details for a complete list.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
@@ -105,7 +107,7 @@
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh news feed.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Reload addon providers.</s:String>
-    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Get this addon from the selected provider and add it to the installation queue.</s:String>
+    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Download and install the addon.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Remove the installed addon.</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
 

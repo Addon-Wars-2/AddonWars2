@@ -14,7 +14,6 @@ namespace AddonWars2.App.ViewModels
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using System.Xml.Linq;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.Utils.Helpers;
@@ -75,6 +74,8 @@ namespace AddonWars2.App.ViewModels
         private static readonly string _providersBadCodeErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message");
         private static readonly string _deserializationFailureErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title");
         private static readonly string _deserializationFailureErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message");
+        private static readonly string _unavailableDependenciesErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title");
+        private static readonly string _unavailableDependenciesErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message");
 
         private readonly IDialogService _dialogService;
         private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
@@ -540,10 +541,18 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug("Executing command.");
 
-            var resolved = ResolveSelectedAddonDependencies(addonItemModel);
+            var resolved = ResolveAddonDependencies(addonItemModel);
+            var unavailable = EnsureDependenciesAvailable(resolved);
+            if (unavailable.Count > 0)
+            {
+                Logger.LogError($"Total {unavailable.Count} unavailable dependencies detected. The installation process is cancelled.");
+                ShowErrorDialog(_unavailableDependenciesErrorTitle, _unavailableDependenciesErrorMessage, string.Join("\n", unavailable));
+                return;
+            }
+
             var installationSequence = CreateInstallationSequence(resolved);
 
-            // Show a warning dialog if there are dependencies.
+            // Show a warning dialog if there are dependencies. Always must return at least one item (the addon itself).
             if (resolved.Count > 1)
             {
                 Logger.LogDebug("Dependencies detected.");
@@ -558,7 +567,7 @@ namespace AddonWars2.App.ViewModels
         }
 
         // Resolves dependencies for the provided addon.
-        private IList<IDNode> ResolveSelectedAddonDependencies(LoadedAddonDataViewModel? addonItemModel)
+        private IList<IDNode> ResolveAddonDependencies(LoadedAddonDataViewModel? addonItemModel)
         {
             Logger.LogDebug($"Resolving the addon: {addonItemModel?.InternalName}");
 
@@ -567,6 +576,27 @@ namespace AddonWars2.App.ViewModels
             resolver.Resolve(startNode);
 
             return resolver.Resolved;
+        }
+
+        // Iterates throw the available addons and checks whether all resolved dependencies
+        // are available for the installation. This may happen when some addons specify dependencies,
+        // which are not presented in a provider's list.
+        private IList<string> EnsureDependenciesAvailable(IList<IDNode> resolved)
+        {
+            Logger.LogDebug($"Checking dependencies availability.");
+
+            var unavailable = new List<string>();
+            foreach (var node in resolved)
+            {
+                var addon = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
+                if (addon == null)
+                {
+                    Logger.LogWarning($"The dependency \"{node.Name}\" is not found in the providers.");
+                    unavailable.Add(node.Name);
+                }
+            }
+
+            return unavailable;
         }
 
         // Walks through the addons list and collects only those which are requested by the resolver
@@ -578,10 +608,10 @@ namespace AddonWars2.App.ViewModels
             var installationSeq = new List<LoadedAddonDataViewModel>();
             foreach (var node in resolved)
             {
-                var found = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
-                if (found != null && found.IsInstalled == false)
+                var addon = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
+                if (addon != null && !addon.IsInstalled)
                 {
-                    installationSeq.Add(found);
+                    installationSeq.Add(addon);
                 }
             }
 
@@ -590,7 +620,7 @@ namespace AddonWars2.App.ViewModels
 
         #endregion InstallSelectedAddonCommand
 
-        #endregion Commdans Logic
+        #endregion Commands Logic
 
         #region Methods
 

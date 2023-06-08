@@ -49,6 +49,8 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Обнаружены недоступные зависимости</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Резолвер обнаружил одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для просмотра полного списка.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
@@ -105,7 +107,7 @@
     <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Обновить ленту новостей.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Открыть лог-файл.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
-    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать аддон через выбранный провайдер и добавить его в очередь установки.</s:String>
+    <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать и установить аддон.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Удалить установленный аддон.</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
 

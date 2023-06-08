@@ -398,6 +398,7 @@
                                             x:Name="ItemButtonsGrid"
                                             Grid.Column="1"
                                             Background="Transparent"
+                                            VerticalAlignment="Center"
                                             Width="20">
                                             <Grid.RenderTransform>
                                                 <TransformGroup>
@@ -406,8 +407,8 @@
                                                 </TransformGroup>
                                             </Grid.RenderTransform>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
                                             <Button
                                                 x:Name="InstallAddonButton"
@@ -482,7 +483,7 @@
                                         <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Collapsed"/>
+                                        <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Hidden"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">

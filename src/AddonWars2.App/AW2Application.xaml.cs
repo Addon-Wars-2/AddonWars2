@@ -37,8 +37,8 @@ namespace AddonWars2.App
     {
         #region Fields
 
-        private const string UNIQUE_MUTEX_NAME = "c1284452-e2a7-4f2e-853d-9272848b0b1d";
-        private const string UNIQUE_EVENT_NAME = "816a7b1c-9be6-4d4d-9fd4-a45e267448eb";
+        private const string UNIQUE_MUTEX_NAME = "C1284452-E2A7-4F2E-853D-9272848B0B1D";
+        private const string UNIQUE_EVENT_NAME = "816A7B1C-9BE6-4D4D-9FD4-A45E267448EB";
 
         private EventWaitHandle _eventWaitHandle;
         private Mutex _mutex;
@@ -241,7 +241,9 @@ namespace AddonWars2.App
         private void AW2App_SetupExceptionHandling()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
                 LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+            };
 
             DispatcherUnhandledException += (s, e) =>
             {
@@ -351,7 +353,7 @@ namespace AddonWars2.App
 
             Logger.Information($"A culture for ANet and GW2 selected: {culture}");
 
-            // Now use templates to setup ANet and GW2 service links with the selected culture. 
+            // Now use templates to setup ANet and GW2 service links with the selected culture.
             ApplicationConfig.UserData.AnetHome = string.Format(WebSharedData.AnetHomeTemplate, culture.ShortName.ToLower());
             ApplicationConfig.UserData.Gw2Home = string.Format(WebSharedData.Gw2HomeTemplate, culture.ShortName.ToLower());
             ApplicationConfig.UserData.Gw2WikiHome = string.Format(WebSharedData.Gw2WikiHomeTemplate, culture.ShortName.ToLower());
@@ -375,23 +377,23 @@ namespace AddonWars2.App
             string logMessage = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
             Logger.Fatal(exception, logMessage);
 
-            // Try to open log file automatically, so a user can just copy - paste it.
-            try
-            {
-                Process.Start(new ProcessStartInfo(ApplicationConfig.SessionData.LogFilePath)
-                {
-                    Verb = "open",
-                    UseShellExecute = true,
-                });
-            }
-            catch (Exception)
-            {
-                // If we can't do this for whatever reason, do nothing.
-                Logger.Error("Unable to open log file automatically.");
-            }
+            ////// Try to open log file automatically, so a user can just copy - paste it.
+            ////try
+            ////{
+            ////    Process.Start(new ProcessStartInfo(ApplicationConfig.SessionData.LogFilePath)
+            ////    {
+            ////        Verb = "open",
+            ////        UseShellExecute = true,
+            ////    });
+            ////}
+            ////catch (Exception)
+            ////{
+            ////    // If we can't do this for whatever reason, do nothing.
+            ////    Logger.Error("Unable to open log file automatically.");
+            ////}
 
             // TODO: Localization.
-            // Show the error message box.
+            // Show an error message box.
             var title = "An Unhandled Exception has occured";
             var message =
                     $"The application will be terminated. If the log file wasn't opened automatically, " +

@@ -29,7 +29,7 @@ namespace AddonWars2.Core.DTO
         private InstallMode _installMode;
         private IEnumerable<string>? _requiredAddons;
         private IEnumerable<string>? _conflicts;
-        private Dictionary<string, string> _additional;
+        private Dictionary<string, string> _additional = new Dictionary<string, string>();
 
         #endregion Fields
 

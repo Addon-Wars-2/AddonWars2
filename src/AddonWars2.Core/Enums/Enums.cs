@@ -42,7 +42,7 @@ namespace AddonWars2.Core.Enums
         CommitSha,
 
         /// <summary>
-        /// The addonversion should be determined from the MD5 hash sum.
+        /// The addon version should be determined from the MD5 hash sum.
         /// </summary>
         [EnumMember(Value = "md5sum")]
         Md5,

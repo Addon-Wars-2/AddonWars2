@@ -8,6 +8,8 @@
 namespace AddonWars2.App.ViewModels.SubViewModels
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using AddonWars2.DependencyResolvers.Interfaces;
@@ -115,22 +117,44 @@ namespace AddonWars2.App.ViewModels.SubViewModels
 
         #region Methods
 
+        // TODO: Shame! Refactor the generator.
+
         /// <summary>
         /// Generates a new dependency graph for a collection of addons.
         /// </summary>
         public void GenerateDependencyGraph()
         {
+            // Add all nodes first.
             foreach (var addon in Addons)
             {
-                var node = new DNode(addon.InternalName);
+                _dependencyGraph.AddNode(new DNode(addon.InternalName));
+            }
+
+            // Start adding endges (dependencies).
+            foreach (var addon in Addons)
+            {
+                var node = (DNode)_dependencyGraph.GetNode(addon.InternalName);
                 foreach (var required in addon.RequiredCollection)
                 {
-                    var dependency = _dependencyGraph.TryGetNode(required) ?? new DNode(required);
-                    _dependencyGraph.TryAddNode(dependency);
-                    node.AddDependency(dependency);
+                    var found = _dependencyGraph.TryGetNode(required, out IDNode? edge);
+                    if (found)
+                    {
+                        // A node representing the edge (dependency) is already in the graph.
+                        node.AddDependency(edge!);  // not null if true
+                    }
+                    else
+                    {
+                        // A node representing the edge (dependency) wasn't found in the graph.
+                        // Thus we create a new node and add it into the graph, even though this addon
+                        // is not in the provider. This is done for the following purposes:
+                        // a) To inform a user that the addon requires something which is not available through the provider.
+                        // b) If the dependency is available elsewhere - try to load it from there.
+                        // TODO: b) is for future updates.
+                        var newNode = new DNode(required);
+                        _dependencyGraph.AddNode(newNode);
+                        node.AddDependency(newNode);
+                    }
                 }
-
-                _dependencyGraph.AddNode(node);
             }
 
             _resolveRequired = false;
