@@ -30,7 +30,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         private readonly ObservableCollection<LoadedAddonDataViewModel> _addons = new ObservableCollection<LoadedAddonDataViewModel>();
         private readonly DGraph<IDNode> _dependencyGraph = new DGraph<IDNode>();
 
-        private bool _resolveRequired = false;
+        private bool _isGraphDirty = false;
 
         #endregion Fields
 
@@ -104,9 +104,9 @@ namespace AddonWars2.App.ViewModels.SubViewModels
 
         /// <summary>
         /// Gets a value indicating whether the addons data has changed
-        /// and the dependency graph has to be resolved again.
+        /// and the dependency graph has to be regenerated again.
         /// </summary>
-        public bool ResolveRequired => _resolveRequired;
+        public bool IsGraphDirty => _isGraphDirty;
 
         /// <summary>
         /// Gets a raw data object. Do NOT use for binding.
@@ -157,13 +157,24 @@ namespace AddonWars2.App.ViewModels.SubViewModels
                 }
             }
 
-            _resolveRequired = false;
+            _isGraphDirty = false;
+        }
+
+        /// <summary>
+        /// Generate a new dependency graph if <see cref="IsGraphDirty"/> flag is set to <see langword="true"/>.
+        /// </summary>
+        public void RegenerateDependencyGraphIfDirty()
+        {
+            if (_isGraphDirty)
+            {
+                GenerateDependencyGraph();
+            }
         }
 
         // Handles CollectionChanged event for the addons collection.
         private void Addons_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            _resolveRequired = true;
+            _isGraphDirty = true;
         }
 
         #endregion Methods

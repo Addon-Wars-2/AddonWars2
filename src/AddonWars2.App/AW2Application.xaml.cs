@@ -364,6 +364,8 @@ namespace AddonWars2.App
             // TODO: maybe move out to its own method?
             ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
             ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
+            ApplicationConfig.UserData.CachedLibProviderName = AppSharedData.CachedLibProviderName;
+            ApplicationConfig.UserData.InstalledAddonsFilePath = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.InstalledAddonsFileName);
 
             Logger.Debug($"Configurated.");
         }

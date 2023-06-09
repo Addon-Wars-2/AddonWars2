@@ -42,6 +42,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
     {
         #region Fields
 
+        private readonly string _sourceProvider;
         private readonly AddonData _data;
         private bool _isInstalled;
 
@@ -52,15 +53,22 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadedAddonDataViewModel"/> class.
         /// </summary>
+        /// <param name="sourceProvider">A source name this addon was loaded from.</param>
         /// <param name="data">Deserialized addon info.</param>
-        public LoadedAddonDataViewModel(AddonData data)
+        public LoadedAddonDataViewModel(string sourceProvider, AddonData data)
         {
+            _sourceProvider = string.IsNullOrEmpty(sourceProvider) ? throw new ArgumentException($"{nameof(sourceProvider)} cannot be null or empty.", nameof(sourceProvider)) : sourceProvider;
             _data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a source provider name this addon was loaded from.
+        /// </summary>
+        public string SourceProvider => _sourceProvider;
 
         /// <summary>
         /// Gets the addon internal name.

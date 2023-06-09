@@ -220,6 +220,92 @@
                                 <Run Text="/"/>
                                 <Run Text="{Binding Path=DataContext.GitHubProviderRateLimit, RelativeSource={RelativeSource AncestorType=Page}, Mode=OneWay}"/>
                             </TextBlock>
+                            <Button
+                                Margin="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Height="16" Width="16"
+                                Cursor="Hand"
+                                Focusable="False"
+                                TextElement.FontWeight="Bold"
+                                TextElement.FontSize="9"
+                                Content="?"
+                                attached:CornerRadiusExtension.CornerRadius="8"
+                                BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                BorderThickness="1"
+                                Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02a}"
+                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
+                                Style="{StaticResource FlatButtonStyle}"
+                                ToolTipService.InitialShowDelay="500"
+                                ToolTipService.Placement="Right">
+                                <Button.ToolTip>
+                                    <ToolTip MaxWidth="400">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock
+                                                Grid.Row="0" Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                Margin="0,0,0,5"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{DynamicResource S.ToolTip.Help.GitHubApiLimitHelp.01}"
+                                                TextWrapping="Wrap"/>
+                                            <TextBlock
+                                                Grid.Row="1" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{DynamicResource S.ToolTip.Help.GitHubApiLimitHelp.02}"/>
+                                            <TextBlock
+                                                Grid.Row="1" Grid.Column="1"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{Binding Data.GitHubProviderRateLimitRemaining, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
+                                            <TextBlock
+                                                Grid.Row="2" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{DynamicResource S.ToolTip.Help.GitHubApiLimitHelp.03}"/>
+                                            <TextBlock
+                                                Grid.Row="2" Grid.Column="1"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{Binding Data.GitHubProviderRateLimit, Source={StaticResource DataContextProxy}, Mode=OneWay}"/>
+                                            <TextBlock
+                                                Grid.Row="3" Grid.Column="0"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{DynamicResource S.ToolTip.Help.GitHubApiLimitHelp.04}"/>
+                                            <TextBlock
+                                                Grid.Row="3" Grid.Column="1"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                                Text="{Binding Data.GitHubProviderRateLimitReset, Source={StaticResource DataContextProxy}, Mode=OneWay, StringFormat='{}{0:MMM dd, yyyy H:mm:ss tt zzz}'}"/>
+                                        </Grid>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
                             <StackPanel.Style>
                                 <Style TargetType="StackPanel">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -330,8 +416,7 @@
                                 <Grid
                                     x:Name="ItemRootGrid"
                                     Grid.Row="1"
-                                    Margin="10,5.8,10,5.8">
-                                    <!-- TODO: An ugly workaround to fit in items propertly. -->
+                                    Margin="10,5.8,10,5.8"> <!-- TODO: An ugly workaround to fit in items propertly. -->
                                     <Grid x:Name="ItemRoot">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -413,7 +498,7 @@
                                             <Button
                                                 x:Name="InstallAddonButton"
                                                 Grid.Row="0"
-                                                Padding="0"
+                                                Margin="0,0,0,1"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Height="20" Width="20"
@@ -436,7 +521,7 @@
                                             <Button
                                                 x:Name="RemoveAddonButton"
                                                 Grid.Row="1"
-                                                Padding="0"
+                                                Margin="0,1,0,0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Height="20" Width="20"

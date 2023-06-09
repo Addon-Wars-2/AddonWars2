@@ -62,7 +62,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock
-                x:Name="InstalledAddonsListHeaderText"
+                x:Name="MyAddonsListHeaderText"
                 Grid.Column="0"
                 Margin="0,0,0,2"
                 VerticalAlignment="Bottom"
@@ -95,7 +95,7 @@
             </Button>
         </Grid>
         <Border
-            x:Name="InstalledAddonsListBorder"
+            x:Name="MyAddonsListBorder"
             Grid.Row="2" Grid.Column="0"
             BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
             BorderThickness="1"
@@ -112,10 +112,33 @@
             </Border.Style>
             <Grid>
                 <ListBox
-                    x:Name="InstalledAddonsList"
+                    x:Name="MyAddonsList"
                     ItemsSource="{Binding Source={StaticResource InstalledAddonsCollectionView}}"
                     SelectedItem="{Binding DataContext.SelectedAddon, RelativeSource={RelativeSource AncestorType=Page}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:AnimatedItemsControlBehavior Delay="0.05">
+                            <behaviors:AnimatedItemsControlBehavior.Animations>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        From="0" To="1"
+                                        BeginTime="00:00:00" Duration="00:00:0.3"
+                                        Storyboard.TargetProperty="Opacity">
+                                    </DoubleAnimation>
+                                    <DoubleAnimation
+                                        From="100" To="0"
+                                        FillBehavior="HoldEnd"
+                                        BeginTime="00:00:00" Duration="00:00:0.3"
+                                        AccelerationRatio="0.2" DecelerationRatio="0.1"
+                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CubicEase EasingMode="EaseOut"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </behaviors:AnimatedItemsControlBehavior.Animations>
+                        </behaviors:AnimatedItemsControlBehavior>
+                    </i:Interaction.Behaviors>
                     <ListBox.Template>
                         <ControlTemplate>
                             <ScrollViewer
@@ -128,7 +151,7 @@
                                 Style="{DynamicResource ScrollViewerStyle}">
                                 <ItemsPresenter/>
                                 <i:Interaction.Triggers>
-                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=InstalledAddonsList}" Value="False">
+                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=MyAddonsList}" Value="False">
                                         <i:CallMethodAction MethodName="ScrollToTop"/>
                                     </i:DataTrigger>
                                 </i:Interaction.Triggers>
@@ -177,21 +200,121 @@
                                     Margin="10,5.8,0,5.8">  <!-- TODO: An ugly workaround to fit in items propertly. -->
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border
-                                        x:Name="ItemRootBorder"
+                                    <Grid
+                                        x:Name="ItemInfoGrid"
                                         Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock
-                                            x:Name="NameText"
-                                            Margin="0,0,0,0"
-                                            HorizontalAlignment="Left"
+                                                x:Name="DisplayNameText"
+                                                Grid.Row="0" Grid.Column="0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontSize="16"
+                                                FontWeight="Normal"
+                                                Text="{Binding DisplayName}"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False"/>
+                                        <TextBlock
+                                                x:Name="AuthorsText"
+                                                Grid.Row="1" Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                                                Text="{Binding Authors, StringFormat='{}by {0}'}"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False"/>
+                                        <TextBlock
+                                                x:Name="TooltipText"
+                                                Grid.Row="2" Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level2}"
+                                                Text="{Binding Tooltip}"
+                                                TextWrapping="Wrap"
+                                                IsHitTestVisible="False"/>
+                                        <!--<TextBlock
+                                                x:Name="InstalledStatusText"
+                                                Grid.Row="0" Grid.Column="1"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontFamily="{DynamicResource Menomonia}"
+                                                FontWeight="Normal"
+                                                TextWrapping="NoWrap"
+                                                IsHitTestVisible="False">
+                                            </TextBlock>-->
+                                    </Grid>
+                                    <Grid
+                                        x:Name="ItemButtonsGrid"
+                                        Grid.Column="1"
+                                        Background="Transparent"
+                                        VerticalAlignment="Center"
+                                        Width="20">
+                                        <Grid.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform x:Name="AddonItemScaleTransform" ScaleX="-1" CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform x:Name="AddonItemTranslateTransform" X="20"/>
+                                            </TransformGroup>
+                                        </Grid.RenderTransform>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Button
+                                            x:Name="InstallAddonButton"
+                                            Grid.Row="0"
+                                            Padding="0"
+                                            HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            FontFamily="{DynamicResource Menomonia}"
-                                            Text="{Binding Name}"
-                                            TextWrapping="NoWrap"
-                                            IsHitTestVisible="False">
-                                        </TextBlock>
-                                    </Border>
+                                            Height="20" Width="20"
+                                            Cursor="Hand"
+                                            Focusable="False"
+                                            Content="{DynamicResource Path.Icon.InstallAddon}"
+                                            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                            BorderThickness="1"
+                                            Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                                            ToolTip="{DynamicResource S.ToolTip.Button.InstallAddonButton}"
+                                            IsEnabled="{Binding IsInstalled, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
+                                            <!--<i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <i:InvokeCommandAction
+                                                        Command="{Binding Path=DataContext.InstallSelectedAddonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                                                        CommandParameter="{Binding}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>-->
+                                        </Button>
+                                        <Button
+                                            x:Name="RemoveAddonButton"
+                                            Grid.Row="1"
+                                            Padding="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Height="20" Width="20"
+                                            Cursor="Hand"
+                                            Focusable="False"
+                                            Content="{DynamicResource Path.Icon.RemoveAddon}"
+                                            BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                                            BorderThickness="1"
+                                            Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                                            Command=""
+                                            ToolTip="{DynamicResource S.ToolTip.Button.RemoveAddonButton}"
+                                            IsEnabled="{Binding IsInstalled, Mode=OneWay}"/>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <DataTemplate.Triggers>
@@ -200,20 +323,57 @@
                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
                                         <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <MultiDataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="AddonItemScaleTransform"
+                                                    Storyboard.TargetProperty="ScaleX"
+                                                    From="0" To="-1" Duration="00:00:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </MultiDataTrigger.EnterActions>
+                                    <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
+                                    <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02}"/>
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"/>
+                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="False"/>
+                                        <Condition Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="NameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Hidden"/>
+                                    </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                    <Setter TargetName="ItemButtonsGrid" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="DisplayNameText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="AuthorsText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                    <Setter TargetName="TooltipText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding ElementName=DataTemplateRootBorder, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Cursor" Value="Hand"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus1}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
+                                </DataTrigger>-->
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus2}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
+                                </DataTrigger>-->
+                                <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus3}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
+                                </DataTrigger>-->
                             </DataTemplate.Triggers>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -244,7 +404,7 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Hidden"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=HasItems, ElementName=InstalledAddonsList}" Value="False">
+                                <DataTrigger Binding="{Binding Path=HasItems, ElementName=MyAddonsList}" Value="False">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>

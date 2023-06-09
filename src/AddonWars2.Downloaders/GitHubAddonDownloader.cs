@@ -9,6 +9,7 @@ namespace AddonWars2.Downloaders
 {
     using System.Threading.Tasks;
     using AddonWars2.Downloaders.Models;
+    using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 
@@ -19,7 +20,7 @@ namespace AddonWars2.Downloaders
     {
         #region Fields
 
-        private readonly GitHubClient _gitHubClient;
+        private readonly GitHubClientWrapper _gitHubClientService;
 
         #endregion Fields
 
@@ -29,11 +30,11 @@ namespace AddonWars2.Downloaders
         /// Initializes a new instance of the <see cref="GitHubAddonDownloader"/> class.
         /// </summary>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        /// <param name="gitHubClient">A reference to <see cref="GitHubClient"/> instance.</param>
-        public GitHubAddonDownloader(IHttpClientWrapper httpClientService, GitHubClient gitHubClient)
+        /// <param name="gitHubClientService">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
+        public GitHubAddonDownloader(IHttpClientWrapper httpClientService, GitHubClientWrapper gitHubClientService)
             : base(httpClientService)
         {
-            _gitHubClient = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
+            _gitHubClientService = gitHubClientService ?? throw new ArgumentNullException(nameof(gitHubClientService));
         }
 
         #endregion Constructors
@@ -43,7 +44,7 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Gets the instance of <see cref="IHttpClientWrapper"/> service.
         /// </summary>
-        protected GitHubClient GitHubClientService => _gitHubClient;
+        protected GitHubClientWrapper GitHubClientService => _gitHubClientService;
 
         #endregion Properties
 
@@ -52,6 +53,15 @@ namespace AddonWars2.Downloaders
         /// <inheritdoc/>
         public override Task<DownloadedObject> Download(DownloadRequest request)
         {
+            if (GitHubClientService.GitHubLastApiInfo?.RateLimit.Remaining > 0)
+            {
+
+            }
+            else
+            {
+                
+            }
+
             throw new NotImplementedException();
         }
 

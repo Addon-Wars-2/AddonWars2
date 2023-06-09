@@ -10,6 +10,7 @@ namespace AddonWars2.Downloaders.Factories
     using AddonWars2.Core.Enums;
     using AddonWars2.Downloaders;
     using AddonWars2.Downloaders.Interfaces;
+    using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 
@@ -21,7 +22,7 @@ namespace AddonWars2.Downloaders.Factories
         #region Fields
 
         private readonly IHttpClientWrapper _httpClientService;
-        private readonly GitHubClient _gitHubClientService;
+        private readonly GitHubClientWrapper _gitHubClientService;
 
         #endregion Fields
 
@@ -31,8 +32,8 @@ namespace AddonWars2.Downloaders.Factories
         /// Initializes a new instance of the <see cref="AddonDownloaderFactory"/> class.
         /// </summary>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        /// <param name="gitHubClient">A reference to <see cref="GitHubClient"/> instance.</param>
-        public AddonDownloaderFactory(IHttpClientWrapper httpClientService, GitHubClient gitHubClient)
+        /// <param name="gitHubClient">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
+        public AddonDownloaderFactory(IHttpClientWrapper httpClientService, GitHubClientWrapper gitHubClient)
         {
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
             _gitHubClientService = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
@@ -50,7 +51,7 @@ namespace AddonWars2.Downloaders.Factories
         /// <summary>
         /// Gets the instance of <see cref="IHttpClientWrapper"/> service.
         /// </summary>
-        protected GitHubClient GitHubClientService => _gitHubClientService;
+        protected GitHubClientWrapper GitHubClientService => _gitHubClientService;
 
         #endregion Properties
 

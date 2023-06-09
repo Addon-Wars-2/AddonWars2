@@ -40,7 +40,7 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title">No internet connection</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Can't connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Exceeded GitHub API rate limit</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">You have exceed the GitHub API rate limit. Please try again later. The API limit resets every 1 hour.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">You have exceeded the GitHub API rate limit. Please try again later.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title">Invalid GitHub API token</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">A GitHub API request was sent using invalid API token. The operation cannot be completed.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title">GitHub repository or branch is not found</s:String>
@@ -81,7 +81,7 @@
     
     <!-- Dialogs -->
     <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Confirm action</s:String>
-    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.01">You're attempting to install the addon that requires one or more other addons to be installed.</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.01">You're attempting to install an addon that requires one or more other addons to be installed.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.02">The addons will be installed in the following order:</s:String>
 
     <!-- Controls -->
@@ -109,6 +109,10 @@
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Reload addon providers.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Download and install the addon.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Remove the installed addon.</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.01">GitHub provides a limited access for unauthorized API users, and increased rate limit for authorized ones.</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.02">Remaining calls:</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.03">Total limit:</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.04">Resets at:</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Select a provider that will be used to retrieve a collection of addons available for installation.</s:String>
 
 </ResourceDictionary>

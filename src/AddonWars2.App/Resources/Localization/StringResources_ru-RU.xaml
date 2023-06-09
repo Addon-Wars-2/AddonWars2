@@ -40,7 +40,7 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Превышен лимит соединений GitHub API</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже. Лимит соединений через API GitHub сбрасывается каждый час.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title">Неверный токен GitHub API</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
@@ -109,6 +109,10 @@
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать и установить аддон.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Удалить установленный аддон.</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.01">GitHub предоставляет ограниченный доступ к API для неавторизованных пользователей, и увеличенный лимит запросов для авторизованных.</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.02">Осталось запросов:</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.03">Доступный лимит:</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.04">Сброс:</s:String>
     <s:String x:Key="S.ToolTip.ComboBox.AddonProviderSelection">Выберите провайдер, который будет использован в качестве источника коллекции аддонов, доступных к установке.</s:String>
 
 </ResourceDictionary>

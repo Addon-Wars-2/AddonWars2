@@ -68,5 +68,17 @@ namespace AddonWars2.App.Configuration
         /// </summary>
         [Option(Alias = "CachedLibFilePath", DefaultValue = "")]
         public string CachedLibFilePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cached addons provider name.
+        /// </summary>
+        [Option(Alias = "CachedLibProviderName", DefaultValue = "")]
+        public string CachedLibProviderName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the installed addons file path.
+        /// </summary>
+        [Option(Alias = "InstalledAddonsFilePath", DefaultValue = "")]
+        public string InstalledAddonsFilePath { get; set; }
     }
 }

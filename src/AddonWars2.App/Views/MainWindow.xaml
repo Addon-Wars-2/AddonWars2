@@ -132,7 +132,7 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
                                     <i:InvokeCommandAction
-                                        Command="{Binding Path=DataContext.ChangeLanguageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Command="{Binding Path=ChangeLanguageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                         PassEventArgsToCommand="True"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
@@ -405,7 +405,8 @@
                     <TabItem
                         Padding="5,0,5,1"
                         Header="{DynamicResource S.MainWindow.TabMenu.Header.Logs}"
-                        FontFamily="{DynamicResource Menomonia}">
+                        FontFamily="{DynamicResource Menomonia}"
+                        Visibility="{Binding Path=DataContext.IsDebugMode, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                         <Frame
                             x:Name="LoggingPageTab"
                             Source="LoggingPage.xaml"

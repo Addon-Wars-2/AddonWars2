@@ -7,20 +7,60 @@
 
 namespace AddonWars2.App
 {
+    using System;
     using System.Windows;
+    using System.Windows.Controls;
+    using CommunityToolkit.Mvvm.Input;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml.
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
+
+            ChangeLanguageCommand = new RelayCommand<SelectionChangedEventArgs>(ExecuteChangeLanguageCommand);
         }
+
+        #endregion Constructors
+
+        #region Commands
+
+        /// <summary>
+        /// Gets a command which is invoked after another language is selected.
+        /// </summary>
+        public RelayCommand<SelectionChangedEventArgs> ChangeLanguageCommand { get; private set; }
+
+        #endregion Commands
+
+        #region Commands Logic
+
+        // ChangeLanguageCommand command logic.
+        private void ExecuteChangeLanguageCommand(SelectionChangedEventArgs? e)
+        {
+            ArgumentNullException.ThrowIfNull(e, nameof(e));
+
+            // The SelectionChangedEventArgs is fired twice: when its data is loaded (attached by the binding)
+            // and we edit its value. So we just ignore the first call until it's loaded completely.
+            ComboBox comboBox = (ComboBox)e.Source;
+            if (!comboBox.IsLoaded)
+            {
+                return;
+            }
+
+            AW2Application.Current.Restart();
+        }
+
+        #endregion Commands Logic
+
+        #region Methods
 
         /// <summary>
         /// Brings the window to foreground.
@@ -42,5 +82,7 @@ namespace AddonWars2.App
             Topmost = false;
             Focus();
         }
+
+        #endregion Methods
     }
 }

@@ -92,6 +92,7 @@ namespace AddonWars2.App.ViewModels
         private bool _isActuallyLoaded = false;
         private int _gitHubProviderRateLimit = 0;
         private int _gitHubProviderRateLimitRemaining = 0;
+        private DateTime _gitHubProviderRateLimitReset = DateTime.MinValue;
         private ObservableCollection<LoadedProviderDataViewModel> _providersCollection = new ObservableCollection<LoadedProviderDataViewModel>();
         private Dictionary<string, LoadedProviderDataViewModel> _cachedProvidersCollection = new Dictionary<string, LoadedProviderDataViewModel>();
         private LoadedProviderDataViewModel? _selectedProvider;
@@ -265,6 +266,19 @@ namespace AddonWars2.App.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the 
+        /// </summary>
+        public DateTime GitHubProviderRateLimitReset
+        {
+            get => _gitHubProviderRateLimitReset;
+            set
+            {
+                SetProperty(ref _gitHubProviderRateLimitReset, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a list of loaded addon providers.
         /// </summary>
         public ObservableCollection<LoadedProviderDataViewModel> ProvidersCollection
@@ -404,6 +418,7 @@ namespace AddonWars2.App.ViewModels
 
                 GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
                 GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;
+                GitHubProviderRateLimitReset = GitHubClientWrapper.GitHubLastApiInfo == null ? DateTime.MinValue : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Reset.DateTime.ToLocalTime();
             }
             catch (RateLimitExceededException e)
             {
@@ -441,20 +456,27 @@ namespace AddonWars2.App.ViewModels
                 ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, e.Message);
             }
 
-            // Even if we got an error, we always load cached library.
-            var cachedProviderInfo = new ProviderInfo()
-            {
-                Name = "LIBCACHE",  // TODO: Move out to config
-                Type = ProviderInfoHostType.Local,
-                Link = AppConfig.UserData.CachedLibFilePath,
-            };
+            // We always load cached library at the end.
+            AddCachedLocalProvider();
 
-            ProvidersCollection.Add(new LoadedProviderDataViewModel(cachedProviderInfo));
             SelectedProvider = ProvidersCollection.Count > 0 ? ProvidersCollection.First() : null;
 
             ViewModelState = finalState;
 
             Logger.LogInformation("Providers list updated.");
+        }
+
+        // Create a cached library provider.
+        private void AddCachedLocalProvider()
+        {
+            var cachedProviderInfo = new ProviderInfo()
+            {
+                Name = AppConfig.UserData.CachedLibProviderName,
+                Type = ProviderInfoHostType.Local,
+                Link = AppConfig.UserData.CachedLibFilePath,
+            };
+
+            ProvidersCollection.Add(new LoadedProviderDataViewModel(cachedProviderInfo));
         }
 
         #endregion GetProvidersListCommand
@@ -475,6 +497,8 @@ namespace AddonWars2.App.ViewModels
             else
             {
                 await LoadAddonsFromProviderAsync(SelectedProvider);
+                SelectedProvider.RegenerateDependencyGraphIfDirty();
+                TryCacheProvider(SelectedProvider);
             }
 
             ViewModelState = ManageAddonsViewModelState.Ready;
@@ -489,33 +513,20 @@ namespace AddonWars2.App.ViewModels
 
             var provider = RegistryProviderFactory.GetProvider(selectedProvider.Type);
             var addonsCollection = await provider.GetAddonsFromAsync(selectedProvider.Data);
-
-            // Ensure data was deserialized normally.
             if (addonsCollection.Data == null || addonsCollection.Schema == null)
             {
-                ViewModelState = ManageAddonsViewModelState.Error;
                 Logger.LogWarning($"{nameof(addonsCollection)} returned invalid data or schema (null value).");
-
                 return;
             }
 
-            // Fill addons collection for the selected provider.
             foreach (var addonData in addonsCollection.Data)
             {
                 if (addonData != null)
                 {
-                    selectedProvider.Addons.Add(new LoadedAddonDataViewModel(addonData));
+                    selectedProvider.Addons.Add(new LoadedAddonDataViewModel(selectedProvider.Name, addonData));
                     Logger.LogDebug($"Addon \"{addonData.InternalName}\" added.");
                 }
             }
-
-            // Regenerate dependency graph.
-            if (selectedProvider.ResolveRequired)
-            {
-                selectedProvider.GenerateDependencyGraph();
-            }
-
-            TryCacheProvider(selectedProvider);
         }
 
         // Caches addons collection.
@@ -541,6 +552,8 @@ namespace AddonWars2.App.ViewModels
         {
             Logger.LogDebug("Executing command.");
 
+            Logger.LogInformation($"Installation requested for {addonItemModel!.InternalName}"); // null is covered by CanExecute predicate defined in ctor
+
             var resolved = ResolveAddonDependencies(addonItemModel);
             var unavailable = EnsureDependenciesAvailable(resolved);
             if (unavailable.Count > 0)
@@ -560,7 +573,7 @@ namespace AddonWars2.App.ViewModels
                 var result = ShowInstallAddonsDialog(installationSequence);
                 if (result.HasValue == false || result.Value == true)
                 {
-                    Logger.LogDebug("Installation cancelled.");
+                    Logger.LogError("Installation was cancelled by user.");
                     return;
                 }
             }
@@ -572,7 +585,7 @@ namespace AddonWars2.App.ViewModels
             Logger.LogDebug($"Resolving the addon: {addonItemModel?.InternalName}");
 
             var resolver = DependencyResolverFactory.GetDependencyResolver(GraphResolverType.DFS, SelectedProvider!.DependencyGraph); // null is covered by CanExecute predicate defined in ctor
-            var startNode = SelectedProvider.DependencyGraph.GetNode(addonItemModel!.InternalName);  // null is covered by CanExecute predicate defined in ctor
+            var startNode = SelectedProvider.DependencyGraph.GetNode(addonItemModel!.InternalName); // null is covered by CanExecute predicate defined in ctor
             resolver.Resolve(startNode);
 
             return resolver.Resolved;
@@ -609,7 +622,7 @@ namespace AddonWars2.App.ViewModels
             foreach (var node in resolved)
             {
                 var addon = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
-                if (addon != null && !addon.IsInstalled)
+                if (addon != null && !addon.IsInstalled && !installationSeq.Contains(addon))
                 {
                     installationSeq.Add(addon);
                 }
@@ -628,9 +641,8 @@ namespace AddonWars2.App.ViewModels
         private bool? ShowErrorDialog(string title, string message, string? details = null, ErrorDialogButtons buttons = ErrorDialogButtons.OK)
         {
             var vm = ErrorDialogViewModelFactory.Create(title, message, details, buttons);
-            var result = DialogService.ShowDialog(this, vm);
 
-            return result;
+            return DialogService.ShowDialog(this, vm);
         }
 
         // Shows a dialog when attempting to install an addon with dependencies.
@@ -645,9 +657,7 @@ namespace AddonWars2.App.ViewModels
             var vm = InstallAddonsDialogFactory.Create();
             vm.DependenciesList = depString.TrimEnd(Environment.NewLine.ToCharArray());
 
-            var result = DialogService.ShowDialog(this, vm);
-
-            return result;
+            return DialogService.ShowDialog(this, vm);
         }
 
         #endregion Methods
