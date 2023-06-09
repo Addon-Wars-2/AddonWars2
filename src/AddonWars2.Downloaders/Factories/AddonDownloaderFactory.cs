@@ -11,6 +11,7 @@ namespace AddonWars2.Downloaders.Factories
     using AddonWars2.Downloaders;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Services.GitHubClientWrapper;
+    using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 
@@ -22,7 +23,7 @@ namespace AddonWars2.Downloaders.Factories
         #region Fields
 
         private readonly IHttpClientWrapper _httpClientService;
-        private readonly GitHubClientWrapper _gitHubClientService;
+        private readonly IGitHubClientWrapper _gitHubClientService;
 
         #endregion Fields
 
@@ -32,11 +33,11 @@ namespace AddonWars2.Downloaders.Factories
         /// Initializes a new instance of the <see cref="AddonDownloaderFactory"/> class.
         /// </summary>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        /// <param name="gitHubClient">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
-        public AddonDownloaderFactory(IHttpClientWrapper httpClientService, GitHubClientWrapper gitHubClient)
+        /// <param name="gitHubClientWrapper">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
+        public AddonDownloaderFactory(IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientWrapper)
         {
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
-            _gitHubClientService = gitHubClient ?? throw new ArgumentNullException(nameof(gitHubClient));
+            _gitHubClientService = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
         }
 
         #endregion Constructors
@@ -51,7 +52,7 @@ namespace AddonWars2.Downloaders.Factories
         /// <summary>
         /// Gets the instance of <see cref="IHttpClientWrapper"/> service.
         /// </summary>
-        protected GitHubClientWrapper GitHubClientService => _gitHubClientService;
+        protected IGitHubClientWrapper GitHubClientService => _gitHubClientService;
 
         #endregion Properties
 

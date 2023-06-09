@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net.Http;
     using System.Text.Json;
@@ -22,6 +23,8 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.DependencyResolvers.Enums;
     using AddonWars2.DependencyResolvers.Interfaces;
+    using AddonWars2.Downloaders.Interfaces;
+    using AddonWars2.Downloaders.Models;
     using AddonWars2.Providers;
     using AddonWars2.Providers.DTO;
     using AddonWars2.Providers.Enums;
@@ -85,6 +88,7 @@ namespace AddonWars2.App.ViewModels
         private readonly IWebSharedData _webSharedData;
         private readonly IRegistryProviderFactory _registryProviderFactory;
         private readonly IDependencyResolverFactory _dependencyResolverFactory;
+        private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
         private readonly IHttpClientWrapper _httpClientWrapper;
 
@@ -114,6 +118,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="webSharedData">A reference to <see cref="IWebSharedData"/>.</param>
         /// <param name="registryProviderFactory">A reference to <see cref="GithubRegistryProvider"/>.</param>
         /// <param name="dependencyResolverFactory">A reference to <see cref="IDependencyResolverFactory"/>.</param>
+        /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/>.</param>
         /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/>.</param>
         public ManageAddonsPageViewModel(
@@ -126,6 +131,7 @@ namespace AddonWars2.App.ViewModels
             IWebSharedData webSharedData,
             IRegistryProviderFactory registryProviderFactory,
             IDependencyResolverFactory dependencyResolverFactory,
+            IAddonDownloaderFactory addonDownloaderFactory,
             IGitHubClientWrapper gitHubClientWrapper,
             IHttpClientWrapper httpClientWrapper)
             : base(logger)
@@ -138,13 +144,14 @@ namespace AddonWars2.App.ViewModels
             _webSharedData = webSharedData ?? throw new ArgumentNullException(nameof(webSharedData));
             _registryProviderFactory = registryProviderFactory ?? throw new ArgumentNullException(nameof(registryProviderFactory));
             _dependencyResolverFactory = dependencyResolverFactory ?? throw new ArgumentNullException(nameof(dependencyResolverFactory));
+            _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
             _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
             ReloadProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error);
             GetAddonsFromSelectedProviderCommand = new AsyncRelayCommand(ExecuteGetAddonsFromSelectedProviderAsyncCommand, () => SelectedProvider != null);
-            InstallSelectedAddonCommand = new RelayCommand<LoadedAddonDataViewModel>(ExecuteInstallSelectedAddonCommand, (item) => item != null && SelectedProvider != null && (ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error));
+            InstallSelectedAddonCommand = new AsyncRelayCommand<LoadedAddonDataViewModel>(ExecuteInstallSelectedAddonAsyncCommand, (item) => item != null && SelectedProvider != null && (ViewModelState == ManageAddonsViewModelState.Ready || ViewModelState == ManageAddonsViewModelState.Error));
 
             Logger.LogDebug("Instance initialized.");
         }
@@ -192,6 +199,11 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to a dependency resolver factory.
         /// </summary>
         public IDependencyResolverFactory DependencyResolverFactory => _dependencyResolverFactory;
+
+        /// <summary>
+        /// Gets a reference to the addon downloader factory.
+        /// </summary>
+        public IAddonDownloaderFactory AddonDownloaderFactory => _addonDownloaderFactory;
 
         /// <summary>
         /// Gets a reference to GitHub client wrapper.
@@ -372,7 +384,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a command which marks or unmarks addons based of their dependencies (required addons).
         /// </summary>
-        public RelayCommand<LoadedAddonDataViewModel> InstallSelectedAddonCommand { get; private set; }
+        public AsyncRelayCommand<LoadedAddonDataViewModel> InstallSelectedAddonCommand { get; private set; }
 
         #endregion Commands
 
@@ -548,7 +560,7 @@ namespace AddonWars2.App.ViewModels
         #region InstallSelectedAddonCommand
 
         // InstallSelectedAddonCommand command logic.
-        private void ExecuteInstallSelectedAddonCommand(LoadedAddonDataViewModel? addonItemModel)
+        private async Task ExecuteInstallSelectedAddonAsyncCommand(LoadedAddonDataViewModel? addonItemModel)
         {
             Logger.LogDebug("Executing command.");
 
@@ -571,7 +583,7 @@ namespace AddonWars2.App.ViewModels
                 Logger.LogDebug("Dependencies detected.");
 
                 var result = ShowInstallAddonsDialog(installationSequence);
-                if (result.HasValue == false || result.Value == true)
+                if (result == false)
                 {
                     Logger.LogError("Installation was cancelled by user.");
                     return;

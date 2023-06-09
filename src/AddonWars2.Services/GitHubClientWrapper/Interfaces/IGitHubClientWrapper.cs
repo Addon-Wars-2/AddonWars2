@@ -17,6 +17,11 @@ namespace AddonWars2.Services.GitHubClientWrapper.Interfaces
         #region Properties
 
         /// <summary>
+        /// Gets the <see cref="Octokit.GitHubClient"/> object.
+        /// </summary>
+        public GitHubClient GitHubClient { get; }
+
+        /// <summary>
         /// Gets or sets GitHub API token.
         /// </summary>
         public string ApiToken { get; set; }

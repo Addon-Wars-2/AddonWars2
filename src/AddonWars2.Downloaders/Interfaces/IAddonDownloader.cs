@@ -20,5 +20,20 @@ namespace AddonWars2.Downloaders.Interfaces
         /// <param name="request">A request objects which wraps the request information.</param>
         /// <returns><see cref="DownloadedObject"/> object.</returns>
         Task<DownloadedObject> Download(DownloadRequest request);
+
+        /// <summary>
+        /// Starts to download the requested addon.
+        /// </summary>
+        /// <param name="url">URL of a file to download.</param>
+        /// <param name="headers">A collection of headers for the request.</param>
+        /// <returns><see cref="DownloadedObject"/> object.</returns>
+        Task<DownloadedObject> Download(string url, Dictionary<string, string> headers);
+
+        /// <summary>
+        /// Starts to download the requested addon.
+        /// </summary>
+        /// <param name="url">URL of a file to download.</param>
+        /// <returns><see cref="DownloadedObject"/> object.</returns>
+        Task<DownloadedObject> Download(string url);
     }
 }

@@ -7,7 +7,9 @@
 
 namespace AddonWars2.Downloaders
 {
+    using System.Collections.Generic;
     using System.Net.Http;
+    using System.Reflection.PortableExecutable;
     using System.Threading.Tasks;
     using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Interfaces;
@@ -73,6 +75,63 @@ namespace AddonWars2.Downloaders
 
         /// <inheritdoc/>
         public abstract Task<DownloadedObject> Download(DownloadRequest request);
+
+        public async Task<DownloadedObject> Download(string url, Dictionary<string, string> headers)
+        {
+            return await Download(new DownloadRequest(url, headers));
+        }
+
+        public async Task<DownloadedObject> Download(string url)
+        {
+            return await Download(url, new Dictionary<string, string>());
+        }
+
+        /// <summary>
+        /// Reads content from a given response.
+        /// </summary>
+        /// <param name="response">Response to read.</param>
+        /// <returns><see cref="DownloadedObject"/> object.</returns>
+        protected async Task<DownloadedObject> ReadResponse(HttpResponseMessage response)
+        {
+            var filename = response.Content.Headers.ContentDisposition?.FileName
+                ?? Path.GetFileName(response.RequestMessage?.RequestUri?.AbsolutePath)
+                ?? string.Empty;
+            var contentLength = response.Content.Headers.ContentLength ?? 0L;
+
+            if (contentLength == 0)
+            {
+                return new DownloadedObject(filename, Array.Empty<byte>());
+            }
+
+            byte[] content = Array.Empty<byte>();
+            byte[] buffer = new byte[4096];  // default 4k is considered to be optimal
+            var totalBytesRead = 0L;
+
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    var bytesRead = 0;
+
+                    do
+                    {
+                        bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));
+
+                        await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+
+                        totalBytesRead += bytesRead;
+                        OnDownloadProgressChanged(contentLength, totalBytesRead);
+                    }
+                    while (bytesRead != 0);
+
+                    OnDownloadProgressChanged(contentLength, totalBytesRead);
+
+                    content = memoryStream.ToArray();
+                }
+            }
+
+            return new DownloadedObject(filename, content);
+        }
 
         /// <summary>
         /// Raises <see cref="DownloadProgressChanged"/> event to inform subscribers

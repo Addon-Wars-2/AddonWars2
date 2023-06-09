@@ -44,9 +44,7 @@ namespace AddonWars2.Services.GitHubClientWrapper
 
         #region Properties
 
-        /// <summary>
-        /// Gets the <see cref="Octokit.GitHubClient"/> object.
-        /// </summary>
+        /// <inheritdoc/>
         public GitHubClient GitHubClient => _gitHubClient;
 
         /// <summary>

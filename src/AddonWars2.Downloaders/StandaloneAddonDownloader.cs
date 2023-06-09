@@ -7,7 +7,6 @@
 
 namespace AddonWars2.Downloaders
 {
-    using System.Net.Http;
     using AddonWars2.Downloaders.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
 
@@ -37,49 +36,8 @@ namespace AddonWars2.Downloaders
         {
             using (var response = await HttpClientService.GetAsync(request.Url))
             {
-                return await DownloadFromResponse(response);
+                return await ReadResponse(response);
             }
-        }
-
-        // Downloads content using the specified response message.
-        private async Task<DownloadedObject> DownloadFromResponse(HttpResponseMessage response)
-        {
-            var filename = response.Headers.Location?.AbsoluteUri.ToString() ?? string.Empty;
-            var contentLength = response.Content.Headers.ContentLength ?? 0L;
-
-            if (contentLength == 0)
-            {
-                return new DownloadedObject(filename, Array.Empty<byte>());
-            }
-
-            byte[] content = Array.Empty<byte>();
-            byte[] buffer = new byte[4096];  // default 4k is considered to be optimal
-            var totalBytesRead = 0L;
-
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    var bytesRead = 0;
-
-                    do
-                    {
-                        bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));
-
-                        await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-
-                        totalBytesRead += bytesRead;
-                        OnDownloadProgressChanged(contentLength, totalBytesRead);
-                    }
-                    while (bytesRead != 0);
-
-                    OnDownloadProgressChanged(contentLength, totalBytesRead);
-
-                    content = memoryStream.ToArray();
-                }
-            }
-
-            return new DownloadedObject(filename, content);
         }
 
         #endregion Methods

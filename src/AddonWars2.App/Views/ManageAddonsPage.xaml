@@ -416,7 +416,7 @@
                                 <Grid
                                     x:Name="ItemRootGrid"
                                     Grid.Row="1"
-                                    Margin="10,5.8,10,5.8"> <!-- TODO: An ugly workaround to fit in items propertly. -->
+                                    Margin="10,5.8,10,5.8">
                                     <Grid x:Name="ItemRoot">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

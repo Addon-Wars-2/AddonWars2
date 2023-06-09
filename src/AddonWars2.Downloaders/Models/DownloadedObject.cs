@@ -16,6 +16,7 @@ namespace AddonWars2.Downloaders.Models
 
         private readonly string _name;
         private readonly byte[] _content;
+        private string _version;
 
         #endregion Fields
 
@@ -26,15 +27,18 @@ namespace AddonWars2.Downloaders.Models
         /// </summary>
         /// <param name="name">The downloaded object name.</param>
         /// <param name="content">The downloaded content represented as a byte array.</param>
+        /// <param name="version">The downloaded object version.</param>
         /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
-        public DownloadedObject(string name, byte[] content)
+        public DownloadedObject(string name, byte[] content, string version = "")
         {
-            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
+            ArgumentNullException.ThrowIfNull(version, nameof(version));
 
             _name = name;
             _content = content;
+            _version = version;
         }
 
         #endregion Constructors
@@ -50,6 +54,15 @@ namespace AddonWars2.Downloaders.Models
         /// Gets the downloaded content as a byte array.
         /// </summary>
         public byte[] Content => _content;
+
+        /// <summary>
+        /// Gets the downloaded object version.
+        /// </summary>
+        public string Version
+        {
+            get => _version;
+            set => _version = value;
+        }
 
         #endregion Properties
     }

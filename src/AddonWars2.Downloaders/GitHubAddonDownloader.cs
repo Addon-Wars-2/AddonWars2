@@ -9,7 +9,7 @@ namespace AddonWars2.Downloaders
 {
     using System.Threading.Tasks;
     using AddonWars2.Downloaders.Models;
-    using AddonWars2.Services.GitHubClientWrapper;
+    using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using Octokit;
 
@@ -20,7 +20,7 @@ namespace AddonWars2.Downloaders
     {
         #region Fields
 
-        private readonly GitHubClientWrapper _gitHubClientService;
+        private readonly IGitHubClientWrapper _gitHubClientService;
 
         #endregion Fields
 
@@ -30,8 +30,8 @@ namespace AddonWars2.Downloaders
         /// Initializes a new instance of the <see cref="GitHubAddonDownloader"/> class.
         /// </summary>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        /// <param name="gitHubClientService">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
-        public GitHubAddonDownloader(IHttpClientWrapper httpClientService, GitHubClientWrapper gitHubClientService)
+        /// <param name="gitHubClientService">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
+        public GitHubAddonDownloader(IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientService)
             : base(httpClientService)
         {
             _gitHubClientService = gitHubClientService ?? throw new ArgumentNullException(nameof(gitHubClientService));
@@ -44,25 +44,33 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Gets the instance of <see cref="IHttpClientWrapper"/> service.
         /// </summary>
-        protected GitHubClientWrapper GitHubClientService => _gitHubClientService;
+        protected IGitHubClientWrapper GitHubClientService => _gitHubClientService;
 
         #endregion Properties
 
         #region Methods
 
         /// <inheritdoc/>
-        public override Task<DownloadedObject> Download(DownloadRequest request)
+        public async override Task<DownloadedObject> Download(DownloadRequest request)
         {
-            if (GitHubClientService.GitHubLastApiInfo?.RateLimit.Remaining > 0)
+            var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
+            var release = gitHubResponse.Body;
+            if (release != null && release.Assets.Count > 0)
             {
+                var url = release.Assets[0].BrowserDownloadUrl;
+                var version = release.TagName;
+                using (var response = await HttpClientService.GetAsync(url))
+                {
+                    var content =  await ReadResponse(response);
+                    content.Version = version;
 
+                    return content;
+                }
             }
             else
             {
-                
+                throw new InvalidOperationException($"The returned release is either null or has no assets.");
             }
-
-            throw new NotImplementedException();
         }
 
         #endregion methods
