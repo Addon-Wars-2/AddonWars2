@@ -59,8 +59,6 @@ namespace AddonWars2.App.ViewModels
             _webStaticData = webStaticData ?? throw new ArgumentNullException(nameof(webStaticData));
 
             _selectedCulture = appStaticData.AppSupportedCultures.First(x => x.Culture == appConfig.UserData.SelectedCultureString);
-
-            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

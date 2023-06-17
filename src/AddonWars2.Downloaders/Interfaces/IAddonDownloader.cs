@@ -15,25 +15,15 @@ namespace AddonWars2.Downloaders.Interfaces
     public interface IAddonDownloader
     {
         /// <summary>
-        /// Starts to download the requested addon.
+        /// Is raised whenever the download progress has changed.
         /// </summary>
-        /// <param name="request">A request objects which wraps the request information.</param>
-        /// <returns><see cref="DownloadedObject"/> object.</returns>
-        Task<DownloadedObject> Download(DownloadRequest request);
-
-        /// <summary>
-        /// Starts to download the requested addon.
-        /// </summary>
-        /// <param name="url">URL of a file to download.</param>
-        /// <param name="headers">A collection of headers for the request.</param>
-        /// <returns><see cref="DownloadedObject"/> object.</returns>
-        Task<DownloadedObject> Download(string url, Dictionary<string, string> headers);
+        public event DownloadProgressChangedEventHandler? DownloadProgressChanged;
 
         /// <summary>
         /// Starts to download the requested addon.
         /// </summary>
         /// <param name="url">URL of a file to download.</param>
         /// <returns><see cref="DownloadedObject"/> object.</returns>
-        Task<DownloadedObject> Download(string url);
+        public Task<DownloadedObject> DownloadAsync(string url);
     }
 }

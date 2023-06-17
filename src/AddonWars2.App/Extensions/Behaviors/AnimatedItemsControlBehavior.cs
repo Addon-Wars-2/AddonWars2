@@ -7,15 +7,25 @@
 
 namespace AddonWars2.App.Extensions.Behaviors
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media.Animation;
     using Microsoft.Xaml.Behaviors;
+
+    // ***
+    // This code is fragile as hell and ready to nuke itself any moment you change it. You've been WARNED!
+    // ***
+
+    // TODO: There is a bug when items loading overlap another one if you switch between tabs too fast.
+    //       It's unclear yet, is a problem lies within the behavior class or there is a conflict with ScrollViewer.
 
     /// <summary>
     /// Defines a behavior that animates <see cref="ItemsControl"/> items.
@@ -130,7 +140,6 @@ namespace AddonWars2.App.Extensions.Behaviors
         {
             _animatedItems.Clear();
             _animationQueue.Clear();
-            _isAnimating = false;
         }
 
         // Iterates thorugh item containers and makes them visible.
@@ -221,6 +230,9 @@ namespace AddonWars2.App.Extensions.Behaviors
         private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
         {
             _isControlLoaded = false;
+            _isAnimating = false;
+
+            ClearAnimatedItems();
         }
 
         // Handles CollectionChanged event for the ItemsControl items collection.
@@ -307,6 +319,7 @@ namespace AddonWars2.App.Extensions.Behaviors
                 if (AssociatedObject.ItemContainerGenerator.ContainerFromItem(item) is UIElement itemContainer)
                 {
                     _animatedItems.Add(item);
+
                     foreach (var animation in storyboard.Children)
                     {
                         Storyboard.SetTarget(animation, itemContainer);

@@ -61,8 +61,6 @@ namespace AddonWars2.App.ViewModels
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
 
             OpenLogFileCommand = new RelayCommand(ExecuteOpenLogFileCommand);
-
-            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

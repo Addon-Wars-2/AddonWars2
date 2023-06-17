@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:AddonWars2.App.Views"
     xmlns:vm="clr-namespace:AddonWars2.App.ViewModels"
+    xmlns:subvm="clr-namespace:AddonWars2.App.ViewModels.SubViewModels"
     xmlns:cmd="clr-namespace:AddonWars2.App.ViewModels.Commands"
     xmlns:convert="clr-namespace:AddonWars2.App.Utils.Converters"
     xmlns:markupex="clr-namespace:AddonWars2.App.Extensions.Markup"
@@ -236,7 +237,7 @@
                                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Accent02a}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                                 Style="{StaticResource FlatButtonStyle}"
-                                ToolTipService.InitialShowDelay="500"
+                                ToolTipService.InitialShowDelay="250"
                                 ToolTipService.Placement="Right">
                                 <Button.ToolTip>
                                     <ToolTip MaxWidth="400">
@@ -384,7 +385,7 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="{x:Type subvm:LoadedAddonDataViewModel}">
                             <Grid
                                 x:Name="DataTemplateRootBorder"
                                 Background="Transparent"

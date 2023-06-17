@@ -13,7 +13,6 @@ namespace AddonWars2.Downloaders.Factories
     using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
-    using Octokit;
 
     /// <summary>
     /// Represents a factory for downloaders.
@@ -70,6 +69,12 @@ namespace AddonWars2.Downloaders.Factories
                 default:
                     throw new NotSupportedException($"Cannot create a downloader for the host type: {hostType.GetType().Name}. The host type is not supported.");
             }
+        }
+
+        /// <inheritdoc/>
+        public BulkAddonDownloader GetBulkDownloader(IAddonDownloaderFactory factory)
+        {
+            return new BulkAddonDownloader(factory);
         }
 
         #endregion Methods

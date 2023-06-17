@@ -96,6 +96,7 @@
     <ProjectReference Include="..\AddonWars2.Downloaders\AddonWars2.Downloaders.csproj" />
     <ProjectReference Include="..\AddonWars2.Extractors\AddonWars2.Extractors.csproj" />
     <ProjectReference Include="..\AddonWars2.Installers\AddonWars2.Installers.csproj" />
+    <ProjectReference Include="..\AddonWars2.LibraryManager\AddonWars2.LibraryManager.csproj" />
     <ProjectReference Include="..\AddonWars2.Providers\AddonWars2.Providers.csproj" />
     <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
     <ProjectReference Include="..\AddonWars2.SharedData\AddonWars2.SharedData.csproj" />

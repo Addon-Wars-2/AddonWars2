@@ -43,7 +43,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         #region Fields
 
         private readonly string _sourceProvider;
-        private readonly AddonData _data;
+        private readonly AddonData _model;
         private bool _isInstalled;
 
         #endregion Fields
@@ -54,11 +54,11 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         /// Initializes a new instance of the <see cref="LoadedAddonDataViewModel"/> class.
         /// </summary>
         /// <param name="sourceProvider">A source name this addon was loaded from.</param>
-        /// <param name="data">Deserialized addon info.</param>
-        public LoadedAddonDataViewModel(string sourceProvider, AddonData data)
+        /// <param name="model">Deserialized addon info.</param>
+        public LoadedAddonDataViewModel(string sourceProvider, AddonData model)
         {
             _sourceProvider = string.IsNullOrEmpty(sourceProvider) ? throw new ArgumentException($"{nameof(sourceProvider)} cannot be null or empty.", nameof(sourceProvider)) : sourceProvider;
-            _data = data ?? throw new ArgumentNullException(nameof(data));
+            _model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         #endregion Constructors
@@ -77,12 +77,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.InternalName))
+                if (_model == null || string.IsNullOrEmpty(_model.InternalName))
                 {
                     return string.Empty;
                 }
 
-                return _data.InternalName;
+                return _model.InternalName;
             }
         }
 
@@ -93,12 +93,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.DisplayName))
+                if (_model == null || string.IsNullOrEmpty(_model.DisplayName))
                 {
                     return string.Empty;
                 }
 
-                return _data.DisplayName;
+                return _model.DisplayName;
             }
         }
 
@@ -109,12 +109,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Description))
+                if (_model == null || string.IsNullOrEmpty(_model.Description))
                 {
                     return string.Empty;
                 }
 
-                return _data.Description;
+                return _model.Description;
             }
         }
 
@@ -125,12 +125,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Tooltip))
+                if (_model == null || string.IsNullOrEmpty(_model.Tooltip))
                 {
                     return string.Empty;
                 }
 
-                return _data.Tooltip;
+                return _model.Tooltip;
             }
         }
 
@@ -141,12 +141,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Website))
+                if (_model == null || string.IsNullOrEmpty(_model.Website))
                 {
                     return string.Empty;
                 }
 
-                return _data.Website;
+                return _model.Website;
             }
         }
 
@@ -157,12 +157,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Authors))
+                if (_model == null || string.IsNullOrEmpty(_model.Authors))
                 {
                     return string.Empty;
                 }
 
-                return _data.Authors;
+                return _model.Authors;
             }
         }
 
@@ -174,21 +174,21 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null
-                    || _data.RequiredAddons == null
-                    || !_data.RequiredAddons.Any())
+                if (_model == null
+                    || _model.RequiredAddons == null
+                    || !_model.RequiredAddons.Any())
                 {
                     return string.Empty;
                 }
 
-                return string.Join(", ", _data.RequiredAddons) ?? string.Empty;
+                return string.Join(", ", _model.RequiredAddons) ?? string.Empty;
             }
         }
 
         /// <summary>
         /// Gets a a list of required addons.
         /// </summary>
-        public IEnumerable<string> RequiredCollection => _data.RequiredAddons ?? Enumerable.Empty<string>();
+        public IEnumerable<string> RequiredCollection => _model.RequiredAddons ?? Enumerable.Empty<string>();
 
         /// <summary>
         /// Gets a list of conflicts for the addon.
@@ -197,14 +197,14 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null
-                    || _data.Conflicts == null
-                    || !_data.Conflicts.Any())
+                if (_model == null
+                    || _model.Conflicts == null
+                    || !_model.Conflicts.Any())
                 {
                     return string.Empty;
                 }
 
-                return string.Join(", ", _data.Conflicts) ?? string.Empty;
+                return string.Join(", ", _model.Conflicts) ?? string.Empty;
             }
         }
 
@@ -214,13 +214,13 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         public bool IsInstalled
         {
             get => _isInstalled;
-            set => _isInstalled = value;
+            set => SetProperty(ref _isInstalled, value);
         }
 
         /// <summary>
         /// Gets a raw data object. Do NOT use for binding.
         /// </summary>
-        internal AddonData Data => _data;
+        internal AddonData Model => _model;
 
         #endregion Properties
     }

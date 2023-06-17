@@ -51,7 +51,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        public async override Task<DownloadedObject> Download(DownloadRequest request)
+        protected async override Task<DownloadedObject> DownloadAsync(DownloadRequest request)
         {
             var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
             var release = gitHubResponse.Body;
@@ -61,7 +61,7 @@ namespace AddonWars2.Downloaders
                 var version = release.TagName;
                 using (var response = await HttpClientService.GetAsync(url))
                 {
-                    var content =  await ReadResponse(response);
+                    var content = await ReadResponseAsync(response);
                     content.Version = version;
 
                     return content;
@@ -73,6 +73,6 @@ namespace AddonWars2.Downloaders
             }
         }
 
-        #endregion methods
+        #endregion Methods
     }
 }

@@ -193,9 +193,9 @@ namespace AddonWars2.App
         /// <inheritdoc/>
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
-
             Logger.Information("Application shutdown.");
+
+            base.OnExit(e);
 
             Log.CloseAndFlush();
         }
@@ -361,21 +361,15 @@ namespace AddonWars2.App
             ApplicationConfig.UserData.AnetHome = string.Format(WebSharedData.AnetHomeTemplate, culture.ShortName.ToLower());
 
             // Setup the rest.
-            // TODO: maybe move out to its own method?
             ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
             ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
             ApplicationConfig.UserData.CachedLibProviderName = AppSharedData.CachedLibProviderName;
             ApplicationConfig.UserData.InstalledAddonsFilePath = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.InstalledAddonsFileName);
-
-            Logger.Debug($"Configurated.");
         }
 
         // Logs any unhandled exception.
         private void LogUnhandledException(Exception exception, string source)
         {
-            // TODO: We should be able to revert any action if an unhandled exception has occured.
-            //       Like if we were updating addons, and an exception was thrown in the middle of the process.
-
             string logMessage = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
             Logger.Fatal(exception, logMessage);
 
@@ -406,7 +400,7 @@ namespace AddonWars2.App
             var dialogViewModelFactory = Services.GetRequiredService<IErrorDialogViewModelFactory>();
             var dialogViewModel = dialogViewModelFactory.Create(title, message, details);
 
-            _ = DialogService.ShowDialog(ownerViewModel, dialogViewModel);
+            DialogService.ShowDialog(ownerViewModel, dialogViewModel);
 
             Shutdown();
         }

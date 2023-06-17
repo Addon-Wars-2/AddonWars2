@@ -51,6 +51,9 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Unavailable dependencies detected</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">The resolver returned one or more dependencies (addons) which are not available in the provider(s). The installation cannot be completed. See the details for a complete list.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Failed to download the required addons</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">The downloader couldn't download the selected addon or one of its dependencies. Please see the detail for the additional information.</s:String>
+
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>

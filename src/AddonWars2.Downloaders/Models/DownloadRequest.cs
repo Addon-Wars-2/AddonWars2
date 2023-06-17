@@ -15,7 +15,6 @@ namespace AddonWars2.Downloaders.Models
         #region Fields
 
         private readonly string _url = string.Empty;
-        private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
 
         #endregion Fields
 
@@ -25,11 +24,9 @@ namespace AddonWars2.Downloaders.Models
         /// Initializes a new instance of the <see cref="DownloadRequest"/> class.
         /// </summary>
         /// <param name="url">URL of a file to download.</param>
-        /// <param name="headers">A collection of headers for the request.</param>
-        public DownloadRequest(string url, Dictionary<string, string> headers)
+        public DownloadRequest(string url)
         {
             _url = url;
-            _headers = headers;
         }
 
         #endregion Constructors
@@ -40,11 +37,6 @@ namespace AddonWars2.Downloaders.Models
         /// Gets a URL that will be used to download the addon.
         /// </summary>
         public string Url => _url;
-
-        /// <summary>
-        /// Gets a collection of headers for the request.
-        /// </summary>
-        public Dictionary<string, string> Headers => _headers;
 
         #endregion Properties
     }

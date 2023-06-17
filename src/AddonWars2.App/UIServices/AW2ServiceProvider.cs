@@ -17,8 +17,9 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
-    using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.App.ViewModels.Factories;
+    using AddonWars2.Core;
+    using AddonWars2.Core.Interfaces;
     using AddonWars2.DependencyResolvers.Factories;
     using AddonWars2.DependencyResolvers.Interfaces;
     using AddonWars2.Downloaders.Factories;
@@ -108,10 +109,12 @@ namespace AddonWars2.App.UIServices
                 {
                     var client = new HttpClient();
                     client.DefaultRequestHeaders.Add("User-Agent", $"{defaultProductName}/{defaultProductVersion} (+{defaultProductComment})");
+                    client.Timeout = TimeSpan.FromSeconds(30);
                     return client;
                 });
             services.AddSingleton<IGitHubClientWrapper, GitHubClientWrapper>();
             services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
+            services.AddSingleton<ILibraryManager, LibraryManager>();
 
             // Factories.
             services.AddSingleton<IRegistryProviderFactory, RegistryProviderFactory>();
@@ -119,6 +122,7 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IDependencyResolverFactory, DependencyResolverFactory>();
             services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
             services.AddSingleton<IInstallAddonsDialogFactory, InstallAddonsDialogFactory>();
+            services.AddSingleton<IInstallProgressDialogFactory, InstallProgressDialogFactory>();
 
             // Logging.
             services.AddSingleton<ILogsAggregator, LogsAggregator>();

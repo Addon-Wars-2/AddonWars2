@@ -24,7 +24,7 @@ namespace AddonWars2.Core.DTO
         private string _tooltip = string.Empty;
         private string _authors = string.Empty;
         private string _website = string.Empty;
-        private IEnumerable<AddonHost>? _hosts;
+        private IEnumerable<AddonHost> _hosts = new List<AddonHost>();
         private DownloadType _downloadType;
         private InstallMode _installMode;
         private IEnumerable<string>? _requiredAddons;
@@ -115,7 +115,7 @@ namespace AddonWars2.Core.DTO
         /// Gets or sets the addon host list.
         /// </summary>
         [JsonPropertyName("hosts")]
-        public IEnumerable<AddonHost>? Hosts
+        public IEnumerable<AddonHost> Hosts
         {
             get => _hosts;
             set => _hosts = value;

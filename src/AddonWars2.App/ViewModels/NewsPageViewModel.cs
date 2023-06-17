@@ -111,14 +111,8 @@ namespace AddonWars2.App.ViewModels
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
 
             LoadNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => IsActuallyLoaded == false);
-            RefreshNewsCommand = new AsyncRelayCommand(
-                ExecuteReloadNewsAsync,
-                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
-            LoadRssItemContentCommand = new RelayCommand(
-                ExecuteLoadRssItemContentCommand,
-                () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
-
-            Logger.LogDebug("Instance initialized.");
+            RefreshNewsCommand = new AsyncRelayCommand(ExecuteReloadNewsAsync, () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
+            LoadRssItemContentCommand = new RelayCommand(ExecuteLoadRssItemContentCommand, () => ViewModelState == NewsViewModelState.Ready || ViewModelState == NewsViewModelState.Error);
         }
 
         #endregion Constructors
@@ -329,7 +323,7 @@ namespace AddonWars2.App.ViewModels
             await WriteRssItemsAsync(feed, rssDirPath);
 
             // Add to the observable collection.
-            await FillRssItemsAsync(feed, RssFeedCollection);
+            FillRssItemsAsync(feed, RssFeedCollection);
 
             ViewModelState = NewsViewModelState.Ready;
 
@@ -343,14 +337,10 @@ namespace AddonWars2.App.ViewModels
             //       in some scenarios when the internet connection is interrupted.
             //       Need to figure out what's the problem with the HTTP content stream (if there is any).
 
-            Logger.LogDebug("Parsing response data.");
-
             try
             {
                 var stream = await response.Content.ReadAsStreamAsync();
                 var feed = await RssFeedService.ReadXmlStreamAsync(stream);
-
-                Logger.LogDebug($"Parsed items: {feed.Count}");
 
                 return feed;
             }
@@ -373,7 +363,6 @@ namespace AddonWars2.App.ViewModels
         {
             ArgumentNullException.ThrowIfNull(collection, nameof(collection));
 
-            Logger.LogDebug("Sorting...");
             return await Task.Run(() => collection.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.PublishDate).ToList());
         }
 
@@ -384,12 +373,11 @@ namespace AddonWars2.App.ViewModels
             {
                 var filepath = Path.Combine(directory, item.Guid ?? string.Empty) + ".html";
                 await RssFeedService.WriteRssItemAsync(item, filepath);
-                Logger.LogDebug($"HTML file saved: {filepath}");
             }
         }
 
         // Update the destination list with new items.
-        private async Task FillRssItemsAsync(IList<Gw2RssFeedItem> source, IList<Gw2RssFeedItem> destination)
+        private void FillRssItemsAsync(IList<Gw2RssFeedItem> source, IList<Gw2RssFeedItem> destination)
         {
             ArgumentNullException.ThrowIfNull(source, nameof(source));
             ArgumentNullException.ThrowIfNull(destination, nameof(destination));
@@ -397,7 +385,6 @@ namespace AddonWars2.App.ViewModels
             foreach (var item in source)
             {
                 destination.Add(item);
-                Logger.LogDebug($"RSS item with guid={item.Guid} added.");
             }
         }
 
@@ -410,7 +397,6 @@ namespace AddonWars2.App.ViewModels
 
             if (DisplayedRssFeedItem == null)
             {
-                Logger.LogDebug($"{nameof(DisplayedRssFeedItem)} is null.");
                 return;
             }
 
@@ -423,7 +409,6 @@ namespace AddonWars2.App.ViewModels
                 try
                 {
                     DisplayedRssFeedContent = new Uri(filepath);
-                    Logger.LogDebug($"WebView2 content loaded from: {filepath}");
                     return;
                 }
                 catch (Exception e)

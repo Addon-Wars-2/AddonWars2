@@ -31,7 +31,7 @@ namespace AddonWars2.Downloaders.Events
         {
             _totalBytesToReceive = totalBytesToReceive;
             _bytesReceived = bytesReceived;
-            _progress = bytesReceived / _totalBytesToReceive * 100;
+            _progress = (double)bytesReceived / (double)totalBytesToReceive * 100;
         }
 
         #endregion Constructors

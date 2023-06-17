@@ -66,8 +66,6 @@ namespace AddonWars2.App.ViewModels
 
             TryFindGw2ExeCommand = new RelayCommand(ExecuteTryFindGw2ExeCommand, () => IsActuallyLoaded == false);
             OpenFileDialogCommand = new RelayCommand(ExecuteOpenFileDialogCommand);
-
-            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

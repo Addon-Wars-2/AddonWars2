@@ -8,8 +8,6 @@
 namespace AddonWars2.App.ViewModels.SubViewModels
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using AddonWars2.DependencyResolvers.Interfaces;
@@ -26,7 +24,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
     {
         #region Fields
 
-        private readonly ProviderInfo _data;
+        private readonly ProviderInfo _model;
         private readonly ObservableCollection<LoadedAddonDataViewModel> _addons = new ObservableCollection<LoadedAddonDataViewModel>();
         private readonly DGraph<IDNode> _dependencyGraph = new DGraph<IDNode>();
 
@@ -42,7 +40,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         /// <param name="providerInfo">Deserialized provider info.</param>
         public LoadedProviderDataViewModel(ProviderInfo providerInfo)
         {
-            _data = providerInfo ?? throw new ArgumentNullException(nameof(providerInfo));
+            _model = providerInfo ?? throw new ArgumentNullException(nameof(providerInfo));
 
             _addons.CollectionChanged += Addons_CollectionChanged;
         }
@@ -63,19 +61,19 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Name))
+                if (_model == null || string.IsNullOrEmpty(_model.Name))
                 {
                     return string.Empty;
                 }
 
-                return _data.Name;
+                return _model.Name;
             }
         }
 
         /// <summary>
         /// Gets the addon registry type.
         /// </summary>
-        public ProviderInfoHostType Type => _data.Type;
+        public ProviderInfoHostType Type => _model.Type;
 
         /// <summary>
         /// Gets the addon provider link.
@@ -88,12 +86,12 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         {
             get
             {
-                if (_data == null || string.IsNullOrEmpty(_data.Link))
+                if (_model == null || string.IsNullOrEmpty(_model.Link))
                 {
                     return string.Empty;
                 }
 
-                return _data.Link;
+                return _model.Link;
             }
         }
 
@@ -111,7 +109,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         /// <summary>
         /// Gets a raw data object. Do NOT use for binding.
         /// </summary>
-        internal ProviderInfo Data => _data;
+        internal ProviderInfo Model => _model;
 
         #endregion Properties
 

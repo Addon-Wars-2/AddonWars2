@@ -51,6 +51,8 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Обнаружены недоступные зависимости</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Резолвер обнаружил одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для просмотра полного списка.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Не удалось загрузить необходимые аддоны</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">Модуль загрузок не смог загрузить аддон или некоторые из его зависимостей.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>

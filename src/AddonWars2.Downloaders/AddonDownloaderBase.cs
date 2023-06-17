@@ -7,9 +7,8 @@
 
 namespace AddonWars2.Downloaders
 {
-    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net.Http;
-    using System.Reflection.PortableExecutable;
     using System.Threading.Tasks;
     using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Interfaces;
@@ -30,6 +29,8 @@ namespace AddonWars2.Downloaders
     {
         #region Fields
 
+        private const int DEFAULT_BUFFER_SIZE = 4096;
+
         private readonly IHttpClientWrapper _httpClientService;
 
         #endregion Fields
@@ -49,9 +50,7 @@ namespace AddonWars2.Downloaders
 
         #region Events
 
-        /// <summary>
-        /// Is raised whenever the download progress has changed.
-        /// </summary>
+        /// <inheritdoc/>
         public event DownloadProgressChangedEventHandler? DownloadProgressChanged;
 
         #endregion Events
@@ -73,25 +72,30 @@ namespace AddonWars2.Downloaders
 
         #region Methods
 
+        public void ClearDownloadProgressChanged()
+        {
+            DownloadProgressChanged = null;
+        }
+
         /// <inheritdoc/>
-        public abstract Task<DownloadedObject> Download(DownloadRequest request);
-
-        public async Task<DownloadedObject> Download(string url, Dictionary<string, string> headers)
+        public async Task<DownloadedObject> DownloadAsync(string url)
         {
-            return await Download(new DownloadRequest(url, headers));
+            return await DownloadAsync(new DownloadRequest(url));
         }
 
-        public async Task<DownloadedObject> Download(string url)
-        {
-            return await Download(url, new Dictionary<string, string>());
-        }
+        /// <summary>
+        /// Starts to download the requested addon.
+        /// </summary>
+        /// <param name="request">A request objects which wraps the request information.</param>
+        /// <returns><see cref="DownloadedObject"/> object.</returns>
+        protected abstract Task<DownloadedObject> DownloadAsync(DownloadRequest request);
 
         /// <summary>
         /// Reads content from a given response.
         /// </summary>
         /// <param name="response">Response to read.</param>
         /// <returns><see cref="DownloadedObject"/> object.</returns>
-        protected async Task<DownloadedObject> ReadResponse(HttpResponseMessage response)
+        protected async Task<DownloadedObject> ReadResponseAsync(HttpResponseMessage response)
         {
             var filename = response.Content.Headers.ContentDisposition?.FileName
                 ?? Path.GetFileName(response.RequestMessage?.RequestUri?.AbsolutePath)
@@ -104,7 +108,7 @@ namespace AddonWars2.Downloaders
             }
 
             byte[] content = Array.Empty<byte>();
-            byte[] buffer = new byte[4096];  // default 4k is considered to be optimal
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             var totalBytesRead = 0L;
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())
@@ -112,30 +116,32 @@ namespace AddonWars2.Downloaders
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
                     var bytesRead = 0;
-
                     do
                     {
                         bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));
-
                         await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-
                         totalBytesRead += bytesRead;
-                        OnDownloadProgressChanged(contentLength, totalBytesRead);
+
+                        if (bytesRead > 0)
+                        {
+                            // Calling it as sync would lead to blocking UI thread while preforming download task
+                            // and not updating progress bars until the task in completed (instantly from 0% to 100%).
+                            await Task.Run(() => OnDownloadProgressChanged(contentLength, totalBytesRead));
+                        }
                     }
                     while (bytesRead != 0);
-
-                    OnDownloadProgressChanged(contentLength, totalBytesRead);
 
                     content = memoryStream.ToArray();
                 }
             }
 
+            ClearDownloadProgressChanged();
+
             return new DownloadedObject(filename, content);
         }
 
         /// <summary>
-        /// Raises <see cref="DownloadProgressChanged"/> event to inform subscribers
-        /// the download progress value has changed.
+        /// Raises <see cref="DownloadProgressChanged"/> event to inform subscribers the download progress value has changed.
         /// </summary>
         /// <param name="totalBytesToReceive">The total number of bytes in data download operation.</param>
         /// <param name="bytesReceived">The number of bytes received.</param>

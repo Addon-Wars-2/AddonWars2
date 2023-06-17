@@ -52,8 +52,6 @@ namespace AddonWars2.App.ViewModels
             _settingsApiPageViewModel = settingsApiPageViewModel ?? throw new ArgumentNullException(nameof(settingsApiPageViewModel));
 
             InitializeAllSettings();
-
-            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

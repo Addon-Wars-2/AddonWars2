@@ -32,11 +32,11 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<DownloadedObject> Download(DownloadRequest request)
+        protected override async Task<DownloadedObject> DownloadAsync(DownloadRequest request)
         {
             using (var response = await HttpClientService.GetAsync(request.Url))
             {
-                return await ReadResponse(response);
+                return await ReadResponseAsync(response);
             }
         }
 
