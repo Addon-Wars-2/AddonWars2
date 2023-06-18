@@ -21,7 +21,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     md:DialogServiceViews.IsRegistered="True"
-    Title="Downloading addons..."
+    Title="{DynamicResource S.Dialog.InstallProgressDialog.Header}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"
@@ -41,6 +41,7 @@
     <Window.Resources>
         <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
         <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
+        <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
         <CollectionViewSource
             x:Key="ProgressItemsCollectionView"
             Source="{Binding InstallProgressItems}">
@@ -49,6 +50,17 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Window.Resources>
+
+    <i:Interaction.Triggers>
+        <i:DataTrigger Binding="{Binding ViewModelState, Converter={StaticResource EnumToStringConverter}}" Value="Error">
+            <i:InvokeCommandAction
+                Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                CommandParameter="{StaticResource FalseValue}"/>
+            <i:InvokeCommandAction
+                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </i:DataTrigger>
+    </i:Interaction.Triggers>
 
     <Border
         Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
@@ -74,7 +86,7 @@
                 Margin="5,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="Downloading addons..."/>
+                Text="{DynamicResource S.Dialog.InstallProgressDialog.Header}"/>
             <Button
                 x:Name="DialogCloseButton"
                 Grid.Row="0"
@@ -100,9 +112,19 @@
                 </i:Interaction.Triggers>
             </Button>
             <Grid
-                x:Name="ProgressBarsGrid"
+                x:Name="DownloadProgressBarsGrid"
                 Grid.Row="1"
                 Margin="5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EnumToStringConverter}}" Value="Downloading">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <ListBox
                     x:Name="AddonsList"
                     Grid.Row="1"
@@ -185,6 +207,21 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
+            </Grid>
+            <Grid
+                x:Name="InstallProgressBarsGrid"
+                Grid.Row="1"
+                Margin="5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EnumToStringConverter}}" Value="Installing">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
             </Grid>
             <Grid
                 x:Name="ButtonsGrid"

@@ -11,6 +11,7 @@ namespace AddonWars2.Downloaders
     using AddonWars2.Downloaders.Models;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
+    using Microsoft.Extensions.Logging;
     using Octokit;
 
     /// <summary>
@@ -29,10 +30,11 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Initializes a new instance of the <see cref="GitHubAddonDownloader"/> class.
         /// </summary>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="gitHubClientService">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
-        public GitHubAddonDownloader(IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientService)
-            : base(httpClientService)
+        public GitHubAddonDownloader(ILogger<AddonDownloaderBase> logger, IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientService)
+            : base(logger, httpClientService)
         {
             _gitHubClientService = gitHubClientService ?? throw new ArgumentNullException(nameof(gitHubClientService));
         }
@@ -54,14 +56,18 @@ namespace AddonWars2.Downloaders
         protected async override Task<DownloadedObject> DownloadAsync(DownloadRequest request)
         {
             var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
+
+            Logger.LogInformation($"Downloading from {request.Url} using {typeof(GitHubAddonDownloader).Name}.");
+
             var release = gitHubResponse.Body;
             if (release != null && release.Assets.Count > 0)
             {
                 var url = release.Assets[0].BrowserDownloadUrl;
                 var version = release.TagName;
+                var filename = release.Assets[0].Name;
                 using (var response = await HttpClientService.GetAsync(url))
                 {
-                    var content = await ReadResponseAsync(response);
+                    var content = await ReadResponseAsync(response, filename);
                     content.Version = version;
 
                     return content;

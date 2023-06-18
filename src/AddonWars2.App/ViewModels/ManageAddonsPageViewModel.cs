@@ -489,8 +489,8 @@ namespace AddonWars2.App.ViewModels
                 ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, e.Message);
             }
 
-            // We always load cached library at the end.
-            //AddCachedLocalProvider();  // TODO: A better implementation is required (especially download-extract-install process).
+            ////// We always load cached library at the end.
+            ////AddCachedLocalProvider();  // TODO: A better implementation is required (especially download-extract-install process).
 
             SelectedProvider = ProvidersCollection.Count > 0 ? ProvidersCollection.First() : null;
 
@@ -499,18 +499,18 @@ namespace AddonWars2.App.ViewModels
             Logger.LogInformation("Providers list updated.");
         }
 
-        // Create a cached library provider.
-        private void AddCachedLocalProvider()
-        {
-            var cachedProviderInfo = new ProviderInfo()
-            {
-                Name = AppConfig.UserData.CachedLibProviderName,
-                Type = ProviderInfoHostType.Local,
-                Link = AppConfig.UserData.CachedLibFilePath,
-            };
+        ////// Create a cached library provider.
+        ////private void AddCachedLocalProvider()
+        ////{
+        ////    var cachedProviderInfo = new ProviderInfo()
+        ////    {
+        ////        Name = AppConfig.UserData.CachedLibProviderName,
+        ////        Type = ProviderInfoHostType.Local,
+        ////        Link = AppConfig.UserData.CachedLibFilePath,
+        ////    };
 
-            ProvidersCollection.Add(new LoadedProviderDataViewModel(cachedProviderInfo));
-        }
+        ////    ProvidersCollection.Add(new LoadedProviderDataViewModel(cachedProviderInfo));
+        ////}
 
         #endregion GetProvidersListCommand
 
@@ -603,9 +603,9 @@ namespace AddonWars2.App.ViewModels
             }
 
             // Begin to download addons.
-            var downloader = AddonDownloaderFactory.GetBulkDownloader(AddonDownloaderFactory);
-            IEnumerable<DownloadedObject>? downloadedAddons;
+            var downloader = AddonDownloaderFactory.GetBulkDownloader();
             var progressDialogTask = ShowIInstallProgressWindow(downloader, installationSequence);
+            IEnumerable<DownloadedObject>? downloadedAddons;
             try
             {
                 downloadedAddons = await DownloadAddonsAsync(downloader, installationSequence);
@@ -619,6 +619,14 @@ namespace AddonWars2.App.ViewModels
             {
                 await progressDialogTask;
             }
+
+            //foreach (var item in downloadedAddons)
+            //{
+            //    Debug.WriteLine(item.Name);
+            //}
+
+            // Extract the downloaded addons.
+
         }
 
         // Resolves dependencies for the provided addon.

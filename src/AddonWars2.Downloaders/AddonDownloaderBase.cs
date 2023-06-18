@@ -7,13 +7,13 @@
 
 namespace AddonWars2.Downloaders
 {
-    using System.Diagnostics;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Represents the DownloadProgressChanged event handler.
@@ -32,6 +32,7 @@ namespace AddonWars2.Downloaders
         private const int DEFAULT_BUFFER_SIZE = 4096;
 
         private readonly IHttpClientWrapper _httpClientService;
+        private static ILogger _logger;
 
         #endregion Fields
 
@@ -40,9 +41,11 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Initializes a new instance of the <see cref="AddonDownloaderBase"/> class.
         /// </summary>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
-        public AddonDownloaderBase(IHttpClientWrapper httpClientService)
+        public AddonDownloaderBase(ILogger<AddonDownloaderBase> logger, IHttpClientWrapper httpClientService)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
         }
 
@@ -58,6 +61,11 @@ namespace AddonWars2.Downloaders
         #region Properties
 
         /// <summary>
+        /// Gets the current logger instance.
+        /// </summary>
+        protected static ILogger Logger => _logger;
+
+        /// <summary>
         /// Gets the HTTP client object, providing the ability to send HTTP requests and
         /// receive HTTP responses from a resource identified by a URI.
         /// </summary>
@@ -71,11 +79,6 @@ namespace AddonWars2.Downloaders
         #endregion Properties
 
         #region Methods
-
-        public void ClearDownloadProgressChanged()
-        {
-            DownloadProgressChanged = null;
-        }
 
         /// <inheritdoc/>
         public async Task<DownloadedObject> DownloadAsync(string url)
@@ -94,21 +97,21 @@ namespace AddonWars2.Downloaders
         /// Reads content from a given response.
         /// </summary>
         /// <param name="response">Response to read.</param>
+        /// <param name="filename">A downloaded file name.</param>
         /// <returns><see cref="DownloadedObject"/> object.</returns>
-        protected async Task<DownloadedObject> ReadResponseAsync(HttpResponseMessage response)
+        protected async Task<DownloadedObject> ReadResponseAsync(HttpResponseMessage response, string filename)
         {
-            var filename = response.Content.Headers.ContentDisposition?.FileName
-                ?? Path.GetFileName(response.RequestMessage?.RequestUri?.AbsolutePath)
-                ?? string.Empty;
-            var contentLength = response.Content.Headers.ContentLength ?? 0L;
+            Logger.LogDebug($"Reading response...");
 
-            if (contentLength == 0)
+
+            if (string.IsNullOrEmpty(filename))
             {
-                return new DownloadedObject(filename, Array.Empty<byte>());
+                Logger.LogWarning("Filename is not available!");
             }
 
-            byte[] content = Array.Empty<byte>();
-            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            var contentLength = response.Content.Headers.ContentLength ?? 0L;
+            var content = Array.Empty<byte>();
+            var buffer = new byte[DEFAULT_BUFFER_SIZE];
             var totalBytesRead = 0L;
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())
@@ -134,8 +137,6 @@ namespace AddonWars2.Downloaders
                     content = memoryStream.ToArray();
                 }
             }
-
-            ClearDownloadProgressChanged();
 
             return new DownloadedObject(filename, content);
         }

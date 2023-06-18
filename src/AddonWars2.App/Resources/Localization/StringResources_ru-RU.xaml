@@ -82,9 +82,10 @@
     <s:String x:Key="S.LoggingPage.Errors.FailedOpenLogFile.Message">Не далось открыть лог-файл.</s:String>
 
     <!-- Dialogs -->
-    <s:String x:Key="S.Dialog.InstallAddonDependencies.Header">Подтвердите действие</s:String>
-    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.01">Вы пытаетесь установить аддон, для работы которого требуется установить один или несколько других аддонов.</s:String>
-    <s:String x:Key="S.Dialog.InstallAddonDependencies.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDialog.Header">Подтвердите действие</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">Вы пытаетесь установить аддон, для работы которого требуется установить один или несколько других аддонов.</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Установка аддонов...</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.Button.Ok.Text">Ок</s:String>

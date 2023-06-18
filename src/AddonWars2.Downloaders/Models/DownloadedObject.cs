@@ -47,6 +47,7 @@ namespace AddonWars2.Downloaders.Models
 
         /// <summary>
         /// Gets the downloaded object name.
+        /// Typically this is the name obtained from the Content-Disposition response header or API response.
         /// </summary>
         public string Name => _name;
 
@@ -56,7 +57,7 @@ namespace AddonWars2.Downloaders.Models
         public byte[] Content => _content;
 
         /// <summary>
-        /// Gets the downloaded object version.
+        /// Gets or sets the downloaded object version.
         /// </summary>
         public string Version
         {

@@ -7,8 +7,8 @@
 
 namespace AddonWars2.Core.DTO
 {
-    using AddonWars2.Core.Enums;
     using System.Text.Json.Serialization;
+    using AddonWars2.Core.Enums;
 
     /// <summary>
     /// Encapsulates the information about addons host.

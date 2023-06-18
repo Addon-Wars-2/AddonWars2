@@ -46,6 +46,12 @@ namespace AddonWars2.Core.Enums
         /// </summary>
         [EnumMember(Value = "md5sum")]
         Md5,
+
+        /// <summary>
+        /// No versioning is supplied.
+        /// </summary>
+        [EnumMember(Value = "none")]
+        None,
     }
 
     /// <summary>

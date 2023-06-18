@@ -20,7 +20,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     md:DialogServiceViews.IsRegistered="True"
-    Title="{DynamicResource S.Dialog.InstallAddonDependencies.Header}"
+    Title="{DynamicResource S.Dialog.InstallAddonDialog.Header}"
     WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     WindowState="Normal"
@@ -67,7 +67,7 @@
                 Margin="5,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="{DynamicResource S.Dialog.InstallAddonDependencies.Header}"/>
+                Text="{DynamicResource S.Dialog.InstallAddonDialog.Header}"/>
             <Button
                 x:Name="DialogCloseButton"
                 Grid.Row="0"
@@ -100,8 +100,8 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     TextWrapping="Wrap">
-                    <Run Text="{DynamicResource S.Dialog.InstallAddonDependencies.Description.01}"/>
-                    <Run Text="{DynamicResource S.Dialog.InstallAddonDependencies.Description.02}"/>
+                    <Run Text="{DynamicResource S.Dialog.InstallAddonDialog.Description.01}"/>
+                    <Run Text="{DynamicResource S.Dialog.InstallAddonDialog.Description.02}"/>
                 </TextBlock>
             </Grid>
             <Grid

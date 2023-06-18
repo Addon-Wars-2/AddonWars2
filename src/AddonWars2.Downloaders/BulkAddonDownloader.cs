@@ -8,11 +8,11 @@
 namespace AddonWars2.Downloaders
 {
     using System.Collections.Generic;
-    using System.Diagnostics;
     using AddonWars2.Core.DTO;
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Represents a class to download multiple addons asynchronously.
@@ -23,6 +23,7 @@ namespace AddonWars2.Downloaders
 
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
+        private static ILogger _logger;
 
         #endregion Fields
 
@@ -31,9 +32,11 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Initializes a new instance of the <see cref="BulkAddonDownloader"/> class.
         /// </summary>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/> instance.</param>
-        public BulkAddonDownloader(IAddonDownloaderFactory addonDownloaderFactory)
+        public BulkAddonDownloader(ILogger<BulkAddonDownloader> logger, IAddonDownloaderFactory addonDownloaderFactory)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
         }
 
@@ -42,21 +45,19 @@ namespace AddonWars2.Downloaders
         #region Events
 
         /// <summary>
-        /// Is raised whenever the bulk download process is about to start.
-        /// This event can be used to handle some stuff like injecting
-        /// into <see cref="ProgressCollection"/>.
-        /// </summary>
-        public event EventHandler DownloadStarting;
-
-        /// <summary>
         /// Is raised whenever one of the download tasks is executed.
         /// </summary>
-        public event EventHandler DownloadStarted;
+        public event EventHandler? DownloadStarted;
 
         /// <summary>
         /// Is invoked when all addons are downloaded.
         /// </summary>
-        public event EventHandler DownloadCompleted;
+        public event EventHandler? DownloadCompleted;
+
+        /// <summary>
+        /// Is invoked when at least one addon could not be downloaded.
+        /// </summary>
+        public event EventHandler? DownloadFailed;
 
         #endregion Events
 
@@ -68,8 +69,7 @@ namespace AddonWars2.Downloaders
         /// </summary>
         /// <remarks>
         /// Items are not added automatically and must be injected prior starting the download process.
-        /// <see cref="DownloadStarting"/> event handler can be used for this purposes since
-        /// <see cref="DownloadStarting"/> event is fired right before executing all download tasks.
+        /// <see cref="DownloadStarted"/> event handler can be used for this purpose.
         /// </remarks>
         public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
 
@@ -78,15 +78,30 @@ namespace AddonWars2.Downloaders
         /// </summary>
         protected IAddonDownloaderFactory AddonDownloaderFactory => _addonDownloaderFactory;
 
+        /// <summary>
+        /// Gets the current logger instance.
+        /// </summary>
+        protected static ILogger Logger => _logger;
+
         #endregion Properties
 
         #region Methods
 
+        /// <summary>
+        /// Asynchronously downloads the requested addons.
+        /// </summary>
+        /// <param name="addonDataItems">One or more addons to download.</param>
+        /// <returns>A collection of <see cref="DownloadedObject"/> items.</returns>
         public async Task<IEnumerable<DownloadedObject>> DownloadBulkAsync(params AddonData[] addonDataItems)
         {
             return await DownloadBulkAsync(addonDataItems.ToList());
         }
 
+        /// <summary>
+        /// Asynchronously downloads the requested addons.
+        /// </summary>
+        /// <param name="addonDataItems">A collection of addons to download.</param>
+        /// <returns>A collection of <see cref="DownloadedObject"/> items.</returns>
         public async Task<IEnumerable<DownloadedObject>> DownloadBulkAsync(IEnumerable<AddonData> addonDataItems)
         {
             ArgumentNullException.ThrowIfNull(addonDataItems, nameof(addonDataItems));
@@ -97,7 +112,7 @@ namespace AddonWars2.Downloaders
 
             var results = new DownloadedObject[taskQuery.Count];
 
-            OnDownloadStarting();
+            OnDownloadStarted();
 
             results = await Task.WhenAll(taskQuery);
 
@@ -109,21 +124,14 @@ namespace AddonWars2.Downloaders
         }
 
         /// <summary>
-        /// Raises <see cref="DownloadStarting"/> event to inform subscribers the bulk download is about to start.
-        /// </summary>
-        protected virtual void OnDownloadStarting()
-        {
-            var handler = DownloadStarting;
-            handler?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
         /// Raises <see cref="DownloadStarted"/> event to inform subscribers a particular addon is started to download.
         /// </summary>
         protected virtual void OnDownloadStarted()
         {
             var handler = DownloadStarted;
             handler?.Invoke(this, EventArgs.Empty);
+
+            Logger.LogInformation("Bulk download started.");
         }
 
         /// <summary>
@@ -133,11 +141,27 @@ namespace AddonWars2.Downloaders
         {
             var handler = DownloadCompleted;
             handler?.Invoke(this, EventArgs.Empty);
+
+            Logger.LogInformation("Bulk download completed.");
+        }
+
+        /// <summary>
+        /// Raises <see cref="DownloadFailed"/> event to inform subscribers that at least
+        /// one of the addons failed to be downloaded.
+        /// </summary>
+        protected virtual void OnDownloadFailed()
+        {
+            var handler = DownloadFailed;
+            handler?.Invoke(this, EventArgs.Empty);
+
+            Logger.LogError("Bulk download failed.");
         }
 
         private async Task<DownloadedObject> DownloadAsync(AddonData addonData)
         {
             ArgumentNullException.ThrowIfNull(addonData, nameof(addonData));
+
+            Logger.LogInformation($"Scheduling a task for \"{addonData.InternalName}\".");
 
             var exceptions = new List<Exception>();
             DownloadedObject result = new DownloadedObject(string.Empty, Array.Empty<byte>());
@@ -155,32 +179,37 @@ namespace AddonWars2.Downloaders
 
                 try
                 {
-                    result = await BeginDownload(downloader, host.HostUrl);
+                    result = await downloader.DownloadAsync(host.HostUrl);
+                    Logger.LogDebug($"Finished with \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
                     break;
                 }
                 catch (Exception e)
                 {
+                    Logger.LogError($"Failed to download \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}\nThe next host will be used if available.");
                     exceptions.Add(e);
                     continue;
                 }
             }
 
             // If failed to download, throw an exception with a complete list of stack traces from the previously thrown exceptions.
-            if (exceptions.Count > 0)
+            if (exceptions.Count >= addonData.Hosts.Count() || result.Content.Length == 0)
             {
+                OnDownloadFailed();
                 ClearProgressCollection();
+
                 var stackTraces = BuildStackTracesString(exceptions);
-                throw new AddonDownloaderException($"The downloader has failed to download the {addonData.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
+                var ex = new AddonDownloaderException($"The bulk downloader has failed to download the {addonData.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
+                Logger.LogError(ex, "Failed to download the addons.");
+                throw ex;
             }
 
-            return result;
-        }
+            // If the content length was not available beforehand, a downloader will always report zero
+            // for total bytes to receive and for an overall progress in percents, but will still update
+            // the amount of bytes received. Thus we forcibly update the progress to 100% once downloaded.
+            ProgressCollection.TryGetValue(addonData.InternalName, out var progress);
+            progress?.Report(100);
 
-        // Executes download process.
-        private async Task<DownloadedObject> BeginDownload(IAddonDownloader downloader, string host)
-        {
-            OnDownloadStarted();
-            return await downloader.DownloadAsync(host);
+            return result;
         }
 
         // Cleans up the progress collection.

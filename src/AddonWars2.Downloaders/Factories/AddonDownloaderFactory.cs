@@ -13,6 +13,7 @@ namespace AddonWars2.Downloaders.Factories
     using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Represents a factory for downloaders.
@@ -23,6 +24,8 @@ namespace AddonWars2.Downloaders.Factories
 
         private readonly IHttpClientWrapper _httpClientService;
         private readonly IGitHubClientWrapper _gitHubClientService;
+        private static ILogger<AddonDownloaderBase> _loggerBaseDownloader;
+        private static ILogger<BulkAddonDownloader> _loggerBulkDownloader;
 
         #endregion Fields
 
@@ -31,10 +34,18 @@ namespace AddonWars2.Downloaders.Factories
         /// <summary>
         /// Initializes a new instance of the <see cref="AddonDownloaderFactory"/> class.
         /// </summary>
+        /// <param name="loggerBaseDownloader">A reference to base <see cref="ILogger"/>.</param>
+        /// <param name="loggerBulkDownloader">A reference to bulk <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="GitHubClientWrapper"/> instance.</param>
-        public AddonDownloaderFactory(IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientWrapper)
+        public AddonDownloaderFactory(
+            ILogger<AddonDownloaderBase> loggerBaseDownloader,
+            ILogger<BulkAddonDownloader> loggerBulkDownloader,
+            IHttpClientWrapper httpClientService,
+            IGitHubClientWrapper gitHubClientWrapper)
         {
+            _loggerBaseDownloader = loggerBaseDownloader ?? throw new ArgumentNullException(nameof(loggerBaseDownloader));
+            _loggerBulkDownloader = loggerBulkDownloader ?? throw new ArgumentNullException(nameof(loggerBulkDownloader));
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
             _gitHubClientService = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
         }
@@ -63,18 +74,18 @@ namespace AddonWars2.Downloaders.Factories
             switch (hostType)
             {
                 case HostType.Standalone:
-                    return new StandaloneAddonDownloader(HttpClientService);
+                    return new StandaloneAddonDownloader(_loggerBaseDownloader, HttpClientService);
                 case HostType.GitHub:
-                    return new GitHubAddonDownloader(HttpClientService, GitHubClientService);
+                    return new GitHubAddonDownloader(_loggerBaseDownloader, HttpClientService, GitHubClientService);
                 default:
                     throw new NotSupportedException($"Cannot create a downloader for the host type: {hostType.GetType().Name}. The host type is not supported.");
             }
         }
 
         /// <inheritdoc/>
-        public BulkAddonDownloader GetBulkDownloader(IAddonDownloaderFactory factory)
+        public BulkAddonDownloader GetBulkDownloader()
         {
-            return new BulkAddonDownloader(factory);
+            return new BulkAddonDownloader(_loggerBulkDownloader, this);
         }
 
         #endregion Methods

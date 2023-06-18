@@ -9,11 +9,44 @@ namespace AddonWars2.App.ViewModels.Dialogs
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Threading.Tasks;
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.Downloaders;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
+
+    /// <summary>
+    /// Represents <see cref="ManageAddonsPageViewModel"/> states.
+    /// </summary>
+    public enum InstallProgressDialogViewModelState
+    {
+        /// <summary>
+        /// View model is ready.
+        /// </summary>
+        Ready,
+
+        /// <summary>
+        /// View model is downloading files.
+        /// </summary>
+        Downloading,
+
+        /// <summary>
+        /// View model is installing addons.
+        /// </summary>
+        Installing,
+
+        /// <summary>
+        /// View model is finished installing addons with no errors.
+        /// </summary>
+        Completed,
+
+        /// <summary>
+        /// View model has failed to perform an operation.
+        /// </summary>
+        Error,
+    }
 
     /// <summary>
     /// Represents a view model for the install progress dialog view.
@@ -23,6 +56,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         #region Fields
 
         private readonly BulkAddonDownloader _downloader;
+        private InstallProgressDialogViewModelState _viewModelState = InstallProgressDialogViewModelState.Ready;
         private bool? _dialogResult = null;
         private ObservableCollection<InstallProgressItemViewModel> _installProgressItems = new ObservableCollection<InstallProgressItemViewModel>();
 
@@ -41,18 +75,37 @@ namespace AddonWars2.App.ViewModels.Dialogs
             : base(logger)
         {
             _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
-            _downloader.DownloadStarting += Downloader_DownloadStarting;
+            _downloader.DownloadStarted += Downloader_DownloadStarted;
+            _downloader.DownloadCompleted += Downloader_DownloadCompleted;
+            _downloader.DownloadFailed += Downloader_DownloadFailed;
+
+            PropertyChangedEventManager.AddHandler(this, ViewModelState_PropertyChanged, nameof(ViewModelState));
 
             SetDialogResultCommand = new RelayCommand<bool?>(ExecuteSetDialogResultCommand);
         }
-
         #endregion Constructors
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the view model state.
+        /// </summary>
+        public InstallProgressDialogViewModelState ViewModelState
+        {
+            get => _viewModelState;
+            set
+            {
+                SetProperty(ref _viewModelState, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
         /// <inheritdoc/>
         public bool? DialogResult => _dialogResult;
 
+        /// <summary>
+        /// Gets or sets a collection of addons to be downloaded and installed.
+        /// </summary>
         public ObservableCollection<InstallProgressItemViewModel> InstallProgressItems
         {
             get => _installProgressItems;
@@ -91,8 +144,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
 
         #region Methods
 
-        private void Downloader_DownloadStarting(object? sender, EventArgs e)
+        // Bulk downloader event handler to inject Progress items used to tack the download progress for each addon.
+        private void Downloader_DownloadStarted(object? sender, EventArgs e)
         {
+            ViewModelState = InstallProgressDialogViewModelState.Downloading;
+
             if (sender is BulkAddonDownloader downloader)
             {
                 foreach (var ipi in InstallProgressItems)
@@ -104,6 +160,40 @@ namespace AddonWars2.App.ViewModels.Dialogs
                     });
                 }
             }
+        }
+
+        // Bulk downloader event handler to track the moment when the download process is finished.
+        private async void Downloader_DownloadCompleted(object? sender, EventArgs e)
+        {
+            await Delay(1000); // to prevent switching from download to install view too fast
+            ViewModelState = InstallProgressDialogViewModelState.Installing;
+        }
+
+        // Bulk downloader event handler to track if the proccess has failed.
+        private void Downloader_DownloadFailed(object? sender, EventArgs e)
+        {
+            ViewModelState = InstallProgressDialogViewModelState.Error;
+        }
+
+        // Handles ViewModelState PropertyChanged event.
+        private void ViewModelState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ViewModelState))
+            {
+                if (ViewModelState == InstallProgressDialogViewModelState.Error || ViewModelState == InstallProgressDialogViewModelState.Completed)
+                {
+                    // Unsubscribe from all events.
+                    _downloader.DownloadStarted -= Downloader_DownloadStarted;
+                    _downloader.DownloadCompleted -= Downloader_DownloadCompleted;
+                    _downloader.DownloadFailed -= Downloader_DownloadFailed;
+                }
+            }
+        }
+
+        // Sets a delay.
+        private async Task Delay(int milliseconds)
+        {
+            await Task.Run(async () => await Task.Delay(milliseconds));
         }
 
         #endregion Methods

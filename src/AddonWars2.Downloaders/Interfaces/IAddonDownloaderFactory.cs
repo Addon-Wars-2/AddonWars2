@@ -24,8 +24,7 @@ namespace AddonWars2.Downloaders.Interfaces
         /// <summary>
         /// Returns a new bulk downloader based on host type.
         /// </summary>
-        /// <param name="factory">A factory used to create downloaders based on the required types.</param>
         /// <returns>A new downloader.</returns>
-        public BulkAddonDownloader GetBulkDownloader(IAddonDownloaderFactory factory);
+        public BulkAddonDownloader GetBulkDownloader();
     }
 }

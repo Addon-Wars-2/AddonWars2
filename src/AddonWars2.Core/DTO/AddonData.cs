@@ -29,7 +29,7 @@ namespace AddonWars2.Core.DTO
         private InstallMode _installMode;
         private IEnumerable<string>? _requiredAddons;
         private IEnumerable<string>? _conflicts;
-        private Dictionary<string, string> _additional = new Dictionary<string, string>();
+        private Dictionary<string, object> _additional = new Dictionary<string, object>();
 
         #endregion Fields
 
@@ -167,10 +167,10 @@ namespace AddonWars2.Core.DTO
         }
 
         /// <summary>
-        /// Gets or sets a disctionary of additional flags and metadata.
+        /// Gets or sets a dictionary of additional flags and metadata.
         /// </summary>
         [JsonPropertyName("additional")]
-        public Dictionary<string, string> Additional
+        public Dictionary<string, object> Additional
         {
             get => _additional;
             set => _additional = value;

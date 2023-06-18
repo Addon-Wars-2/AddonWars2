@@ -286,7 +286,7 @@ namespace AddonWars2.App
                     .MinimumLevel.Debug()
                     .Enrich.WithCallerInfo(
                         includeFileInfo: true,
-                        assemblyPrefix: "AW2",
+                        assemblyPrefix: "AddonWars2",
                         prefix: string.Empty)
                     .Enrich.WithExceptionDetails()
                     .Filter.ByExcluding(Matching.FromSource("Microsoft"))
@@ -306,7 +306,7 @@ namespace AddonWars2.App
                     .MinimumLevel.Information()
                     .Enrich.WithCallerInfo(
                         includeFileInfo: true,
-                        assemblyPrefix: "AW2",
+                        assemblyPrefix: "AddonWars2",
                         prefix: string.Empty)
                     .Enrich.WithExceptionDetails()
                     .Filter.ByExcluding(Matching.FromSource("Microsoft"))
