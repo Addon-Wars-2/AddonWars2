@@ -86,6 +86,8 @@
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">Вы пытаетесь установить аддон, для работы которого требуется установить один или несколько других аддонов.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Установка аддонов...</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Загрузка необходимых аддонов... Пожалуйста, подождите.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Установка загруженных аддонов... Пожалуйста, подождите.</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.Button.Ok.Text">Ок</s:String>

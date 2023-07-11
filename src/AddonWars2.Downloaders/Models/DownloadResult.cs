@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="DownloadedObject.cs" company="Addon-Wars-2">
+// <copyright file="DownloadResult.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,12 +10,13 @@ namespace AddonWars2.Downloaders.Models
     /// <summary>
     /// Represents a downloaded file.
     /// </summary>
-    public class DownloadedObject
+    public class DownloadResult
     {
         #region Fields
 
         private readonly string _name;
         private readonly byte[] _content;
+        private readonly Dictionary<string, object> _metadata = new Dictionary<string, object>();
         private string _version;
 
         #endregion Fields
@@ -23,14 +24,14 @@ namespace AddonWars2.Downloaders.Models
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DownloadedObject"/> class.
+        /// Initializes a new instance of the <see cref="DownloadResult"/> class.
         /// </summary>
         /// <param name="name">The downloaded object name.</param>
         /// <param name="content">The downloaded content represented as a byte array.</param>
         /// <param name="version">The downloaded object version.</param>
         /// <exception cref="ArgumentException">If <paramref name="name"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
-        public DownloadedObject(string name, byte[] content, string version = "")
+        public DownloadResult(string name, byte[] content, string version = "")
         {
             ArgumentNullException.ThrowIfNull(name, nameof(name));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
@@ -64,6 +65,12 @@ namespace AddonWars2.Downloaders.Models
             get => _version;
             set => _version = value;
         }
+
+        /// <summary>
+        /// Gets a unique collection of metadata items,
+        /// which can be optionally added to a downloaded item.
+        /// </summary>
+        public Dictionary<string, object> Metadata => _metadata;
 
         #endregion Properties
     }

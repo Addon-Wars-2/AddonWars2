@@ -91,8 +91,8 @@ namespace AddonWars2.Downloaders
         /// Asynchronously downloads the requested addons.
         /// </summary>
         /// <param name="addonDataItems">One or more addons to download.</param>
-        /// <returns>A collection of <see cref="DownloadedObject"/> items.</returns>
-        public async Task<IEnumerable<DownloadedObject>> DownloadBulkAsync(params AddonData[] addonDataItems)
+        /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(params AddonData[] addonDataItems)
         {
             return await DownloadBulkAsync(addonDataItems.ToList());
         }
@@ -101,8 +101,8 @@ namespace AddonWars2.Downloaders
         /// Asynchronously downloads the requested addons.
         /// </summary>
         /// <param name="addonDataItems">A collection of addons to download.</param>
-        /// <returns>A collection of <see cref="DownloadedObject"/> items.</returns>
-        public async Task<IEnumerable<DownloadedObject>> DownloadBulkAsync(IEnumerable<AddonData> addonDataItems)
+        /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(IEnumerable<AddonData> addonDataItems)
         {
             ArgumentNullException.ThrowIfNull(addonDataItems, nameof(addonDataItems));
 
@@ -110,7 +110,7 @@ namespace AddonWars2.Downloaders
                 .Select(x => DownloadAsync(x))
                 .ToList();
 
-            var results = new DownloadedObject[taskQuery.Count];
+            var results = new DownloadResult[taskQuery.Count];
 
             OnDownloadStarted();
 
@@ -157,14 +157,14 @@ namespace AddonWars2.Downloaders
             Logger.LogError("Bulk download failed.");
         }
 
-        private async Task<DownloadedObject> DownloadAsync(AddonData addonData)
+        private async Task<DownloadResult> DownloadAsync(AddonData addonData)
         {
             ArgumentNullException.ThrowIfNull(addonData, nameof(addonData));
 
-            Logger.LogInformation($"Scheduling a task for \"{addonData.InternalName}\".");
+            Logger.LogDebug($"Scheduling a task for \"{addonData.InternalName}\".");
 
             var exceptions = new List<Exception>();
-            DownloadedObject result = new DownloadedObject(string.Empty, Array.Empty<byte>());
+            DownloadResult result = new DownloadResult(string.Empty, Array.Empty<byte>());
 
             // Iterate through all hosts and try to download. Stop if managed to download from at least one host.
             // An exception will be thrown only if it failed to download from every host.
@@ -180,6 +180,7 @@ namespace AddonWars2.Downloaders
                 try
                 {
                     result = await downloader.DownloadAsync(host.HostUrl);
+                    result.Metadata.Add("internal_name", addonData.InternalName);
                     Logger.LogDebug($"Finished with \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
                     break;
                 }

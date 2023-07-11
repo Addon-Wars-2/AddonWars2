@@ -28,8 +28,9 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
+    using AddonWars2.Extractors.Interfaces;
+    using AddonWars2.Extractors.Models;
     using AddonWars2.Providers;
-    using AddonWars2.Providers.DTO;
     using AddonWars2.Providers.Enums;
     using AddonWars2.Providers.Interfaces;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
@@ -97,6 +98,7 @@ namespace AddonWars2.App.ViewModels
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
         private readonly IHttpClientWrapper _httpClientWrapper;
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
+        private readonly IAddonExtractorFactory _addonExtractorFactory;
         private readonly ILibraryManager _libraryManager;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
@@ -129,9 +131,10 @@ namespace AddonWars2.App.ViewModels
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/>.</param>
         /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/>.</param>
         /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
+        /// <param name="addonExtractorFactory">A reference to <see cref="IAddonExtractorFactory"/>.</param>
         /// <param name="libraryManager">A reference to <see cref="ILibraryManager"/>.</param>
         public ManageAddonsPageViewModel(
-            ILogger<NewsPageViewModel> logger,
+            ILogger<ManageAddonsPageViewModel> logger,
             IDialogService dialogService,
             IErrorDialogViewModelFactory errorDialogViewModelFactory,
             IInstallAddonsDialogFactory installAddonsDialogFactory,
@@ -144,6 +147,7 @@ namespace AddonWars2.App.ViewModels
             IGitHubClientWrapper gitHubClientWrapper,
             IHttpClientWrapper httpClientWrapper,
             IAddonDownloaderFactory addonDownloaderFactory,
+            IAddonExtractorFactory addonExtractorFactory,
             ILibraryManager libraryManager)
             : base(logger)
         {
@@ -159,6 +163,7 @@ namespace AddonWars2.App.ViewModels
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
             _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
             _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
+            _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
             _libraryManager = libraryManager ?? throw new ArgumentNullException(nameof(libraryManager));
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
@@ -230,6 +235,11 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to addon downloader factory.
         /// </summary>
         public IAddonDownloaderFactory AddonDownloaderFactory => _addonDownloaderFactory;
+
+        /// <summary>
+        /// Gets a reference to addon extractor factory.
+        /// </summary>
+        public IAddonExtractorFactory AddonExtractorFactory => _addonExtractorFactory;
 
         /// <summary>
         /// Gets a reference to the library manager.
@@ -449,9 +459,7 @@ namespace AddonWars2.App.ViewModels
                     ProvidersCollection.Add(new LoadedProviderDataViewModel(providerInfo));
                 }
 
-                GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
-                GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;
-                GitHubProviderRateLimitReset = GitHubClientWrapper.GitHubLastApiInfo == null ? DateTime.MinValue : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Reset.DateTime.ToLocalTime();
+                UpdateGitHubRateLimitsData();
             }
             catch (RateLimitExceededException e)
             {
@@ -602,10 +610,12 @@ namespace AddonWars2.App.ViewModels
                 }
             }
 
+            // TODO: Check for conflicts prior downloading anything.
+
             // Begin to download addons.
             var downloader = AddonDownloaderFactory.GetBulkDownloader();
-            var progressDialogTask = ShowIInstallProgressWindow(downloader, installationSequence);
-            IEnumerable<DownloadedObject>? downloadedAddons;
+            var progressDialogTask = ShowInstallProgressWindow(downloader, installationSequence);
+            IEnumerable<DownloadResult>? downloadedAddons;
             try
             {
                 downloadedAddons = await DownloadAddonsAsync(downloader, installationSequence);
@@ -620,13 +630,10 @@ namespace AddonWars2.App.ViewModels
                 await progressDialogTask;
             }
 
-            //foreach (var item in downloadedAddons)
-            //{
-            //    Debug.WriteLine(item.Name);
-            //}
-
             // Extract the downloaded addons.
+            var extractedAddons = await ExtractAddonsAsync(installationSequence, downloadedAddons);
 
+            UpdateGitHubRateLimitsData();
         }
 
         // Resolves dependencies for the provided addon.
@@ -676,13 +683,42 @@ namespace AddonWars2.App.ViewModels
         }
 
         // Starts to download the required addons.
-        private async Task<IEnumerable<DownloadedObject>> DownloadAddonsAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        private async Task<IEnumerable<DownloadResult>> DownloadAddonsAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
         {
             var addonsToInstall = ProviderAddonsCollection
                 .Where(x => installationSequence.Any(y => x.Model.InternalName == y.Model.InternalName))
                 .Select(x => x.Model);
 
             return await downloader.DownloadBulkAsync(addonsToInstall);
+        }
+
+        // Extract the required addons.
+        private async Task<IEnumerable<ExtractionResult>> ExtractAddonsAsync(IEnumerable<LoadedAddonDataViewModel> installationSequence, IEnumerable<DownloadResult> downloadedAddons)
+        {
+            var taskQuery = installationSequence
+                .Select(x => ExtractAddonAsyncInternal(x, downloadedAddons.First(dres => (string)dres.Metadata["internal_name"] == x.InternalName)))
+                .ToList();
+
+            var results = new ExtractionResult[taskQuery.Count];
+
+            Logger.LogInformation("Extracting addons...");
+
+            results = await Task.WhenAll(taskQuery);
+
+            Logger.LogInformation($"Extraction completed: {results.Length} items in total.");
+
+            return results;
+        }
+
+        // A task to extract a single addon.
+        private async Task<ExtractionResult> ExtractAddonAsyncInternal(LoadedAddonDataViewModel addon, DownloadResult downloadedAddon)
+        {
+            var extractor = AddonExtractorFactory.GetExtractor(addon.Model.DownloadType);
+            var request = new ExtractionRequest(downloadedAddon.Name, downloadedAddon.Content, downloadedAddon.Version);
+
+            Logger.LogDebug($"Scheduling a task for \"{addon.InternalName}\" using extractor {extractor.GetType().Name}");
+
+            return await extractor.Extract(request);
         }
 
         #endregion InstallSelectedAddonCommand
@@ -716,7 +752,7 @@ namespace AddonWars2.App.ViewModels
 
         // Shows a dialog with installation progress.
         // See for non-blocking modal dialog: https://stackoverflow.com/a/33411037
-        private async Task<bool?> ShowIInstallProgressWindow(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        private async Task<bool?> ShowInstallProgressWindow(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
         {
             var vm = DownloadProgressDialogFactory.Create(downloader);
             foreach (var item in installationSequence)
@@ -733,6 +769,14 @@ namespace AddonWars2.App.ViewModels
             await Task.Yield();
 
             return DialogService.ShowDialog(this, vm);
+        }
+
+        // Updates current GitHub rate limits in the UI.
+        private void UpdateGitHubRateLimitsData()
+        {
+            GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
+            GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;
+            GitHubProviderRateLimitReset = GitHubClientWrapper.GitHubLastApiInfo == null ? DateTime.MinValue : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Reset.DateTime.ToLocalTime();
         }
 
         #endregion Methods

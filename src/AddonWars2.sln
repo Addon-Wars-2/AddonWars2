@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Core", "AddonWars2.Core\AddonWars2.Core.csproj", "{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.SharedData\AddonWars2.SharedData.csproj", "{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloaders", "AddonWars2.Downloaders\AddonWars2.Downloaders.csproj", "{4F1D225A-22F8-4BBB-957D-A40E55B97147}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.DependencyResolvers", "AddonWars2.DependencyResolvers\AddonWars2.DependencyResolvers.csproj", "{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Extractors", "AddonWars2.Extractors\AddonWars2.Extractors.csproj", "{EF0557D6-A3ED-4725-9303-C5487FC6EB28}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Installers", "AddonWars2.Installers\AddonWars2.Installers.csproj", "{35975256-B5F9-4758-97A6-223B9E3BEF29}"
@@ -21,7 +11,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Providers", "Add
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.App", "AddonWars2.App\AddonWars2.App.csproj", "{09015027-A198-4E63-A61A-94AEA8D5DC0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.LibraryManager", "AddonWars2.LibraryManager\AddonWars2.LibraryManager.csproj", "{3B064A10-751A-4068-BCE1-DEBC12EEC337}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.LibraryManager", "AddonWars2.LibraryManager\AddonWars2.LibraryManager.csproj", "{3B064A10-751A-4068-BCE1-DEBC12EEC337}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Core", "AddonWars2.Core\AddonWars2.Core.csproj", "{FBE7C09C-333C-4363-9DC3-B4C15FA51AC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Services", "AddonWars2.Services\AddonWars2.Services.csproj", "{9036D77F-3E8B-4C02-8A16-918A690A9803}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.SharedData", "AddonWars2.SharedData\AddonWars2.SharedData.csproj", "{D100F9CD-6D27-445E-AD63-46BB7A59E596}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloaders", "AddonWars2.Downloaders\AddonWars2.Downloaders.csproj", "{5879BD31-CF97-46A5-8A51-BC13379E56CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.DependencyResolvers", "AddonWars2.DependencyResolvers\AddonWars2.DependencyResolvers.csproj", "{12B34AE1-ECED-4B79-B314-9E6539058D0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,26 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCE3A06B-01AC-4654-9A6C-EA2A791A5FAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DD1C6FB-0C2B-439B-88F5-1A4552F54C4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD2643F2-99AE-4C75-928E-6CC5133FF3DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F1D225A-22F8-4BBB-957D-A40E55B97147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F1D225A-22F8-4BBB-957D-A40E55B97147}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F1D225A-22F8-4BBB-957D-A40E55B97147}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F1D225A-22F8-4BBB-957D-A40E55B97147}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B175B9D-4B8F-4C81-B9EA-EF7B767027E9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF0557D6-A3ED-4725-9303-C5487FC6EB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF0557D6-A3ED-4725-9303-C5487FC6EB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF0557D6-A3ED-4725-9303-C5487FC6EB28}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +49,26 @@ Global
 		{3B064A10-751A-4068-BCE1-DEBC12EEC337}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B064A10-751A-4068-BCE1-DEBC12EEC337}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B064A10-751A-4068-BCE1-DEBC12EEC337}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE7C09C-333C-4363-9DC3-B4C15FA51AC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE7C09C-333C-4363-9DC3-B4C15FA51AC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE7C09C-333C-4363-9DC3-B4C15FA51AC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE7C09C-333C-4363-9DC3-B4C15FA51AC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9036D77F-3E8B-4C02-8A16-918A690A9803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9036D77F-3E8B-4C02-8A16-918A690A9803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9036D77F-3E8B-4C02-8A16-918A690A9803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9036D77F-3E8B-4C02-8A16-918A690A9803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D100F9CD-6D27-445E-AD63-46BB7A59E596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D100F9CD-6D27-445E-AD63-46BB7A59E596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D100F9CD-6D27-445E-AD63-46BB7A59E596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D100F9CD-6D27-445E-AD63-46BB7A59E596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5879BD31-CF97-46A5-8A51-BC13379E56CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5879BD31-CF97-46A5-8A51-BC13379E56CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5879BD31-CF97-46A5-8A51-BC13379E56CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5879BD31-CF97-46A5-8A51-BC13379E56CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

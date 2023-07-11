@@ -165,7 +165,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         // Bulk downloader event handler to track the moment when the download process is finished.
         private async void Downloader_DownloadCompleted(object? sender, EventArgs e)
         {
-            await Delay(1000); // to prevent switching from download to install view too fast
+            await Delay(500); // to prevent switching from download to install view too fast
             ViewModelState = InstallProgressDialogViewModelState.Installing;
         }
 

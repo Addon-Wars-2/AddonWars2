@@ -8,6 +8,7 @@
 namespace AddonWars2.Downloaders
 {
     using System.Threading.Tasks;
+    using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Models;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
@@ -53,7 +54,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected async override Task<DownloadedObject> DownloadAsync(DownloadRequest request)
+        protected async override Task<DownloadResult> DownloadAsync(DownloadRequest request)
         {
             var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
 
@@ -75,7 +76,7 @@ namespace AddonWars2.Downloaders
             }
             else
             {
-                throw new InvalidOperationException($"The returned release is either null or has no assets.");
+                throw new AddonDownloaderException($"The returned release is either null or has no assets.");
             }
         }
 

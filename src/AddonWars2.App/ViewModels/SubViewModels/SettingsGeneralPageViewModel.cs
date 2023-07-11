@@ -35,8 +35,6 @@ namespace AddonWars2.App.ViewModels
             : base(logger)
         {
             _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
-
-            Logger.LogDebug("Instance initialized.");
         }
 
         #endregion Constructors

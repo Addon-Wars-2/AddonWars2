@@ -52,7 +52,7 @@
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Unavailable dependencies detected</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">The resolver returned one or more dependencies (addons) which are not available in the provider(s). The installation cannot be completed. See the details for a complete list.</s:String>
     <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Failed to download the required addons</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">The downloader couldn't download the selected addon or one of its dependencies. Please see the detail for the additional information.</s:String>
+    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">The downloader couldn't download the selected addon or one of its dependencies. Please see details for the additional information.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
@@ -86,6 +86,8 @@
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">You're attempting to install an addon that requires one or more other addons to be installed.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">The addons will be installed in the following order:</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Installing the addons...</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Downloading the required addons... Please, wait.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Installing the downloaded addons... Please, wait.</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.Button.Ok.Text">Ok</s:String>

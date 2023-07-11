@@ -81,7 +81,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        public async Task<DownloadedObject> DownloadAsync(string url)
+        public async Task<DownloadResult> DownloadAsync(string url)
         {
             return await DownloadAsync(new DownloadRequest(url));
         }
@@ -90,29 +90,33 @@ namespace AddonWars2.Downloaders
         /// Starts to download the requested addon.
         /// </summary>
         /// <param name="request">A request objects which wraps the request information.</param>
-        /// <returns><see cref="DownloadedObject"/> object.</returns>
-        protected abstract Task<DownloadedObject> DownloadAsync(DownloadRequest request);
+        /// <returns><see cref="DownloadResult"/> object.</returns>
+        protected abstract Task<DownloadResult> DownloadAsync(DownloadRequest request);
 
         /// <summary>
         /// Reads content from a given response.
         /// </summary>
         /// <param name="response">Response to read.</param>
         /// <param name="filename">A downloaded file name.</param>
-        /// <returns><see cref="DownloadedObject"/> object.</returns>
-        protected async Task<DownloadedObject> ReadResponseAsync(HttpResponseMessage response, string filename)
+        /// <returns><see cref="DownloadResult"/> object.</returns>
+        protected async Task<DownloadResult> ReadResponseAsync(HttpResponseMessage response, string filename)
         {
             Logger.LogDebug($"Reading response...");
 
+            var contentLength = response.Content.Headers.ContentLength ?? 0L;
+            var content = Array.Empty<byte>();
+            var buffer = new byte[DEFAULT_BUFFER_SIZE];
+            var totalBytesRead = 0L;
 
             if (string.IsNullOrEmpty(filename))
             {
                 Logger.LogWarning("Filename is not available!");
             }
 
-            var contentLength = response.Content.Headers.ContentLength ?? 0L;
-            var content = Array.Empty<byte>();
-            var buffer = new byte[DEFAULT_BUFFER_SIZE];
-            var totalBytesRead = 0L;
+            if (contentLength == 0L)
+            {
+                Logger.LogWarning("Content length is not available!");
+            }
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
@@ -138,7 +142,7 @@ namespace AddonWars2.Downloaders
                 }
             }
 
-            return new DownloadedObject(filename, content);
+            return new DownloadResult(filename, content);
         }
 
         /// <summary>

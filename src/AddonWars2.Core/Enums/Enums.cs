@@ -27,6 +27,12 @@ namespace AddonWars2.Core.Enums
         /// </summary>
         [EnumMember(Value = "github")]
         GitHub,
+
+        /// <summary>
+        /// The addon is hosted on locally.
+        /// </summary>
+        [EnumMember(Value = "local")]
+        Local,
     }
 
     /// <summary>

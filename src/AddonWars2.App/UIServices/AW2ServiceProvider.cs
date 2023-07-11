@@ -24,6 +24,8 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.DependencyResolvers.Interfaces;
     using AddonWars2.Downloaders.Factories;
     using AddonWars2.Downloaders.Interfaces;
+    using AddonWars2.Extractors.Factories;
+    using AddonWars2.Extractors.Interfaces;
     using AddonWars2.Providers.Factories;
     using AddonWars2.Providers.Interfaces;
     using AddonWars2.Services.GitHubClientWrapper;
@@ -119,6 +121,7 @@ namespace AddonWars2.App.UIServices
             // Factories.
             services.AddSingleton<IRegistryProviderFactory, RegistryProviderFactory>();
             services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
+            services.AddSingleton<IAddonExtractorFactory, AddonExtractorFactory>();
             services.AddSingleton<IDependencyResolverFactory, DependencyResolverFactory>();
             services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
             services.AddSingleton<IInstallAddonsDialogFactory, InstallAddonsDialogFactory>();

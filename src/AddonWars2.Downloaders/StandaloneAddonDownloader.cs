@@ -34,7 +34,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected override async Task<DownloadedObject> DownloadAsync(DownloadRequest request)
+        protected override async Task<DownloadResult> DownloadAsync(DownloadRequest request)
         {
             using (var response = await HttpClientService.GetAsync(request.Url))
             {

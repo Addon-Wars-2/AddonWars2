@@ -15,14 +15,14 @@ namespace AddonWars2.Downloaders.Interfaces
     public interface IAddonDownloaderFactory
     {
         /// <summary>
-        /// Returns a new downloader based on host type.
+        /// Creates a new downloader based on host type.
         /// </summary>
         /// <param name="hostType">The addon host type used to determine the downloader type.</param>
         /// <returns>A new downloader.</returns>
         public IAddonDownloader GetDownloader(HostType hostType);
 
         /// <summary>
-        /// Returns a new bulk downloader based on host type.
+        /// Creates a new bulk downloader based on host type.
         /// </summary>
         /// <returns>A new downloader.</returns>
         public BulkAddonDownloader GetBulkDownloader();

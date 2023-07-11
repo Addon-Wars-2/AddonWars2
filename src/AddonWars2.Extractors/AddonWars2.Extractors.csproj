@@ -52,4 +52,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AddonWars2.Core\AddonWars2.Core.csproj" />
+  </ItemGroup>
+
 </Project>

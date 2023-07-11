@@ -77,6 +77,8 @@ namespace AddonWars2.Downloaders.Factories
                     return new StandaloneAddonDownloader(_loggerBaseDownloader, HttpClientService);
                 case HostType.GitHub:
                     return new GitHubAddonDownloader(_loggerBaseDownloader, HttpClientService, GitHubClientService);
+                case HostType.Local:
+                    throw new NotSupportedException(); // TODO: implementation (expecially for testing purposes)
                 default:
                     throw new NotSupportedException($"Cannot create a downloader for the host type: {hostType.GetType().Name}. The host type is not supported.");
             }
