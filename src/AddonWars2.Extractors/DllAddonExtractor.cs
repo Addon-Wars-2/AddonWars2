@@ -7,6 +7,7 @@
 
 namespace AddonWars2.Extractors
 {
+    using System;
     using AddonWars2.Extractors.Models;
     using Microsoft.Extensions.Logging;
 
@@ -46,7 +47,10 @@ namespace AddonWars2.Extractors
         /// <inheritdoc/>
         public override async Task<ExtractionResult> Extract(ExtractionRequest request)
         {
-            var extractedFile = new ExtractedFile(request.Name, request.Content, string.Empty);
+            var content = new byte[request.Content.Length];
+            request.Content.CopyTo(content, 0);
+
+            var extractedFile = new ExtractedFile(request.Name, content, string.Empty);
             var extractionResult = new ExtractionResult()
             {
                 Version = request.Version,

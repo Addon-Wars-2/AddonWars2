@@ -9,11 +9,12 @@ namespace AddonWars2.App.ViewModels
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using AddonWars2.App.Configuration;
     using AddonWars2.App.Utils.Helpers;
-    using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using Microsoft.Extensions.Logging;
 
@@ -24,11 +25,15 @@ namespace AddonWars2.App.ViewModels
     {
         #region Fields
 
+        private static readonly string _fileNotExistsErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.FileExists");
         private static readonly string _gitHubApiTokenErrorMsg = ResourcesHelper.GetApplicationResource<string>("S.Common.ValidationText.GitHubAPIToken");
+
+        private static string _gitHubApiToken = string.Empty;
+
         private readonly IApplicationConfig _applicationConfig;
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
 
-        private string _gitHubApiToken = string.Empty;
+        private string _gitHubApiTokenFilePath = string.Empty;
 
         #endregion Fields
 
@@ -37,7 +42,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsApiPageViewModel"/> class.
         /// </summary>
-        /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
+        /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
         /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/> instance.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
         public SettingsApiPageViewModel(
@@ -68,23 +73,23 @@ namespace AddonWars2.App.ViewModels
         /// Gets or sets GitHubAPI token.
         /// </summary>
         [CustomValidation(typeof(SettingsApiPageViewModel), nameof(ValidateGitHubApiToken))]
-        public string GitHubApiToken
+        public string GitHubApiTokenFilePath
         {
-            get => _gitHubApiToken;
+            get => _gitHubApiTokenFilePath;
             set
             {
-                SetProperty(ref _gitHubApiToken, value, validate: true);
+                SetProperty(ref _gitHubApiTokenFilePath, value, validate: true);
 
-                if (!GetErrors(nameof(GitHubApiToken)).Any())
+                if (!GetErrors(nameof(GitHubApiTokenFilePath)).Any())
                 {
-                    AppConfig.UserSettings.UserSettingsApi.GitHubApiToken = value;
-                    GitHubClientWrapper.ApiToken = value;
-                    Logger.LogDebug($"Property set: <REDACTED>");
+                    AppConfig.UserSettings.UserSettingsApi.GitHubApiTokenFilePath = value;
+                    GitHubClientWrapper.ApiToken = _gitHubApiToken;
+                    Logger.LogDebug($"Property set: {value}");
                     return;
                 }
 
                 GitHubClientWrapper.ApiToken = string.Empty;
-                Logger.LogDebug($"Property is invalid and only changed in the UI: <REDACTED>");
+                Logger.LogDebug($"Property is invalid and only changed in the UI: {value}");
             }
         }
 
@@ -95,25 +100,21 @@ namespace AddonWars2.App.ViewModels
         #region Validation
 
         /// <summary>
-        /// Validates <see cref="GitHubApiToken"/> property.
+        /// Validates <see cref="GitHubApiTokenFilePath"/> property.
         /// </summary>
-        /// <param name="token">GitHub API token string.</param>
+        /// <param name="filepath">A filepath to the GitHub token file.</param>
         /// <param name="context">Validation context.</param>
         /// <returns><see cref="ValidationResult"/> object.</returns>
-        public static ValidationResult? ValidateGitHubApiToken(string token, ValidationContext context)
+        public static ValidationResult? ValidateGitHubApiToken(string filepath, ValidationContext context)
         {
-            if (token == null)
+            if (!File.Exists(filepath))
             {
-                return new ValidationResult(_gitHubApiTokenErrorMsg);
+                return new ValidationResult(_fileNotExistsErrorMsg);
             }
 
-            if (token == string.Empty)
-            {
-                return ValidationResult.Success;
-            }
-
+            _gitHubApiToken = ReadGitHubTokenFromFile(filepath);
             var instance = (SettingsApiPageViewModel)context.ObjectInstance;
-            var isValid = Task.Run(async () => await instance.Validate(token)).GetAwaiter().GetResult();  // TODO: that's really bad.
+            var isValid = Task.Run(async () => await instance.Validate(_gitHubApiToken)).GetAwaiter().GetResult();  // TODO: that's really bad.
 
             return isValid ? ValidationResult.Success : new ValidationResult(_gitHubApiTokenErrorMsg);
         }
@@ -132,9 +133,28 @@ namespace AddonWars2.App.ViewModels
         internal void Initialize()
         {
             //// Do not validate.
-            _gitHubApiToken = AppConfig.UserSettings.UserSettingsApi.GitHubApiToken;
-            OnPropertyChanged(nameof(GitHubApiToken));
-            GitHubClientWrapper.ApiToken = _gitHubApiToken;
+            _gitHubApiTokenFilePath = AppConfig.UserSettings.UserSettingsApi.GitHubApiTokenFilePath;
+            OnPropertyChanged(nameof(GitHubApiTokenFilePath));
+            GitHubClientWrapper.ApiToken = ReadGitHubTokenFromFile(_gitHubApiTokenFilePath);
+        }
+
+        // Reads GitHub API token from a file.
+        private static string ReadGitHubTokenFromFile(string filepath)
+        {
+            var token = string.Empty;
+            if (File.Exists(filepath))
+            {
+                try
+                {
+                    token = Regex.Unescape(File.ReadLines(filepath).First());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Unable to read GitHub token file.");
+                }
+            }
+
+            return token;
         }
 
         #endregion Methods

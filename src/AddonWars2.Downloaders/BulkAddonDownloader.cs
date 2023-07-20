@@ -9,6 +9,7 @@ namespace AddonWars2.Downloaders
 {
     using System.Collections.Generic;
     using AddonWars2.Core.DTO;
+    using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
@@ -67,11 +68,7 @@ namespace AddonWars2.Downloaders
         /// Gets a collection of <see cref="IProgress{T}"/> items which can be used to
         /// track the downloading progress for any of the requested addons.
         /// </summary>
-        /// <remarks>
-        /// Items are not added automatically and must be injected prior starting the download process.
-        /// <see cref="DownloadStarted"/> event handler can be used for this purpose.
-        /// </remarks>
-        public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
+        protected Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
 
         /// <summary>
         /// Gets the instance of <see cref="IAddonDownloaderFactory"/> factory.
@@ -124,6 +121,21 @@ namespace AddonWars2.Downloaders
         }
 
         /// <summary>
+        /// Attaches a new <see cref="IProgress{T}"/> item using a unique string token.
+        /// The bulk downloader will use an addon iternal name to compare with the specified <paramref name="token"/>.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="IProgress{T}"/> object should be created outside background thread, typically inside a method
+        /// called on a UI thread to capture sync context.
+        /// </remarks>
+        /// <param name="token">A unique string token (addon internal name).</param>
+        /// <param name="progress">A progress item to add.</param>
+        public void AttachProgressItem(string token, IProgress<double> progress)
+        {
+            ProgressCollection.Add(token, progress); // TODO: will using TryAdd be better?
+        }
+
+        /// <summary>
         /// Raises <see cref="DownloadStarted"/> event to inform subscribers a particular addon is started to download.
         /// </summary>
         protected virtual void OnDownloadStarted()
@@ -171,11 +183,14 @@ namespace AddonWars2.Downloaders
             foreach (var host in addonData.Hosts)
             {
                 var downloader = AddonDownloaderFactory.GetDownloader(host.HostType);
-                downloader.DownloadProgressChanged += (sender, e) =>
+
+                downloader.DownloadProgressChanged += Downloader_DownloadProgressChanged;
+
+                void Downloader_DownloadProgressChanged(object? sender, DownloadProgressEventArgs e)
                 {
                     ProgressCollection.TryGetValue(addonData.InternalName, out var progress);
                     progress?.Report(e.Progress);
-                };
+                }
 
                 try
                 {
@@ -189,6 +204,10 @@ namespace AddonWars2.Downloaders
                     Logger.LogError($"Failed to download \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}\nThe next host will be used if available.");
                     exceptions.Add(e);
                     continue;
+                }
+                finally
+                {
+                    downloader.DownloadProgressChanged -= Downloader_DownloadProgressChanged;
                 }
             }
 

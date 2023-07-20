@@ -41,6 +41,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.Services.XmlSerializerService.Interfaces;
     using AddonWars2.SharedData;
     using AddonWars2.SharedData.Interfaces;
+    using CommunityToolkit.Mvvm.Messaging;
     using Config.Net;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -101,6 +102,7 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IDialogService, DialogService>(x => new DialogService(dialogTypeLocator: x.GetRequiredService<IDialogTypeLocator>()));
 
             // Other services.
+            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
             services.AddSingleton<IRssFeedService<Gw2RssFeedItem>, Gw2RssFeedService>();
             services.AddSingleton<IXmlReaderService, XmlReaderService>();
             services.AddSingleton<IXmlWriterService, XmlWriterService>();

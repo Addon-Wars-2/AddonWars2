@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels.Factories
     using System;
     using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.Downloaders;
+    using CommunityToolkit.Mvvm.Messaging;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -39,9 +40,9 @@ namespace AddonWars2.App.ViewModels.Factories
         #region Methods
 
         /// <inheritdoc/>
-        public InstallProgressDialogViewModel Create(BulkAddonDownloader downloader)
+        public InstallProgressDialogViewModel Create(IMessenger messenger, BulkAddonDownloader downloader)
         {
-            return new InstallProgressDialogViewModel(_logger, downloader);
+            return new InstallProgressDialogViewModel(_logger, messenger, downloader);
         }
 
         #endregion Methods

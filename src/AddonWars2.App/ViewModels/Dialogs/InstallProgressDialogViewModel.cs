@@ -11,9 +11,12 @@ namespace AddonWars2.App.ViewModels.Dialogs
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Threading.Tasks;
+    using AddonWars2.App.Messaging.Tokens;
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.Downloaders;
     using CommunityToolkit.Mvvm.Input;
+    using CommunityToolkit.Mvvm.Messaging;
+    using CommunityToolkit.Mvvm.Messaging.Messages;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
 
@@ -55,6 +58,8 @@ namespace AddonWars2.App.ViewModels.Dialogs
     {
         #region Fields
 
+        private readonly IMessenger _messenger;
+        //private readonly AddonDownloadProgressToken _downloadProgressToken = new AddonDownloadProgressToken(string.Empty, 0.0);
         private readonly BulkAddonDownloader _downloader;
         private InstallProgressDialogViewModelState _viewModelState = InstallProgressDialogViewModelState.Ready;
         private bool? _dialogResult = null;
@@ -68,24 +73,35 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// Initializes a new instance of the <see cref="InstallProgressDialogViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
+        /// <param name="messenger">A reference to <see cref="IMessenger"/>.</param>
         /// <param name="downloader">A reference to <see cref="BulkAddonDownloader"/> instance.</param>
         public InstallProgressDialogViewModel(
             ILogger<WindowBaseViewModel> logger,
+            IMessenger messenger,
             BulkAddonDownloader downloader)
             : base(logger)
         {
+            _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
             _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
+
             _downloader.DownloadStarted += Downloader_DownloadStarted;
             _downloader.DownloadCompleted += Downloader_DownloadCompleted;
             _downloader.DownloadFailed += Downloader_DownloadFailed;
 
             PropertyChangedEventManager.AddHandler(this, ViewModelState_PropertyChanged, nameof(ViewModelState));
 
+            //this.Messenger.Register<PropertyChangedMessage<object>, >
+
             SetDialogResultCommand = new RelayCommand<bool?>(ExecuteSetDialogResultCommand);
         }
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a messenger reference.
+        /// </summary>
+        public IMessenger Messenger => _messenger;
 
         /// <summary>
         /// Gets or sets the view model state.
@@ -115,6 +131,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
                 Logger.LogDebug($"Property set: {value}");
             }
         }
+
+        ///// <summary>
+        ///// Gets a download progress token used in the messaging system.
+        ///// </summary>
+        //protected AddonDownloadProgressToken DownloadProgressToken => _downloadProgressToken;
 
         /// <summary>
         /// Gets a bulk downloader isntance.
@@ -156,7 +177,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
                     AW2Application.Current.Dispatcher.Invoke(() =>
                     {
                         var progress = new Progress<double>(value => ipi.ProgressValue = value);
-                        downloader.ProgressCollection.Add(ipi.Token, progress);
+                        downloader.AttachProgressItem(ipi.Token, progress);
                     });
                 }
             }

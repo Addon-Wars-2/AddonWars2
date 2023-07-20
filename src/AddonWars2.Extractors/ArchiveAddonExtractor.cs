@@ -59,20 +59,8 @@ namespace AddonWars2.Extractors
                     var zipArchiveFileEntries = zipArchive.Entries.Where(x => IsZipEntryFile(x));
                     foreach (var entry in zipArchiveFileEntries)
                     {
-                        using (Stream es = entry.Open())
-                        {
-                            using (MemoryStream ems = new MemoryStream())
-                            {
-                                await es.CopyToAsync(ems);
-
-                                var name = entry.Name;
-                                var relativePath = entry.FullName;
-                                var content = ems.ToArray();
-
-                                var extractedFile = new ExtractedFile(name, content, relativePath);
-                                extractionResult.ExtractedFiles.Add(extractedFile);
-                            }
-                        }
+                        var extracted = await ExtractZipArchiveEntry(entry);
+                        extractionResult.ExtractedFiles.Add(extracted);
                     }
                 }
             }
@@ -80,13 +68,31 @@ namespace AddonWars2.Extractors
             return extractionResult;
         }
 
-        // See for details: https://github.com/icsharpcode/SharpZipLib/blob/master/src/ICSharpCode.SharpZipLib/Zip/ZipEntry.cs (MIT)
+        // Extracts the specified entry.
+        private async Task<ExtractedFile> ExtractZipArchiveEntry(ZipArchiveEntry zipArchiveEntry)
+        {
+            using (Stream es = zipArchiveEntry.Open())
+            {
+                using (MemoryStream ems = new MemoryStream())
+                {
+                    await es.CopyToAsync(ems);
+
+                    var name = zipArchiveEntry.Name;
+                    var relativePath = zipArchiveEntry.FullName;
+                    var content = ems.ToArray();
+
+                    return new ExtractedFile(name, content, relativePath);
+                }
+            }
+        }
+
+        // See for more details: https://github.com/icsharpcode/SharpZipLib/blob/master/src/ICSharpCode.SharpZipLib/Zip/ZipEntry.cs (MIT)
         private bool IsZipEntryFile(ZipArchiveEntry entry)
         {
             return !IsZipEntryDirectory(entry) && entry.ExternalAttributes != 8;
         }
 
-        // See for details: https://github.com/icsharpcode/SharpZipLib/blob/master/src/ICSharpCode.SharpZipLib/Zip/ZipEntry.cs (MIT)
+        // See for more details: https://github.com/icsharpcode/SharpZipLib/blob/master/src/ICSharpCode.SharpZipLib/Zip/ZipEntry.cs (MIT)
         private bool IsZipEntryDirectory(ZipArchiveEntry entry)
         {
             var nameLength = entry.Name.Length;

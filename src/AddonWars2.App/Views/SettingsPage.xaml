@@ -194,7 +194,7 @@
                                             IsReadOnly="False"
                                             assist:HintAssist.Hint="{DynamicResource S.SettingsPage.API.GitHubToken.TextBox.Placeholder}"
                                             Style="{DynamicResource TextBoxStyle}"
-                                            Text="{Binding Path=DataContext.SettingsApiPageViewModelInstance.GitHubApiToken, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
+                                            Text="{Binding Path=DataContext.SettingsApiPageViewModelInstance.GitHubApiTokenFilePath, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
                                             <i:Interaction.Triggers>
                                                 <i:DataTrigger Binding="{Binding ElementName=GitHubAPITokenTextBox, Mode=OneWay, Path=(Validation.HasError)}" Value="True">
                                                     <i:CallMethodAction TargetObject="{Binding ElementName=GitHubAPITokenTextBox}" MethodName="UpdateLayout"/>

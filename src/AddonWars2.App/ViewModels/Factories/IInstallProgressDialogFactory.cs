@@ -9,6 +9,7 @@ namespace AddonWars2.App.ViewModels.Factories
 {
     using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.Downloaders;
+    using CommunityToolkit.Mvvm.Messaging;
 
     /// <summary>
     /// Specifies a contract for factories responsibe for creating install progress dialog view models.
@@ -18,8 +19,9 @@ namespace AddonWars2.App.ViewModels.Factories
         /// <summary>
         /// Creates a new <see cref="InstallAddonsDialogViewModel"/> view model.
         /// </summary>
+        /// <param name="messenger">A reference to <see cref="IMessenger"/>.</param>
         /// <param name="downloader">A bulk downloaded which will be used to download the requested addons.</param>
         /// <returns>A new instance of <see cref="InstallAddonsDialogViewModel"/>.</returns>
-        public InstallProgressDialogViewModel Create(BulkAddonDownloader downloader);
+        public InstallProgressDialogViewModel Create(IMessenger messenger, BulkAddonDownloader downloader);
     }
 }

@@ -15,9 +15,9 @@ namespace AddonWars2.App.Configuration
     public interface IUserSettingsApi
     {
         /// <summary>
-        /// Gets or sets GitHub API token.
+        /// Gets or sets GitHub API token file path.
         /// </summary>
-        [Option(Alias = "GitHubApiToken", DefaultValue = "")]
-        public string GitHubApiToken { get; set; }
+        [Option(Alias = "GitHubApiTokenFilePath", DefaultValue = "")]
+        public string GitHubApiTokenFilePath { get; set; }
     }
 }

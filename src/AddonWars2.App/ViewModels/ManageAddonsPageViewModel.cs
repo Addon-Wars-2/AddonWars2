@@ -10,7 +10,6 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.Linq;
     using System.Net.Http;
     using System.Text.Json;
@@ -37,6 +36,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
+    using CommunityToolkit.Mvvm.Messaging;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
     using Octokit;
@@ -86,6 +86,7 @@ namespace AddonWars2.App.ViewModels
         private static readonly string _failedToDownloadAddonsErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title");
         private static readonly string _failedToDownloadAddonsErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message");
 
+        private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
         private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
         private readonly IInstallAddonsDialogFactory _installAddonsDialogFactory;
@@ -119,6 +120,7 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="ManageAddonsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
+        /// <param name="messenger">A reference to <see cref="IMessenger"/>.</param>
         /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
         /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
         /// <param name="installAddonsDialogFactory">A reference to <see cref="IInstallAddonsDialogFactory"/>.</param>
@@ -135,6 +137,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="libraryManager">A reference to <see cref="ILibraryManager"/>.</param>
         public ManageAddonsPageViewModel(
             ILogger<ManageAddonsPageViewModel> logger,
+            IMessenger messenger,
             IDialogService dialogService,
             IErrorDialogViewModelFactory errorDialogViewModelFactory,
             IInstallAddonsDialogFactory installAddonsDialogFactory,
@@ -151,6 +154,7 @@ namespace AddonWars2.App.ViewModels
             ILibraryManager libraryManager)
             : base(logger)
         {
+            _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
             _installAddonsDialogFactory = installAddonsDialogFactory ?? throw new ArgumentNullException(nameof(installAddonsDialogFactory));
@@ -175,6 +179,11 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a messenger reference.
+        /// </summary>
+        public IMessenger Messenger => _messenger;
 
         /// <summary>
         /// Gets a reference to <see cref="IDialogService"/> service.
@@ -696,7 +705,7 @@ namespace AddonWars2.App.ViewModels
         private async Task<IEnumerable<ExtractionResult>> ExtractAddonsAsync(IEnumerable<LoadedAddonDataViewModel> installationSequence, IEnumerable<DownloadResult> downloadedAddons)
         {
             var taskQuery = installationSequence
-                .Select(x => ExtractAddonAsyncInternal(x, downloadedAddons.First(dres => (string)dres.Metadata["internal_name"] == x.InternalName)))
+                .Select(x => ExtractAddonInternalAsync(x, downloadedAddons.First(dres => (string)dres.Metadata["internal_name"] == x.InternalName)))
                 .ToList();
 
             var results = new ExtractionResult[taskQuery.Count];
@@ -711,7 +720,7 @@ namespace AddonWars2.App.ViewModels
         }
 
         // A task to extract a single addon.
-        private async Task<ExtractionResult> ExtractAddonAsyncInternal(LoadedAddonDataViewModel addon, DownloadResult downloadedAddon)
+        private async Task<ExtractionResult> ExtractAddonInternalAsync(LoadedAddonDataViewModel addon, DownloadResult downloadedAddon)
         {
             var extractor = AddonExtractorFactory.GetExtractor(addon.Model.DownloadType);
             var request = new ExtractionRequest(downloadedAddon.Name, downloadedAddon.Content, downloadedAddon.Version);
@@ -754,7 +763,7 @@ namespace AddonWars2.App.ViewModels
         // See for non-blocking modal dialog: https://stackoverflow.com/a/33411037
         private async Task<bool?> ShowInstallProgressWindow(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
         {
-            var vm = DownloadProgressDialogFactory.Create(downloader);
+            var vm = DownloadProgressDialogFactory.Create(Messenger, downloader);
             foreach (var item in installationSequence)
             {
                 var ipi = new InstallProgressItemViewModel()
