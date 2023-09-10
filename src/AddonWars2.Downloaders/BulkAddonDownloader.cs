@@ -22,9 +22,11 @@ namespace AddonWars2.Downloaders
     {
         #region Fields
 
+        private static ILogger _logger;
+
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
-        private static ILogger _logger;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         #endregion Fields
 
@@ -59,6 +61,11 @@ namespace AddonWars2.Downloaders
         /// Is invoked when at least one addon could not be downloaded.
         /// </summary>
         public event EventHandler? DownloadFailed;
+
+        /// <summary>
+        /// Is invoked when an operation cancellation was requested.
+        /// </summary>
+        public event EventHandler? DownloadAborted;
 
         #endregion Events
 
@@ -104,14 +111,23 @@ namespace AddonWars2.Downloaders
             ArgumentNullException.ThrowIfNull(addonDataItems, nameof(addonDataItems));
 
             var taskQuery = addonDataItems
-                .Select(x => DownloadAsync(x))
+                .Select(x => DownloadAsync(x, _cts.Token))
                 .ToList();
 
             var results = new DownloadResult[taskQuery.Count];
 
             OnDownloadStarted();
 
-            results = await Task.WhenAll(taskQuery);
+            try
+            {
+                results = await Task.WhenAll(taskQuery).WaitAsync(_cts.Token);
+            }
+            catch (TaskCanceledException ex)
+            {
+                OnDownloadAborted();
+                ClearProgressCollection();
+                throw new AddonDownloaderException("A task was canceled.", ex);
+            }
 
             OnDownloadCompleted();
 
@@ -133,6 +149,15 @@ namespace AddonWars2.Downloaders
         public void AttachProgressItem(string token, IProgress<double> progress)
         {
             ProgressCollection.Add(token, progress); // TODO: will using TryAdd be better?
+        }
+
+        /// <summary>
+        /// Cancels bulk download task.
+        /// </summary>
+        public void CancelTask()
+        {
+            Logger.LogWarning("A task cancellation was requested by user.");
+            _cts.Cancel();
         }
 
         /// <summary>
@@ -169,7 +194,19 @@ namespace AddonWars2.Downloaders
             Logger.LogError("Bulk download failed.");
         }
 
-        private async Task<DownloadResult> DownloadAsync(AddonData addonData)
+        /// <summary>
+        /// Raises <see cref="DownloadFailed"/> event to inform subscribers that
+        /// download operation was aborted and task cancellation was requested.
+        /// </summary>
+        protected virtual void OnDownloadAborted()
+        {
+            var handler = DownloadAborted;
+            handler?.Invoke(this, EventArgs.Empty);
+
+            Logger.LogWarning("Bulk download aborted.");
+        }
+
+        private async Task<DownloadResult> DownloadAsync(AddonData addonData, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(addonData, nameof(addonData));
 
@@ -182,10 +219,20 @@ namespace AddonWars2.Downloaders
             // An exception will be thrown only if it failed to download from every host.
             foreach (var host in addonData.Hosts)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    OnDownloadAborted();
+                    ClearProgressCollection();
+                    Logger.LogWarning("A task cancellation was requested.");
+
+                    return result;
+                }
+
                 var downloader = AddonDownloaderFactory.GetDownloader(host.HostType);
 
                 downloader.DownloadProgressChanged += Downloader_DownloadProgressChanged;
 
+                // Local func.
                 void Downloader_DownloadProgressChanged(object? sender, DownloadProgressEventArgs e)
                 {
                     ProgressCollection.TryGetValue(addonData.InternalName, out var progress);
@@ -194,7 +241,7 @@ namespace AddonWars2.Downloaders
 
                 try
                 {
-                    result = await downloader.DownloadAsync(host.HostUrl);
+                    result = await downloader.DownloadAsync(host.HostUrl, cancellationToken);
                     result.Metadata.Add("internal_name", addonData.InternalName);
                     Logger.LogDebug($"Finished with \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
                     break;
@@ -212,14 +259,14 @@ namespace AddonWars2.Downloaders
             }
 
             // If failed to download, throw an exception with a complete list of stack traces from the previously thrown exceptions.
-            if (exceptions.Count >= addonData.Hosts.Count() || result.Content.Length == 0)
+            if (exceptions.Count >= addonData.Hosts.Count() && result.Content.Length == 0)
             {
                 OnDownloadFailed();
                 ClearProgressCollection();
 
                 var stackTraces = BuildStackTracesString(exceptions);
                 var ex = new AddonDownloaderException($"The bulk downloader has failed to download the {addonData.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
-                Logger.LogError(ex, "Failed to download the addons.");
+                Logger.LogError(ex, message: string.Empty);
                 throw ex;
             }
 
@@ -245,7 +292,15 @@ namespace AddonWars2.Downloaders
             var stackTraces = string.Empty;
             foreach (var e in exceptions)
             {
-                stackTraces += $"{e.Message}\n{e.StackTrace}\n";
+                if (!string.IsNullOrEmpty(e.Message))
+                {
+                    stackTraces += $"{e.Message}\n";
+                }
+
+                if (!string.IsNullOrEmpty(e.StackTrace))
+                {
+                    stackTraces += $"{e.StackTrace}\n";
+                }
             }
 
             return stackTraces;

@@ -11,12 +11,10 @@ namespace AddonWars2.App.ViewModels.Dialogs
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Threading.Tasks;
-    using AddonWars2.App.Messaging.Tokens;
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.Downloaders;
     using CommunityToolkit.Mvvm.Input;
     using CommunityToolkit.Mvvm.Messaging;
-    using CommunityToolkit.Mvvm.Messaging.Messages;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
 
@@ -46,6 +44,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
         Completed,
 
         /// <summary>
+        /// The operation was aborted by user.
+        /// </summary>
+        Aborted,
+
+        /// <summary>
         /// View model has failed to perform an operation.
         /// </summary>
         Error,
@@ -59,7 +62,6 @@ namespace AddonWars2.App.ViewModels.Dialogs
         #region Fields
 
         private readonly IMessenger _messenger;
-        //private readonly AddonDownloadProgressToken _downloadProgressToken = new AddonDownloadProgressToken(string.Empty, 0.0);
         private readonly BulkAddonDownloader _downloader;
         private InstallProgressDialogViewModelState _viewModelState = InstallProgressDialogViewModelState.Ready;
         private bool? _dialogResult = null;
@@ -86,14 +88,15 @@ namespace AddonWars2.App.ViewModels.Dialogs
 
             _downloader.DownloadStarted += Downloader_DownloadStarted;
             _downloader.DownloadCompleted += Downloader_DownloadCompleted;
+            _downloader.DownloadAborted += Downloader_DownloadAborted;
             _downloader.DownloadFailed += Downloader_DownloadFailed;
 
             PropertyChangedEventManager.AddHandler(this, ViewModelState_PropertyChanged, nameof(ViewModelState));
 
-            //this.Messenger.Register<PropertyChangedMessage<object>, >
-
             SetDialogResultCommand = new RelayCommand<bool?>(ExecuteSetDialogResultCommand);
+            AbortDownloadCommand = new RelayCommand(ExecuteAbortDownloadCommand);
         }
+
         #endregion Constructors
 
         #region Properties
@@ -132,11 +135,6 @@ namespace AddonWars2.App.ViewModels.Dialogs
             }
         }
 
-        ///// <summary>
-        ///// Gets a download progress token used in the messaging system.
-        ///// </summary>
-        //protected AddonDownloadProgressToken DownloadProgressToken => _downloadProgressToken;
-
         /// <summary>
         /// Gets a bulk downloader isntance.
         /// </summary>
@@ -151,6 +149,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// </summary>
         public RelayCommand<bool?> SetDialogResultCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command that aborts download operation.
+        /// </summary>
+        public RelayCommand AbortDownloadCommand { get; private set; }
+
         #endregion Commands
 
         #region Commands Logic
@@ -161,6 +164,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
             _dialogResult = result;
         }
 
+        private void ExecuteAbortDownloadCommand()
+        {
+            _downloader.CancelTask();
+        }
+
         #endregion Commands Logic
 
         #region Methods
@@ -169,25 +177,19 @@ namespace AddonWars2.App.ViewModels.Dialogs
         private void Downloader_DownloadStarted(object? sender, EventArgs e)
         {
             ViewModelState = InstallProgressDialogViewModelState.Downloading;
-
-            if (sender is BulkAddonDownloader downloader)
-            {
-                foreach (var ipi in InstallProgressItems)
-                {
-                    AW2Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        var progress = new Progress<double>(value => ipi.ProgressValue = value);
-                        downloader.AttachProgressItem(ipi.Token, progress);
-                    });
-                }
-            }
         }
 
         // Bulk downloader event handler to track the moment when the download process is finished.
         private async void Downloader_DownloadCompleted(object? sender, EventArgs e)
         {
-            await Delay(500); // to prevent switching from download to install view too fast
+            await DelayAsync(500); // to prevent switching from download to install view too fast
             ViewModelState = InstallProgressDialogViewModelState.Installing;
+        }
+
+        // The operation was aborted by user.
+        private void Downloader_DownloadAborted(object? sender, EventArgs e)
+        {
+            ViewModelState = InstallProgressDialogViewModelState.Aborted;
         }
 
         // Bulk downloader event handler to track if the proccess has failed.
@@ -212,7 +214,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         }
 
         // Sets a delay.
-        private async Task Delay(int milliseconds)
+        private async Task DelayAsync(int milliseconds)
         {
             await Task.Run(async () => await Task.Delay(milliseconds));
         }

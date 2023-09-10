@@ -104,6 +104,7 @@
 
   <ItemGroup>
     <Folder Include="Messaging\Messsages\" />
+    <Folder Include="Messaging\Tokens\" />
   </ItemGroup>
 
 </Project>

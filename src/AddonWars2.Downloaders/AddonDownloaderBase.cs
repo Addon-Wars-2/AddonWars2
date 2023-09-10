@@ -31,8 +31,9 @@ namespace AddonWars2.Downloaders
 
         private const int DEFAULT_BUFFER_SIZE = 4096;
 
-        private readonly IHttpClientWrapper _httpClientService;
         private static ILogger _logger;
+        private readonly IHttpClientWrapper _httpClientService;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         #endregion Fields
 
@@ -83,25 +84,33 @@ namespace AddonWars2.Downloaders
         /// <inheritdoc/>
         public async Task<DownloadResult> DownloadAsync(string url)
         {
-            return await DownloadAsync(new DownloadRequest(url));
+            return await DownloadAsync(url, _cts.Token);
+        }
+
+        /// <inheritdoc/>
+        public async Task<DownloadResult> DownloadAsync(string url, CancellationToken cancellationToken)
+        {
+            return await DownloadAsync(new DownloadRequest(url), cancellationToken);
         }
 
         /// <summary>
         /// Starts to download the requested addon.
         /// </summary>
         /// <param name="request">A request objects which wraps the request information.</param>
+        /// <param name="cancellationToken">A task cancellation token.</param>
         /// <returns><see cref="DownloadResult"/> object.</returns>
-        protected abstract Task<DownloadResult> DownloadAsync(DownloadRequest request);
+        protected abstract Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken);
 
         /// <summary>
         /// Reads content from a given response.
         /// </summary>
         /// <param name="response">Response to read.</param>
         /// <param name="filename">A downloaded file name.</param>
+        /// <param name="cancellationToken">A task cancellation token.</param>
         /// <returns><see cref="DownloadResult"/> object.</returns>
-        protected async Task<DownloadResult> ReadResponseAsync(HttpResponseMessage response, string filename)
+        protected async Task<DownloadResult> ReadResponseAsync(HttpResponseMessage response, string filename, CancellationToken cancellationToken)
         {
-            Logger.LogDebug($"Reading response...");
+            Logger.LogDebug($"Reading a response for {filename}");
 
             var contentLength = response.Content.Headers.ContentLength ?? 0L;
             var content = Array.Empty<byte>();
@@ -125,6 +134,12 @@ namespace AddonWars2.Downloaders
                     var bytesRead = 0;
                     do
                     {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            Logger.LogWarning($"A task cancellation for {filename} was requested.");
+                            return new DownloadResult(filename, Array.Empty<byte>());  // return filename to inform what file was aborted
+                        }
+
                         bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));
                         await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
                         totalBytesRead += bytesRead;

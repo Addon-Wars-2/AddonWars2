@@ -73,8 +73,8 @@
     
     <!-- Settings | General -->
     <!-- Settings | API -->
-    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">GitHub API Token</s:String>
-    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Enter your API token...</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">GitHub API Token file path</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Enter the file path...</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Open Log File...</s:String>
@@ -85,7 +85,7 @@
     <s:String x:Key="S.Dialog.InstallAddonDialog.Header">Confirm action</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">You're attempting to install an addon that requires one or more other addons to be installed.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">The addons will be installed in the following order:</s:String>
-    <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Installing the addons...</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Installation in progress...</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Downloading the required addons... Please, wait.</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Installing the downloaded addons... Please, wait.</s:String>
 

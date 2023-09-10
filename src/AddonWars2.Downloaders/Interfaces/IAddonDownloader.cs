@@ -25,5 +25,13 @@ namespace AddonWars2.Downloaders.Interfaces
         /// <param name="url">URL of a file to download.</param>
         /// <returns><see cref="DownloadResult"/> object.</returns>
         public Task<DownloadResult> DownloadAsync(string url);
+
+        /// <summary>
+        /// Starts to download the requested addon.
+        /// </summary>
+        /// <param name="url">URL of a file to download.</param>
+        /// <param name="cancellationToken">A task cancellation token.</param>
+        /// <returns><see cref="DownloadResult"/> object.</returns>
+        public Task<DownloadResult> DownloadAsync(string url, CancellationToken cancellationToken);
     }
 }

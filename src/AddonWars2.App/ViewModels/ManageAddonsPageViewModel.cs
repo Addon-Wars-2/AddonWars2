@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net.Http;
     using System.Text.Json;
@@ -468,7 +469,7 @@ namespace AddonWars2.App.ViewModels
                     ProvidersCollection.Add(new LoadedProviderDataViewModel(providerInfo));
                 }
 
-                UpdateGitHubRateLimitsData();
+                UpdateGitHubRateLimitsInfo();
             }
             catch (RateLimitExceededException e)
             {
@@ -623,7 +624,7 @@ namespace AddonWars2.App.ViewModels
 
             // Begin to download addons.
             var downloader = AddonDownloaderFactory.GetBulkDownloader();
-            var progressDialogTask = ShowInstallProgressWindow(downloader, installationSequence);
+            var progressDialogTask = ShowInstallProgressWindowAsync(downloader, installationSequence);
             IEnumerable<DownloadResult>? downloadedAddons;
             try
             {
@@ -639,10 +640,19 @@ namespace AddonWars2.App.ViewModels
                 await progressDialogTask;
             }
 
-            // Extract the downloaded addons.
+            // Extract downloaded addons.
             var extractedAddons = await ExtractAddonsAsync(installationSequence, downloadedAddons);
+            foreach (var item in extractedAddons)
+            {
+                Debug.WriteLine($"ver {item.Version}");
+                for (int i = 0; i < item.ExtractedFiles.Count; i++)
+                {
+                    var x = item.ExtractedFiles[i];
+                    Debug.WriteLine($"  {i} {x.Name} | {x.RelativePath}");
+                }
+            }
 
-            UpdateGitHubRateLimitsData();
+            UpdateGitHubRateLimitsInfo();
         }
 
         // Resolves dependencies for the provided addon.
@@ -761,7 +771,7 @@ namespace AddonWars2.App.ViewModels
 
         // Shows a dialog with installation progress.
         // See for non-blocking modal dialog: https://stackoverflow.com/a/33411037
-        private async Task<bool?> ShowInstallProgressWindow(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        private async Task<bool?> ShowInstallProgressWindowAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
         {
             var vm = DownloadProgressDialogFactory.Create(Messenger, downloader);
             foreach (var item in installationSequence)
@@ -772,6 +782,13 @@ namespace AddonWars2.App.ViewModels
                     DisplayName = item.DisplayName,
                 };
 
+                // To capture the context we need to create Progress item from the UI thread.
+                AW2Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var progress = new Progress<double>(value => ipi.ProgressValue = value);
+                    downloader.AttachProgressItem(ipi.Token, progress);
+                });
+
                 vm.InstallProgressItems.Add(ipi);
             }
 
@@ -781,7 +798,7 @@ namespace AddonWars2.App.ViewModels
         }
 
         // Updates current GitHub rate limits in the UI.
-        private void UpdateGitHubRateLimitsData()
+        private void UpdateGitHubRateLimitsInfo()
         {
             GitHubProviderRateLimitRemaining = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Remaining;
             GitHubProviderRateLimit = GitHubClientWrapper.GitHubLastApiInfo == null ? 0 : GitHubClientWrapper.GitHubLastApiInfo.RateLimit.Limit;

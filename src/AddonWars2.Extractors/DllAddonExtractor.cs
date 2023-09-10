@@ -7,7 +7,6 @@
 
 namespace AddonWars2.Extractors
 {
-    using System;
     using AddonWars2.Extractors.Models;
     using Microsoft.Extensions.Logging;
 

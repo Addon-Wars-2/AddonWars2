@@ -34,7 +34,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected override async Task<DownloadResult> DownloadAsync(DownloadRequest request)
+        protected override async Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken)
         {
             using (var response = await HttpClientService.GetAsync(request.Url))
             {
@@ -45,7 +45,7 @@ namespace AddonWars2.Downloaders
                     ?? string.Empty;
 
                 // TODO: inject version into the downloaded content if available.
-                var content = await ReadResponseAsync(response, filename);
+                var content = await ReadResponseAsync(response, filename, cancellationToken);
 
                 return content;
             }

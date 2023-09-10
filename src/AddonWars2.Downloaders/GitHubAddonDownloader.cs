@@ -54,7 +54,7 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected async override Task<DownloadResult> DownloadAsync(DownloadRequest request)
+        protected async override Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken)
         {
             var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
 
@@ -68,7 +68,7 @@ namespace AddonWars2.Downloaders
                 var filename = release.Assets[0].Name;
                 using (var response = await HttpClientService.GetAsync(url))
                 {
-                    var content = await ReadResponseAsync(response, filename);
+                    var content = await ReadResponseAsync(response, filename, cancellationToken);
                     content.Version = version;
 
                     return content;

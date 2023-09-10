@@ -64,7 +64,7 @@
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Не удалось подключиться к серверу</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">Ошибка парсинга RSS-ленты</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Не удалось прочитать загруженные данные RSS-ленты.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Не удалось спарсить данные RSS-ленты.</s:String>
     <s:String x:Key="S.NewsPage.WebView.StatusPlaceholders.Loading">Загрузка содержимого...</s:String>
 
     <!-- Settings -->
@@ -73,8 +73,8 @@
 
     <!-- Settings | General -->
     <!-- Settings | API -->
-    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">GitHub API токен</s:String>
-    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Введите API токен...</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Header">Путь до файла с токеном GitHub API</s:String>
+    <s:String x:Key="S.SettingsPage.API.GitHubToken.TextBox.Placeholder">Введите путь до файла...</s:String>
 
     <!-- Logging Page -->
     <s:String x:Key="S.LoggingPage.Button.OpenLogFile">Открыть лог-файл...</s:String>
@@ -83,9 +83,9 @@
 
     <!-- Dialogs -->
     <s:String x:Key="S.Dialog.InstallAddonDialog.Header">Подтвердите действие</s:String>
-    <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">Вы пытаетесь установить аддон, для работы которого требуется установить один или несколько других аддонов.</s:String>
+    <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">Вы пытаетесь установить аддон, для работы которого необходимы один или несколько других аддонов.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
-    <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Установка аддонов...</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Установка...</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Загрузка необходимых аддонов... Пожалуйста, подождите.</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Установка загруженных аддонов... Пожалуйста, подождите.</s:String>
 
