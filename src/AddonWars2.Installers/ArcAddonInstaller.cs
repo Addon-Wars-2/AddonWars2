@@ -1,19 +1,19 @@
 ﻿// ==================================================================================================
-// <copyright file="DllAddonExtractor.cs" company="Addon-Wars-2">
+// <copyright file="ArcAddonInstaller.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Extractors
+namespace AddonWars2.Installers
 {
-    using AddonWars2.Extractors.Models;
+    using AddonWars2.Installers.Models;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents an extractor for DLL-type addons.
+    /// Represents an addon installer that installs ArcDPS plug-ins.
     /// </summary>
-    public class DllAddonExtractor : AddonExtractorBase
+    public class ArcAddonInstaller : AddonInstallerBase
     {
         #region Fields
 
@@ -22,10 +22,10 @@ namespace AddonWars2.Extractors
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DllAddonExtractor"/> class.
+        /// Initializes a new instance of the <see cref="ArcAddonInstaller"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
-        public DllAddonExtractor(ILogger<AddonExtractorBase> logger)
+        public ArcAddonInstaller(ILogger<AddonInstallerBase> logger)
             : base(logger)
         {
             // Blank.
@@ -44,17 +44,15 @@ namespace AddonWars2.Extractors
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request)
+        public override Task<InstallResult> InstallAsync(InstallRequest installRequest)
         {
-            var content = new byte[request.Content.Length];
-            request.Content.CopyTo(content, 0);
+            throw new NotImplementedException();
+        }
 
-            var extractedFiles = new ExtractedFile(request.Name, content, string.Empty);
-            var extractionResult = new ExtractionResult(new List<ExtractedFile>() { extractedFiles }, request.Version);
-
-            OnExtractProgressChanged(1, 1);
-
-            return extractionResult;
+        /// <inheritdoc/>
+        public override Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion Methods

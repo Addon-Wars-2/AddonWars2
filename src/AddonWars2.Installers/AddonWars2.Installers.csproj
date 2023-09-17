@@ -38,8 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Factories\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

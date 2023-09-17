@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="InstallProgressItemViewModel.cs" company="Addon-Wars-2">
+// <copyright file="ProgressItemViewModel.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,9 +10,9 @@ namespace AddonWars2.App.ViewModels.SubViewModels
     using CommunityToolkit.Mvvm.ComponentModel;
 
     /// <summary>
-    /// Represents a view model for a download progress item.
+    /// Represents a view model for a progress item.
     /// </summary>
-    public class InstallProgressItemViewModel : ObservableObject
+    public class ProgressItemViewModel : ObservableObject
     {
         #region Fields
 
@@ -34,8 +34,8 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         }
 
         /// <summary>
-        /// Gets or sets the addon's unique token used to distinguish downloading addons
-        /// withing a single bulk downloader. Typically equal to the addon's internal name.
+        /// Gets or sets the addon's unique token used to distinguish downloading addons.
+        /// Typically equal to the addon's internal name.
         /// </summary>
         public string Token
         {
@@ -44,13 +44,14 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         }
 
         /// <summary>
-        /// Gets or sets the downloading progress value.
+        /// Gets or sets the progress value.
         /// </summary>
         public double ProgressValue
         {
             get => _progressValue;
             set => SetProperty(ref _progressValue, value);
         }
+
         #endregion Properties
     }
 }

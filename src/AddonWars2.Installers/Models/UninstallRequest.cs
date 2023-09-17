@@ -1,42 +1,38 @@
 ﻿// ==================================================================================================
-// <copyright file="DownloadRequest.cs" company="Addon-Wars-2">
+// <copyright file="UninstallRequest.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Downloaders.Models
+namespace AddonWars2.Installers.Models
 {
     /// <summary>
-    /// Encapsulates addon download request.
+    /// Represents a wrapped request for addon uninstallation.
     /// </summary>
-    public class DownloadRequest
+    public class UninstallRequest
     {
         #region Fields
 
-        private readonly string _url = string.Empty;
+
 
         #endregion Fields
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DownloadRequest"/> class.
+        /// Initializes a new instance of the <see cref="UninstallRequest"/> class.
         /// </summary>
-        /// <param name="url">A URL of a file to download.</param>
-        public DownloadRequest(string url)
+        public UninstallRequest()
         {
-            _url = url;
+
         }
 
         #endregion Constructors
 
         #region Properties
 
-        /// <summary>
-        /// Gets a URL that will be used to download the addon.
-        /// </summary>
-        public string Url => _url;
+
 
         #endregion Properties
     }

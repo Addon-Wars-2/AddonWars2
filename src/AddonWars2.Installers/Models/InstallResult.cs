@@ -1,32 +1,30 @@
 ﻿// ==================================================================================================
-// <copyright file="DownloadRequest.cs" company="Addon-Wars-2">
+// <copyright file="InstallResult.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Downloaders.Models
+namespace AddonWars2.Installers.Models
 {
+    using AddonWars2.Installers.Enums;
+
     /// <summary>
-    /// Encapsulates addon download request.
+    /// Represents a result of an installation operation.
     /// </summary>
-    public class DownloadRequest
+    public class InstallResult
     {
         #region Fields
 
-        private readonly string _url = string.Empty;
+        private readonly InstallStatus _status;
 
         #endregion Fields
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DownloadRequest"/> class.
-        /// </summary>
-        /// <param name="url">A URL of a file to download.</param>
-        public DownloadRequest(string url)
+        public InstallResult()
         {
-            _url = url;
+
         }
 
         #endregion Constructors
@@ -34,9 +32,9 @@ namespace AddonWars2.Downloaders.Models
         #region Properties
 
         /// <summary>
-        /// Gets a URL that will be used to download the addon.
+        /// Gets an installation status.
         /// </summary>
-        public string Url => _url;
+        public InstallStatus Status => _status;
 
         #endregion Properties
     }

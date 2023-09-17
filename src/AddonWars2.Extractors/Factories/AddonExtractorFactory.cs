@@ -52,7 +52,7 @@ namespace AddonWars2.Extractors.Factories
                 case DownloadType.Archive:
                     return new ArchiveAddonExtractor(_logger);
                 default:
-                    throw new NotSupportedException($"Cannot create an extractor for the download type: {downloadType.GetType().Name}. The download type is not supported.");
+                    throw new NotSupportedException($"Cannot create an extractor for the download type: {downloadType}. The download type is not supported.");
             }
         }
 

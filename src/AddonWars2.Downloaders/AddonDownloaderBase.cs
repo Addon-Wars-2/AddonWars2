@@ -112,7 +112,7 @@ namespace AddonWars2.Downloaders
         {
             Logger.LogDebug($"Reading a response for {filename}");
 
-            var contentLength = response.Content.Headers.ContentLength ?? 0L;
+            var contentLength = response.Content.Headers.ContentLength ?? 0L;  // TODO: Heavy/lightweight files (select either memory stream or filestream maybe?)
             var content = Array.Empty<byte>();
             var buffer = new byte[DEFAULT_BUFFER_SIZE];
             var totalBytesRead = 0L;
@@ -137,7 +137,7 @@ namespace AddonWars2.Downloaders
                         if (cancellationToken.IsCancellationRequested)
                         {
                             Logger.LogWarning($"A task cancellation for {filename} was requested.");
-                            return new DownloadResult(filename, Array.Empty<byte>());  // return filename to inform what file was aborted
+                            cancellationToken.ThrowIfCancellationRequested();
                         }
 
                         bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));

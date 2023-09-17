@@ -16,6 +16,7 @@ namespace AddonWars2.Extractors.Models
 
         private readonly string _name;
         private readonly byte[] _content;
+        private readonly double _contentLength;
         private readonly string _relativePath;
 
         #endregion Fields
@@ -26,7 +27,7 @@ namespace AddonWars2.Extractors.Models
         /// Initializes a new instance of the <see cref="ExtractedFile"/> class.
         /// </summary>
         /// <param name="name">The extracted object name.</param>
-        /// <param name="content">The extreacted content represented as a byte array.</param>
+        /// <param name="content">The extracted content represented as a byte array.</param>
         /// <param name="relativePath">The extracted object relative path.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
@@ -39,6 +40,7 @@ namespace AddonWars2.Extractors.Models
 
             _name = name;
             _content = content;
+            _contentLength = content.Length;
             _relativePath = relativePath;
         }
 
@@ -55,6 +57,11 @@ namespace AddonWars2.Extractors.Models
         /// Gets the extracted item content.
         /// </summary>
         public byte[] Content => _content;
+
+        /// <summary>
+        /// Gets the extracted content size.
+        /// </summary>
+        public double Size => _contentLength;
 
         /// <summary>
         /// Gets the extracted item relative path.

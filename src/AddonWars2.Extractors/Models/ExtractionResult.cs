@@ -17,7 +17,8 @@ namespace AddonWars2.Extractors.Models
         #region Fields
 
         private readonly List<ExtractedFile> _extractedFiles;
-        private string _version = string.Empty;
+        private readonly double _totalSize = 0d;
+        private readonly string _version = string.Empty;
 
         #endregion Fields
 
@@ -26,21 +27,16 @@ namespace AddonWars2.Extractors.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtractionResult"/> class.
         /// </summary>
-        public ExtractionResult()
-        {
-            _extractedFiles = new List<ExtractedFile>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExtractionResult"/> class.
-        /// </summary>
-        /// <param name="extractedFiles">The downloaded object name.</param>
+        /// <param name="extractedFiles">A downloaded object name.</param>
+        /// <param name="version">Copies a version of a downloaded object.</param>
         /// <exception cref="ArgumentException">If <paramref name="extractedFiles"/> is <see langword="null"/> or empty.</exception>
-        public ExtractionResult(IEnumerable<ExtractedFile> extractedFiles)
+        public ExtractionResult(IEnumerable<ExtractedFile> extractedFiles, string version)
         {
             ArgumentNullException.ThrowIfNull(extractedFiles, nameof(extractedFiles));
 
             _extractedFiles = extractedFiles.ToList();
+            _totalSize = _extractedFiles.Sum(x => x.Size);
+            _version = version;
         }
 
         #endregion Constructors
@@ -53,13 +49,14 @@ namespace AddonWars2.Extractors.Models
         public List<ExtractedFile> ExtractedFiles => _extractedFiles;
 
         /// <summary>
-        /// Gets or sets the downloaded object version.
+        /// Gets a total size of extracted files.
         /// </summary>
-        public string Version
-        {
-            get => _version;
-            set => _version = value;
-        }
+        public double TotalSize => _totalSize;
+
+        /// <summary>
+        /// Gets the downloaded object version.
+        /// </summary>
+        public string Version => _version;
 
         #endregion Properties
     }

@@ -47,11 +47,11 @@ namespace AddonWars2.App.Utils.Helpers
         }
 
         /// <summary>
-        /// Generates and returns the application data directory for this application.
+        /// Builds and returns the application data directory for this application.
         /// The directory will be placed into OS appdata directory.
         /// </summary>
         /// <returns>Application data directory path.</returns>
-        public static string GenerateApplicationDataDirectory()
+        public static string BuildApplicationDataDirectory()
         {
             var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var appName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);

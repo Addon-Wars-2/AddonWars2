@@ -22,7 +22,7 @@ namespace AddonWars2.Downloaders.Interfaces
         public IAddonDownloader GetDownloader(HostType hostType);
 
         /// <summary>
-        /// Creates a new bulk downloader based on host type.
+        /// Creates a new bulk downloader.
         /// </summary>
         /// <returns>A new downloader.</returns>
         public BulkAddonDownloader GetBulkDownloader();

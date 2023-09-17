@@ -9,6 +9,7 @@ namespace AddonWars2.Downloaders
 {
     using System.Collections.Generic;
     using AddonWars2.Core.DTO;
+    using AddonWars2.Core.Interfaces;
     using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
@@ -18,7 +19,7 @@ namespace AddonWars2.Downloaders
     /// <summary>
     /// Represents a class to download multiple addons asynchronously.
     /// </summary>
-    public class BulkAddonDownloader
+    public class BulkAddonDownloader : IAttachableProgress
     {
         #region Fields
 
@@ -71,11 +72,8 @@ namespace AddonWars2.Downloaders
 
         #region Properties
 
-        /// <summary>
-        /// Gets a collection of <see cref="IProgress{T}"/> items which can be used to
-        /// track the downloading progress for any of the requested addons.
-        /// </summary>
-        protected Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
+        /// <inheritdoc/>
+        public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
 
         /// <summary>
         /// Gets the instance of <see cref="IAddonDownloaderFactory"/> factory.
@@ -126,7 +124,7 @@ namespace AddonWars2.Downloaders
             {
                 OnDownloadAborted();
                 ClearProgressCollection();
-                throw new AddonDownloaderException("A task was canceled.", ex);
+                throw ex;
             }
 
             OnDownloadCompleted();
@@ -136,19 +134,10 @@ namespace AddonWars2.Downloaders
             return results;
         }
 
-        /// <summary>
-        /// Attaches a new <see cref="IProgress{T}"/> item using a unique string token.
-        /// The bulk downloader will use an addon iternal name to compare with the specified <paramref name="token"/>.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="IProgress{T}"/> object should be created outside background thread, typically inside a method
-        /// called on a UI thread to capture sync context.
-        /// </remarks>
-        /// <param name="token">A unique string token (addon internal name).</param>
-        /// <param name="progress">A progress item to add.</param>
+        /// <inheritdoc/>
         public void AttachProgressItem(string token, IProgress<double> progress)
         {
-            ProgressCollection.Add(token, progress); // TODO: will using TryAdd be better?
+            ProgressCollection.Add(token, progress);
         }
 
         /// <summary>
@@ -243,13 +232,18 @@ namespace AddonWars2.Downloaders
                 {
                     result = await downloader.DownloadAsync(host.HostUrl, cancellationToken);
                     result.Metadata.Add("internal_name", addonData.InternalName);
-                    Logger.LogDebug($"Finished with \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
+                    Logger.LogDebug($"Download completed for \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
                     break;
                 }
-                catch (Exception e)
+                catch (OperationCanceledException)
+                {
+                    Logger.LogWarning($"Download operation was canceled for {addonData.InternalName}.");
+                    break;
+                }
+                catch (Exception ex)
                 {
                     Logger.LogError($"Failed to download \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}\nThe next host will be used if available.");
-                    exceptions.Add(e);
+                    exceptions.Add(ex);
                     continue;
                 }
                 finally
@@ -290,16 +284,16 @@ namespace AddonWars2.Downloaders
         private string BuildStackTracesString(IEnumerable<Exception> exceptions)
         {
             var stackTraces = string.Empty;
-            foreach (var e in exceptions)
+            foreach (var ex in exceptions)
             {
-                if (!string.IsNullOrEmpty(e.Message))
+                if (!string.IsNullOrEmpty(ex.Message))
                 {
-                    stackTraces += $"{e.Message}\n";
+                    stackTraces += $"{ex.Message}\n";
                 }
 
-                if (!string.IsNullOrEmpty(e.StackTrace))
+                if (!string.IsNullOrEmpty(ex.StackTrace))
                 {
-                    stackTraces += $"{e.StackTrace}\n";
+                    stackTraces += $"{ex.StackTrace}\n";
                 }
             }
 

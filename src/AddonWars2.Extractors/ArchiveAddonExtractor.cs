@@ -45,31 +45,39 @@ namespace AddonWars2.Extractors
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<ExtractionResult> Extract(ExtractionRequest request)
+        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request)
         {
-            var extractionResult = new ExtractionResult()
-            {
-                Version = request.Version,
-            };
+            var extractedFiles = new List<ExtractedFile>();
 
             using (MemoryStream ms = new MemoryStream(request.Content))
             {
                 using (ZipArchive zipArchive = new ZipArchive(ms, ZipArchiveMode.Read))
                 {
                     var zipArchiveFileEntries = zipArchive.Entries.Where(x => IsZipEntryFile(x));
+                    var itemsExtracted = 0;
+                    var itemsTotal = zipArchiveFileEntries.Count();
+
                     foreach (var entry in zipArchiveFileEntries)
                     {
-                        var extracted = await ExtractZipArchiveEntry(entry);
-                        extractionResult.ExtractedFiles.Add(extracted);
+                        var extracted = await ExtractZipArchiveEntryAsync(entry);
+                        extractedFiles.Add(extracted);
+
+                        itemsExtracted += 1;
+                        OnExtractProgressChanged(itemsTotal, itemsExtracted);
+
+                        if (UseFakeDelay)
+                        {
+                            await DelayAsync(FAKE_DELAY);
+                        }
                     }
                 }
             }
 
-            return extractionResult;
+            return new ExtractionResult(extractedFiles, request.Version);
         }
 
         // Extracts the specified entry.
-        private async Task<ExtractedFile> ExtractZipArchiveEntry(ZipArchiveEntry zipArchiveEntry)
+        private async Task<ExtractedFile> ExtractZipArchiveEntryAsync(ZipArchiveEntry zipArchiveEntry)
         {
             using (Stream es = zipArchiveEntry.Open())
             {

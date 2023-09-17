@@ -7,16 +7,21 @@
 
 namespace AddonWars2.Installers
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.Installers.Models;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Represents a base class for addon installers.
     /// </summary>
-    public abstract class AddonInstallerBase
+    public abstract class AddonInstallerBase : IAddonInstaller
     {
         #region Fields
 
         private static ILogger _logger;
+        private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
 
         #endregion Fields
 
@@ -39,6 +44,9 @@ namespace AddonWars2.Installers
 
         #region Properties
 
+        /// <inheritdoc/>
+        public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
+
         /// <summary>
         /// Gets the current logger instance.
         /// </summary>
@@ -49,7 +57,22 @@ namespace AddonWars2.Installers
         #region Methods
 
         /// <inheritdoc/>
-        //public abstract Task<ExtractionResult> Extract(ExtractionRequest request);
+        public abstract Task<InstallResult> InstallAsync(InstallRequest installRequest);
+
+        /// <inheritdoc/>
+        public abstract Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest);
+
+        /// <inheritdoc/>
+        public void AttachProgressItem(string token, IProgress<double> progress)
+        {
+            ProgressCollection.Add(token, progress);
+        }
+
+        // Sets a delay.
+        private async Task DelayAsync(int milliseconds)
+        {
+            await Task.Run(async () => await Task.Delay(milliseconds));
+        }
 
         #endregion Methods
     }

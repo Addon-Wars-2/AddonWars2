@@ -7,10 +7,26 @@
 
 namespace AddonWars2.Installers.Interfaces
 {
+    using AddonWars2.Core.Interfaces;
+    using AddonWars2.Installers.Models;
+
     /// <summary>
     /// Specifies a contract for addon installers.
     /// </summary>
-    public interface IAddonInstaller
+    public interface IAddonInstaller : IAttachableProgress
     {
+        /// <summary>
+        /// Installs a requested addon.
+        /// </summary>
+        /// <param name="installRequest">The installation request.</param>
+        /// <returns><see cref="InstallResult"/> object.</returns>
+        public Task<InstallResult> InstallAsync(InstallRequest installRequest);
+
+        /// <summary>
+        /// Uninstalls a requested addon.
+        /// </summary>
+        /// <param name="uninstallRequest">The uninstallation request.</param>
+        /// <returns><see cref="UninstallResult"/> object.</returns>
+        public Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest);
     }
 }

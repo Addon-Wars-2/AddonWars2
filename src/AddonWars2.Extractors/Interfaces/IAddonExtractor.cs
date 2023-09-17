@@ -7,18 +7,24 @@
 
 namespace AddonWars2.Extractors.Interfaces
 {
+    using AddonWars2.Core.Interfaces;
     using AddonWars2.Extractors.Models;
 
     /// <summary>
     /// Specifies a contract for addon extractors.
     /// </summary>
-    public interface IAddonExtractor
+    public interface IAddonExtractor : IAttachableProgress
     {
+        /// <summary>
+        /// Is raised whenever the extraction progress has changed.
+        /// </summary>
+        public event ExtractProgressChangedEventHandler? ExtractProgressChanged;
+
         /// <summary>
         /// Extracts the addon using the provided information.
         /// </summary>
         /// <param name="request">An extruction request.</param>
         /// <returns>An extracted addon.</returns>
-        public Task<ExtractionResult> Extract(ExtractionRequest request);
+        public Task<ExtractionResult> ExtractAsync(ExtractionRequest request);
     }
 }

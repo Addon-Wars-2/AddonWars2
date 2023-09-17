@@ -15,7 +15,7 @@ namespace AddonWars2.Installers.Interfaces
     public interface IAddonInstallerFactory
     {
         /// <summary>
-        /// Creates a new installer based on install mode.
+        /// Creates a new installer based on an install mode.
         /// </summary>
         /// <param name="installMode">The addon install mode.</param>
         /// <returns>A new installer.</returns>

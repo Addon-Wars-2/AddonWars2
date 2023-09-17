@@ -43,11 +43,18 @@
         <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
         <convert:EnumToStringConverter x:Key="EnumToStringConverter"/>
         <CollectionViewSource
-            x:Key="ProgressItemsCollectionView"
-            Source="{Binding InstallProgressItems}">
+            x:Key="DownloadProgressItemsCollectionView"
+            Source="{Binding DownloadProgressItems}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="DisplayName"/>
             </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource
+            x:Key="InstallProgressItemsCollectionView"
+            Source="{Binding InstallProgressItems}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="DisplayName"/>
+            </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </Window.Resources>
 
@@ -138,9 +145,9 @@
                     VerticalAlignment="Center"
                     Text="{DynamicResource S.Dialog.InstallProgressDialog.Description.Downloading}"/>
                 <ListBox
-                    x:Name="AddonsList"
+                    x:Name="DownloadList"
                     Grid.Row="1"
-                    ItemsSource="{Binding Source={StaticResource ProgressItemsCollectionView}}"
+                    ItemsSource="{Binding Source={StaticResource DownloadProgressItemsCollectionView}}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <ListBox.Template>
                         <ControlTemplate>
@@ -154,7 +161,7 @@
                                 Style="{DynamicResource ScrollViewerStyle}">
                                 <ItemsPresenter/>
                                 <i:Interaction.Triggers>
-                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=AddonsList}" Value="False">
+                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=DownloadList}" Value="False">
                                         <i:CallMethodAction MethodName="ScrollToTop"/>
                                     </i:DataTrigger>
                                 </i:Interaction.Triggers>
@@ -169,7 +176,7 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type subvm:InstallProgressItemViewModel}">
+                        <DataTemplate DataType="{x:Type subvm:ProgressItemViewModel}">
                             <Grid
                                 x:Name="DataTemplateRootBorder"
                                 Background="Transparent"
@@ -244,6 +251,110 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Text="{DynamicResource S.Dialog.InstallProgressDialog.Description.Installing}"/>
+                <ListBox
+                    x:Name="InstallList"
+                    Grid.Row="1"
+                    ItemsSource="{Binding Source={StaticResource InstallProgressItemsCollectionView}}"
+                    IsSynchronizedWithCurrentItem="{x:Null}">
+                    <ListBox.Template>
+                        <ControlTemplate>
+                            <ScrollViewer
+                                x:Name="ScrollViewerControl"
+                                CanContentScroll="True"
+                                HorizontalScrollBarVisibility="Hidden"
+                                VerticalScrollBarVisibility="Auto"
+                                IsTabStop="False"
+                                Focusable="False"
+                                Style="{DynamicResource ScrollViewerStyle}">
+                                <ItemsPresenter/>
+                                <i:Interaction.Triggers>
+                                    <i:DataTrigger Binding="{Binding Path=HasItems, ElementName=InstallList}" Value="False">
+                                        <i:CallMethodAction MethodName="ScrollToTop"/>
+                                    </i:DataTrigger>
+                                </i:Interaction.Triggers>
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListBox.Template>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel
+                                Orientation="Vertical"
+                                IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type subvm:ProgressItemViewModel}">
+                            <Grid
+                                x:Name="DataTemplateRootBorder"
+                                Background="Transparent"
+                                Width="{Binding Path=ViewportWidth, ElementName=ScrollViewerControl}"
+                                Margin="0,2,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <ProgressBar
+                                    Grid.Row="1"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    IsIndeterminate="False"
+                                    Height="4"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource SolidColorBrush.PrimaryPalette.Level3}"
+                                    Foreground="{StaticResource SolidColorBrush.PrimaryPalette.Accent02}"
+                                    Value="{Binding Path=ProgressValue}"/>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                    <Setter TargetName="DataTemplateRootBorder" Property="Margin" Value="0"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock
+                                                        Grid.Row="0"
+                                                        Text="{Binding Name}"/>
+                                                    <Border
+                                                        Grid.Row="1"
+                                                        Margin="0,5,0,0">
+                                                        <ItemsPresenter/>
+                                                    </Border>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </ListBox.GroupStyle>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </Grid>
             <Grid
                 x:Name="ButtonsGrid"
@@ -254,7 +365,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button
-                    x:Name="AbortButton"
+                    x:Name="CancelButton"
                     Grid.Column="1"
                     Margin="5"
                     Padding="4,0,4,0"
@@ -264,7 +375,7 @@
                     Height="20"
                     Cursor="Hand"
                     Focusable="False"
-                    Content="Abort"
+                    Content="{DynamicResource S.Controls.Button.Cancel.Text}"
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="1"
                     Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}">

@@ -12,6 +12,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
     using System.ComponentModel;
     using System.Threading.Tasks;
     using AddonWars2.App.ViewModels.SubViewModels;
+    using AddonWars2.Core.Interfaces;
     using AddonWars2.Downloaders;
     using CommunityToolkit.Mvvm.Input;
     using CommunityToolkit.Mvvm.Messaging;
@@ -32,6 +33,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// View model is downloading files.
         /// </summary>
         Downloading,
+
+        /// <summary>
+        /// View model is extracting files.
+        /// </summary>
+        Extracting,
 
         /// <summary>
         /// View model is installing addons.
@@ -65,7 +71,8 @@ namespace AddonWars2.App.ViewModels.Dialogs
         private readonly BulkAddonDownloader _downloader;
         private InstallProgressDialogViewModelState _viewModelState = InstallProgressDialogViewModelState.Ready;
         private bool? _dialogResult = null;
-        private ObservableCollection<InstallProgressItemViewModel> _installProgressItems = new ObservableCollection<InstallProgressItemViewModel>();
+        private ObservableCollection<ProgressItemViewModel> _downloadProgressItems = new ObservableCollection<ProgressItemViewModel>();
+        private ObservableCollection<ProgressItemViewModel> _installProgressItems = new ObservableCollection<ProgressItemViewModel>();
 
         #endregion Fields
 
@@ -123,9 +130,22 @@ namespace AddonWars2.App.ViewModels.Dialogs
         public bool? DialogResult => _dialogResult;
 
         /// <summary>
-        /// Gets or sets a collection of addons to be downloaded and installed.
+        /// Gets or sets a collection of addons to be downloaded.
         /// </summary>
-        public ObservableCollection<InstallProgressItemViewModel> InstallProgressItems
+        public ObservableCollection<ProgressItemViewModel> DownloadProgressItems
+        {
+            get => _downloadProgressItems;
+            set
+            {
+                SetProperty(ref _downloadProgressItems, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a collection of addons to be extracted.
+        /// </summary>
+        public ObservableCollection<ProgressItemViewModel> InstallProgressItems
         {
             get => _installProgressItems;
             set
@@ -138,7 +158,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// <summary>
         /// Gets a bulk downloader isntance.
         /// </summary>
-        protected BulkAddonDownloader Downloader => _downloader;
+        public BulkAddonDownloader Downloader => _downloader;
 
         #endregion Properties
 
@@ -173,6 +193,41 @@ namespace AddonWars2.App.ViewModels.Dialogs
 
         #region Methods
 
+        /// <summary>
+        /// Attaches a new <see cref="ProgressItemViewModel"/> to the view model and its downloader
+        /// to report download progress from the backend to the UI. The downloader will update progress
+        /// values through the event system, while the UI binding engine will update progress bars
+        /// through INPC and binding engine.
+        /// </summary>
+        /// <param name="target">An <see cref="IAttachableProgress"/> object.</param>
+        /// <param name="item">An item to attach.</param>
+        public void AttachDownloadProgressItem(IAttachableProgress target, ProgressItemViewModel item)
+        {
+            AW2Application.Current.Dispatcher.Invoke(() =>
+            {
+                var progress = new Progress<double>(value => item.ProgressValue = value);
+                target.AttachProgressItem(item.Token, progress);
+            });
+
+            DownloadProgressItems.Add(item);
+        }
+
+        /// <summary>
+        /// Attaches a new <see cref="ProgressItemViewModel"/> to the VM and a given target.
+        /// </summary>
+        /// <param name="target">An <see cref="IAttachableProgress"/> object.</param>
+        /// <param name="item">An item to attach.</param>
+        public void AttachInstallProgressItem(IAttachableProgress target, ProgressItemViewModel item)
+        {
+            AW2Application.Current.Dispatcher.Invoke(() =>
+            {
+                var progress = new Progress<double>(value => item.ProgressValue = value);
+                target.AttachProgressItem(item.Token, progress);
+            });
+
+            InstallProgressItems.Add(item);
+        }
+
         // Bulk downloader event handler to inject Progress items used to tack the download progress for each addon.
         private void Downloader_DownloadStarted(object? sender, EventArgs e)
         {
@@ -182,7 +237,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         // Bulk downloader event handler to track the moment when the download process is finished.
         private async void Downloader_DownloadCompleted(object? sender, EventArgs e)
         {
-            await DelayAsync(500); // to prevent switching from download to install view too fast
+            await DelayAsync(0); // to prevent switching from download to install view too fast
             ViewModelState = InstallProgressDialogViewModelState.Installing;
         }
 

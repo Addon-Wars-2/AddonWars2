@@ -262,7 +262,7 @@ namespace AddonWars2.App
         private void AW2App_SetupLogger()
         {
             // Locate AppSharedData\Roaming application directory.
-            var appDataDir = IOHelper.GenerateApplicationDataDirectory();
+            var appDataDir = IOHelper.BuildApplicationDataDirectory();
             if (!Directory.Exists(appDataDir))
             {
                 Directory.CreateDirectory(appDataDir);

@@ -19,6 +19,7 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.UIServices.Enums;
     using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels.Commands;
+    using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.App.ViewModels.SubViewModels;
     using AddonWars2.Core.Interfaces;
@@ -28,8 +29,12 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
+    using AddonWars2.Extractors;
     using AddonWars2.Extractors.Interfaces;
     using AddonWars2.Extractors.Models;
+    using AddonWars2.Installers.Factories;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.Installers.Models;
     using AddonWars2.Providers;
     using AddonWars2.Providers.Enums;
     using AddonWars2.Providers.Interfaces;
@@ -101,6 +106,7 @@ namespace AddonWars2.App.ViewModels
         private readonly IHttpClientWrapper _httpClientWrapper;
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly IAddonExtractorFactory _addonExtractorFactory;
+        private readonly IAddonInstallerFactory _addonInstallerFactory;
         private readonly ILibraryManager _libraryManager;
 
         private ManageAddonsViewModelState _viewModelState = ManageAddonsViewModelState.Ready;
@@ -116,6 +122,8 @@ namespace AddonWars2.App.ViewModels
         #endregion Fields
 
         #region Constructors
+
+        // Ctor on steroids o_O.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageAddonsPageViewModel"/> class.
@@ -135,6 +143,7 @@ namespace AddonWars2.App.ViewModels
         /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/>.</param>
         /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
         /// <param name="addonExtractorFactory">A reference to <see cref="IAddonExtractorFactory"/>.</param>
+        /// <param name="addonInstallerFactory">A reference to <see cref="IAddonInstallerFactory"/>.</param>
         /// <param name="libraryManager">A reference to <see cref="ILibraryManager"/>.</param>
         public ManageAddonsPageViewModel(
             ILogger<ManageAddonsPageViewModel> logger,
@@ -152,6 +161,7 @@ namespace AddonWars2.App.ViewModels
             IHttpClientWrapper httpClientWrapper,
             IAddonDownloaderFactory addonDownloaderFactory,
             IAddonExtractorFactory addonExtractorFactory,
+            IAddonInstallerFactory addonInstallerFactory,
             ILibraryManager libraryManager)
             : base(logger)
         {
@@ -169,6 +179,7 @@ namespace AddonWars2.App.ViewModels
             _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
             _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
             _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
+            _addonInstallerFactory = addonInstallerFactory ?? throw new ArgumentNullException(nameof(addonInstallerFactory));
             _libraryManager = libraryManager ?? throw new ArgumentNullException(nameof(libraryManager));
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
@@ -250,6 +261,11 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to addon extractor factory.
         /// </summary>
         public IAddonExtractorFactory AddonExtractorFactory => _addonExtractorFactory;
+
+        /// <summary>
+        /// Gets a reference to addon installer factory.
+        /// </summary>
+        public IAddonInstallerFactory AddonInstallerFactory => _addonInstallerFactory;
 
         /// <summary>
         /// Gets a reference to the library manager.
@@ -471,40 +487,40 @@ namespace AddonWars2.App.ViewModels
 
                 UpdateGitHubRateLimitsInfo();
             }
-            catch (RateLimitExceededException e)
+            catch (RateLimitExceededException ex)
             {
                 // GitHub API rate limit exceeded.
                 finalState = ManageAddonsViewModelState.Error;
-                Logger.LogError(e, $"GitHub API rate limit exceeded. The current limit is {e.Remaining}/{e.Limit}.\n");
-                ShowErrorDialog(_gitHubRateLimitErrorTitle, _gitHubRateLimitErrorMessage, $"The current limit: {e.Remaining}/{e.Limit}\n{e.Message}");
+                Logger.LogError(ex, $"GitHub API rate limit exceeded. The current limit is {ex.Remaining}/{ex.Limit}.\n");
+                ShowErrorDialog(_gitHubRateLimitErrorTitle, _gitHubRateLimitErrorMessage, $"The current limit: {ex.Remaining}/{ex.Limit}\n{ex.Message}");
             }
-            catch (AuthorizationException e)
+            catch (AuthorizationException ex)
             {
                 // Invalid API token.
                 finalState = ManageAddonsViewModelState.Error;
-                Logger.LogError(e, "Invalid GitHub API token.");
-                ShowErrorDialog(_gitHubTokenErrorTitle, _gitHubTokenErrorMessage, e.Message);
+                Logger.LogError(ex, "Invalid GitHub API token.");
+                ShowErrorDialog(_gitHubTokenErrorTitle, _gitHubTokenErrorMessage, ex.Message);
             }
-            catch (NotFoundException e)
+            catch (NotFoundException ex)
             {
                 // Repo or branch is not found.
                 finalState = ManageAddonsViewModelState.Error;
-                Logger.LogError(e, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
-                ShowErrorDialog(_gitHubNotFoundErrorTitle, _gitHubNotFoundErrorMessage, e.Message);
+                Logger.LogError(ex, $"GitHub API returned 404 NotFound -- repository id={id} or branch \"{RegistryProviderBase.ApprovedProvidersBranchName}\" is not found.");
+                ShowErrorDialog(_gitHubNotFoundErrorTitle, _gitHubNotFoundErrorMessage, ex.Message);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException ex)
             {
                 // Bad code from download URL request.
                 finalState = ManageAddonsViewModelState.Error;
-                Logger.LogError(e, "Unable to download the list of approved providers.");
-                ShowErrorDialog(_providersBadCodeErrorTitle, _providersBadCodeErrorMessage, e.Message);
+                Logger.LogError(ex, "Unable to download the list of approved providers.");
+                ShowErrorDialog(_providersBadCodeErrorTitle, _providersBadCodeErrorMessage, ex.Message);
             }
-            catch (JsonException e)
+            catch (JsonException ex)
             {
                 // Deserialization error.
                 finalState = ManageAddonsViewModelState.Error;
-                Logger.LogError(e, "Unable to deserialize the downloaded JSON.");
-                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, e.Message);
+                Logger.LogError(ex, "Unable to deserialize the downloaded JSON.");
+                ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, ex.Message);
             }
 
             ////// We always load cached library at the end.
@@ -543,7 +559,7 @@ namespace AddonWars2.App.ViewModels
 
             if (CachedProvidersCollection.ContainsKey(SelectedProvider!.Name)) // null is covered by CanExecute predicate defined in ctor
             {
-                Logger.LogDebug("Addons are loaded from the cache.");
+                Logger.LogDebug("Addons are loaded from cache.");
             }
             else
             {
@@ -601,7 +617,7 @@ namespace AddonWars2.App.ViewModels
             var unavailable = EnsureDependenciesAvailable(resolved);
             if (unavailable.Count > 0)
             {
-                Logger.LogError($"Total {unavailable.Count} unavailable dependencies detected. The installation process is cancelled.");
+                Logger.LogError($"Total {unavailable.Count} unavailable dependencies detected. The installation process is canceled.");
                 ShowErrorDialog(_unavailableDependenciesErrorTitle, _unavailableDependenciesErrorMessage, string.Join("\n", unavailable));
                 return;
             }
@@ -615,41 +631,43 @@ namespace AddonWars2.App.ViewModels
                 var result = ShowInstallAddonsDialog(installationSequence);
                 if (result == false)
                 {
-                    Logger.LogInformation("Installation was cancelled by user.");
+                    Logger.LogInformation("Installation was canceled by user.");
                     return;
                 }
             }
 
             // TODO: Check for conflicts prior downloading anything.
 
-            // Begin to download addons.
             var downloader = AddonDownloaderFactory.GetBulkDownloader();
-            var progressDialogTask = ShowInstallProgressWindowAsync(downloader, installationSequence);
+            var ivm = DownloadProgressDialogFactory.Create(Messenger, downloader);
+            AttachDownloadProgressItems(ivm, downloader, installationSequence);
+
             IEnumerable<DownloadResult>? downloadedAddons;
+            IEnumerable<InstallResult>? installedAddons;
+            var progressDialogTask = ShowInstallProgressWindowAsync(ivm);
             try
             {
                 downloadedAddons = await DownloadAddonsAsync(downloader, installationSequence);
+                installedAddons = await ExtractAndInstallAddonsAsync(ivm, installationSequence, downloadedAddons);
             }
-            catch (AddonDownloaderException e)
+            catch (AddonDownloaderException ex)
             {
-                ShowErrorDialog(_failedToDownloadAddonsErrorTitle, _failedToDownloadAddonsErrorMessage, e.Message);
+                ShowErrorDialog(_failedToDownloadAddonsErrorTitle, _failedToDownloadAddonsErrorMessage, ex.Message);
+                return;
+            }
+            catch (TaskCanceledException)
+            {
+                Logger.LogWarning("Download operation was interrupted.");
+                return;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Unexpected error has occured", ex.Message);
                 return;
             }
             finally
             {
                 await progressDialogTask;
-            }
-
-            // Extract downloaded addons.
-            var extractedAddons = await ExtractAddonsAsync(installationSequence, downloadedAddons);
-            foreach (var item in extractedAddons)
-            {
-                Debug.WriteLine($"ver {item.Version}");
-                for (int i = 0; i < item.ExtractedFiles.Count; i++)
-                {
-                    var x = item.ExtractedFiles[i];
-                    Debug.WriteLine($"  {i} {x.Name} | {x.RelativePath}");
-                }
             }
 
             UpdateGitHubRateLimitsInfo();
@@ -688,20 +706,35 @@ namespace AddonWars2.App.ViewModels
         // and which are not already installed.
         private IList<LoadedAddonDataViewModel> CreateInstallationSequence(IList<IDNode> resolved)
         {
-            var installationSeq = new List<LoadedAddonDataViewModel>();
+            var installationSequence = new List<LoadedAddonDataViewModel>();
             foreach (var node in resolved)
             {
                 var addon = ProviderAddonsCollection.FirstOrDefault(x => x?.InternalName == node.Name, null);
-                if (addon != null && !addon.IsInstalled && !installationSeq.Contains(addon))
+                if (addon != null && !addon.IsInstalled && !installationSequence.Contains(addon))
                 {
-                    installationSeq.Add(addon);
+                    installationSequence.Add(addon);
                 }
             }
 
-            return installationSeq;
+            return installationSequence;
         }
 
-        // Starts to download the required addons.
+        // Injects Progress items into a VM since they need to be created in the UI thread.
+        private void AttachDownloadProgressItems(InstallProgressDialogViewModel vm, IAttachableProgress target, IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        {
+            foreach (var item in installationSequence)
+            {
+                var ipi = new ProgressItemViewModel()
+                {
+                    Token = item.InternalName,
+                    DisplayName = item.DisplayName,
+                };
+
+                vm.AttachDownloadProgressItem(target, ipi);
+            }
+        }
+
+        // Begins to download the required addons.
         private async Task<IEnumerable<DownloadResult>> DownloadAddonsAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
         {
             var addonsToInstall = ProviderAddonsCollection
@@ -711,33 +744,48 @@ namespace AddonWars2.App.ViewModels
             return await downloader.DownloadBulkAsync(addonsToInstall);
         }
 
-        // Extract the required addons.
-        private async Task<IEnumerable<ExtractionResult>> ExtractAddonsAsync(IEnumerable<LoadedAddonDataViewModel> installationSequence, IEnumerable<DownloadResult> downloadedAddons)
+        // Injects a single Progress item into a VM since it needs to be created in the UI thread.
+        private void AttachInstallProgressItem(InstallProgressDialogViewModel vm, IAttachableProgress target, LoadedAddonDataViewModel addonDataViewModel)
         {
-            var taskQuery = installationSequence
-                .Select(x => ExtractAddonInternalAsync(x, downloadedAddons.First(dres => (string)dres.Metadata["internal_name"] == x.InternalName)))
-                .ToList();
+            var ipi = new ProgressItemViewModel()
+            {
+                Token = addonDataViewModel.InternalName,
+                DisplayName = addonDataViewModel.DisplayName,
+            };
 
-            var results = new ExtractionResult[taskQuery.Count];
-
-            Logger.LogInformation("Extracting addons...");
-
-            results = await Task.WhenAll(taskQuery);
-
-            Logger.LogInformation($"Extraction completed: {results.Length} items in total.");
-
-            return results;
+            vm.AttachInstallProgressItem(target, ipi);
         }
 
-        // A task to extract a single addon.
-        private async Task<ExtractionResult> ExtractAddonInternalAsync(LoadedAddonDataViewModel addon, DownloadResult downloadedAddon)
+        // Begins to extract and install the required addons.
+        private async Task<IEnumerable<InstallResult>> ExtractAndInstallAddonsAsync(InstallProgressDialogViewModel vm, IEnumerable<LoadedAddonDataViewModel> installationSequence, IEnumerable<DownloadResult> downloadedAddons)
         {
-            var extractor = AddonExtractorFactory.GetExtractor(addon.Model.DownloadType);
-            var request = new ExtractionRequest(downloadedAddon.Name, downloadedAddon.Content, downloadedAddon.Version);
+            // Prepare progress items to report in the UI and store extractors and installers references.
+            var extractors = new Dictionary<string, IAddonExtractor>();
+            var installers = new Dictionary<string, IAddonInstaller>();
+            foreach (var item in installationSequence)
+            {
+                var extractor = AddonExtractorFactory.GetExtractor(item.Model.DownloadType);
+                extractors.Add(item.InternalName, extractor);
+                AttachInstallProgressItem(vm, extractor, item);
 
-            Logger.LogDebug($"Scheduling a task for \"{addon.InternalName}\" using extractor {extractor.GetType().Name}");
+                var installer = AddonInstallerFactory.GetAddonInstaller(item.Model.InstallMode);
+                installers.Add(item.InternalName, installer);
+                AttachInstallProgressItem(vm, installer, item);
+            }
 
-            return await extractor.Extract(request);
+            // Extract and install downloaded addons according to the installation sequence.
+            var installResults = new List<InstallResult>();
+            foreach (var item in installationSequence)
+            {
+                var addon = downloadedAddons.First(x => (string)x.Metadata["internal_name"] == item.InternalName);
+                var extractor = extractors[item.InternalName];
+                var extractRequest = new ExtractionRequest(addon.Name, addon.Content, addon.Version);
+                var extractResult = await extractor.ExtractAsync(extractRequest);
+
+                var installer = installers[item.InternalName];
+            }
+
+            return installResults;
         }
 
         #endregion InstallSelectedAddonCommand
@@ -771,27 +819,8 @@ namespace AddonWars2.App.ViewModels
 
         // Shows a dialog with installation progress.
         // See for non-blocking modal dialog: https://stackoverflow.com/a/33411037
-        private async Task<bool?> ShowInstallProgressWindowAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        private async Task<bool?> ShowInstallProgressWindowAsync(InstallProgressDialogViewModel vm)
         {
-            var vm = DownloadProgressDialogFactory.Create(Messenger, downloader);
-            foreach (var item in installationSequence)
-            {
-                var ipi = new InstallProgressItemViewModel()
-                {
-                    Token = item.InternalName,
-                    DisplayName = item.DisplayName,
-                };
-
-                // To capture the context we need to create Progress item from the UI thread.
-                AW2Application.Current.Dispatcher.Invoke(() =>
-                {
-                    var progress = new Progress<double>(value => ipi.ProgressValue = value);
-                    downloader.AttachProgressItem(ipi.Token, progress);
-                });
-
-                vm.InstallProgressItems.Add(ipi);
-            }
-
             await Task.Yield();
 
             return DialogService.ShowDialog(this, vm);
