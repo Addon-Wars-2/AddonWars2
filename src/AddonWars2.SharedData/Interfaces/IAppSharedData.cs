@@ -22,9 +22,9 @@ namespace AddonWars2.SharedData.Interfaces
         private const string LOG_FILE_PREFIX_DEBUG = "debug_aw2_log_";
         private const string CONFIG_FILE_NAME = "config.json";
         private const string RSS_FEED_DIR_NAME = "rss";
-        private const string CACHED_DIR_NAME = "cached";
-        private const string CACHED_LIB_FILE_NAME = "libcache.json";
-        private const string CACHED_LIB_PROVIDER_NAME = "LIBCACHE";
+        ////private const string CACHED_DIR_NAME = "cached";
+        ////private const string CACHED_LIB_FILE_NAME = "libcache.json";
+        ////private const string CACHED_LIB_PROVIDER_NAME = "LIBCACHE";
         private const string INSTALLED_ADDONS_FILE_NAME = "myaddons.json";
 
         private static readonly CultureInfo _defaultCulture = new CultureInfo("en-US", "EN", "English");
@@ -68,20 +68,20 @@ namespace AddonWars2.SharedData.Interfaces
         /// </summary>
         public string RssFeedDirName => RSS_FEED_DIR_NAME;
 
-        /// <summary>
-        /// Gets the directory name used to cache downloaded addons.
-        /// </summary>
-        public string CachedDirName => CACHED_DIR_NAME;
+        /////// <summary>
+        /////// Gets the directory name used to cache downloaded addons.
+        /////// </summary>
+        ////public string CachedDirName => CACHED_DIR_NAME;
 
-        /// <summary>
-        /// Gets the cached addons file name.
-        /// </summary>
-        public string CachedLibFileName => CACHED_LIB_FILE_NAME;
+        /////// <summary>
+        /////// Gets the cached addons file name.
+        /////// </summary>
+        ////public string CachedLibFileName => CACHED_LIB_FILE_NAME;
 
-        /// <summary>
-        /// Gets the cached addons provider name.
-        /// </summary>
-        public string CachedLibProviderName => CACHED_LIB_PROVIDER_NAME;
+        /////// <summary>
+        /////// Gets the cached addons provider name.
+        /////// </summary>
+        ////public string CachedLibProviderName => CACHED_LIB_PROVIDER_NAME;
 
         /// <summary>
         /// Gets the installed addons file name.

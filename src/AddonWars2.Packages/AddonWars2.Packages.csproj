@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+<PropertyGroup>
+	<TargetFramework>net7.0-windows</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
 
 	<BaseIntermediateOutputPath></BaseIntermediateOutputPath>
 	<BaseOutputPath>..\..\bld\</BaseOutputPath>
@@ -13,20 +13,27 @@
 	<NeutralLanguage>en</NeutralLanguage>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<Deterministic>false</Deterministic>
-  </PropertyGroup>
+	<EnableNETAnalyzers>True</EnableNETAnalyzers>
+</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<DebugType>embedded</DebugType>
+</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<DebugType>embedded</DebugType>
+</PropertyGroup>
 
+<ItemGroup>
+	<Compile Remove="bin\**" />
+	<EmbeddedResource Remove="bin\**" />
+	<None Remove="bin\**" />
+</ItemGroup>
+	
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
@@ -36,8 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Macross.Json.Extensions" Version="3.0.0" />
-    <PackageReference Include="Octokit" Version="8.0.1" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -45,13 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\Conditions\" />
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\AddonWars2.Installers\AddonWars2.Installers.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
-    <ProjectReference Include="..\AddonWars2.SharedData\AddonWars2.SharedData.csproj" />
-  </ItemGroup>
-	
 </Project>

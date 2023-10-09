@@ -7,14 +7,22 @@
 
 namespace AddonWars2.Core.Interfaces
 {
-    using AddonWars2.Core.DTO;
-    using AddonWars2.Downloaders.Models;
+    using AddonWars2.Packages.Interfaces;
 
     /// <summary>
     /// Specified a contract for the addon library managers.
     /// </summary>
     public interface ILibraryManager
     {
-        
+        /// <summary>
+        /// Installs a new addon package.
+        /// </summary>
+        /// <remarks>
+        /// An addon package is a package that contains all necessary files
+        /// and installation instructions. A package can contain one or more
+        /// addons to install.
+        /// </remarks>
+        /// <param name="package">An addon package.</param>
+        public void InstallPackage(IAddonPackage package);
     }
 }

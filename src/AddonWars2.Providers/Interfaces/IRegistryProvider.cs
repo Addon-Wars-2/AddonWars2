@@ -25,22 +25,19 @@ namespace AddonWars2.Providers.Interfaces
     /// </remarks>
     public interface IRegistryProvider
     {
-        // TODO: Currently a list of approved providers is stored on GitHub repo and
-        //       is accessed directly. It acts as the main entry point for addons search,
-        //       and the search path is hardcoded within the application config data.
-        //       Because multiple entry points are possible (all hardcoded or supplied by
-        //       external config), I would prefer to separate "GetProviders" and "GetAddons"
-        //       logic since these are two different tasks.
-
         /// <summary>
-        /// Gets a collection of approved registry providers.
+        /// Gets a collection of registry providers.
         /// It will be requested from the project repository as it's the only source
         /// of approved providers.
         /// </summary>
-        /// <param name="repositoryId">A repository ID a list will be searched in.</param>
-        /// <param name="path">A repository path pointing to a list of approved providers.</param>
+        /// <remarks>
+        /// An arbitrary <paramref name="repositoryId"/> can be used for non-github providers,
+        /// while <paramref name="path"/> should point to a local file rather than represent a URL.
+        /// </remarks>
+        /// <param name="path">A repository path pointing to a list of providers.</param>
+        /// <param name="repositoryId">A repository ID a list will be searched in. Default = -1.</param>
         /// <returns>A collection of registry providers.</returns>
-        public Task<IEnumerable<ProviderInfo>> GetApprovedProvidersAsync(long repositoryId, string path);
+        public Task<IEnumerable<ProviderInfo>> GetProvidersAsync(string path, long repositoryId = -1);
 
         /// <summary>
         /// Gets a collection of addons data stored within the library.

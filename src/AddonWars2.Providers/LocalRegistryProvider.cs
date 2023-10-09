@@ -7,6 +7,7 @@
 
 namespace AddonWars2.Providers
 {
+    using System.Collections.Generic;
     using System.Text.Json;
     using AddonWars2.Core.DTO;
     using AddonWars2.Providers.DTO;
@@ -43,6 +44,16 @@ namespace AddonWars2.Providers
         #endregion Properties
 
         #region Methods
+
+        /// <inheritdoc/>
+        public override async Task<IEnumerable<ProviderInfo>> GetProvidersAsync(string path, long repositoryId)
+        {
+            using (var stream = new FileStream(path, System.IO.FileMode.Open))
+            {
+                var providers = await JsonSerializer.DeserializeAsync<ProvidersCollection>(stream);
+                return providers?.Providers ?? new List<ProviderInfo>();
+            }
+        }
 
         /// <inheritdoc/>
         public override async Task<AddonsCollection> GetAddonsFromAsync(ProviderInfo provider)

@@ -295,11 +295,11 @@
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
-                        <Storyboard x:Key="ManageAddonsTabStoryboard">
+                        <Storyboard x:Key="DownloadAddonsTabStoryboard">
                             <DoubleAnimation
                                 From="0" To="1"
                                 BeginTime="00:00:00" Duration="00:00:0.3"
-                                Storyboard.TargetName="ManageAddonsTab"
+                                Storyboard.TargetName="DownloadAddonsTab"
                                 Storyboard.TargetProperty="Opacity">
                                 <DoubleAnimation.EasingFunction>
                                     <ExponentialEase EasingMode="EaseInOut"/>
@@ -359,15 +359,15 @@
                     </TabItem>
                     <TabItem
                         Padding="5,0,5,1"
-                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Manage}"
+                        Header="{DynamicResource S.MainWindow.TabMenu.Header.Download}"
                         FontFamily="{DynamicResource Menomonia}">
                         <Frame
-                            x:Name="ManageAddonsTab"
-                            Source="ManageAddonsPage.xaml"
+                            x:Name="DownloadAddonsTab"
+                            Source="DownloadAddonsPage.xaml"
                             FocusVisualStyle="{x:Null}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=ManageAddonsTab}">
-                                    <i:ControlStoryboardAction Storyboard="{StaticResource ManageAddonsTabStoryboard}"/>
+                                <i:EventTrigger EventName="Loaded" SourceObject="{Binding ElementName=DownloadAddonsTab}">
+                                    <i:ControlStoryboardAction Storyboard="{StaticResource DownloadAddonsTabStoryboard}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Frame>

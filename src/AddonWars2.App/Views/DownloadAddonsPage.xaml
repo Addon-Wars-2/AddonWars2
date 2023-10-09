@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="AddonWars2.App.Views.ManageAddonsPage"
+    x:Class="AddonWars2.App.Views.DownloadAddonsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,8 +20,8 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" 
     md:DialogServiceViews.IsRegistered="True"
-    Title="ManageAddonsPage"
-    DataContext="{markupex:DISource Type=vm:ManageAddonsPageViewModel}"
+    Title="DownloadAddonsPage"
+    DataContext="{markupex:DISource Type=vm:DownloadAddonsPageViewModel}"
     ShowsNavigationUI="False">
 
     <Page.Resources>
@@ -84,7 +84,7 @@
                 Background="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
                 BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                 BorderThickness="1"
-                assist:HintAssist.Hint="{DynamicResource S.ManageAddonsPage.AddonsList.SelectProviderComboBoxHint}"
+                assist:HintAssist.Hint="{DynamicResource S.DownloadAddonsPage.AddonsList.SelectProviderComboBoxHint}"
                 ItemsSource="{Binding Source={StaticResource ProvidersCollectionView}}"
                 SelectedItem="{Binding Path=DataContext.SelectedProvider, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                 Style="{StaticResource ComboBoxStyle}"
@@ -191,7 +191,7 @@
                                 VerticalAlignment="Center"
                                 FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                                Text="{DynamicResource S.ManageAddonsPage.AddonsList.UsingProvider}"/>
+                                Text="{DynamicResource S.DownloadAddonsPage.AddonsList.UsingProvider}"/>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
@@ -210,7 +210,7 @@
                                 VerticalAlignment="Center"
                                 FontFamily="{DynamicResource Menomonia}"
                                 Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level5}"
-                                Text="{DynamicResource S.ManageAddonsPage.AddonsList.GitHubAPILimit}"/>
+                                Text="{DynamicResource S.DownloadAddonsPage.AddonsList.GitHubAPILimit}"/>
                             <TextBlock
                                 Margin="5,0,5,0"
                                 HorizontalAlignment="Right"
@@ -519,7 +519,7 @@
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </Button>
-                                            <Button
+                                            <!--<Button
                                                 x:Name="RemoveAddonButton"
                                                 Grid.Row="1"
                                                 Margin="0,1,0,0"
@@ -534,7 +534,7 @@
                                                 Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
                                                 Command=""
                                                 ToolTip="{DynamicResource S.ToolTip.Button.RemoveAddonButton}"
-                                                IsEnabled="{Binding IsInstalled, Mode=OneWay}"/>
+                                                IsEnabled="{Binding IsInstalled, Mode=OneWay}"/>-->
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -585,15 +585,15 @@
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus1}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus1}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus2}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus2}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus3}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus3}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
                                 </DataTrigger>-->
                             </DataTemplate.Triggers>
@@ -673,7 +673,7 @@
             FontStyle="Normal"
             FontSize="16"
             FontFamily="{DynamicResource Menomonia}"
-            Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Header}">
+            Text="{DynamicResource S.DownloadAddonsPage.AddonDesc.Header}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -743,7 +743,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Website}"
+                        Text="{DynamicResource S.DownloadAddonsPage.AddonDesc.Content.Website}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="2" Grid.Column="2"
@@ -770,7 +770,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Authors}"
+                        Text="{DynamicResource S.DownloadAddonsPage.AddonDesc.Content.Authors}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="4" Grid.Column="2"
@@ -784,7 +784,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Required}"
+                        Text="{DynamicResource S.DownloadAddonsPage.AddonDesc.Content.Required}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="5" Grid.Column="2"
@@ -798,7 +798,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.ManageAddonsPage.AddonDesc.Content.Conflicts}"
+                        Text="{DynamicResource S.DownloadAddonsPage.AddonDesc.Content.Conflicts}"
                         TextWrapping="NoWrap"/>
                     <TextBlock
                         Grid.Row="6" Grid.Column="2"

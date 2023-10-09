@@ -316,7 +316,7 @@
                         FontStyle="Normal"
                         FontFamily="{DynamicResource Menomonia}"
                         Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Level0}"
-                        Text="{DynamicResource S.ManageAddonsPage.AddonsList.StatusPlaceholders.Updating}">
+                        Text="{DynamicResource S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Updating}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Hidden"/>
@@ -340,7 +340,7 @@
                             FontStyle="Normal"
                             FontFamily="{DynamicResource Menomonia}"
                             Foreground="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"
-                            Text="{DynamicResource S.ManageAddonsPage.AddonsList.StatusPlaceholders.Error}">
+                            Text="{DynamicResource S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Error}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Hidden"/>

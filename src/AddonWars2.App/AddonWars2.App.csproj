@@ -35,6 +35,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\registry-providers.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ApplicationDefinition Include="AW2Application.xaml" />
   </ItemGroup>
 
@@ -55,11 +59,11 @@
     <PackageReference Include="Config.Net" Version="5.1.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1938.49" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="MvvmDialogs" Version="9.1.0" />
+    <PackageReference Include="MvvmDialogs" Version="9.1.2" />
     <PackageReference Include="Serilog" Version="3.0.1" />
-    <PackageReference Include="Serilog.Enrichers.CallerInfo" Version="1.0.3" />
+    <PackageReference Include="Serilog.Enrichers.CallerInfo" Version="1.0.4" />
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
@@ -87,6 +91,7 @@
     <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_11.png" />
     <Resource Include="Assets\Masks\bg\aw2_bg_opacity_mask_12.png" />
     <Resource Include="Assets\Masks\btn\btn_bg_01.png" />
+    <EmbeddedResource Include="Resources\registry-providers.json" />
     <EmbeddedResource Include="Resources\style.css" />
   </ItemGroup>
 
@@ -106,5 +111,7 @@
     <Folder Include="Messaging\Messsages\" />
     <Folder Include="Messaging\Tokens\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties resources_4registry-providers_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

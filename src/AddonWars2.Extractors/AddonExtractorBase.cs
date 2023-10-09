@@ -66,13 +66,13 @@ namespace AddonWars2.Extractors
 
         /// <summary>
         /// Gets or sets a value indicating whether an artificial delay must be added
-        /// between each extraction entry (for UI/UX purposes).
+        /// between each extraction entry.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// For smaller files the extraction process feels to be super fast leading
-        /// to progress bars being filled instantly. For better user experience and
-        /// increasing their serotonin level a delay between every extraction entry
+        /// For smaller files the extraction process feels to be super fast causing
+        /// progress bars to fill up instantly. To improve user experience and
+        /// to increase their serotonin level a delay between every extraction entry
         /// can be used.
         /// </para>
         /// <para>

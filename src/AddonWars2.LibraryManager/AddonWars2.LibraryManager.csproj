@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <TargetFramework>net7.0-windows</TargetFramework>
@@ -56,6 +56,7 @@
     <ProjectReference Include="..\AddonWars2.Downloaders\AddonWars2.Downloaders.csproj" />
     <ProjectReference Include="..\AddonWars2.Extractors\AddonWars2.Extractors.csproj" />
     <ProjectReference Include="..\AddonWars2.Installers\AddonWars2.Installers.csproj" />
+    <ProjectReference Include="..\AddonWars2.Packages\AddonWars2.Packages.csproj" />
   </ItemGroup>
 
 </Project>

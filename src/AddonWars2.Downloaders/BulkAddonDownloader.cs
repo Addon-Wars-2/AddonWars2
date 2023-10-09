@@ -8,7 +8,6 @@
 namespace AddonWars2.Downloaders
 {
     using System.Collections.Generic;
-    using AddonWars2.Core.DTO;
     using AddonWars2.Core.Interfaces;
     using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Exceptions;
@@ -92,23 +91,23 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Asynchronously downloads the requested addons.
         /// </summary>
-        /// <param name="addonDataItems">One or more addons to download.</param>
+        /// <param name="requests">A sequence of download requests.</param>
         /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
-        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(params AddonData[] addonDataItems)
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(params BulkDownloadRequest[] requests)
         {
-            return await DownloadBulkAsync(addonDataItems.ToList());
+            return await DownloadBulkAsync(requests.ToList());
         }
 
         /// <summary>
         /// Asynchronously downloads the requested addons.
         /// </summary>
-        /// <param name="addonDataItems">A collection of addons to download.</param>
+        /// <param name="requests">A collection of download requests.</param>
         /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
-        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(IEnumerable<AddonData> addonDataItems)
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(IEnumerable<BulkDownloadRequest> requests)
         {
-            ArgumentNullException.ThrowIfNull(addonDataItems, nameof(addonDataItems));
+            ArgumentNullException.ThrowIfNull(requests, nameof(requests));
 
-            var taskQuery = addonDataItems
+            var taskQuery = requests
                 .Select(x => DownloadAsync(x, _cts.Token))
                 .ToList();
 
@@ -195,18 +194,18 @@ namespace AddonWars2.Downloaders
             Logger.LogWarning("Bulk download aborted.");
         }
 
-        private async Task<DownloadResult> DownloadAsync(AddonData addonData, CancellationToken cancellationToken)
+        private async Task<DownloadResult> DownloadAsync(BulkDownloadRequest request, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(addonData, nameof(addonData));
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            Logger.LogDebug($"Scheduling a task for \"{addonData.InternalName}\".");
+            Logger.LogDebug($"Scheduling a task for \"{request.InternalName}\".");
 
             var exceptions = new List<Exception>();
             DownloadResult result = new DownloadResult(string.Empty, Array.Empty<byte>());
 
             // Iterate through all hosts and try to download. Stop if managed to download from at least one host.
             // An exception will be thrown only if it failed to download from every host.
-            foreach (var host in addonData.Hosts)
+            foreach (var host in request.Hosts)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -224,25 +223,25 @@ namespace AddonWars2.Downloaders
                 // Local func.
                 void Downloader_DownloadProgressChanged(object? sender, DownloadProgressEventArgs e)
                 {
-                    ProgressCollection.TryGetValue(addonData.InternalName, out var progress);
+                    ProgressCollection.TryGetValue(request.InternalName, out var progress);
                     progress?.Report(e.Progress);
                 }
 
                 try
                 {
                     result = await downloader.DownloadAsync(host.HostUrl, cancellationToken);
-                    result.Metadata.Add("internal_name", addonData.InternalName);
-                    Logger.LogDebug($"Download completed for \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
+                    result.Metadata.Add("internal_name", request.InternalName);
+                    Logger.LogDebug($"Download completed for \"{request.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}");
                     break;
                 }
                 catch (OperationCanceledException)
                 {
-                    Logger.LogWarning($"Download operation was canceled for {addonData.InternalName}.");
+                    Logger.LogWarning($"Download operation was canceled for {request.InternalName}.");
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError($"Failed to download \"{addonData.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}\nThe next host will be used if available.");
+                    Logger.LogError($"Failed to download \"{request.InternalName}\" using the host type \"{host.HostType}\" from {host.HostUrl}\nThe next host will be used if available.");
                     exceptions.Add(ex);
                     continue;
                 }
@@ -253,13 +252,13 @@ namespace AddonWars2.Downloaders
             }
 
             // If failed to download, throw an exception with a complete list of stack traces from the previously thrown exceptions.
-            if (exceptions.Count >= addonData.Hosts.Count() && result.Content.Length == 0)
+            if (exceptions.Count >= request.Hosts.Count() && result.Content.Length == 0)
             {
                 OnDownloadFailed();
                 ClearProgressCollection();
 
                 var stackTraces = BuildStackTracesString(exceptions);
-                var ex = new AddonDownloaderException($"The bulk downloader has failed to download the {addonData.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
+                var ex = new AddonDownloaderException($"The bulk downloader has failed to download the {request.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
                 Logger.LogError(ex, message: string.Empty);
                 throw ex;
             }
@@ -267,7 +266,7 @@ namespace AddonWars2.Downloaders
             // If the content length was not available beforehand, a downloader will always report zero
             // for total bytes to receive and for an overall progress in percents, but will still update
             // the amount of bytes received. Thus we forcibly update the progress to 100% once downloaded.
-            ProgressCollection.TryGetValue(addonData.InternalName, out var progress);
+            ProgressCollection.TryGetValue(request.InternalName, out var progress);
             progress?.Report(100);
 
             return result;

@@ -22,7 +22,8 @@ namespace AddonWars2.SharedData.Interfaces
 
         private const string _gitHubAddonsLibRepositoryUrl = "https://github.com/Addon-Wars-2/AddonsLib";
         private const long _gitHubAddonsLibRepositoryId = 590107405;
-        private const string _gitHubAddonsLibApprovedProviders = "registry-providers.json";
+
+        private const string _registryProvidersFileName = "registry-providers.json";
 
         #endregion GitHub
 
@@ -69,9 +70,9 @@ namespace AddonWars2.SharedData.Interfaces
         public long GitHubAddonsLibRepositoryId => _gitHubAddonsLibRepositoryId;
 
         /// <summary>
-        /// Gets a path to the list of approved registry providers.
+        /// Gets a path to the list of registry providers.
         /// </summary>
-        public string GitHubAddonsLibApprovedProviders => _gitHubAddonsLibApprovedProviders;
+        public string RegistryProvidersFileName => _registryProvidersFileName;
 
         /// <summary>
         /// Gets the project wiki URL (GitHub).

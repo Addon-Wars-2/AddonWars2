@@ -16,7 +16,7 @@ namespace AddonWars2.Installers.Models
     {
         #region Fields
 
-        private readonly InstallStatus _status;
+        private readonly InstallResultStatus _status;
 
         #endregion Fields
 
@@ -34,7 +34,7 @@ namespace AddonWars2.Installers.Models
         /// <summary>
         /// Gets an installation status.
         /// </summary>
-        public InstallStatus Status => _status;
+        public InstallResultStatus Status => _status;
 
         #endregion Properties
     }

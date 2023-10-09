@@ -7,18 +7,17 @@
 
 namespace AddonWars2.Core
 {
-    using System.Diagnostics;
-    using AddonWars2.Core.DTO;
     using AddonWars2.Core.Interfaces;
-    using AddonWars2.Downloaders;
     using AddonWars2.Downloaders.Interfaces;
-    using AddonWars2.Downloaders.Models;
     using AddonWars2.Extractors.Interfaces;
-    using AddonWars2.LibraryManager.Exceptions;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.Packages.Interfaces;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents a manager responsible for operations with the addon library on a user's local machine.
+    /// A class that repserents a state of a local library.
+    /// It is responsible for installing addon packages, uninstalling addons and their
+    /// dependencies and updating installed addons.
     /// </summary>
     public class LibraryManager : ILibraryManager
     {
@@ -27,6 +26,7 @@ namespace AddonWars2.Core
         private static ILogger _logger;
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly IAddonExtractorFactory _addonExtractorFactory;
+        private readonly IAddonInstallerFactory _addonInstallerFactory;
 
         #endregion Fields
 
@@ -35,11 +35,13 @@ namespace AddonWars2.Core
         public LibraryManager(
             ILogger<LibraryManager> logger,
             IAddonDownloaderFactory addonDownloaderFactory,
-            IAddonExtractorFactory addonExtractorFactory)
+            IAddonExtractorFactory addonExtractorFactory,
+            IAddonInstallerFactory addonInstallerFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
             _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
+            _addonInstallerFactory = addonInstallerFactory ?? throw new ArgumentNullException(nameof(addonInstallerFactory));
         }
 
         #endregion Constructors
@@ -61,11 +63,20 @@ namespace AddonWars2.Core
         /// </summary>
         protected IAddonExtractorFactory AddonExtractorFactory => _addonExtractorFactory;
 
+        /// <summary>
+        /// Gets an addon installer factory.
+        /// </summary>
+        protected IAddonInstallerFactory AddonInstallerFactory => _addonInstallerFactory;
+
         #endregion Properties
 
         #region Methods
 
-        
+        /// <inheritdoc/>
+        public void InstallPackage(IAddonPackage package)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion Methods
     }

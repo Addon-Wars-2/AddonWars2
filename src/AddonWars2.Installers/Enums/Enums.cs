@@ -10,7 +10,7 @@ namespace AddonWars2.Installers.Enums
     /// <summary>
     /// Specifies various resulting statuses for an installation operation.
     /// </summary>
-    public enum InstallStatus
+    public enum InstallResultStatus
     {
         /// <summary>
         /// The installation is successfull.
@@ -31,7 +31,7 @@ namespace AddonWars2.Installers.Enums
     /// <summary>
     /// Specifies various resulting statuses for an uninstallation operation.
     /// </summary>
-    public enum UninstallStatus
+    public enum UninstallResultStatus
     {
         /// <summary>
         /// The uninstallation is successfull.

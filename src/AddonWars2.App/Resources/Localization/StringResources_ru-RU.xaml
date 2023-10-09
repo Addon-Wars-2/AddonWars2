@@ -15,7 +15,7 @@
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 ВИКИ</s:String>
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">ПОМОЩЬ</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Главная</s:String>
-    <s:String x:Key="S.MainWindow.TabMenu.Header.Manage">Управление</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Download">Скачать</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.News">Новости</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Settings">Настройки</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Логи</s:String>
@@ -27,32 +27,32 @@
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">ВЫБРАТЬ</s:String>
 
     <!-- InstallAddons Page -->
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Header">Описание</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Required">Требуется:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Conflicts">Конфликты:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Updating">Обновление...</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Error">Ошибка.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Превышен лимит соединений GitHub API</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title">Неверный токен GitHub API</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">Указанные репозиторий или ветка GitHub не найдены.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Обнаружены недоступные зависимости</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Резолвер обнаружил одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для просмотра полного списка.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Не удалось загрузить необходимые аддоны</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">Модуль загрузок не смог загрузить аддон или некоторые из его зависимостей.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Header">Описание</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Website">Сайт:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Authors">Авторы:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Required">Требуется:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Conflicts">Конфликты:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.SelectProviderComboBoxHint">Выберите провайдер аддонов</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.UsingProvider">Используется:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.GitHubAPILimit">Лимит API:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Updating">Обновление...</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Error">Ошибка.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Превышен лимит соединений GitHub API</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Title">Неверный токен GitHub API</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">Указанные репозиторий или ветка GitHub не найдены.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Обнаружены недоступные зависимости</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Резолвер обнаружил одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для просмотра полного списка.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Не удалось загрузить необходимые аддоны</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">Модуль загрузок не смог загрузить аддон или некоторые из его зависимостей.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
@@ -114,7 +114,7 @@
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Обновить список провайдеров.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Скачать и установить аддон.</s:String>
     <s:String x:Key="S.ToolTip.Button.RemoveAddonButton">Удалить установленный аддон.</s:String>
-    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.01">GitHub предоставляет ограниченный доступ к API для неавторизованных пользователей, и увеличенный лимит запросов для авторизованных.</s:String>
+    <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.01">GitHub предоставляет ограниченный доступ к API для неавторизованных пользователей и увеличенный лимит запросов для авторизованных.</s:String>
     <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.02">Осталось запросов:</s:String>
     <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.03">Доступный лимит:</s:String>
     <s:String x:Key="S.ToolTip.Help.GitHubApiLimitHelp.04">Сброс:</s:String>

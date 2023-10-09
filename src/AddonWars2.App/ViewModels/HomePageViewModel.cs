@@ -211,7 +211,7 @@ namespace AddonWars2.App.ViewModels
             var settings = new OpenFileDialogSettings
             {
                 DefaultExt = ".exe",
-                Filter = "GW2 .exe|*.exe|All Files|*.*",
+                Filter = "Guild Wars 2 .exe|*.exe|All Files|*.*",
                 Multiselect = false,
             };
 

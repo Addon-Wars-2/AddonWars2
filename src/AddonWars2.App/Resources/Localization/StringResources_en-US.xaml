@@ -15,7 +15,7 @@
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Gw2Wiki">GW2 WIKI</s:String> <!-- NO TRANSLATION FOR "GW2" part -->
     <s:String x:Key="S.MainWindow.Header.Hyperlink.Support">HELP</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Home">Home</s:String>
-    <s:String x:Key="S.MainWindow.TabMenu.Header.Manage">Manage</s:String>
+    <s:String x:Key="S.MainWindow.TabMenu.Header.Download">Download</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.News">News</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Settings">Settings</s:String>
     <s:String x:Key="S.MainWindow.TabMenu.Header.Logs">Logs</s:String>
@@ -27,32 +27,32 @@
     <s:String x:Key="S.HomePage.GameLocation.SelectButton">SELECT</s:String>
 
     <!-- InstallAddons Page -->
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Header">Description</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Website">Website:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Required">Required:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonDesc.Content.Conflicts">Conflicts:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.UsingProvider">Using:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.GitHubAPILimit">API limit:</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Updating">Updating...</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.StatusPlaceholders.Error">Error.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Title">No internet connection</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Can't connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Exceeded GitHub API rate limit</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">You have exceeded the GitHub API rate limit. Please try again later.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Title">Invalid GitHub API token</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">A GitHub API request was sent using invalid API token. The operation cannot be completed.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Title">GitHub repository or branch is not found</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">The requested GitHub repository or branch is not found.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Unable to connect to the server</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Failed to deserialize data</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Unavailable dependencies detected</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">The resolver returned one or more dependencies (addons) which are not available in the provider(s). The installation cannot be completed. See the details for a complete list.</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Failed to download the required addons</s:String>
-    <s:String x:Key="S.ManageAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">The downloader couldn't download the selected addon or one of its dependencies. Please see details for the additional information.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Header">Description</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Website">Website:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Authors">Authors:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Required">Required:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonDesc.Content.Conflicts">Conflicts:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.SelectProviderComboBoxHint">Select a Library Provider</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.UsingProvider">Using:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.GitHubAPILimit">API limit:</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Updating">Updating...</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.StatusPlaceholders.Error">Error.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.NoInternetConnection.Title">No internet connection</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.NoInternetConnection.Message" xml:space="preserve">Can't connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Exceeded GitHub API rate limit</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">You have exceeded the GitHub API rate limit. Please try again later.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Title">Invalid GitHub API token</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">A GitHub API request was sent using invalid API token. The operation cannot be completed.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Title">GitHub repository or branch is not found</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">The requested GitHub repository or branch is not found.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Unable to connect to the server</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Failed to deserialize data</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">A list of providers was downloaded, but something went wrong during the deserialization process.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Unavailable dependencies detected</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">The resolver returned one or more dependencies (addons) which are not available in the provider(s). The installation cannot be completed. See the details for a complete list.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Failed to download the required addons</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">The downloader couldn't download the selected addon or one of its dependencies. Please see details for the additional information.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Latest News</s:String>
@@ -60,7 +60,7 @@
     <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Updating">Updating...</s:String>
     <s:String x:Key="S.NewsPage.NewsList.StatusPlaceholders.Error">Error.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">No internet connection</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Can't connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Unable to connect to the server.&#13;Please check your network connection and firewall settings or try again later.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Unable to connect to the server</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">The server returned a bad status code.&#13;Please see details for the additional information.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">RSS feed parsing error</s:String>
@@ -109,7 +109,7 @@
     <!-- ToolTips -->
     <s:String x:Key="S.ToolTip.Button.SelectGw2Path">Click to select the Guild Wars 2 executable path (.exe).</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddons">Install new add-ons.</s:String>
-    <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh news feed.</s:String>
+    <s:String x:Key="S.ToolTip.Button.RefreshNewsFeed">Refresh the news feed.</s:String>
     <s:String x:Key="S.ToolTip.Button.OpenLogFile">Open log file.</s:String>
     <s:String x:Key="S.ToolTip.Button.ReloadAddonProviders">Reload addon providers.</s:String>
     <s:String x:Key="S.ToolTip.Button.InstallAddonButton">Download and install the addon.</s:String>

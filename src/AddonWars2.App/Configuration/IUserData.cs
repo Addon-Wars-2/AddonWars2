@@ -57,23 +57,23 @@ namespace AddonWars2.App.Configuration
         [Option(Alias = "Gw2DirPath", DefaultValue = "")]
         public string Gw2DirPath { get; set; }
 
-        /// <summary>
-        /// Gets or sets a directory name used to cache downloaded addons.
-        /// </summary>
-        [Option(Alias = "CachedDir", DefaultValue = "")]
-        public string CachedDirName { get; set; }
+        /////// <summary>
+        /////// Gets or sets a directory name used to cache downloaded addons.
+        /////// </summary>
+        ////[Option(Alias = "CachedDir", DefaultValue = "")]
+        ////public string CachedDirName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cached addons file path.
-        /// </summary>
-        [Option(Alias = "CachedLibFilePath", DefaultValue = "")]
-        public string CachedLibFilePath { get; set; }
+        /////// <summary>
+        /////// Gets or sets the cached addons file path.
+        /////// </summary>
+        ////[Option(Alias = "CachedLibFilePath", DefaultValue = "")]
+        ////public string CachedLibFilePath { get; set; }
 
-        /// <summary>
-        /// Gets or sets the cached addons provider name.
-        /// </summary>
-        [Option(Alias = "CachedLibProviderName", DefaultValue = "")]
-        public string CachedLibProviderName { get; set; }
+        /////// <summary>
+        /////// Gets or sets the cached addons provider name.
+        /////// </summary>
+        ////[Option(Alias = "CachedLibProviderName", DefaultValue = "")]
+        ////public string CachedLibProviderName { get; set; }
 
         /// <summary>
         /// Gets or sets the installed addons file path.

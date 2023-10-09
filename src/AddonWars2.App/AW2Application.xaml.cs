@@ -361,9 +361,9 @@ namespace AddonWars2.App
             ApplicationConfig.UserData.AnetHome = string.Format(WebSharedData.AnetHomeTemplate, culture.ShortName.ToLower());
 
             // Setup the rest.
-            ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
-            ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
-            ApplicationConfig.UserData.CachedLibProviderName = AppSharedData.CachedLibProviderName;
+            ////ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
+            ////ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
+            ////ApplicationConfig.UserData.CachedLibProviderName = AppSharedData.CachedLibProviderName;
             ApplicationConfig.UserData.InstalledAddonsFilePath = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.InstalledAddonsFileName);
         }
 
@@ -372,21 +372,6 @@ namespace AddonWars2.App
         {
             string logMessage = $">>> AN UNHANDLED EXCEPTION OCCURED <<<\n{source}";
             Logger.Fatal(exception, logMessage);
-
-            ////// Try to open log file automatically, so a user can just copy - paste it.
-            ////try
-            ////{
-            ////    Process.Start(new ProcessStartInfo(ApplicationConfig.SessionData.LogFilePath)
-            ////    {
-            ////        Verb = "open",
-            ////        UseShellExecute = true,
-            ////    });
-            ////}
-            ////catch (Exception)
-            ////{
-            ////    // If we can't do this for whatever reason, do nothing.
-            ////    Logger.Error("Unable to open log file automatically.");
-            ////}
 
             // TODO: Localization.
             // Show an error message box.

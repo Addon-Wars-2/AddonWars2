@@ -340,15 +340,15 @@
                                     <Setter TargetName="ItemSeparator" Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Installed">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus1}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus1}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent03}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="NotInstalled">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus2}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus2}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent01}"/>
                                 </DataTrigger>-->
                                 <!--<DataTrigger Binding="{Binding InstalledStatusString, Mode=OneWay}" Value="Modified">
-                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.ManageAddonsPage.AddonItems.InstalledStatus3}"/>
+                                    <Setter TargetName="InstalledStatusText" Property="Text" Value="{DynamicResource S.DownloadAddonsPage.AddonItems.InstalledStatus3}"/>
                                     <Setter TargetName="InstalledStatusText" Property="Foreground" Value="{DynamicResource SolidColorBrush.PrimaryPalette.Accent04}"/>
                                 </DataTrigger>-->
                             </DataTemplate.Triggers>

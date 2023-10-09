@@ -24,7 +24,7 @@ namespace AddonWars2.Core.DTO.Rules
     /// <para>
     /// Optionally <see cref="OldName"/> property can be set to "self" (case-insensitive) to indicate
     /// that the file needs to be renamed and the original name doesn't matter. Note, that it works only
-    /// for a single-file addons such as .dll addons.
+    /// for a single-file addons such as .dll addons. The rule will be ignored for archived addons.
     /// </para>
     /// <para>
     /// Therefore, instead of writing this:

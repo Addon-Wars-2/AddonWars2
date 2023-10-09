@@ -1,0 +1,9 @@
+﻿{
+  "providers": [
+    {
+      "name": "AW2_AddonsLib",
+      "type": "github",
+      "link": "https://raw.githubusercontent.com/Addon-Wars-2/AddonsLib/main/registry.json"
+    }
+  ]
+}

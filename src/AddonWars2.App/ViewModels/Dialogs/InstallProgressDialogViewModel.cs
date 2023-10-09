@@ -20,7 +20,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
     using MvvmDialogs;
 
     /// <summary>
-    /// Represents <see cref="ManageAddonsPageViewModel"/> states.
+    /// Represents <see cref="DownloadAddonsPageViewModel"/> states.
     /// </summary>
     public enum InstallProgressDialogViewModelState
     {

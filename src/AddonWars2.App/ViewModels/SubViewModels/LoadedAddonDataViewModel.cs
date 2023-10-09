@@ -13,30 +13,30 @@ namespace AddonWars2.App.ViewModels.SubViewModels
     using AddonWars2.Core.DTO;
     using CommunityToolkit.Mvvm.ComponentModel;
 
-    ///// <summary>
-    ///// Specifies addon installation status.
-    ///// </summary>
-    //public enum AddonInstalledStatus
-    //{
-    //    /// <summary>
-    //    /// The addon is installed.
-    //    /// </summary>
-    //    Installed,
+    ///////// <summary>
+    ///////// Specifies addon installation status.
+    ///////// </summary>
+    ////public enum AddonInstalledStatus
+    ////{
+    ////    /// <summary>
+    ////    /// The addon is installed.
+    ////    /// </summary>
+    ////    Installed,
 
-    //    /// <summary>
-    //    /// The addon is not installed.
-    //    /// </summary>
-    //    NotInstalled,
+    ////    /// <summary>
+    ////    /// The addon is not installed.
+    ////    /// </summary>
+    ////    NotInstalled,
 
-    //    /// <summary>
-    //    /// One or more of the addon files were modified.
-    //    /// </summary>
-    //    Modified,
-    //}
+    ////    /// <summary>
+    ////    /// One or more of the addon files were modified.
+    ////    /// </summary>
+    ////    Modified,
+    ////}
 
     /// <summary>
-    /// Represents an addon item loaded from some source.
-    /// Maps <see cref="AddonData"/> object and exposes bindable data.
+    /// Represents an addon item loaded from a source provider.
+    /// Is intended to map <see cref="AddonData"/> object and exposes bindable data.
     /// </summary>
     public class LoadedAddonDataViewModel : ObservableObject
     {

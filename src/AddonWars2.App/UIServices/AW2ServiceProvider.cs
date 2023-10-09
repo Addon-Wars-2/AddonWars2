@@ -91,7 +91,7 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<HomePageViewModel>();
             services.AddSingleton<NewsPageViewModel>();
             services.AddSingleton<LoggingViewModel>();
-            services.AddSingleton<ManageAddonsPageViewModel>();
+            services.AddSingleton<DownloadAddonsPageViewModel>();
             services.AddSingleton<SettingsPageViewModel>();
             services.AddSingleton<SettingsGeneralPageViewModel>();
             services.AddSingleton<SettingsApiPageViewModel>();

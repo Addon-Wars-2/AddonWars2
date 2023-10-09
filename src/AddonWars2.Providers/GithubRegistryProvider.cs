@@ -44,6 +44,26 @@ namespace AddonWars2.Providers
         #region Methods
 
         /// <inheritdoc/>
+        public override async Task<IEnumerable<ProviderInfo>> GetProvidersAsync(string path, long repositoryId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(nameof(path));
+
+            var contentList = await GitHubClientService.Repository.Content.GetAllContents(repositoryId);
+            var repositoryContent = contentList.FirstOrDefault(x => x?.Path == path, null);
+            if (repositoryContent == null)
+            {
+                return new List<ProviderInfo>();
+            }
+
+            var response = await HttpClientWrapper.GetAsync(repositoryContent.DownloadUrl);
+            using (var content = await response.Content.ReadAsStreamAsync())
+            {
+                var providers = await JsonSerializer.DeserializeAsync<ProvidersCollection>(content);
+                return providers?.Providers ?? new List<ProviderInfo>();
+            }
+        }
+
+        /// <inheritdoc/>
         public override async Task<AddonsCollection> GetAddonsFromAsync(ProviderInfo provider)
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(provider));

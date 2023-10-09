@@ -16,7 +16,7 @@ namespace AddonWars2.Installers.Models
     {
         #region Fields
 
-        private readonly UninstallStatus _status;
+        private readonly UninstallResultStatus _status;
 
         #endregion Fields
 
@@ -34,7 +34,7 @@ namespace AddonWars2.Installers.Models
         /// <summary>
         /// Gets an uninstallation status.
         /// </summary>
-        public UninstallStatus Status => _status;
+        public UninstallResultStatus Status => _status;
 
         #endregion Properties
     }

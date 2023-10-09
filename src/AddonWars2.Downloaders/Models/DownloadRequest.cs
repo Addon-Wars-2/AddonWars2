@@ -8,7 +8,7 @@
 namespace AddonWars2.Downloaders.Models
 {
     /// <summary>
-    /// Encapsulates addon download request.
+    /// Encapsulates an addon download request.
     /// </summary>
     public class DownloadRequest
     {
