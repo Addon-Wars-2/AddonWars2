@@ -107,6 +107,8 @@ namespace AddonWars2.App.ViewModels
         /// <returns><see cref="ValidationResult"/> object.</returns>
         public static ValidationResult? ValidateGitHubApiToken(string filepath, ValidationContext context)
         {
+            Logger.LogDebug($"Validating {nameof(GitHubApiTokenFilePath)} property.");
+
             if (!File.Exists(filepath))
             {
                 return new ValidationResult(_fileNotExistsErrorMsg);
@@ -114,15 +116,15 @@ namespace AddonWars2.App.ViewModels
 
             _gitHubApiToken = ReadGitHubTokenFromFile(filepath);
             var instance = (SettingsApiPageViewModel)context.ObjectInstance;
-            var isValid = Task.Run(async () => await instance.Validate(_gitHubApiToken)).GetAwaiter().GetResult();  // TODO: that's really bad.
+            var isValid = Task.Run(async () => await instance.ValidateGitHubApiTokenInternal(_gitHubApiToken)).GetAwaiter().GetResult();  // TODO: that's really bad.
 
             return isValid ? ValidationResult.Success : new ValidationResult(_gitHubApiTokenErrorMsg);
         }
 
         // ValidateGitHubApiToken back-end logic.
-        private async Task<bool> Validate(string token)
+        private async Task<bool> ValidateGitHubApiTokenInternal(string token)
         {
-            return await GitHubClientWrapper.CheckTokenValidityAsync(token);
+            return await GitHubClientWrapper.IsTokenValidAsync(token);
         }
 
         #endregion Validation
@@ -132,7 +134,7 @@ namespace AddonWars2.App.ViewModels
         /// </summary>
         internal void Initialize()
         {
-            //// Do not validate.
+            // Do not validate => set fields instead of property to bypass the check.
             _gitHubApiTokenFilePath = AppConfig.UserSettings.UserSettingsApi.GitHubApiTokenFilePath;
             OnPropertyChanged(nameof(GitHubApiTokenFilePath));
             GitHubClientWrapper.ApiToken = ReadGitHubTokenFromFile(_gitHubApiTokenFilePath);

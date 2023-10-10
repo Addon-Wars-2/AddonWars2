@@ -43,7 +43,7 @@ namespace AddonWars2.Services.GitHubClientWrapper.Interfaces
         /// </summary>
         /// <param name="token">GitHub API token.</param>
         /// <returns><see langword="true"/> if valid, otherwise <see langword="false"/>.</returns>
-        public Task<bool> CheckTokenValidityAsync(string token);
+        public Task<bool> IsTokenValidAsync(string token);
 
         #endregion Methods
     }

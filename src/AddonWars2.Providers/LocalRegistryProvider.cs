@@ -22,6 +22,11 @@ namespace AddonWars2.Providers
     {
         #region Fields
 
+        /// <summary>
+        /// <see cref="FileStream"/> buffer size.
+        /// </summary>
+        private const int FILE_STREAM_BUFFER_SIZE = 4096;
+
         #endregion Fields
 
         #region Constructors
@@ -48,7 +53,7 @@ namespace AddonWars2.Providers
         /// <inheritdoc/>
         public override async Task<IEnumerable<ProviderInfo>> GetProvidersAsync(string path, long repositoryId)
         {
-            using (var stream = new FileStream(path, System.IO.FileMode.Open))
+            using (var stream = new FileStream(path, System.IO.FileMode.Open, FileAccess.Read, FileShare.ReadWrite, FILE_STREAM_BUFFER_SIZE, useAsync: true))
             {
                 var providers = await JsonSerializer.DeserializeAsync<ProvidersCollection>(stream);
                 return providers?.Providers ?? new List<ProviderInfo>();

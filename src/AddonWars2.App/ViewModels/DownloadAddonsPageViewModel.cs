@@ -10,6 +10,7 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -469,10 +470,6 @@ namespace AddonWars2.App.ViewModels
                 return;
             }
 
-            //var id = WebSharedData.GitHubAddonsLibRepositoryId;
-            //var id = -1; // arbitrary since we load from a local source
-            //var path = WebSharedData.RegistryProvidersFileName;
-
             var finalState = DownloadAddonsViewModelState.Ready;
 
             try
@@ -495,6 +492,7 @@ namespace AddonWars2.App.ViewModels
                     ProvidersCollection.Add(new LoadedProviderDataViewModel(providerInfo));
                 }
 
+                await GitHubClientWrapper.GitHubClient.RateLimit.GetRateLimits();  // doesn't consume rate limit points
                 UpdateGitHubRateLimitsInfo();
             }
             catch (RateLimitExceededException ex)
@@ -510,6 +508,13 @@ namespace AddonWars2.App.ViewModels
                 finalState = DownloadAddonsViewModelState.Error;
                 Logger.LogError(ex, "Invalid GitHub API token.");
                 ShowErrorDialog(_gitHubTokenErrorTitle, _gitHubTokenErrorMessage, ex.Message);
+
+                // Reset token to avoid excessive error messaging.
+                GitHubClientWrapper.ApiToken = string.Empty;
+
+                // Update with the empty token.
+                await GitHubClientWrapper.GitHubClient.RateLimit.GetRateLimits();  // doesn't consume rate limit points
+                UpdateGitHubRateLimitsInfo();
             }
             catch (NotFoundException ex)
             {
@@ -531,6 +536,10 @@ namespace AddonWars2.App.ViewModels
                 finalState = DownloadAddonsViewModelState.Error;
                 Logger.LogError(ex, "Unable to deserialize the downloaded JSON.");
                 ShowErrorDialog(_deserializationFailureErrorTitle, _deserializationFailureErrorMessage, ex.Message);
+            }
+            finally
+            {
+                // Blank.
             }
 
             ////// We always load cached library at the end.

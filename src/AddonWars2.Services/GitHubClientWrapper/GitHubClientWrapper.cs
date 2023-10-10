@@ -76,7 +76,7 @@ namespace AddonWars2.Services.GitHubClientWrapper
         /// Even though the empty <paramref name="token"/> is invalid itself, setting an empty string to <see cref="ApiToken"/>
         /// will force <see cref="GitHubClient"/> to perform requests anonymously.
         /// </remarks>
-        public async Task<bool> CheckTokenValidityAsync(string token)
+        public async Task<bool> IsTokenValidAsync(string token)
         {
             if (token == null)
             {

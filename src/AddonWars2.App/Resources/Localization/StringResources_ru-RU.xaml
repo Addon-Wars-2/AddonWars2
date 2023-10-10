@@ -42,7 +42,7 @@
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Превышен лимит соединений GitHub API</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">Вы превысили лимит соединений через API GitHub. Пожалуйста, попробуйте позже.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Title">Неверный токен GitHub API</s:String>
-    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">Запрос к API GitHub был выполнен с использованием неверного токена. Операция не может быть завершена. Приложение будет использовать неавторизованные запросы до тех пор, пока токен не будет указан валидный токен.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">Указанные репозиторий или ветка GitHub не найдены.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>

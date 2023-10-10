@@ -64,6 +64,9 @@ namespace AddonWars2.Providers
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Doesn't consume rate limit points.
+        /// </remarks>
         public override async Task<AddonsCollection> GetAddonsFromAsync(ProviderInfo provider)
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(provider));

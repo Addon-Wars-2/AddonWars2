@@ -42,7 +42,7 @@
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Title">Exceeded GitHub API rate limit</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubRateLimit.Message" xml:space="preserve">You have exceeded the GitHub API rate limit. Please try again later.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Title">Invalid GitHub API token</s:String>
-    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">A GitHub API request was sent using invalid API token. The operation cannot be completed.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubToken.Message" xml:space="preserve">A GitHub API request was sent using invalid API token. The operation cannot be completed. The app will switch to unauthorized requests until a valid token is provided.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Title">GitHub repository or branch is not found</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">The requested GitHub repository or branch is not found.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Unable to connect to the server</s:String>
