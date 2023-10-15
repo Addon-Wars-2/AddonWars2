@@ -78,7 +78,7 @@ namespace AddonWars2.App.Configuration
         /// <summary>
         /// Gets or sets the installed addons file path.
         /// </summary>
-        [Option(Alias = "InstalledAddonsFilePath", DefaultValue = "")]
-        public string InstalledAddonsFilePath { get; set; }
+        [Option(Alias = "InstalledAddonsRegistry", DefaultValue = "")]
+        public string InstalledAddonsRegistry { get; set; }
     }
 }

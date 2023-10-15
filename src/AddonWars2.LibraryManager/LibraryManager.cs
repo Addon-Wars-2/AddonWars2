@@ -11,13 +11,19 @@ namespace AddonWars2.Core
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Extractors.Interfaces;
     using AddonWars2.Installers.Interfaces;
-    using AddonWars2.Packages.Interfaces;
+    using AddonWars2.Installers.Models;
+    using AddonWars2.Repository;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// A class that repserents a state of a local library.
-    /// It is responsible for installing addon packages, uninstalling addons and their
-    /// dependencies and updating installed addons.
+    /// <para>
+    /// A class that repserents a state of a local library and provides mechanisms
+    /// for installing and uninstalling addons with their dependencies, and also updating aready installed addons.
+    /// </para>
+    /// <para>
+    /// While installers merely copy files and follow installation instructions, they neither update the library state,
+    /// nor perfom any conflict checks. Therefore, all addons should be installed or uninstalled using a <see cref="LibraryManager"/>.
+    /// </para>
     /// </summary>
     public class LibraryManager : ILibraryManager
     {
@@ -27,21 +33,32 @@ namespace AddonWars2.Core
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly IAddonExtractorFactory _addonExtractorFactory;
         private readonly IAddonInstallerFactory _addonInstallerFactory;
+        private readonly InstalledAddonsContext _dbContext;
 
         #endregion Fields
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LibraryManager"/> class.
+        /// </summary>
+        /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
+        /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
+        /// <param name="addonExtractorFactory">A reference to <see cref="IAddonExtractorFactory"/>.</param>
+        /// <param name="addonInstallerFactory">A reference to <see cref="IAddonInstallerFactory"/>.</param>
+        /// <param name="dbContext">A reference to <see cref="InstalledAddonsContext"/>.</param>
         public LibraryManager(
             ILogger<LibraryManager> logger,
             IAddonDownloaderFactory addonDownloaderFactory,
             IAddonExtractorFactory addonExtractorFactory,
-            IAddonInstallerFactory addonInstallerFactory)
+            IAddonInstallerFactory addonInstallerFactory,
+            InstalledAddonsContext dbContext)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
             _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
             _addonInstallerFactory = addonInstallerFactory ?? throw new ArgumentNullException(nameof(addonInstallerFactory));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         #endregion Constructors
@@ -68,14 +85,19 @@ namespace AddonWars2.Core
         /// </summary>
         protected IAddonInstallerFactory AddonInstallerFactory => _addonInstallerFactory;
 
+        /// <summary>
+        /// Gets a reference to the installed addons database context.
+        /// </summary>
+        protected InstalledAddonsContext DbContext => _dbContext;
+
         #endregion Properties
 
         #region Methods
 
         /// <inheritdoc/>
-        public void InstallPackage(IAddonPackage package)
+        public async Task InstallAddon(IAddonInstaller installer, InstallRequest request)
         {
-            throw new NotImplementedException();
+            await installer.InstallAsync(request);
         }
 
         #endregion Methods

@@ -30,6 +30,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.Installers.Interfaces;
     using AddonWars2.Providers.Factories;
     using AddonWars2.Providers.Interfaces;
+    using AddonWars2.Repository;
     using AddonWars2.Services.GitHubClientWrapper;
     using AddonWars2.Services.GitHubClientWrapper.Interfaces;
     using AddonWars2.Services.HttpClientWrapper;
@@ -45,6 +46,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Messaging;
     using Config.Net;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
@@ -69,14 +71,13 @@ namespace AddonWars2.App.UIServices
 
             var defaultProductName = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyTitleAttribute>()?.Title.Replace(" ", "-") ?? string.Empty;
             var defaultProductVersion = Assembly.GetEntryAssembly()?.GetName()?.Version?.ToString() ?? string.Empty;
-            var defaultProductComment = $"https://github.com/Addon-Wars-2/AddonWars2";  // TODO: retrieve from static data
 
             // Config.
             services.AddSingleton(
                 builder =>
                 {
                     var settings = new ConfigurationBuilder<IApplicationConfig>()
-                        .UseJsonFile(Path.Join(IOHelper.BuildApplicationDataDirectory(), "config.json"))
+                        .UseJsonFile(Path.Join(IOHelper.BuildApplicationDataDirectory(), builder.GetRequiredService<IAppSharedData>().ConfigFileName))
                         .Build();
                     return settings;
                 });
@@ -114,6 +115,7 @@ namespace AddonWars2.App.UIServices
                 builder =>
                 {
                     var client = new HttpClient();
+                    var defaultProductComment = builder.GetRequiredService<IWebSharedData>().GitHubProjectRepositoryUrl;
                     client.DefaultRequestHeaders.Add("User-Agent", $"{defaultProductName}/{defaultProductVersion} (+{defaultProductComment})");
                     client.Timeout = TimeSpan.FromSeconds(30);
                     return client;
@@ -131,6 +133,16 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
             services.AddSingleton<IInstallAddonsDialogFactory, InstallAddonsDialogFactory>();
             services.AddSingleton<IInstallProgressDialogFactory, InstallProgressDialogFactory>();
+
+            // Databases.
+            services.AddDbContext<InstalledAddonsContext>(
+                (builder, options) =>
+                {
+                    var dbDirPath = builder.GetRequiredService<IApplicationConfig>().SessionData.AppDataDir;
+                    var dbName = builder.GetRequiredService<IAppSharedData>().InstalledAddonsRegistryName;
+                    var connectionString = Path.Join(dbDirPath, dbName);
+                    options.UseSqlite($"Data Source={connectionString}");
+                });
 
             // Logging.
             services.AddSingleton<ILogsAggregator, LogsAggregator>();

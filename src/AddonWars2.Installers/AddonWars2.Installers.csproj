@@ -54,6 +54,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AddonWars2.Core\AddonWars2.Core.csproj" />
+    <ProjectReference Include="..\AddonWars2.Extractors\AddonWars2.Extractors.csproj" />
   </ItemGroup>
 
 </Project>

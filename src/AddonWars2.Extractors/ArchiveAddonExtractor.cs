@@ -73,7 +73,7 @@ namespace AddonWars2.Extractors
                 }
             }
 
-            return new ExtractionResult(extractedFiles, request.Version);
+            return new ExtractionResult(extractedFiles);
         }
 
         // Extracts the specified entry.

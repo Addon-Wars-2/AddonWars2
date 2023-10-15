@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.Downloaders", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddonWars2.DependencyResolvers", "AddonWars2.DependencyResolvers\AddonWars2.DependencyResolvers.csproj", "{12B34AE1-ECED-4B79-B314-9E6539058D0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Packages", "AddonWars2.Packages\AddonWars2.Packages.csproj", "{E7AA79B1-644B-4256-A775-C897058D29DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonWars2.Repository", "AddonWars2.Repository\AddonWars2.Repository.csproj", "{461098D2-C16E-462D-BBBC-DB3C4CB78D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +71,10 @@ Global
 		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12B34AE1-ECED-4B79-B314-9E6539058D0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7AA79B1-644B-4256-A775-C897058D29DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7AA79B1-644B-4256-A775-C897058D29DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7AA79B1-644B-4256-A775-C897058D29DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7AA79B1-644B-4256-A775-C897058D29DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{461098D2-C16E-462D-BBBC-DB3C4CB78D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{461098D2-C16E-462D-BBBC-DB3C4CB78D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{461098D2-C16E-462D-BBBC-DB3C4CB78D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{461098D2-C16E-462D-BBBC-DB3C4CB78D86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -57,6 +57,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="Config.Net" Version="5.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
@@ -103,6 +104,7 @@
     <ProjectReference Include="..\AddonWars2.Installers\AddonWars2.Installers.csproj" />
     <ProjectReference Include="..\AddonWars2.LibraryManager\AddonWars2.LibraryManager.csproj" />
     <ProjectReference Include="..\AddonWars2.Providers\AddonWars2.Providers.csproj" />
+    <ProjectReference Include="..\AddonWars2.Repository\AddonWars2.Repository.csproj" />
     <ProjectReference Include="..\AddonWars2.Services\AddonWars2.Services.csproj" />
     <ProjectReference Include="..\AddonWars2.SharedData\AddonWars2.SharedData.csproj" />
   </ItemGroup>

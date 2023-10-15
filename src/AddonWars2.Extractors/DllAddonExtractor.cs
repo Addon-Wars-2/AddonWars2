@@ -50,7 +50,7 @@ namespace AddonWars2.Extractors
             request.Content.CopyTo(content, 0);
 
             var extractedFiles = new ExtractedFile(request.Name, content, string.Empty);
-            var extractionResult = new ExtractionResult(new List<ExtractedFile>() { extractedFiles }, request.Version);
+            var extractionResult = new ExtractionResult(new List<ExtractedFile>() { extractedFiles });
 
             OnExtractProgressChanged(1, 1);
 

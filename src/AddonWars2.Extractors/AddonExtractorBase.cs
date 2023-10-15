@@ -30,7 +30,7 @@ namespace AddonWars2.Extractors
         /// Fake delay value that can be optionally used as a delay between
         /// every extraction entry.
         /// </summary>
-        protected static readonly int FAKE_DELAY = 10;
+        protected static readonly int FAKE_DELAY = 10; // ms
 
         private static ILogger _logger;
         private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
@@ -77,7 +77,7 @@ namespace AddonWars2.Extractors
         /// </para>
         /// <para>
         /// Works good with smaller archives, but it's recommended to disable
-        /// it when extracting large archives.
+        /// it when extracting large archives due to performance reasons.
         /// </para>
         /// </remarks>
         public bool UseFakeDelay { get; set; } = true;
@@ -111,6 +111,16 @@ namespace AddonWars2.Extractors
             handler?.Invoke(this, new ExtractProgressEventArgs(totalItemsToExtract, itemsExtracted));
         }
 
+        /// <summary>
+        /// Sets a delay.
+        /// </summary>
+        /// <param name="milliseconds">A delay value in milliseconds.</param>
+        /// <returns><see cref="Task"/> object.</returns>
+        protected async Task DelayAsync(int milliseconds)
+        {
+            await Task.Run(async () => await Task.Delay(milliseconds));
+        }
+
         // Updates all items in the progress collection.
         private void AddonExtractorBase_ExtractProgressChanged(object? sender, ExtractProgressEventArgs e)
         {
@@ -122,12 +132,6 @@ namespace AddonWars2.Extractors
                     progress?.Report(e.Progress);
                 }
             }
-        }
-
-        // Sets a delay.
-        protected async Task DelayAsync(int milliseconds)
-        {
-            await Task.Run(async () => await Task.Delay(milliseconds));
         }
 
         #endregion Methods

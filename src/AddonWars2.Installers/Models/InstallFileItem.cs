@@ -1,20 +1,20 @@
 ﻿// ==================================================================================================
-// <copyright file="ExtractedFile.cs" company="Addon-Wars-2">
+// <copyright file="InstallFileItem.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Extractors.Models
+namespace AddonWars2.Installers.Models
 {
     /// <summary>
-    /// Represents a single extracted file.
+    /// Represents a single file to install.
     /// </summary>
-    public class ExtractedFile
+    public class InstallFileItem
     {
         #region Fields
 
-        private readonly string _name;
+        private readonly string _filename;
         private readonly byte[] _content;
         private readonly double _size;
         private readonly string _relativePath;
@@ -24,21 +24,21 @@ namespace AddonWars2.Extractors.Models
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExtractedFile"/> class.
+        /// Initializes a new instance of the <see cref="InstallFileItem"/> class.
         /// </summary>
-        /// <param name="name">The extracted object name.</param>
+        /// <param name="filename">The extracted object name.</param>
         /// <param name="content">The extracted content represented as a byte array.</param>
         /// <param name="relativePath">The extracted object relative path.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
         /// v<exception cref="ArgumentNullException">If <paramref name="relativePath"/> is <see langword="null"/>.</exception>
-        public ExtractedFile(string name, byte[] content, string relativePath)
+        public InstallFileItem(string filename, byte[] content, string relativePath)
         {
-            ArgumentNullException.ThrowIfNull(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(filename, nameof(filename));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
             ArgumentNullException.ThrowIfNull(relativePath, nameof(relativePath));
 
-            _name = name;
+            _filename = filename;
             _content = content;
             _size = content.Length;
             _relativePath = relativePath;
@@ -49,22 +49,24 @@ namespace AddonWars2.Extractors.Models
         #region Properties
 
         /// <summary>
-        /// Gets the extracted item name.
+        /// Gets the filename to install.
         /// </summary>
-        public string Name => _name;
+        public string Filename => _filename;
 
         /// <summary>
-        /// Gets the extracted item content.
+        /// Gets the item content.
         /// </summary>
         public byte[] Content => _content;
 
         /// <summary>
-        /// Gets the extracted content size.
+        /// Gets the item content size.
         /// </summary>
         public double Size => _size;
 
         /// <summary>
-        /// Gets the extracted item relative path.
+        /// Gets the item relative instalation path path.
+        /// A full instllation path will be combined with the installation
+        /// entry point depending on the installer type.
         /// </summary>
         public string RelativePath => _relativePath;
 

@@ -688,9 +688,8 @@ namespace AddonWars2.App.ViewModels
             finally
             {
                 await progressDialogTask;
+                UpdateGitHubRateLimitsInfo();
             }
-
-            UpdateGitHubRateLimitsInfo();
         }
 
         // Resolves dependencies for the provided addon.
@@ -824,12 +823,12 @@ namespace AddonWars2.App.ViewModels
                 var addon = downloadedAddons.First(x => (string)x.Metadata["internal_name"] == item.InternalName);
 
                 var extractor = extractors[item.InternalName];
-                var extractRequest = new ExtractionRequest(addon.Name, addon.Content, addon.Version);
+                var extractRequest = new ExtractionRequest(addon.Name, addon.Content);
                 var extractResult = await extractor.ExtractAsync(extractRequest);
 
-                var installer = installers[item.InternalName];
-                var installRequest = new InstallRequest();
-                var installResult = await installer.InstallAsync(installRequest);
+                //var installer = installers[item.InternalName];
+                //var installRequest = new InstallRequest();
+                //var installResult = await installer.InstallAsync(installRequest);
             }
 
             return installResults;

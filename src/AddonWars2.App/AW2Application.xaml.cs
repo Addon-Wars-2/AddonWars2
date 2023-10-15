@@ -364,7 +364,7 @@ namespace AddonWars2.App
             ////ApplicationConfig.UserData.CachedDirName = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.CachedDirName);
             ////ApplicationConfig.UserData.CachedLibFilePath = Path.Join(ApplicationConfig.UserData.CachedDirName, AppSharedData.CachedLibFileName);
             ////ApplicationConfig.UserData.CachedLibProviderName = AppSharedData.CachedLibProviderName;
-            ApplicationConfig.UserData.InstalledAddonsFilePath = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.InstalledAddonsFileName);
+            ApplicationConfig.UserData.InstalledAddonsRegistry = Path.Join(ApplicationConfig.SessionData.AppDataDir, AppSharedData.InstalledAddonsRegistryName);
         }
 
         // Logs any unhandled exception.

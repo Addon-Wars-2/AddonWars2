@@ -18,7 +18,6 @@ namespace AddonWars2.Extractors.Models
 
         private readonly List<ExtractedFile> _extractedFiles;
         private readonly double _totalSize = 0d;
-        private readonly string _version = string.Empty;
 
         #endregion Fields
 
@@ -28,15 +27,13 @@ namespace AddonWars2.Extractors.Models
         /// Initializes a new instance of the <see cref="ExtractionResult"/> class.
         /// </summary>
         /// <param name="extractedFiles">A downloaded object name.</param>
-        /// <param name="version">Copies a version of a downloaded object.</param>
-        /// <exception cref="ArgumentException">If <paramref name="extractedFiles"/> is <see langword="null"/> or empty.</exception>
-        public ExtractionResult(IEnumerable<ExtractedFile> extractedFiles, string version)
+        /// <exception cref="ArgumentException">If <paramref name="extractedFiles"/> is <see langword="null"/>.</exception>
+        public ExtractionResult(IEnumerable<ExtractedFile> extractedFiles)
         {
             ArgumentNullException.ThrowIfNull(extractedFiles, nameof(extractedFiles));
 
             _extractedFiles = extractedFiles.ToList();
             _totalSize = _extractedFiles.Sum(x => x.Size);
-            _version = version;
         }
 
         #endregion Constructors
@@ -52,11 +49,6 @@ namespace AddonWars2.Extractors.Models
         /// Gets a total size of extracted files.
         /// </summary>
         public double TotalSize => _totalSize;
-
-        /// <summary>
-        /// Gets the downloaded object version.
-        /// </summary>
-        public string Version => _version;
 
         #endregion Properties
     }

@@ -7,7 +7,8 @@
 
 namespace AddonWars2.Core.Interfaces
 {
-    using AddonWars2.Packages.Interfaces;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.Installers.Models;
 
     /// <summary>
     /// Specified a contract for the addon library managers.
@@ -22,7 +23,9 @@ namespace AddonWars2.Core.Interfaces
         /// and installation instructions. A package can contain one or more
         /// addons to install.
         /// </remarks>
-        /// <param name="package">An addon package.</param>
-        public void InstallPackage(IAddonPackage package);
+        /// <param name="installer">An addon installer to use.</param>
+        /// <param name="request">The installation request.</param>
+        /// <returns><see cref="Task"/> object.</returns>
+        public Task InstallAddon(IAddonInstaller installer, InstallRequest request);
     }
 }

@@ -68,12 +68,6 @@ namespace AddonWars2.Installers
             ProgressCollection.Add(token, progress);
         }
 
-        // Sets a delay.
-        private async Task DelayAsync(int milliseconds)
-        {
-            await Task.Run(async () => await Task.Delay(milliseconds));
-        }
-
         #endregion Methods
     }
 }

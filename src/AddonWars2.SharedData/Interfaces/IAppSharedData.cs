@@ -25,7 +25,7 @@ namespace AddonWars2.SharedData.Interfaces
         ////private const string CACHED_DIR_NAME = "cached";
         ////private const string CACHED_LIB_FILE_NAME = "libcache.json";
         ////private const string CACHED_LIB_PROVIDER_NAME = "LIBCACHE";
-        private const string INSTALLED_ADDONS_FILE_NAME = "myaddons.json";
+        private const string INSTALLED_ADDONS_REGISTRY_NAME = "myaddons.db";
 
         private static readonly CultureInfo _defaultCulture = new CultureInfo("en-US", "EN", "English");
 
@@ -86,7 +86,7 @@ namespace AddonWars2.SharedData.Interfaces
         /// <summary>
         /// Gets the installed addons file name.
         /// </summary>
-        public string InstalledAddonsFileName => INSTALLED_ADDONS_FILE_NAME;
+        public string InstalledAddonsRegistryName => INSTALLED_ADDONS_REGISTRY_NAME;
 
         /// <summary>
         /// Gets a default culture.
