@@ -45,8 +45,10 @@ namespace AddonWars2.Extractors
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request)
+        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request, CancellationToken cancellationToken)
         {
+            OnExtractionStarted();
+
             var extractedFiles = new List<ExtractedFile>();
 
             using (MemoryStream ms = new MemoryStream(request.Content))
@@ -59,19 +61,23 @@ namespace AddonWars2.Extractors
 
                     foreach (var entry in zipArchiveFileEntries)
                     {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            Logger.LogWarning("A task cancellation was requested.");
+                            ProgressCollection.Clear();
+                            throw new TaskCanceledException();
+                        }
+
                         var extracted = await ExtractZipArchiveEntryAsync(entry);
                         extractedFiles.Add(extracted);
 
                         itemsExtracted += 1;
                         OnExtractProgressChanged(itemsTotal, itemsExtracted);
-
-                        if (UseFakeDelay)
-                        {
-                            await DelayAsync(FAKE_DELAY);
-                        }
                     }
                 }
             }
+
+            OnExtractionCompleted();
 
             return new ExtractionResult(extractedFiles);
         }

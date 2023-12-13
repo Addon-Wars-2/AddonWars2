@@ -8,25 +8,23 @@
 namespace AddonWars2.Downloaders
 {
     using System.Collections.Generic;
+    using AddonWars2.Core.Events;
     using AddonWars2.Core.Interfaces;
-    using AddonWars2.Downloaders.Events;
     using AddonWars2.Downloaders.Exceptions;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents a class to download multiple addons asynchronously.
+    /// Represents a downloader that allows to download multiple addons asynchronously.
     /// </summary>
     public class BulkAddonDownloader : IAttachableProgress
     {
         #region Fields
 
         private static ILogger _logger;
-
         private readonly IAddonDownloaderFactory _addonDownloaderFactory;
         private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
-        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         #endregion Fields
 
@@ -37,6 +35,8 @@ namespace AddonWars2.Downloaders
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/> instance.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonDownloaderFactory"/> is <see langword="null"/>.</exception>
         public BulkAddonDownloader(ILogger<BulkAddonDownloader> logger, IAddonDownloaderFactory addonDownloaderFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -91,24 +91,27 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Asynchronously downloads the requested addons.
         /// </summary>
+        /// <param name="cancellationToken">A task cancellation token.</param>
         /// <param name="requests">A sequence of download requests.</param>
-        /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
-        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(params BulkDownloadRequest[] requests)
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="requests"/> is <see langword="null"/>.</exception>
+        /// <returns>A collection of <see cref="Task{TResult}"/> items.</returns>
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(CancellationToken cancellationToken = default, params BulkDownloadRequest[] requests)
         {
-            return await DownloadBulkAsync(requests.ToList());
+            return await DownloadBulkAsync(requests.ToList(), cancellationToken);
         }
 
         /// <summary>
         /// Asynchronously downloads the requested addons.
         /// </summary>
         /// <param name="requests">A collection of download requests.</param>
-        /// <returns>A collection of <see cref="DownloadResult"/> items.</returns>
-        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(IEnumerable<BulkDownloadRequest> requests)
+        /// <param name="cancellationToken">A task cancellation token.</param>
+        /// <returns>A collection of <see cref="Task{TResult}"/> items.</returns>
+        public async Task<IEnumerable<DownloadResult>> DownloadBulkAsync(IEnumerable<BulkDownloadRequest> requests, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(requests, nameof(requests));
 
             var taskQuery = requests
-                .Select(x => DownloadAsync(x, _cts.Token))
+                .Select(x => DownloadAsync(x, cancellationToken))
                 .ToList();
 
             var results = new DownloadResult[taskQuery.Count];
@@ -117,18 +120,18 @@ namespace AddonWars2.Downloaders
 
             try
             {
-                results = await Task.WhenAll(taskQuery).WaitAsync(_cts.Token);
+                results = await Task.WhenAll(taskQuery).WaitAsync(cancellationToken);
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 OnDownloadAborted();
-                ClearProgressCollection();
-                throw ex;
+                ProgressCollection.Clear();
+                throw;
             }
 
             OnDownloadCompleted();
 
-            ClearProgressCollection();
+            ProgressCollection.Clear();
 
             return results;
         }
@@ -137,15 +140,6 @@ namespace AddonWars2.Downloaders
         public void AttachProgressItem(string token, IProgress<double> progress)
         {
             ProgressCollection.Add(token, progress);
-        }
-
-        /// <summary>
-        /// Cancels bulk download task.
-        /// </summary>
-        public void CancelTask()
-        {
-            Logger.LogWarning("A task cancellation was requested by user.");
-            _cts.Cancel();
         }
 
         /// <summary>
@@ -194,6 +188,7 @@ namespace AddonWars2.Downloaders
             Logger.LogWarning("Bulk download aborted.");
         }
 
+        // Performs async download for the requested addons.
         private async Task<DownloadResult> DownloadAsync(BulkDownloadRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -209,11 +204,9 @@ namespace AddonWars2.Downloaders
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    OnDownloadAborted();
-                    ClearProgressCollection();
                     Logger.LogWarning("A task cancellation was requested.");
-
-                    return result;
+                    OnDownloadAborted();
+                    throw new TaskCanceledException();
                 }
 
                 var downloader = AddonDownloaderFactory.GetDownloader(host.HostType);
@@ -221,7 +214,7 @@ namespace AddonWars2.Downloaders
                 downloader.DownloadProgressChanged += Downloader_DownloadProgressChanged;
 
                 // Local func.
-                void Downloader_DownloadProgressChanged(object? sender, DownloadProgressEventArgs e)
+                void Downloader_DownloadProgressChanged(object? sender, ProgressEventArgs e)
                 {
                     ProgressCollection.TryGetValue(request.InternalName, out var progress);
                     progress?.Report(e.Progress);
@@ -252,10 +245,10 @@ namespace AddonWars2.Downloaders
             }
 
             // If failed to download, throw an exception with a complete list of stack traces from the previously thrown exceptions.
-            if (exceptions.Count >= request.Hosts.Count() && result.Content.Length == 0)
+            if (exceptions.Count >= request.Hosts.Count() || result.Content.Length == 0)
             {
                 OnDownloadFailed();
-                ClearProgressCollection();
+                ProgressCollection.Clear();
 
                 var stackTraces = BuildStackTracesString(exceptions);
                 var ex = new AddonDownloaderException($"The bulk downloader has failed to download the {request.InternalName} from available hosts. See a complete list of stack traces below.\n{stackTraces}");
@@ -270,12 +263,6 @@ namespace AddonWars2.Downloaders
             progress?.Report(100);
 
             return result;
-        }
-
-        // Cleans up the progress collection.
-        private void ClearProgressCollection()
-        {
-            ProgressCollection.Clear();
         }
 
         // Builds a stack trace string which will be included into the exception message

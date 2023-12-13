@@ -7,16 +7,18 @@
 
 namespace AddonWars2.Installers
 {
-    using System.Threading.Tasks;
-    using AddonWars2.Installers.Models;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents an addon installer that installs files into the game root directory.
+    /// Represents an addon installer that installs files into the game's root directory.
     /// </summary>
     public class RootAddonInstaller : AddonInstallerBase
     {
         #region Fields
+
+        private readonly string _entrypoint;
 
         #endregion Fields
 
@@ -26,10 +28,15 @@ namespace AddonWars2.Installers
         /// Initializes a new instance of the <see cref="RootAddonInstaller"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
-        public RootAddonInstaller(ILogger<AddonInstallerBase> logger)
-            : base(logger)
+        /// <param name="gameSharedData">A reference to <see cref="IGameSharedData"/>.</param>
+        /// <param name="ruleApplierFactory">A reference to <see cref="IInstallerCustomActionFactory"/>.</param>
+        public RootAddonInstaller(
+            ILogger<AddonInstallerBase> logger,
+            IGameSharedData gameSharedData,
+            IInstallerCustomActionFactory ruleApplierFactory)
+            : base(logger, gameSharedData, ruleApplierFactory)
         {
-            // Blank.
+            _entrypoint = string.Empty;
         }
 
         #endregion Constructors
@@ -40,21 +47,12 @@ namespace AddonWars2.Installers
 
         #region Properties
 
+        /// <inheritdoc/>
+        public override string Entrypoint => _entrypoint;
+
         #endregion Properties
 
         #region Methods
-
-        /// <inheritdoc/>
-        public override Task<InstallResult> InstallAsync(InstallRequest installRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public override Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion Methods
     }

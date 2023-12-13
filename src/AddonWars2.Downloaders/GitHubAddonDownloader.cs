@@ -34,6 +34,9 @@ namespace AddonWars2.Downloaders
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
         /// <param name="gitHubClientService">A reference to <see cref="IGitHubClientWrapper"/> instance.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="httpClientService"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="gitHubClientService"/> is <see langword="null"/>.</exception>
         public GitHubAddonDownloader(ILogger<AddonDownloaderBase> logger, IHttpClientWrapper httpClientService, IGitHubClientWrapper gitHubClientService)
             : base(logger, httpClientService)
         {
@@ -54,8 +57,12 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected async override Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken)
+        protected async override Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken = default)
         {
+            ArgumentNullException.ThrowIfNull(nameof(request));
+
+            OnDownloadStarted();
+
             var gitHubResponse = await GitHubClientService.GitHubClient.Connection.Get<Release>(new Uri(request.Url), TimeSpan.FromSeconds(30));
 
             Logger.LogInformation($"Downloading from {request.Url} using {typeof(GitHubAddonDownloader).Name}.");
@@ -70,6 +77,8 @@ namespace AddonWars2.Downloaders
                 {
                     var content = await ReadResponseAsync(response, filename, cancellationToken);
                     content.Version = version;
+
+                    OnDownloadCompleted();
 
                     return content;
                 }

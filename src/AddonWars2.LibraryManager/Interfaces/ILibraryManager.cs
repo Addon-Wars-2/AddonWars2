@@ -16,16 +16,20 @@ namespace AddonWars2.Core.Interfaces
     public interface ILibraryManager
     {
         /// <summary>
-        /// Installs a new addon package.
+        /// Installs a new addon.
         /// </summary>
-        /// <remarks>
-        /// An addon package is a package that contains all necessary files
-        /// and installation instructions. A package can contain one or more
-        /// addons to install.
-        /// </remarks>
         /// <param name="installer">An addon installer to use.</param>
         /// <param name="request">The installation request.</param>
-        /// <returns><see cref="Task"/> object.</returns>
-        public Task InstallAddon(IAddonInstaller installer, InstallRequest request);
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns><see cref="Task{InstallResult}"/> object.</returns>
+        public Task<InstallResult> InstallAddonAsync(IAddonInstaller installer, InstallRequest request, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Uninstalls the requested addon.
+        /// </summary>
+        /// <param name="uninstaller">An addon uninstaller to use.</param>
+        /// <param name="request">The uninstallation request.</param>
+        /// <returns><see cref="Task{UninstallResult}"/> object.</returns>
+        public Task<UninstallResult> UninstallAddonAsync(IAddonUninstaller uninstaller, UninstallRequest request);
     }
 }

@@ -10,7 +10,6 @@ namespace AddonWars2.App.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -23,17 +22,9 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.App.ViewModels.Dialogs;
     using AddonWars2.App.ViewModels.Factories;
     using AddonWars2.App.ViewModels.SubViewModels;
-    using AddonWars2.Core.Interfaces;
     using AddonWars2.DependencyResolvers.Enums;
     using AddonWars2.DependencyResolvers.Interfaces;
-    using AddonWars2.Downloaders;
     using AddonWars2.Downloaders.Exceptions;
-    using AddonWars2.Downloaders.Interfaces;
-    using AddonWars2.Downloaders.Models;
-    using AddonWars2.Extractors.Interfaces;
-    using AddonWars2.Extractors.Models;
-    using AddonWars2.Installers.Interfaces;
-    using AddonWars2.Installers.Models;
     using AddonWars2.Providers;
     using AddonWars2.Providers.Enums;
     using AddonWars2.Providers.Interfaces;
@@ -41,7 +32,6 @@ namespace AddonWars2.App.ViewModels
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
     using AddonWars2.SharedData.Interfaces;
     using CommunityToolkit.Mvvm.Input;
-    using CommunityToolkit.Mvvm.Messaging;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
     using Octokit;
@@ -91,7 +81,6 @@ namespace AddonWars2.App.ViewModels
         private static readonly string _failedToDownloadAddonsErrorTitle = ResourcesHelper.GetApplicationResource<string>("S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title");
         private static readonly string _failedToDownloadAddonsErrorMessage = ResourcesHelper.GetApplicationResource<string>("S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message");
 
-        private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
         private readonly IErrorDialogViewModelFactory _errorDialogViewModelFactory;
         private readonly IInstallAddonsDialogFactory _installAddonsDialogFactory;
@@ -103,10 +92,6 @@ namespace AddonWars2.App.ViewModels
         private readonly IDependencyResolverFactory _dependencyResolverFactory;
         private readonly IGitHubClientWrapper _gitHubClientWrapper;
         private readonly IHttpClientWrapper _httpClientWrapper;
-        private readonly IAddonDownloaderFactory _addonDownloaderFactory;
-        private readonly IAddonExtractorFactory _addonExtractorFactory;
-        private readonly IAddonInstallerFactory _addonInstallerFactory;
-        private readonly ILibraryManager _libraryManager;
 
         private DownloadAddonsViewModelState _viewModelState = DownloadAddonsViewModelState.Ready;
         private bool _isActuallyLoaded = false;
@@ -122,13 +107,10 @@ namespace AddonWars2.App.ViewModels
 
         #region Constructors
 
-        // Ctor on steroids o_O.
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DownloadAddonsPageViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
-        /// <param name="messenger">A reference to <see cref="IMessenger"/>.</param>
         /// <param name="dialogService">A reference to <see cref="IDialogService"/>.</param>
         /// <param name="errorDialogViewModelFactory">A reference to <see cref="IErrorDialogViewModelFactory"/>.</param>
         /// <param name="installAddonsDialogFactory">A reference to <see cref="IInstallAddonsDialogFactory"/>.</param>
@@ -140,13 +122,20 @@ namespace AddonWars2.App.ViewModels
         /// <param name="dependencyResolverFactory">A reference to <see cref="IDependencyResolverFactory"/>.</param>
         /// <param name="gitHubClientWrapper">A reference to <see cref="IGitHubClientWrapper"/>.</param>
         /// <param name="httpClientWrapper">A reference to <see cref="IHttpClientWrapper"/>.</param>
-        /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
-        /// <param name="addonExtractorFactory">A reference to <see cref="IAddonExtractorFactory"/>.</param>
-        /// <param name="addonInstallerFactory">A reference to <see cref="IAddonInstallerFactory"/>.</param>
-        /// <param name="libraryManager">A reference to <see cref="ILibraryManager"/>.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="dialogService"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="errorDialogViewModelFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="installAddonsDialogFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="downloadProgressDialogFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="appConfig"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="commonCommands"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="webSharedData"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="registryProviderFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="dependencyResolverFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="gitHubClientWrapper"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="httpClientWrapper"/> is <see langword="null"/>.</exception>
         public DownloadAddonsPageViewModel(
             ILogger<DownloadAddonsPageViewModel> logger,
-            IMessenger messenger,
             IDialogService dialogService,
             IErrorDialogViewModelFactory errorDialogViewModelFactory,
             IInstallAddonsDialogFactory installAddonsDialogFactory,
@@ -157,14 +146,9 @@ namespace AddonWars2.App.ViewModels
             IRegistryProviderFactory registryProviderFactory,
             IDependencyResolverFactory dependencyResolverFactory,
             IGitHubClientWrapper gitHubClientWrapper,
-            IHttpClientWrapper httpClientWrapper,
-            IAddonDownloaderFactory addonDownloaderFactory,
-            IAddonExtractorFactory addonExtractorFactory,
-            IAddonInstallerFactory addonInstallerFactory,
-            ILibraryManager libraryManager)
+            IHttpClientWrapper httpClientWrapper)
             : base(logger)
         {
-            _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             _errorDialogViewModelFactory = errorDialogViewModelFactory ?? throw new ArgumentNullException(nameof(errorDialogViewModelFactory));
             _installAddonsDialogFactory = installAddonsDialogFactory ?? throw new ArgumentNullException(nameof(installAddonsDialogFactory));
@@ -176,10 +160,6 @@ namespace AddonWars2.App.ViewModels
             _dependencyResolverFactory = dependencyResolverFactory ?? throw new ArgumentNullException(nameof(dependencyResolverFactory));
             _gitHubClientWrapper = gitHubClientWrapper ?? throw new ArgumentNullException(nameof(gitHubClientWrapper));
             _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
-            _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
-            _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
-            _addonInstallerFactory = addonInstallerFactory ?? throw new ArgumentNullException(nameof(addonInstallerFactory));
-            _libraryManager = libraryManager ?? throw new ArgumentNullException(nameof(libraryManager));
 
             GetProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => IsActuallyLoaded == false);
             ReloadProvidersListCommand = new AsyncRelayCommand(ExecuteGetProvidersListAsyncCommand, () => ViewModelState == DownloadAddonsViewModelState.Ready || ViewModelState == DownloadAddonsViewModelState.Error);
@@ -190,11 +170,6 @@ namespace AddonWars2.App.ViewModels
         #endregion Constructors
 
         #region Properties
-
-        /// <summary>
-        /// Gets a messenger reference.
-        /// </summary>
-        public IMessenger Messenger => _messenger;
 
         /// <summary>
         /// Gets a reference to <see cref="IDialogService"/> service.
@@ -214,7 +189,7 @@ namespace AddonWars2.App.ViewModels
         /// <summary>
         /// Gets a reference to the download progress dialog factory.
         /// </summary>
-        public IInstallProgressDialogFactory DownloadProgressDialogFactory => _downloadProgressDialogFactory;
+        public IInstallProgressDialogFactory InstallProgressDialogFactory => _downloadProgressDialogFactory;
 
         /// <summary>
         /// Gets a reference to the application config.
@@ -250,26 +225,6 @@ namespace AddonWars2.App.ViewModels
         /// Gets a reference to Http client wrapper.
         /// </summary>
         public IHttpClientWrapper HttpClientWrapper => _httpClientWrapper;
-
-        /// <summary>
-        /// Gets a reference to addon downloader factory.
-        /// </summary>
-        public IAddonDownloaderFactory AddonDownloaderFactory => _addonDownloaderFactory;
-
-        /// <summary>
-        /// Gets a reference to addon extractor factory.
-        /// </summary>
-        public IAddonExtractorFactory AddonExtractorFactory => _addonExtractorFactory;
-
-        /// <summary>
-        /// Gets a reference to addon installer factory.
-        /// </summary>
-        public IAddonInstallerFactory AddonInstallerFactory => _addonInstallerFactory;
-
-        /// <summary>
-        /// Gets a reference to the library manager.
-        /// </summary>
-        public ILibraryManager LibraryManager => _libraryManager;
 
         /// <summary>
         /// Gets or sets the view model state.
@@ -632,7 +587,7 @@ namespace AddonWars2.App.ViewModels
 
             Logger.LogInformation($"Installation requested for {addonItemModel!.InternalName}"); // null is covered by CanExecute predicate defined in ctor
 
-            // Resolve and make sure all dependencies are available for the installation in required.
+            // Resolve and make sure all dependencies are available for the installation.
             var resolved = ResolveAddonDependencies(addonItemModel);
             var unavailable = EnsureDependenciesAvailable(resolved);
             if (unavailable.Count > 0)
@@ -644,7 +599,7 @@ namespace AddonWars2.App.ViewModels
 
             // Create a sequence of addons to be downloaded and installed.
             var installationSequence = CreateInstallationSequence(resolved);
-            if (resolved.Count > 1) // returns itself (a single element) if there are no dependencies
+            if (resolved.Count > 1) // returns only itself if there are no dependencies
             {
                 Logger.LogDebug("Dependencies detected.");
 
@@ -658,26 +613,23 @@ namespace AddonWars2.App.ViewModels
 
             // TODO: Check for conflicts prior downloading anything.
 
-            var downloader = AddonDownloaderFactory.GetBulkDownloader();
-            var ivm = DownloadProgressDialogFactory.Create(Messenger, downloader);
-            AttachDownloadProgressItems(ivm, downloader, installationSequence);
+            var ivm = InstallProgressDialogFactory.GetInstance();
+            ivm.PrepareForSequence(installationSequence);
 
-            IEnumerable<DownloadResult>? downloadedAddons;
-            IEnumerable<InstallResult>? installedAddons;
             var progressDialogTask = ShowInstallProgressWindowAsync(ivm);
+
             try
             {
-                downloadedAddons = await DownloadAddonsAsync(downloader, installationSequence);
-                installedAddons = await ExtractAndInstallAddonsAsync(ivm, installationSequence, downloadedAddons);
+                await ivm.ExecuteAllAsync();
             }
             catch (AddonDownloaderException ex)
             {
                 ShowErrorDialog(_failedToDownloadAddonsErrorTitle, _failedToDownloadAddonsErrorMessage, ex.Message);
                 return;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
-                Logger.LogWarning("Download operation was interrupted.");
+                Logger.LogWarning("An operation was interrupted.");
                 return;
             }
             catch (Exception ex)
@@ -688,6 +640,7 @@ namespace AddonWars2.App.ViewModels
             finally
             {
                 await progressDialogTask;
+                await ExecuteGetProvidersListAsyncCommand();
                 UpdateGitHubRateLimitsInfo();
             }
         }
@@ -740,100 +693,6 @@ namespace AddonWars2.App.ViewModels
             return installationSequence;
         }
 
-        // Injects Progress items into a VM since they need to be created in the UI thread.
-        private void AttachDownloadProgressItems(InstallProgressDialogViewModel vm, IAttachableProgress target, IEnumerable<LoadedAddonDataViewModel> installationSequence)
-        {
-            foreach (var item in installationSequence)
-            {
-                var ipi = new ProgressItemViewModel()
-                {
-                    Token = item.InternalName,
-                    DisplayName = item.DisplayName,
-                };
-
-                vm.AttachDownloadProgressItem(target, ipi);
-            }
-        }
-
-        // Begins to download the required addons.
-        private async Task<IEnumerable<DownloadResult>> DownloadAddonsAsync(BulkAddonDownloader downloader, IEnumerable<LoadedAddonDataViewModel> installationSequence)
-        {
-            var addonsToInstall = ProviderAddonsCollection
-                .Where(x => installationSequence.Any(y => x.InternalName == y.InternalName))
-                .Select(x => new BulkDownloadRequest(x.Model));
-
-            return await downloader.DownloadBulkAsync(addonsToInstall);
-        }
-
-        // Injects a single Progress item into a VM since it needs to be created in the UI thread.
-        private void AttachInstallProgressItem(InstallProgressDialogViewModel vm, IAttachableProgress target, LoadedAddonDataViewModel addonDataViewModel)
-        {
-            var ipi = new ProgressItemViewModel()
-            {
-                Token = addonDataViewModel.InternalName,
-                DisplayName = addonDataViewModel.DisplayName,
-            };
-
-            vm.AttachInstallProgressItem(target, ipi);
-        }
-
-        // Creates addon extractors for the installation sequence.
-        private Dictionary<string, IAddonExtractor> GetExtractorsForSequence(IEnumerable<LoadedAddonDataViewModel> installationSequence)
-        {
-            var extractors = new Dictionary<string, IAddonExtractor>();
-            foreach (var item in installationSequence)
-            {
-                var extractor = AddonExtractorFactory.GetExtractor(item.Model.DownloadType);
-                extractors.Add(item.InternalName, extractor);
-            }
-
-            return extractors;
-        }
-
-        // Creates addon installers for the installation sequence.
-        private Dictionary<string, IAddonInstaller> GetInstallersForSequence(IEnumerable<LoadedAddonDataViewModel> installationSequence)
-        {
-            var installers = new Dictionary<string, IAddonInstaller>();
-            foreach (var item in installationSequence)
-            {
-                var installer = AddonInstallerFactory.GetAddonInstaller(item.Model.InstallMode);
-                installers.Add(item.InternalName, installer);
-            }
-
-            return installers;
-        }
-
-        // Installs the requested addons.
-        private async Task<IEnumerable<InstallResult>> ExtractAndInstallAddonsAsync(InstallProgressDialogViewModel vm, IEnumerable<LoadedAddonDataViewModel> installationSequence, IEnumerable<DownloadResult> downloadedAddons)
-        {
-            var extractors = GetExtractorsForSequence(installationSequence);
-            var installers = GetInstallersForSequence(installationSequence);
-
-            // Inject progress items first to track the progress.
-            foreach (var item in installationSequence)
-            {
-                AttachInstallProgressItem(vm, extractors[item.InternalName], item);
-                AttachInstallProgressItem(vm, installers[item.InternalName], item);
-            }
-
-            // Extract and install downloaded addons according to the installation sequence.
-            var installResults = new List<InstallResult>();
-            foreach (var item in installationSequence)
-            {
-                var addon = downloadedAddons.First(x => (string)x.Metadata["internal_name"] == item.InternalName);
-
-                var extractor = extractors[item.InternalName];
-                var extractRequest = new ExtractionRequest(addon.Name, addon.Content);
-                var extractResult = await extractor.ExtractAsync(extractRequest);
-
-                //var installer = installers[item.InternalName];
-                //var installRequest = new InstallRequest();
-                //var installResult = await installer.InstallAsync(installRequest);
-            }
-
-            return installResults;
-        }
-
         #endregion InstallSelectedAddonCommand
 
         #endregion Commands Logic
@@ -857,7 +716,7 @@ namespace AddonWars2.App.ViewModels
                 depString += $"{i + 1,2:D2} {dependencies[i].DisplayName} ({dependencies[i].InternalName})\n";
             }
 
-            var vm = InstallAddonsDialogFactory.Create();
+            var vm = InstallAddonsDialogFactory.GetInstance();
             vm.DependenciesList = depString.TrimEnd(Environment.NewLine.ToCharArray());
 
             return DialogService.ShowDialog(this, vm);

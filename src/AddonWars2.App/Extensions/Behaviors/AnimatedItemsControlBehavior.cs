@@ -11,7 +11,6 @@ namespace AddonWars2.App.Extensions.Behaviors
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -23,9 +22,6 @@ namespace AddonWars2.App.Extensions.Behaviors
     // ***
     // This code is fragile as hell and ready to nuke itself any moment you change it. You've been WARNED!
     // ***
-
-    // TODO: There is a bug when items loading overlap another one if you switch between tabs too fast.
-    //       It's unclear yet, is a problem lies within the behavior class or there is a conflict with ScrollViewer.
 
     /// <summary>
     /// Defines a behavior that animates <see cref="ItemsControl"/> items.
@@ -39,6 +35,7 @@ namespace AddonWars2.App.Extensions.Behaviors
         private bool _isControlVisible = false;
         private bool _isControlLoaded = false;
         private bool _isAnimating = false;
+        private CancellationTokenSource _animationCancellationTokenSource = new CancellationTokenSource();
 
         #endregion Fields
 
@@ -215,6 +212,7 @@ namespace AddonWars2.App.Extensions.Behaviors
         private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
         {
             _isControlLoaded = true;
+            _animationCancellationTokenSource = new CancellationTokenSource();
 
             var itemsControl = (ItemsControl)sender;
 
@@ -229,6 +227,8 @@ namespace AddonWars2.App.Extensions.Behaviors
         // Handles Unloaded event for the AssociatedObject.
         private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
         {
+            _animationCancellationTokenSource.Cancel();
+
             _isControlLoaded = false;
             _isAnimating = false;
 
@@ -327,7 +327,15 @@ namespace AddonWars2.App.Extensions.Behaviors
 
                     storyboard.Begin();
 
-                    await Task.Delay((int)(delay * 1000));  // sec to ms
+                    var task = Task.Delay((int)(delay * 1000), _animationCancellationTokenSource.Token);  // sec to ms
+                    try
+                    {
+                        await task;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
 
                     // Since we hide items through ItemContainerStyle, we want to show them back.
                     if (itemContainer.Visibility == Visibility.Hidden || itemContainer.Visibility == Visibility.Collapsed)

@@ -7,17 +7,17 @@
 
 namespace AddonWars2.Extractors
 {
-    using AddonWars2.Extractors.Events;
+    using AddonWars2.Core.Events;
     using AddonWars2.Extractors.Interfaces;
     using AddonWars2.Extractors.Models;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Represents the ExtractProgressEventArgs event handler.
+    /// Represents the <see cref="ExtractProgressEventArgs"/> event handler.
     /// </summary>
     /// <param name="sender">The event sender.</param>
     /// <param name="e">The event arguments.</param>
-    public delegate void ExtractProgressChangedEventHandler(object? sender, ExtractProgressEventArgs e);
+    public delegate void ExtractProgressChangedEventHandler(object? sender, ProgressEventArgs e);
 
     /// <summary>
     /// Represents a base class for addon extractors.
@@ -25,12 +25,6 @@ namespace AddonWars2.Extractors
     public abstract class AddonExtractorBase : IAddonExtractor
     {
         #region Fields
-
-        /// <summary>
-        /// Fake delay value that can be optionally used as a delay between
-        /// every extraction entry.
-        /// </summary>
-        protected static readonly int FAKE_DELAY = 10; // ms
 
         private static ILogger _logger;
         private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
@@ -48,6 +42,8 @@ namespace AddonWars2.Extractors
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             ExtractProgressChanged += AddonExtractorBase_ExtractProgressChanged;
+            ExtractionStarted += AddonExtractorBase_ExtractionStarted;
+            ExtractionCompleted += AddonExtractorBase_ExtractionCompleted;
         }
 
         #endregion Constructors
@@ -57,30 +53,18 @@ namespace AddonWars2.Extractors
         /// <inheritdoc/>
         public event ExtractProgressChangedEventHandler? ExtractProgressChanged;
 
+        /// <inheritdoc/>
+        public event EventHandler ExtractionStarted;
+
+        /// <inheritdoc/>
+        public event EventHandler ExtractionCompleted;
+
         #endregion Events
 
         #region Properties
 
         /// <inheritdoc/>
         public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether an artificial delay must be added
-        /// between each extraction entry.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// For smaller files the extraction process feels to be super fast causing
-        /// progress bars to fill up instantly. To improve user experience and
-        /// to increase their serotonin level a delay between every extraction entry
-        /// can be used.
-        /// </para>
-        /// <para>
-        /// Works good with smaller archives, but it's recommended to disable
-        /// it when extracting large archives due to performance reasons.
-        /// </para>
-        /// </remarks>
-        public bool UseFakeDelay { get; set; } = true;
 
         /// <summary>
         /// Gets the current logger instance.
@@ -92,7 +76,7 @@ namespace AddonWars2.Extractors
         #region Methods
 
         /// <inheritdoc/>
-        public abstract Task<ExtractionResult> ExtractAsync(ExtractionRequest request);
+        public abstract Task<ExtractionResult> ExtractAsync(ExtractionRequest request, CancellationToken cancellationToken);
 
         /// <inheritdoc/>
         public void AttachProgressItem(string token, IProgress<double> progress)
@@ -108,21 +92,33 @@ namespace AddonWars2.Extractors
         protected virtual void OnExtractProgressChanged(int totalItemsToExtract, int itemsExtracted)
         {
             var handler = ExtractProgressChanged;
-            handler?.Invoke(this, new ExtractProgressEventArgs(totalItemsToExtract, itemsExtracted));
+            handler?.Invoke(this, new ProgressEventArgs(totalItemsToExtract, itemsExtracted));
         }
 
         /// <summary>
-        /// Sets a delay.
+        /// Raises <see cref="ExtractionStarted"/> event to inform subscribers the extraction process has started.
         /// </summary>
-        /// <param name="milliseconds">A delay value in milliseconds.</param>
-        /// <returns><see cref="Task"/> object.</returns>
-        protected async Task DelayAsync(int milliseconds)
+        protected virtual void OnExtractionStarted()
         {
-            await Task.Run(async () => await Task.Delay(milliseconds));
+            var handler = ExtractionStarted;
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
-        // Updates all items in the progress collection.
-        private void AddonExtractorBase_ExtractProgressChanged(object? sender, ExtractProgressEventArgs e)
+        /// <summary>
+        /// Raises <see cref="ExtractionCompleted"/> event to inform subscribers the extraction process has completed.
+        /// </summary>
+        protected virtual void OnExtractionCompleted()
+        {
+            var handler = ExtractionCompleted;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Updates all items in the progress collection.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="e">Event arguments.</param>
+        private void AddonExtractorBase_ExtractProgressChanged(object? sender, ProgressEventArgs e)
         {
             if (ProgressCollection.Count > 0)
             {
@@ -132,6 +128,17 @@ namespace AddonWars2.Extractors
                     progress?.Report(e.Progress);
                 }
             }
+        }
+
+        private void AddonExtractorBase_ExtractionStarted(object? sender, EventArgs e)
+        {
+            // Blank.
+        }
+
+        private void AddonExtractorBase_ExtractionCompleted(object? sender, EventArgs e)
+        {
+            ExtractProgressChanged -= AddonExtractorBase_ExtractProgressChanged;
+            ExtractionStarted -= AddonExtractorBase_ExtractionStarted;
         }
 
         #endregion Methods

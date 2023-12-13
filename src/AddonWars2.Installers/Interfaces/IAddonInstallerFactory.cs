@@ -19,6 +19,6 @@ namespace AddonWars2.Installers.Interfaces
         /// </summary>
         /// <param name="installMode">The addon install mode.</param>
         /// <returns>A new installer.</returns>
-        public IAddonInstaller GetAddonInstaller(InstallMode installMode);
+        public IAddonInstaller GetInstance(InstallMode installMode);
     }
 }

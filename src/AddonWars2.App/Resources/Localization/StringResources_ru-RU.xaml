@@ -46,13 +46,13 @@
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Title">Не найдены репозиторий или ветка GitHub</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GitHubNotFound.Message" xml:space="preserve">Указанные репозиторий или ветка GitHub не найдены.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Title">Не удалось подключиться к серверу</s:String>
-    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.GetProvidersBadCode.Message" xml:space="preserve">Сервер вернул ошибочный код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Title">Ошибка десериализации данных</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.DeserializationFailure.Message" xml:space="preserve">Список провайдеров был успешно загружен, однако в процессе десериализации данных что-то пошло не так.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Title">Обнаружены недоступные зависимости</s:String>
-    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Резолвер обнаружил одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для просмотра полного списка.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.UnavailableDependencies.Message" xml:space="preserve">Программа обнаружила одну или более зависимостей (аддоны), которые недоступны к установке через провайдер(ы). Установка не может быть завершена. Ознакомьтесь с деталями ошибки для более подробной информации.</s:String>
     <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Title">Не удалось загрузить необходимые аддоны</s:String>
-    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">Модуль загрузок не смог загрузить аддон или некоторые из его зависимостей.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.DownloadAddonsPage.AddonsList.Errors.FailedToDownloadAddons.Message" xml:space="preserve">Загрузчик не смог загрузить аддон или некоторые из его зависимостей.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
 
     <!-- News Page -->
     <s:String x:Key="S.NewsPage.NewsList.Header">Последние Новости</s:String>
@@ -62,7 +62,7 @@
     <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Title">Нет соединения</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.NoInternetConnection.Message" xml:space="preserve">Не удалось подключиться к серверу.&#13;Пожалуйста, убедитесь, что соединение с сетью присутствует, проверьте настройки файрвола, либо повторите попытку позже.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Title">Не удалось подключиться к серверу</s:String>
-    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">Сервер вернул "плохой" код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
+    <s:String x:Key="S.NewsPage.NewsList.Errors.BadCode.Message" xml:space="preserve">Сервер вернул ошибочный код состояния.&#13;Пожалуйста, ознакомьтесь с деталями ошибки для дополнительной информации.</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Title">Ошибка парсинга RSS-ленты</s:String>
     <s:String x:Key="S.NewsPage.NewsList.Errors.FiledToParseRss.Message" xml:space="preserve">Не удалось спарсить данные RSS-ленты.</s:String>
     <s:String x:Key="S.NewsPage.WebView.StatusPlaceholders.Loading">Загрузка содержимого...</s:String>
@@ -87,12 +87,15 @@
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">Аддоны будут установлены в следующем порядке:</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Установка...</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Загрузка необходимых аддонов... Пожалуйста, подождите.</s:String>
-    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Установка загруженных аддонов... Пожалуйста, подождите.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Распаковка и установка загруженных аддонов... Пожалуйста, подождите.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Error">Не удалось установить один или несколько аддонов. Процесс установки был отменен. Ознакомьтесь с лог-файлом для дополнительной информации.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Error.UnableToRemove">Некоторые из установленных файлов не были удалены в процессе отмены установки и должны быть удалены вручную. Ознакомьтесь с деталями ошибки для получения списка.</s:String>
 
     <!-- Controls -->
     <s:String x:Key="S.Controls.Button.Ok.Text">Ок</s:String>
     <s:String x:Key="S.Controls.Button.Cancel.Text">Отменить</s:String>
-    <s:String x:Key="S.Controls.Button.Agree.Text">Согласен</s:String>
+    <s:String x:Key="S.Controls.Button.Agree.Text">Понятно</s:String>
+    <s:String x:Key="S.Controls.Button.ShowDetails.Text">Показать детали...</s:String>
     <s:String x:Key="S.Controls.ComboBox.Placeholder">пусто...</s:String>
     <s:String x:Key="S.Controls.TextBox.SelectGW2ExePlaceholder">Укажите путь до gw2-64.exe...</s:String>
 

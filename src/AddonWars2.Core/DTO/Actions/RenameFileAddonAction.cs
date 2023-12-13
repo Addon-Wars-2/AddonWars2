@@ -1,16 +1,17 @@
 ﻿// ==================================================================================================
-// <copyright file="RenameFileRule.cs" company="Addon-Wars-2">
+// <copyright file="RenameFileAddonAction.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ==================================================================================================
 
-namespace AddonWars2.Core.DTO.Rules
+namespace AddonWars2.Core.DTO.Actions
 {
     using System.Text.Json.Serialization;
+    using AddonWars2.Core.Enums;
 
     /// <summary>
-    /// Represents an addon rule that instructs to rename the file.
+    /// Represents an addon action that instructs to rename the file.
     /// File extension must be included in <see cref="OldName"/> and <see cref="NewName"/>.
     /// </summary>
     /// <remarks>
@@ -24,7 +25,7 @@ namespace AddonWars2.Core.DTO.Rules
     /// <para>
     /// Optionally <see cref="OldName"/> property can be set to "self" (case-insensitive) to indicate
     /// that the file needs to be renamed and the original name doesn't matter. Note, that it works only
-    /// for a single-file addons such as .dll addons. The rule will be ignored for archived addons.
+    /// for a single-file addons such as .dll addons.
     /// </para>
     /// <para>
     /// Therefore, instead of writing this:
@@ -45,15 +46,15 @@ namespace AddonWars2.Core.DTO.Rules
     ///      "new_name": "arcdps_my_addon.dll"
     ///    }
     /// </code>
-    /// The rule will be applied even if the actual file name has changed (i.e. starting with some version),
-    /// but its name wasn't updated in a registry.
+    /// The action will be applied <see cref="WhenApplyAddonAction.PostInstall"/>.
     /// </para>
     /// </remarks>
     [Serializable]
-    public class RenameFileRule : AddonRuleBase
+    public class RenameFileAddonAction : AddonActionBase
     {
         #region Fields
 
+        private static readonly string _self = "self";
         private string _oldName = string.Empty;
         private string _newName = string.Empty;
 
@@ -62,16 +63,22 @@ namespace AddonWars2.Core.DTO.Rules
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RenameFileRule"/> class.
+        /// Initializes a new instance of the <see cref="RenameFileAddonAction"/> class.
         /// </summary>
-        public RenameFileRule()
+        public RenameFileAddonAction()
         {
-            RuleTypeName = typeof(RenameFileRule).Name;
+            AddonActionTypeName = typeof(RenameFileAddonAction).Name;
+            WhenApplyAddonAction = WhenApplyAddonAction.PostInstall;
         }
 
         #endregion Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets a name placeholder that instructs to rename the file itself.
+        /// </summary>
+        public static string Self => _self;
 
         /// <summary>
         /// Gets or sets a file name to rename.

@@ -16,17 +16,34 @@ namespace AddonWars2.Installers.Interfaces
     public interface IAddonInstaller : IAttachableProgress
     {
         /// <summary>
-        /// Installs a requested addon.
+        /// Is raised whenever the installation progress has changed.
         /// </summary>
-        /// <param name="installRequest">The installation request.</param>
-        /// <returns><see cref="InstallResult"/> object.</returns>
-        public Task<InstallResult> InstallAsync(InstallRequest installRequest);
+        public event InstallProgressChangedEventHandler? InstallProgressChanged;
 
         /// <summary>
-        /// Uninstalls a requested addon.
+        /// Is raised right before the installation process has started.
         /// </summary>
-        /// <param name="uninstallRequest">The uninstallation request.</param>
-        /// <returns><see cref="UninstallResult"/> object.</returns>
-        public Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest);
+        public event EventHandler? InstallationStarted;
+
+        /// <summary>
+        /// Is raised after the installation process has completed.
+        /// </summary>
+        public event EventHandler? InstallationCompleted;
+
+        /// <summary>
+        /// Gets the installation entrypoint depending on the installer type.
+        /// </summary>
+        /// <remarks>
+        /// The value returned is a path relative to the game directory path.
+        /// </remarks>
+        public string Entrypoint { get; }
+
+        /// <summary>
+        /// Installs a requested addon.
+        /// </summary>
+        /// <param name="installRequest">An installation request.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns><see cref="InstallResult"/> object.</returns>
+        public Task<InstallResult> InstallAsync(InstallRequest installRequest, CancellationToken cancellationToken);
     }
 }

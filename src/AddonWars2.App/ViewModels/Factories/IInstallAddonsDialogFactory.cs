@@ -18,6 +18,6 @@ namespace AddonWars2.App.ViewModels.Factories
         /// Creates a new instance of <see cref="InstallAddonsDialogViewModel"/>.
         /// </summary>
         /// <returns>A new instance of <see cref="ErrorDialogViewModel"/>.</returns>
-        public InstallAddonsDialogViewModel Create();
+        public InstallAddonsDialogViewModel GetInstance();
     }
 }

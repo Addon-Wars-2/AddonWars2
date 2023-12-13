@@ -8,14 +8,26 @@
 namespace AddonWars2.App.ViewModels.Dialogs
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using AddonWars2.App.Configuration;
     using AddonWars2.App.ViewModels.SubViewModels;
+    using AddonWars2.Core.DTO.Actions;
     using AddonWars2.Core.Interfaces;
     using AddonWars2.Downloaders;
+    using AddonWars2.Downloaders.Interfaces;
+    using AddonWars2.Downloaders.Models;
+    using AddonWars2.Extractors.Interfaces;
+    using AddonWars2.Extractors.Models;
+    using AddonWars2.Installers.Enums;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.Installers.Models;
     using CommunityToolkit.Mvvm.Input;
-    using CommunityToolkit.Mvvm.Messaging;
     using Microsoft.Extensions.Logging;
     using MvvmDialogs;
 
@@ -35,29 +47,19 @@ namespace AddonWars2.App.ViewModels.Dialogs
         Downloading,
 
         /// <summary>
-        /// View model is extracting files.
-        /// </summary>
-        Extracting,
-
-        /// <summary>
         /// View model is installing addons.
         /// </summary>
         Installing,
 
         /// <summary>
-        /// View model is finished installing addons with no errors.
+        /// View model shows an error message.
+        /// </summary>
+        Failed,
+
+        /// <summary>
+        /// View model can be closed.
         /// </summary>
         Completed,
-
-        /// <summary>
-        /// The operation was aborted by user.
-        /// </summary>
-        Aborted,
-
-        /// <summary>
-        /// View model has failed to perform an operation.
-        /// </summary>
-        Error,
     }
 
     /// <summary>
@@ -67,12 +69,26 @@ namespace AddonWars2.App.ViewModels.Dialogs
     {
         #region Fields
 
-        private readonly IMessenger _messenger;
-        private readonly BulkAddonDownloader _downloader;
+        private readonly IApplicationConfig _applicationConfig;
+        private readonly IAddonDownloaderFactory _addonDownloaderFactory;
+        private readonly IAddonExtractorFactory _addonExtractorFactory;
+        private readonly IAddonInstallerFactory _addonInstallerFactory;
+        private readonly IAddonUninstallerFactory _addonUninstallerFactory;
+        private readonly BulkAddonDownloader _bulkDownloader;
+        private readonly ILibraryManager _libraryManager;
+        private readonly Dictionary<string, IAddonExtractor> _extractors;
+        private readonly Dictionary<string, IAddonInstaller> _installers;
         private InstallProgressDialogViewModelState _viewModelState = InstallProgressDialogViewModelState.Ready;
+        private IEnumerable<LoadedAddonDataViewModel> _installationSequence = new List<LoadedAddonDataViewModel>();
+        private bool _isCancelDownloadButtonEnabled = true;
+        private bool _isCancelInstallButtonEnabled = true;
         private bool? _dialogResult = null;
         private ObservableCollection<ProgressItemViewModel> _downloadProgressItems = new ObservableCollection<ProgressItemViewModel>();
         private ObservableCollection<ProgressItemViewModel> _installProgressItems = new ObservableCollection<ProgressItemViewModel>();
+        private ProgressItemViewModel _revertProgressItem = new ProgressItemViewModel();
+        private CancellationTokenSource _downloadCts = new CancellationTokenSource();
+        private CancellationTokenSource _installationCts = new CancellationTokenSource();
+        private string _unableToUninstallFiles = string.Empty;
 
         #endregion Fields
 
@@ -82,26 +98,43 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// Initializes a new instance of the <see cref="InstallProgressDialogViewModel"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/> instance.</param>
-        /// <param name="messenger">A reference to <see cref="IMessenger"/>.</param>
-        /// <param name="downloader">A reference to <see cref="BulkAddonDownloader"/> instance.</param>
+        /// <param name="appConfig">A reference to <see cref="IApplicationConfig"/>.</param>
+        /// <param name="addonDownloaderFactory">A reference to <see cref="IAddonDownloaderFactory"/>.</param>
+        /// <param name="addonExtractorFactory">A reference to <see cref="IAddonExtractorFactory"/>.</param>
+        /// <param name="addonInstallerFactory">A reference to <see cref="IAddonInstallerFactory"/>.</param>
+        /// <param name="addonUninstallerFactory">A reference to <see cref="IAddonUninstallerFactory"/>.</param>
+        /// <param name="libraryManager">A reference to <see cref="ILibraryManager"/>.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="appConfig"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonDownloaderFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonExtractorFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonInstallerFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonUninstallerFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="libraryManager"/> is <see langword="null"/>.</exception>
         public InstallProgressDialogViewModel(
             ILogger<WindowBaseViewModel> logger,
-            IMessenger messenger,
-            BulkAddonDownloader downloader)
+            IApplicationConfig appConfig,
+            IAddonDownloaderFactory addonDownloaderFactory,
+            IAddonExtractorFactory addonExtractorFactory,
+            IAddonInstallerFactory addonInstallerFactory,
+            IAddonUninstallerFactory addonUninstallerFactory,
+            ILibraryManager libraryManager)
             : base(logger)
         {
-            _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
-            _downloader = downloader ?? throw new ArgumentNullException(nameof(downloader));
+            _applicationConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
+            _addonDownloaderFactory = addonDownloaderFactory ?? throw new ArgumentNullException(nameof(addonDownloaderFactory));
+            _addonExtractorFactory = addonExtractorFactory ?? throw new ArgumentNullException(nameof(addonExtractorFactory));
+            _addonInstallerFactory = addonInstallerFactory ?? throw new ArgumentNullException(nameof(addonInstallerFactory));
+            _addonUninstallerFactory = addonUninstallerFactory ?? throw new ArgumentNullException(nameof(addonUninstallerFactory));
+            _libraryManager = libraryManager ?? throw new ArgumentNullException(nameof(libraryManager));
 
-            _downloader.DownloadStarted += Downloader_DownloadStarted;
-            _downloader.DownloadCompleted += Downloader_DownloadCompleted;
-            _downloader.DownloadAborted += Downloader_DownloadAborted;
-            _downloader.DownloadFailed += Downloader_DownloadFailed;
-
-            PropertyChangedEventManager.AddHandler(this, ViewModelState_PropertyChanged, nameof(ViewModelState));
+            _bulkDownloader = _addonDownloaderFactory.GetBulkDownloader();
+            _extractors = new Dictionary<string, IAddonExtractor>();
+            _installers = new Dictionary<string, IAddonInstaller>();
 
             SetDialogResultCommand = new RelayCommand<bool?>(ExecuteSetDialogResultCommand);
-            AbortDownloadCommand = new RelayCommand(ExecuteAbortDownloadCommand);
+            AbortDownloadCommand = new RelayCommand(ExecuteAbortDownloadCommand, () => IsCancelDownloadButtonEnabled);
+            AbortInstallationCommand = new RelayCommand(ExecuteAbortInstallationCommand, () => IsCancelInstallButtonEnabled);
         }
 
         #endregion Constructors
@@ -109,13 +142,44 @@ namespace AddonWars2.App.ViewModels.Dialogs
         #region Properties
 
         /// <summary>
-        /// Gets a messenger reference.
+        /// Gets a reference to the application config.
         /// </summary>
-        public IMessenger Messenger => _messenger;
+        public IApplicationConfig AppConfig => _applicationConfig;
+
+        /// <summary>
+        /// Gets a reference to addon downloader factory.
+        /// </summary>
+        public IAddonDownloaderFactory AddonDownloaderFactory => _addonDownloaderFactory;
+
+        /// <summary>
+        /// Gets a reference to addon extractor factory.
+        /// </summary>
+        public IAddonExtractorFactory AddonExtractorFactory => _addonExtractorFactory;
+
+        /// <summary>
+        /// Gets a reference to addon installer factory.
+        /// </summary>
+        public IAddonInstallerFactory AddonInstallerFactory => _addonInstallerFactory;
+
+        /// <summary>
+        /// Gets a reference to addon uninstaller factory.
+        /// </summary>
+        public IAddonUninstallerFactory AddonUninstallerFactory => _addonUninstallerFactory;
+
+        /// <summary>
+        /// Gets a reference to the library manager.
+        /// </summary>
+        public ILibraryManager LibraryManager => _libraryManager;
+
+        /// <inheritdoc/>
+        public bool? DialogResult => _dialogResult;
 
         /// <summary>
         /// Gets or sets the view model state.
         /// </summary>
+        /// <remarks>
+        /// The state is used to determine which parts of the dialog UI to show.
+        /// </remarks>
         public InstallProgressDialogViewModelState ViewModelState
         {
             get => _viewModelState;
@@ -126,8 +190,30 @@ namespace AddonWars2.App.ViewModels.Dialogs
             }
         }
 
-        /// <inheritdoc/>
-        public bool? DialogResult => _dialogResult;
+        /// <summary>
+        /// Gets the installation sequence value.
+        /// </summary>
+        public IEnumerable<LoadedAddonDataViewModel> InstallationSequence
+        {
+            get => _installationSequence;
+            private set => SetProperty(ref _installationSequence, value);
+        }
+
+        /// <summary>
+        /// Gets <see cref="BulkAddonDownloader"/> object used to download
+        /// multiple addons asynchronously.
+        /// </summary>
+        public BulkAddonDownloader BulkDownloader => _bulkDownloader;
+
+        /// <summary>
+        /// Gets a collection of extractors.
+        /// </summary>
+        public Dictionary<string, IAddonExtractor> Extractors => _extractors;
+
+        /// <summary>
+        /// Gets a collection of installers.
+        /// </summary>
+        public Dictionary<string, IAddonInstaller> Installers => _installers;
 
         /// <summary>
         /// Gets or sets a collection of addons to be downloaded.
@@ -143,7 +229,7 @@ namespace AddonWars2.App.ViewModels.Dialogs
         }
 
         /// <summary>
-        /// Gets or sets a collection of addons to be extracted.
+        /// Gets or sets a collection of addons to be extracted and installed.
         /// </summary>
         public ObservableCollection<ProgressItemViewModel> InstallProgressItems
         {
@@ -156,9 +242,60 @@ namespace AddonWars2.App.ViewModels.Dialogs
         }
 
         /// <summary>
-        /// Gets a bulk downloader isntance.
+        /// Gets or sets a progress of items to be reverted.
         /// </summary>
-        public BulkAddonDownloader Downloader => _downloader;
+        public ProgressItemViewModel RevertProgressItem
+        {
+            get => _revertProgressItem;
+            set
+            {
+                SetProperty(ref _revertProgressItem, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the download cancel button
+        /// should be enabled or disabled while processing the cancel request.
+        /// </summary>
+        public bool IsCancelDownloadButtonEnabled
+        {
+            get => _isCancelDownloadButtonEnabled;
+            set
+            {
+                SetProperty(ref _isCancelDownloadButtonEnabled, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the installation cancel button
+        /// should be enabled or disabled while processing the cancel request.
+        /// </summary>
+        public bool IsCancelInstallButtonEnabled
+        {
+            get => _isCancelInstallButtonEnabled;
+            set
+            {
+                SetProperty(ref _isCancelInstallButtonEnabled, value);
+                Logger.LogDebug($"Property set: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets a string representing a list of files
+        /// which couldn't be uninstalled on installation failure.
+        /// </summary>
+        public string UnableToUninstallFiles
+        {
+            get => _unableToUninstallFiles;
+            set
+            {
+                SetProperty(ref _unableToUninstallFiles, value);
+
+                // Do not log twice since uninstaller will report a list of files.
+            }
+        }
 
         #endregion Properties
 
@@ -174,6 +311,11 @@ namespace AddonWars2.App.ViewModels.Dialogs
         /// </summary>
         public RelayCommand AbortDownloadCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command that aborts isntallation operation.
+        /// </summary>
+        public RelayCommand AbortInstallationCommand { get; private set; }
+
         #endregion Commands
 
         #region Commands Logic
@@ -184,9 +326,17 @@ namespace AddonWars2.App.ViewModels.Dialogs
             _dialogResult = result;
         }
 
+        // AbortDownloadCommand commad logic.
         private void ExecuteAbortDownloadCommand()
         {
-            _downloader.CancelTask();
+            IsCancelDownloadButtonEnabled = false;
+            _downloadCts.Cancel();
+        }
+
+        // AbortInstallationCommand commad logic.
+        private void ExecuteAbortInstallationCommand()
+        {
+            _installationCts.Cancel();
         }
 
         #endregion Commands Logic
@@ -194,78 +344,194 @@ namespace AddonWars2.App.ViewModels.Dialogs
         #region Methods
 
         /// <summary>
-        /// Attaches a new <see cref="ProgressItemViewModel"/> to the view model and its downloader
-        /// to report download progress from the backend to the UI. The downloader will update progress
-        /// values through the event system, while the UI binding engine will update progress bars
-        /// through INPC and binding engine.
+        /// Executes a complete process of downloading, extracting and installing (uninstalling in case of failure) addons.
         /// </summary>
-        /// <param name="target">An <see cref="IAttachableProgress"/> object.</param>
-        /// <param name="item">An item to attach.</param>
-        public void AttachDownloadProgressItem(IAttachableProgress target, ProgressItemViewModel item)
+        /// <returns><see cref="Task"/> object.</returns>
+        public async Task ExecuteAllAsync()
         {
-            AW2Application.Current.Dispatcher.Invoke(() =>
-            {
-                var progress = new Progress<double>(value => item.ProgressValue = value);
-                target.AttachProgressItem(item.Token, progress);
-            });
+            ViewModelState = InstallProgressDialogViewModelState.Downloading;
 
-            DownloadProgressItems.Add(item);
+            var downloaded = await DownloadAddonsAsync(_downloadCts.Token);
+
+            ViewModelState = InstallProgressDialogViewModelState.Installing;
+
+            var installResults = new List<InstallResult>();
+            foreach (var item in InstallationSequence)
+            {
+                var downloadResult = downloaded.First(x => (string)x.Metadata["internal_name"] == item.InternalName); // TODO: find another way instead of "metadata" workaround
+                var extractResult = await ExtractAsync(item, downloadResult, _installationCts.Token);
+
+                var installer = Installers[item.InternalName];
+                var installResult = await InstallAsync(item, extractResult, _installationCts.Token);
+
+                installResults.Add(installResult);  // add even if failed for cleanup purposes
+
+                // Revert the installation process if any of installations has failed.
+                if (installResult.Status != InstallResultStatus.Success)
+                {
+                    Logger.LogError("The installation process was unsuccessful. Reverting the installation...");
+
+                    var uninstallResults = await UninstallAsync(installResults);
+                    if (uninstallResults.FailedToUninstallFiles.Count > 0)
+                    {
+                        UnableToUninstallFiles = BuildListOfFailedToUninstallFiles(uninstallResults);
+                    }
+
+                    ViewModelState = InstallProgressDialogViewModelState.Failed;
+
+                    return;
+                }
+            }
+
+            await DelayAsync(500);
+            ViewModelState = InstallProgressDialogViewModelState.Completed;
         }
 
         /// <summary>
-        /// Attaches a new <see cref="ProgressItemViewModel"/> to the VM and a given target.
+        /// Prepares <see cref="BulkDownloader"/>, <see cref="Extractors"/> and <see cref="Installers"/>
+        /// for a given installation sequence by requesting their appropriate types and injects
+        /// <see cref="ProgressItemViewModel"/> items to allow to track the progress.
         /// </summary>
-        /// <param name="target">An <see cref="IAttachableProgress"/> object.</param>
-        /// <param name="item">An item to attach.</param>
-        public void AttachInstallProgressItem(IAttachableProgress target, ProgressItemViewModel item)
+        /// <param name="installationSequence">A collection of addon data items requested for installation.</param>
+        public void PrepareForSequence(IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        {
+            PrepareBulkDownloader(installationSequence);
+            PrepareExtractors(installationSequence);
+            PrepareInstallers(installationSequence);
+
+            InstallationSequence = installationSequence;
+        }
+
+        // Extracts the requested addon.
+        private async Task<ExtractionResult> ExtractAsync(LoadedAddonDataViewModel loadedAddon, DownloadResult downloadResult, CancellationToken cancellationToken)
+        {
+            var extractor = Extractors[loadedAddon.InternalName];
+            var extractRequest = new ExtractionRequest(downloadResult.Name, downloadResult.Content);
+
+            return await extractor.ExtractAsync(extractRequest, cancellationToken);
+        }
+
+        // Installs the requested addon.
+        private async Task<InstallResult> InstallAsync(LoadedAddonDataViewModel loadedAddon, ExtractionResult extractionResult, CancellationToken cancellationToken)
+        {
+            var installer = Installers[loadedAddon.InternalName];
+            var actions = loadedAddon.Model.Actions ?? new List<AddonActionBase>();
+            var installRequest = new InstallRequest(Path.Join(AppConfig.UserData.Gw2DirPath, installer.Entrypoint), extractionResult, new InstallInstructions(actions));
+
+            return await LibraryManager.InstallAddonAsync(installer, installRequest, cancellationToken);
+        }
+
+        // Uninstalls the requested addon.
+        private async Task<UninstallResult> UninstallAsync(IEnumerable<InstallResult> installResults)
+        {
+            var request = new UninstallRequest();
+            foreach (var result in installResults)
+            {
+                foreach (var file in result.InstalledFiles)
+                {
+                    request.FilesToUninstall.Add(new UninstallRequestFile(file.FilePath));
+                }
+            }
+
+            var uninstaller = AddonUninstallerFactory.GetInstance();
+            return await LibraryManager.UninstallAddonAsync(uninstaller, request);
+        }
+
+        // Creates a new instance of a bulk downloader and injects progress items to track
+        // download progress in the UI layer.
+        private void PrepareBulkDownloader(IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        {
+            foreach (var addon in installationSequence)
+            {
+                var pivm = new ProgressItemViewModel()
+                {
+                    Token = addon.InternalName,
+                    DisplayName = addon.DisplayName,
+                };
+
+                AttachProgressItem(BulkDownloader, pivm);
+                DownloadProgressItems.Add(pivm);
+            }
+        }
+
+        // Creates new instances of downloaded objects extractors and injects progress items to track
+        // download progress in the UI layer.
+        private void PrepareExtractors(IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        {
+            foreach (var addon in installationSequence)
+            {
+                var extractor = AddonExtractorFactory.GetExtractor(addon.Model.DownloadType);
+                Extractors.Add(addon.InternalName, extractor);
+
+                var pivm = new ProgressItemViewModel()
+                {
+                    Token = addon.InternalName,
+                    DisplayName = addon.DisplayName,
+                };
+
+                AttachProgressItem(extractor, pivm);
+                InstallProgressItems.Add(pivm);
+            }
+        }
+
+        // Creates new instances of extracted objects installers and injects progress items to track
+        // download progress in the UI layer.
+        private void PrepareInstallers(IEnumerable<LoadedAddonDataViewModel> installationSequence)
+        {
+            foreach (var addon in installationSequence)
+            {
+                var installer = AddonInstallerFactory.GetInstance(addon.Model.InstallMode);
+                Installers.Add(addon.InternalName, installer);
+
+                var pivm = new ProgressItemViewModel()
+                {
+                    Token = addon.InternalName,
+                    DisplayName = addon.DisplayName,
+                };
+
+                AttachProgressItem(installer, pivm);
+                InstallProgressItems.Add(pivm);
+            }
+        }
+
+        // Injects a progress item into the target allowing it to update the progress of some of its process.
+        // The progress item then can be used for binding to expose changes in a process into the UI layer
+        // through binding mechanism.
+        // It's important that items must be injected from the UI thread:
+        // https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8
+        private void AttachProgressItem(IAttachableProgress target, ProgressItemViewModel item)
         {
             AW2Application.Current.Dispatcher.Invoke(() =>
             {
                 var progress = new Progress<double>(value => item.ProgressValue = value);
                 target.AttachProgressItem(item.Token, progress);
             });
-
-            InstallProgressItems.Add(item);
         }
 
-        // Bulk downloader event handler to inject Progress items used to tack the download progress for each addon.
-        private void Downloader_DownloadStarted(object? sender, EventArgs e)
+        // Executes download operation.
+        private async Task<IEnumerable<DownloadResult>> DownloadAddonsAsync(CancellationToken cancellationToken)
         {
-            ViewModelState = InstallProgressDialogViewModelState.Downloading;
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var addonsToInstall = InstallationSequence.Select(x => new BulkDownloadRequest(x.Model));
+
+            return await BulkDownloader.DownloadBulkAsync(addonsToInstall, cancellationToken);
         }
 
-        // Bulk downloader event handler to track the moment when the download process is finished.
-        private async void Downloader_DownloadCompleted(object? sender, EventArgs e)
+        // Builds a string from a list on files failed to be uninstalled.
+        private string BuildListOfFailedToUninstallFiles(UninstallResult uninstallResults)
         {
-            await DelayAsync(0); // to prevent switching from download to install view too fast
-            ViewModelState = InstallProgressDialogViewModelState.Installing;
-        }
-
-        // The operation was aborted by user.
-        private void Downloader_DownloadAborted(object? sender, EventArgs e)
-        {
-            ViewModelState = InstallProgressDialogViewModelState.Aborted;
-        }
-
-        // Bulk downloader event handler to track if the proccess has failed.
-        private void Downloader_DownloadFailed(object? sender, EventArgs e)
-        {
-            ViewModelState = InstallProgressDialogViewModelState.Error;
-        }
-
-        // Handles ViewModelState PropertyChanged event.
-        private void ViewModelState_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ViewModelState))
+            var sb = new StringBuilder();
+            for (int i = 0; i < uninstallResults.FailedToUninstallFiles.Count; i++)
             {
-                if (ViewModelState == InstallProgressDialogViewModelState.Error || ViewModelState == InstallProgressDialogViewModelState.Completed)
+                sb.Append(uninstallResults.FailedToUninstallFiles[i].FilePath);
+                if (i < uninstallResults.FailedToUninstallFiles.Count - 1)
                 {
-                    // Unsubscribe from all events.
-                    _downloader.DownloadStarted -= Downloader_DownloadStarted;
-                    _downloader.DownloadCompleted -= Downloader_DownloadCompleted;
-                    _downloader.DownloadFailed -= Downloader_DownloadFailed;
+                    sb.Append('\n');
                 }
             }
+
+            return sb.ToString();
         }
 
         // Sets a delay.

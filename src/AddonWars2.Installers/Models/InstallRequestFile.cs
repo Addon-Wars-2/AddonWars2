@@ -1,5 +1,5 @@
 ﻿// ==================================================================================================
-// <copyright file="InstallFileItem.cs" company="Addon-Wars-2">
+// <copyright file="InstallRequestFile.cs" company="Addon-Wars-2">
 // Copyright (c) Addon-Wars-2. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -10,7 +10,7 @@ namespace AddonWars2.Installers.Models
     /// <summary>
     /// Represents a single file to install.
     /// </summary>
-    public class InstallFileItem
+    public readonly struct InstallRequestFile
     {
         #region Fields
 
@@ -24,17 +24,17 @@ namespace AddonWars2.Installers.Models
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InstallFileItem"/> class.
+        /// Initializes a new instance of the <see cref="InstallRequestFile"/> struct.
         /// </summary>
         /// <param name="filename">The extracted object name.</param>
         /// <param name="content">The extracted content represented as a byte array.</param>
         /// <param name="relativePath">The extracted object relative path.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="filename"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="content"/> is <see langword="null"/>.</exception>
         /// v<exception cref="ArgumentNullException">If <paramref name="relativePath"/> is <see langword="null"/>.</exception>
-        public InstallFileItem(string filename, byte[] content, string relativePath)
+        public InstallRequestFile(string filename, byte[] content, string relativePath)
         {
-            ArgumentNullException.ThrowIfNull(filename, nameof(filename));
+            ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
             ArgumentNullException.ThrowIfNull(content, nameof(content));
             ArgumentNullException.ThrowIfNull(relativePath, nameof(relativePath));
 

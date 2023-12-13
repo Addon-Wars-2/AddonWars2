@@ -27,10 +27,13 @@ namespace AddonWars2.Downloaders.Models
         /// Initializes a new instance of the <see cref="BulkDownloadRequest"/> class.
         /// </summary>
         /// <param name="addonData">An addon data object the request will be created from.</param>
-        public BulkDownloadRequest(AddonData addonData)
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="addonData"/> is <see langword="null"/>.</exception>
+        public BulkDownloadRequest(AddonData? addonData)
         {
-            _internalName = addonData.InternalName;
-            _hosts = addonData.Hosts;
+            ArgumentNullException.ThrowIfNull(nameof(addonData));
+
+            _internalName = addonData!.InternalName;
+            _hosts = addonData!.Hosts;
         }
 
         #endregion Constructors

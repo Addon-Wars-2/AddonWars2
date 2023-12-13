@@ -23,6 +23,8 @@ namespace AddonWars2.Downloaders
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="httpClientService"/> is <see langword="null"/>.</exception>
         public StandaloneAddonDownloader(ILogger<AddonDownloaderBase> logger, IHttpClientWrapper httpClientService)
             : base(logger, httpClientService)
         {
@@ -34,8 +36,12 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        protected override async Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken)
+        protected override async Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken = default)
         {
+            ArgumentNullException.ThrowIfNull(nameof(request));
+
+            OnDownloadStarted();
+
             using (var response = await HttpClientService.GetAsync(request.Url))
             {
                 Logger.LogInformation($"Downloading from {request.Url} using {typeof(StandaloneAddonDownloader).Name}.");
@@ -46,6 +52,8 @@ namespace AddonWars2.Downloaders
 
                 // TODO: inject version into the downloaded content if available.
                 var content = await ReadResponseAsync(response, filename, cancellationToken);
+
+                OnDownloadCompleted();
 
                 return content;
             }

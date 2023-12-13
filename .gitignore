@@ -13,6 +13,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# User-specific files (AddonWars2)
+.[Aa]ssets/
+.[Tt]ools/
+.[Dd]ev/
+
 # Mono auto generated files
 mono_crash.*
 
@@ -26,7 +31,7 @@ x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-bld/
+[Bb]ld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
@@ -396,7 +401,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-# ADDONWARS2
-_[Aa]ssets/
-_[Tt]ools/

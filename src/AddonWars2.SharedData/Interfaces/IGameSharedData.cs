@@ -14,10 +14,14 @@ namespace AddonWars2.SharedData.Interfaces
     {
         #region Fields and Constants
 
-        private const string _gw2ExecutableExtension = ".exe";
-        private const string _gw2ProductName = "Guild Wars 2";
-        private const string _gw2FileDescription = "Guild Wars 2 Game Client";
-        private const string _gw2RegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
+        private const string GW2_EXEC_EXTENSION_NAME = ".exe";
+        private const string GW2_EXEC_PROD_NAME = "Guild Wars 2";
+        private const string GW2_EXEC_DESC = "Guild Wars 2 Game Client";
+        private const string GW2_REG_KEY = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Guild Wars 2";
+        private const string GW2_BIN_DIR = @"\bin64";
+        private const string GW2_CEF_DIR = @"\bin64\cef";
+        private const string GW2_ADDONS_DIR = @"\addons";
+        private const string GW2_ARCDPS_DIR = @"\addons\arcdps";
 
         #endregion Fields and Constants.
 
@@ -26,22 +30,42 @@ namespace AddonWars2.SharedData.Interfaces
         /// <summary>
         /// Gets the extension of GW2 executable.
         /// </summary>
-        public string Gw2ExecutableExtension => _gw2ExecutableExtension;
+        public string Gw2ExecutableExtension => GW2_EXEC_EXTENSION_NAME;
 
         /// <summary>
         /// Gets the product name of GW2 executable.
         /// </summary>
-        public string Gw2ProductName => _gw2ProductName;
+        public string Gw2ProductName => GW2_EXEC_PROD_NAME;
 
         /// <summary>
         /// Gets the file description of GW2 executable.
         /// </summary>
-        public string Gw2FileDescription => _gw2FileDescription;
+        public string Gw2FileDescription => GW2_EXEC_DESC;
 
         /// <summary>
         /// Gets the GW2 executable registry dir path.
         /// </summary>
-        public string Gw2RegistryKey => _gw2RegistryKey;
+        public string Gw2RegistryKey => GW2_REG_KEY;
+
+        /// <summary>
+        /// Gets the GW2 bin directory relative path.
+        /// </summary>
+        public string Gw2BinDir => GW2_BIN_DIR;
+
+        /// <summary>
+        /// Gets the GW2 cef directory relative path.
+        /// </summary>
+        public string Gw2CefDir => GW2_CEF_DIR;
+
+        /// <summary>
+        /// Gets the GW2 addons directory relative path.
+        /// </summary>
+        public string Gw2AddonsDir => GW2_ADDONS_DIR;
+
+        /// <summary>
+        /// Gets the GW2 arcdps directory relative path.
+        /// </summary>
+        public string Gw2ArcdpsDir => GW2_ARCDPS_DIR;
 
         #endregion Properties
     }

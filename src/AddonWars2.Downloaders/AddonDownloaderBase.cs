@@ -9,7 +9,7 @@ namespace AddonWars2.Downloaders
 {
     using System.Net.Http;
     using System.Threading.Tasks;
-    using AddonWars2.Downloaders.Events;
+    using AddonWars2.Core.Events;
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Downloaders.Models;
     using AddonWars2.Services.HttpClientWrapper.Interfaces;
@@ -20,7 +20,7 @@ namespace AddonWars2.Downloaders
     /// </summary>
     /// <param name="sender">The event sender.</param>
     /// <param name="e">The event arguments.</param>
-    public delegate void DownloadProgressChangedEventHandler(object? sender, DownloadProgressEventArgs e);
+    public delegate void DownloadProgressChangedEventHandler(object? sender, ProgressEventArgs e);
 
     /// <summary>
     /// Represents a base class for addon downloaders.
@@ -32,8 +32,8 @@ namespace AddonWars2.Downloaders
         private const int DEFAULT_BUFFER_SIZE = 4096;
 
         private static ILogger _logger;
+        private readonly Dictionary<string, IProgress<double>> _progressCollection = new Dictionary<string, IProgress<double>>();
         private readonly IHttpClientWrapper _httpClientService;
-        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         #endregion Fields
 
@@ -44,10 +44,16 @@ namespace AddonWars2.Downloaders
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
         /// <param name="httpClientService">A reference to <see cref="IHttpClientWrapper"/> instance.</param>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="httpClientService"/> is <see langword="null"/>.</exception>
         public AddonDownloaderBase(ILogger<AddonDownloaderBase> logger, IHttpClientWrapper httpClientService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
+
+            DownloadProgressChanged += AddonDownloaderBase_DownloadProgressChanged;
+            DownloadStarted += AddonDownloaderBase_DownloadStarted;
+            DownloadCompleted += AddonDownloaderBase_DownloadCompleted;
         }
 
         #endregion Constructors
@@ -57,9 +63,18 @@ namespace AddonWars2.Downloaders
         /// <inheritdoc/>
         public event DownloadProgressChangedEventHandler? DownloadProgressChanged;
 
+        /// <inheritdoc/>
+        public event EventHandler DownloadStarted;
+
+        /// <inheritdoc/>
+        public event EventHandler DownloadCompleted;
+
         #endregion Events
 
         #region Properties
+
+        /// <inheritdoc/>
+        public Dictionary<string, IProgress<double>> ProgressCollection => _progressCollection;
 
         /// <summary>
         /// Gets the current logger instance.
@@ -82,13 +97,19 @@ namespace AddonWars2.Downloaders
         #region Methods
 
         /// <inheritdoc/>
-        public async Task<DownloadResult> DownloadAsync(string url)
+        public void AttachProgressItem(string token, IProgress<double> progress)
         {
-            return await DownloadAsync(url, _cts.Token);
+            ProgressCollection.Add(token, progress);
         }
 
         /// <inheritdoc/>
-        public async Task<DownloadResult> DownloadAsync(string url, CancellationToken cancellationToken)
+        public async Task<DownloadResult> DownloadAsync(string url)
+        {
+            return await DownloadAsync(url);
+        }
+
+        /// <inheritdoc/>
+        public async Task<DownloadResult> DownloadAsync(string url, CancellationToken cancellationToken = default)
         {
             return await DownloadAsync(new DownloadRequest(url), cancellationToken);
         }
@@ -96,10 +117,11 @@ namespace AddonWars2.Downloaders
         /// <summary>
         /// Starts to download the requested addon.
         /// </summary>
-        /// <param name="request">A request objects which wraps the request information.</param>
+        /// <param name="request">A request object that wraps the request information.</param>
         /// <param name="cancellationToken">A task cancellation token.</param>
-        /// <returns><see cref="DownloadResult"/> object.</returns>
-        protected abstract Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken);
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="request"/> is <see langword="null"/>.</exception>
+        /// <returns><see cref="Task{TResult}"/> object.</returns>
+        protected abstract Task<DownloadResult> DownloadAsync(DownloadRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads content from a given response.
@@ -107,9 +129,12 @@ namespace AddonWars2.Downloaders
         /// <param name="response">Response to read.</param>
         /// <param name="filename">A downloaded file name.</param>
         /// <param name="cancellationToken">A task cancellation token.</param>
-        /// <returns><see cref="DownloadResult"/> object.</returns>
-        protected async Task<DownloadResult> ReadResponseAsync(HttpResponseMessage response, string filename, CancellationToken cancellationToken)
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="response"/> is <see langword="null"/>.</exception>
+        /// <returns><see cref="Task{TResult}"/> object.</returns>
+        protected async Task<DownloadResult> ReadResponseAsync(HttpResponseMessage response, string filename, CancellationToken cancellationToken = default)
         {
+            ArgumentNullException.ThrowIfNull(nameof(response));
+
             Logger.LogDebug($"Reading a response for {filename}");
 
             var contentLength = response.Content.Headers.ContentLength ?? 0L;  // TODO: Heavy/lightweight files (select either memory stream or filestream maybe?)
@@ -127,7 +152,7 @@ namespace AddonWars2.Downloaders
                 Logger.LogWarning("Content length is not available!");
             }
 
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            using (var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken))
             {
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
@@ -140,15 +165,15 @@ namespace AddonWars2.Downloaders
                             cancellationToken.ThrowIfCancellationRequested();
                         }
 
-                        bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length));
-                        await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                        bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken);
+                        await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                         totalBytesRead += bytesRead;
 
                         if (bytesRead > 0)
                         {
                             // Calling it as sync would lead to blocking UI thread while preforming download task
                             // and not updating progress bars until the task in completed (instantly from 0% to 100%).
-                            await Task.Run(() => OnDownloadProgressChanged(contentLength, totalBytesRead));
+                            await Task.Run(() => OnDownloadProgressChanged(contentLength, totalBytesRead), cancellationToken);
                         }
                     }
                     while (bytesRead != 0);
@@ -168,7 +193,54 @@ namespace AddonWars2.Downloaders
         protected virtual void OnDownloadProgressChanged(long totalBytesToReceive, long bytesReceived)
         {
             var handler = DownloadProgressChanged;
-            handler?.Invoke(this, new DownloadProgressEventArgs(totalBytesToReceive, bytesReceived));
+            handler?.Invoke(this, new ProgressEventArgs(totalBytesToReceive, bytesReceived));
+        }
+
+        /// <summary>
+        /// Raises <see cref="DownloadStarted"/> event to inform subscribers the download process has started.
+        /// </summary>
+        protected virtual void OnDownloadStarted()
+        {
+            var handler = DownloadStarted;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Raises <see cref="DownloadCompleted"/> event to inform subscribers the download process has completed.
+        /// </summary>
+        protected virtual void OnDownloadCompleted()
+        {
+            var handler = DownloadCompleted;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Updates all items in the progress collection.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="e">Event arguments.</param>
+        private void AddonDownloaderBase_DownloadProgressChanged(object? sender, ProgressEventArgs e)
+        {
+            if (ProgressCollection.Count > 0)
+            {
+                foreach (var key in ProgressCollection.Keys)
+                {
+                    ProgressCollection.TryGetValue(key, out var progress);
+                    progress?.Report(e.Progress);
+                }
+            }
+        }
+
+        private void AddonDownloaderBase_DownloadStarted(object? sender, EventArgs e)
+        {
+            // Blank.
+        }
+
+        private void AddonDownloaderBase_DownloadCompleted(object? sender, EventArgs e)
+        {
+            DownloadProgressChanged -= AddonDownloaderBase_DownloadProgressChanged;
+            DownloadStarted -= AddonDownloaderBase_DownloadStarted;
+            DownloadCompleted -= AddonDownloaderBase_DownloadCompleted;
         }
 
         #endregion Methods

@@ -59,7 +59,7 @@
     </Window.Resources>
 
     <i:Interaction.Triggers>
-        <i:DataTrigger Binding="{Binding ViewModelState, Converter={StaticResource EnumToStringConverter}}" Value="Error">
+        <i:DataTrigger Binding="{Binding ViewModelState, Converter={StaticResource EnumToStringConverter}}" Value="Completed">
             <i:InvokeCommandAction
                 Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                 CommandParameter="{StaticResource FalseValue}"/>
@@ -357,15 +357,135 @@
                 </ListBox>
             </Grid>
             <Grid
-                x:Name="ButtonsGrid"
+                x:Name="AbortInstallGrid"
+                Grid.Row="1"
+                Margin="5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EnumToStringConverter}}" Value="Failed">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap"
+                    Text="{DynamicResource S.Dialog.InstallProgressDialog.Description.Error}"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Path=DataContext.UnableToUninstallFiles.Length, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}"
+                                    Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        TextWrapping="Wrap"
+                        Text="{DynamicResource S.Dialog.InstallProgressDialog.Description.Error.UnableToRemove}">
+                    </TextBlock>
+                    <Button
+                        x:Name="ShowDetailsButton"
+                        Grid.Row="1"
+                        Margin="5"
+                        Padding="4,0,4,0"
+                        MinWidth="50"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Height="20"
+                        Cursor="Hand"
+                        Focusable="False"
+                        Content="{DynamicResource S.Controls.Button.ShowDetails.Text}"
+                        BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                        BorderThickness="1"
+                        Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Path=DataContext.UnableToUninstallFiles.Length, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}"
+                                        Value="0">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:ChangePropertyAction
+                                    TargetName="DetailsTextBox"
+                                    PropertyName="Visibility"
+                                    Value="Visible"/>
+                                <i:ChangePropertyAction
+                                    TargetName="ShowDetailsButton"
+                                    PropertyName="IsEnabled"
+                                    Value="False"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                    <Grid
+                        x:Name="DetailsTextBox"
+                        Grid.Row="2"
+                        Margin="5"
+                        Visibility="Collapsed">
+                        <TextBox
+                            IsReadOnly="True"
+                            Text="{Binding Path=DataContext.UnableToUninstallFiles, RelativeSource={RelativeSource AncestorType=Window}}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto"
+                            TextWrapping="Wrap"
+                            Style="{DynamicResource TextBoxStyle}">
+                            <i:Interaction.Behaviors>
+                                <behaviors:UIElementRemoveFocusBehavior/>
+                            </i:Interaction.Behaviors>
+                        </TextBox>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid
+                x:Name="DownloadButtonsGrid"
                 Grid.Row="2"
                 Margin="5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EnumToStringConverter}}" Value="Downloading">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button
-                    x:Name="CancelButton"
+                    x:Name="DownloadCancelButton"
                     Grid.Column="1"
                     Margin="5"
                     Padding="4,0,4,0"
@@ -378,11 +498,70 @@
                     Content="{DynamicResource S.Controls.Button.Cancel.Text}"
                     BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
                     BorderThickness="1"
-                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}">
+                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                    IsEnabled="{Binding DataContext.IsCancelDownloadButtonEnabled, RelativeSource={RelativeSource AncestorType=Window}}"
+                    IsHitTestVisible="{Binding DataContext.IsCancelDownloadButtonEnabled, RelativeSource={RelativeSource AncestorType=Window}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
+                            <i:ChangePropertyAction
+                                PropertyName="IsCancelDownloadButtonEnabled"
+                                Value="False"
+                                TargetObject="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
                             <i:InvokeCommandAction
                                 Command="{Binding Path=DataContext.AbortDownloadCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{StaticResource FalseValue}"/>
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.CloseWindowCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+            <Grid
+                x:Name="InstallButtonsGrid"
+                Grid.Row="2"
+                Margin="5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ViewModelState, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EnumToStringConverter}}" Value="Installing">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="InstallCancelButton"
+                    Grid.Column="1"
+                    Margin="5"
+                    Padding="4,0,4,0"
+                    MinWidth="50"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Height="20"
+                    Cursor="Hand"
+                    Focusable="False"
+                    Content="{DynamicResource S.Controls.Button.Cancel.Text}"
+                    BorderBrush="{DynamicResource SolidColorBrush.PrimaryPalette.Level1}"
+                    BorderThickness="1"
+                    Background="{DynamicResource LinearGradient.PrimaryPalette.Level4to5}"
+                    IsEnabled="{Binding DataContext.IsCancelInstallButtonEnabled, RelativeSource={RelativeSource AncestorType=Window}}"
+                    IsHitTestVisible="{Binding DataContext.IsCancelInstallButtonEnabled, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:ChangePropertyAction
+                                PropertyName="IsCancelInstallButtonEnabled"
+                                Value="False"
+                                TargetObject="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            <i:InvokeCommandAction
+                                Command="{Binding Path=DataContext.AbortInstallationCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                             <i:InvokeCommandAction
                                 Command="{Binding Path=DataContext.SetDialogResultCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                 CommandParameter="{StaticResource FalseValue}"/>

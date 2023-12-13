@@ -14,7 +14,7 @@ namespace AddonWars2.Installers.Models
     {
         #region Fields
 
-
+        private readonly List<UninstallRequestFile> _filesToUninstall;
 
         #endregion Fields
 
@@ -24,16 +24,33 @@ namespace AddonWars2.Installers.Models
         /// Initializes a new instance of the <see cref="UninstallRequest"/> class.
         /// </summary>
         public UninstallRequest()
+            : this(new List<UninstallRequestFile>())
         {
+            // Blank.
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UninstallRequest"/> class.
+        /// </summary>
+        /// <param name="filesToUninstall">A collection of installed files.</param>
+        public UninstallRequest(List<UninstallRequestFile> filesToUninstall)
+        {
+            _filesToUninstall = filesToUninstall;
         }
 
         #endregion Constructors
 
         #region Properties
 
-
+        /// <summary>
+        /// Gets a list of files to uninstall.
+        /// </summary>
+        public List<UninstallRequestFile> FilesToUninstall => _filesToUninstall;
 
         #endregion Properties
+
+        #region Methods
+
+        #endregion Methods
     }
 }

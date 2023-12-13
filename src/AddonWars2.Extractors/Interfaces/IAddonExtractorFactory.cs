@@ -15,7 +15,7 @@ namespace AddonWars2.Extractors.Interfaces
     public interface IAddonExtractorFactory
     {
         /// <summary>
-        /// Creates a new extractor based on download type.
+        /// Creates a new extractor based on a download type.
         /// </summary>
         /// <param name="downloadType">The addon download type used to determine the extractor type.</param>
         /// <returns>A new extractor.</returns>

@@ -12,19 +12,50 @@ namespace AddonWars2.Installers.Models
     /// <summary>
     /// Represents a result of an installation operation.
     /// </summary>
+    /// <remarks>
+    /// The main purpose if <see cref="InstallResult"/> is to log the installation process
+    /// and provide necessary information for cleanup if the installation was interrupted.
+    /// </remarks>
     public class InstallResult
     {
         #region Fields
 
         private readonly InstallResultStatus _status;
+        private readonly List<InstallResultFile> _installedFiles;
 
         #endregion Fields
 
         #region Constructors
 
-        public InstallResult()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InstallResult"/> class.
+        /// </summary>
+        /// <param name="status">Installation result status.</param>
+        public InstallResult(InstallResultStatus status)
+            : this(new List<InstallResultFile>(), status)
         {
+            // Blank.
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InstallResult"/> class.
+        /// </summary>
+        /// <param name="installedFiles">A collection of installed files.</param>
+        public InstallResult(List<InstallResultFile> installedFiles)
+            : this(installedFiles, InstallResultStatus.Success)
+        {
+            // Blank.
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InstallResult"/> class.
+        /// </summary>
+        /// <param name="installedFiles">A collection of installed files.</param>
+        /// <param name="status">Installation result status.</param>
+        public InstallResult(List<InstallResultFile> installedFiles, InstallResultStatus status)
+        {
+            _installedFiles = installedFiles;
+            _status = status;
         }
 
         #endregion Constructors
@@ -35,6 +66,11 @@ namespace AddonWars2.Installers.Models
         /// Gets an installation status.
         /// </summary>
         public InstallResultStatus Status => _status;
+
+        /// <summary>
+        /// Gets a list of installed files.
+        /// </summary>
+        public List<InstallResultFile> InstalledFiles => _installedFiles;
 
         #endregion Properties
     }

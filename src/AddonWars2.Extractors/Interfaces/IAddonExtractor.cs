@@ -21,10 +21,21 @@ namespace AddonWars2.Extractors.Interfaces
         public event ExtractProgressChangedEventHandler? ExtractProgressChanged;
 
         /// <summary>
+        /// Is raised right before the extraction has started.
+        /// </summary>
+        public event EventHandler ExtractionStarted;
+
+        /// <summary>
+        /// Is raised after the extraction has completed.
+        /// </summary>
+        public event EventHandler ExtractionCompleted;
+
+        /// <summary>
         /// Extracts the addon using the provided information.
         /// </summary>
         /// <param name="request">An extruction request.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>An extracted addon.</returns>
-        public Task<ExtractionResult> ExtractAsync(ExtractionRequest request);
+        public Task<ExtractionResult> ExtractAsync(ExtractionRequest request, CancellationToken cancellationToken);
     }
 }

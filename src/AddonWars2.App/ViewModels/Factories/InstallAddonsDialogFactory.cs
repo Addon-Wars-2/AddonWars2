@@ -38,7 +38,7 @@ namespace AddonWars2.App.ViewModels.Factories
         #region Methods
 
         /// <inheritdoc/>
-        public InstallAddonsDialogViewModel Create()
+        public InstallAddonsDialogViewModel GetInstance()
         {
             return new InstallAddonsDialogViewModel(_logger);
         }

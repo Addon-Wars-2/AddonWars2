@@ -7,6 +7,7 @@
 
 namespace AddonWars2.App.ViewModels
 {
+    using System;
     using System.Windows;
     using CommunityToolkit.Mvvm.Input;
     using Microsoft.Extensions.Logging;
@@ -27,8 +28,8 @@ namespace AddonWars2.App.ViewModels
         /// Initializes a new instance of the <see cref="WindowBaseViewModel"/> class.
         /// </summary>
         /// <param name="logger">A referemnce to <see cref="ILogger"/>.</param>
-        public WindowBaseViewModel(
-            ILogger<WindowBaseViewModel> logger)
+        /// <exception cref="ArgumentNullException">If thrown if <paramref name="logger"/> is <see langword="null"/>.</exception>
+        public WindowBaseViewModel(ILogger<WindowBaseViewModel> logger)
             : base(logger)
         {
             MinimizeWindowCommand = new RelayCommand<Window>(ExecuteMinimizeWindow);

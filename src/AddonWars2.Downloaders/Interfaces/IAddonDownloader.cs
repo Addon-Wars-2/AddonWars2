@@ -7,17 +7,28 @@
 
 namespace AddonWars2.Downloaders.Interfaces
 {
+    using AddonWars2.Core.Interfaces;
     using AddonWars2.Downloaders.Models;
 
     /// <summary>
     /// Provides a contract for addon downloaders.
     /// </summary>
-    public interface IAddonDownloader
+    public interface IAddonDownloader : IAttachableProgress
     {
         /// <summary>
         /// Is raised whenever the download progress has changed.
         /// </summary>
         public event DownloadProgressChangedEventHandler? DownloadProgressChanged;
+
+        /// <summary>
+        /// Is raised right before the download process has started.
+        /// </summary>
+        public event EventHandler DownloadStarted;
+
+        /// <summary>
+        /// Is raised after the download process has completed.
+        /// </summary>
+        public event EventHandler DownloadCompleted;
 
         /// <summary>
         /// Starts to download the requested addon.

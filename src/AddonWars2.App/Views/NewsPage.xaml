@@ -107,7 +107,7 @@
                 <ListBox
                     x:Name="RssFeedItemsList"
                     ItemsSource="{Binding Source={StaticResource RssItemsCollectionView}}"
-                    SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedItem="{Binding DataContext.DisplayedRssFeedItem, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"
                     IsSynchronizedWithCurrentItem="{x:Null}">
                     <i:Interaction.Behaviors>
                         <behaviors:AnimatedItemsControlBehavior Delay="0.05">
@@ -121,7 +121,7 @@
                                     <DoubleAnimation
                                         From="100" To="0"
                                         FillBehavior="HoldEnd"
-                                        BeginTime="00:00:00" Duration="00:00:0.3"
+                                        BeginTime="00:00:00" Duration="00:00:0.5"
                                         AccelerationRatio="0.2" DecelerationRatio="0.1"
                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
                                         <DoubleAnimation.EasingFunction>

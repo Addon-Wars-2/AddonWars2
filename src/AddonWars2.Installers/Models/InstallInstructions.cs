@@ -7,7 +7,7 @@
 
 namespace AddonWars2.Installers.Models
 {
-    using AddonWars2.Core.DTO.Rules;
+    using AddonWars2.Core.DTO.Actions;
 
     /// <summary>
     /// Represents installation instruction for an addon.
@@ -16,7 +16,7 @@ namespace AddonWars2.Installers.Models
     {
         #region Fields
 
-        private readonly List<AddonRuleBase> _installRules = new List<AddonRuleBase>();
+        private readonly IEnumerable<AddonActionBase> _installActions = new List<AddonActionBase>();
 
         #endregion Fields
 
@@ -33,10 +33,12 @@ namespace AddonWars2.Installers.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="InstallInstructions"/> class.
         /// </summary>
-        /// <param name="installRules">A collection of installation rules.</param>
-        public InstallInstructions(List<AddonRuleBase> installRules)
+        /// <param name="installActions">A collection of installation actions.</param>
+        public InstallInstructions(IEnumerable<AddonActionBase> installActions)
         {
-            _installRules = installRules;
+            ArgumentNullException.ThrowIfNull(installActions, nameof(installActions));
+
+            _installActions = installActions;
         }
 
         #endregion Constructors
@@ -44,10 +46,14 @@ namespace AddonWars2.Installers.Models
         #region Properties
 
         /// <summary>
-        /// Gets a collection of installation rules.
+        /// Gets a collection of installation actions.
         /// </summary>
-        public List<AddonRuleBase> InstallRules => _installRules;
+        public IEnumerable<AddonActionBase> InstallActions => _installActions;
 
         #endregion Properties
+
+        #region Methods
+
+        #endregion Methods
     }
 }

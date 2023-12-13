@@ -86,13 +86,16 @@
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.01">You're attempting to install an addon that requires one or more other addons to be installed.</s:String>
     <s:String x:Key="S.Dialog.InstallAddonDialog.Description.02">The addons will be installed in the following order:</s:String>
     <s:String x:Key="S.Dialog.InstallProgressDialog.Header">Installation in progress...</s:String>
-    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Downloading the required addons... Please, wait.</s:String>
-    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Installing the downloaded addons... Please, wait.</s:String>
-
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Downloading">Downloading required addons... Please, wait.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Installing">Extracting and installing downloaded addons... Please, wait.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Error">The program has failed to install one or more addons. The installation process has been reverted. See logs for additional information.</s:String>
+    <s:String x:Key="S.Dialog.InstallProgressDialog.Description.Error.UnableToRemove">Some of the already installed during the uninstallation files couldn't be removed and are required to be deleted manually. See the details below for a complete list.</s:String>
+    
     <!-- Controls -->
     <s:String x:Key="S.Controls.Button.Ok.Text">Ok</s:String>
     <s:String x:Key="S.Controls.Button.Cancel.Text">Cancel</s:String>
     <s:String x:Key="S.Controls.Button.Agree.Text">Agree</s:String>
+    <s:String x:Key="S.Controls.Button.ShowDetails.Text">Show details...</s:String>
     <s:String x:Key="S.Controls.ComboBox.Placeholder">empty...</s:String>
     <s:String x:Key="S.Controls.TextBox.SelectGW2ExePlaceholder">Select gw2-64.exe...</s:String>
 

@@ -7,7 +7,8 @@
 
 namespace AddonWars2.Installers
 {
-    using AddonWars2.Installers.Models;
+    using AddonWars2.Installers.Interfaces;
+    using AddonWars2.SharedData.Interfaces;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -17,6 +18,8 @@ namespace AddonWars2.Installers
     {
         #region Fields
 
+        private readonly string _entrypoint;
+
         #endregion Fields
 
         #region Constructors
@@ -25,10 +28,15 @@ namespace AddonWars2.Installers
         /// Initializes a new instance of the <see cref="BinaryAddonInstaller"/> class.
         /// </summary>
         /// <param name="logger">A reference to <see cref="ILogger"/>.</param>
-        public BinaryAddonInstaller(ILogger<AddonInstallerBase> logger)
-            : base(logger)
+        /// <param name="gameSharedData">A reference to <see cref="IGameSharedData"/>.</param>
+        /// <param name="ruleApplierFactory">A reference to <see cref="IInstallerCustomActionFactory"/>.</param>
+        public BinaryAddonInstaller(
+            ILogger<AddonInstallerBase> logger,
+            IGameSharedData gameSharedData,
+            IInstallerCustomActionFactory ruleApplierFactory)
+            : base(logger, gameSharedData, ruleApplierFactory)
         {
-            // Blank.
+            _entrypoint = GameSharedData.Gw2BinDir;
         }
 
         #endregion Constructors
@@ -39,21 +47,12 @@ namespace AddonWars2.Installers
 
         #region Properties
 
+        /// <inheritdoc/>
+        public override string Entrypoint => _entrypoint;
+
         #endregion Properties
 
         #region Methods
-
-        /// <inheritdoc/>
-        public override Task<InstallResult> InstallAsync(InstallRequest installRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public override Task<UninstallResult> UninstallAsync(UninstallRequest uninstallRequest)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion Methods
     }

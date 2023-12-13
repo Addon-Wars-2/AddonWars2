@@ -44,15 +44,19 @@ namespace AddonWars2.Extractors
         #region Methods
 
         /// <inheritdoc/>
-        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request)
+        public override async Task<ExtractionResult> ExtractAsync(ExtractionRequest request, CancellationToken cancellationToken)
         {
+            OnExtractionStarted();
+
             var content = new byte[request.Content.Length];
             request.Content.CopyTo(content, 0);
 
-            var extractedFiles = new ExtractedFile(request.Name, content, string.Empty);
+            var extractedFiles = new ExtractedFile(request.Name, content, request.Name);
             var extractionResult = new ExtractionResult(new List<ExtractedFile>() { extractedFiles });
 
-            OnExtractProgressChanged(1, 1);
+            OnExtractProgressChanged(1, 1); // there's only one file to extract
+
+            OnExtractionCompleted();
 
             return extractionResult;
         }

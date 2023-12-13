@@ -261,12 +261,8 @@ namespace AddonWars2.App
         // Setups logging.
         private void AW2App_SetupLogger()
         {
-            // Locate AppSharedData\Roaming application directory.
-            var appDataDir = IOHelper.BuildApplicationDataDirectory();
-            if (!Directory.Exists(appDataDir))
-            {
-                Directory.CreateDirectory(appDataDir);
-            }
+            // Locate application directory.
+            var appDataDir = AppContext.BaseDirectory;
 
             // Locate the logs directory within the application directory.
             var logsDirPath = Path.Join(appDataDir, AppSharedData.LogDirName);

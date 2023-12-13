@@ -95,9 +95,15 @@ namespace AddonWars2.Core
         #region Methods
 
         /// <inheritdoc/>
-        public async Task InstallAddon(IAddonInstaller installer, InstallRequest request)
+        public async Task<InstallResult> InstallAddonAsync(IAddonInstaller installer, InstallRequest request, CancellationToken cancellationToken)
         {
-            await installer.InstallAsync(request);
+            return await installer.InstallAsync(request, cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public async Task<UninstallResult> UninstallAddonAsync(IAddonUninstaller uninstaller, UninstallRequest request)
+        {
+            return await uninstaller.UninstallAsync(request);
         }
 
         #endregion Methods

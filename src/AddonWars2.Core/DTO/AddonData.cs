@@ -8,7 +8,7 @@
 namespace AddonWars2.Core.DTO
 {
     using System.Text.Json.Serialization;
-    using AddonWars2.Core.DTO.Rules;
+    using AddonWars2.Core.DTO.Actions;
     using AddonWars2.Core.Enums;
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace AddonWars2.Core.DTO
         private InstallMode _installMode;
         private IEnumerable<string>? _requiredAddons;
         private IEnumerable<string>? _conflicts;
-        private IEnumerable<AddonRuleBase>? _rules = new List<AddonRuleBase>();
+        private IEnumerable<AddonActionBase>? _actions = new List<AddonActionBase>();
 
         #endregion Fields
 
@@ -168,13 +168,13 @@ namespace AddonWars2.Core.DTO
         }
 
         /// <summary>
-        /// Gets or sets a dictionary of additional rules.
+        /// Gets or sets a dictionary of additional actions.
         /// </summary>
-        [JsonPropertyName("rules")]
-        public IEnumerable<AddonRuleBase>? Rules
+        [JsonPropertyName("actions")]
+        public IEnumerable<AddonActionBase>? Actions
         {
-            get => _rules;
-            set => _rules = value;
+            get => _actions;
+            set => _actions = value;
         }
 
         #endregion Properties

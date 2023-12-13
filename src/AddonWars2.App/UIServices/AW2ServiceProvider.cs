@@ -14,7 +14,6 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.App.Configuration;
     using AddonWars2.App.Logging;
     using AddonWars2.App.UIServices.Interfaces;
-    using AddonWars2.App.Utils.Helpers;
     using AddonWars2.App.ViewModels;
     using AddonWars2.App.ViewModels.Commands;
     using AddonWars2.App.ViewModels.Factories;
@@ -26,6 +25,7 @@ namespace AddonWars2.App.UIServices
     using AddonWars2.Downloaders.Interfaces;
     using AddonWars2.Extractors.Factories;
     using AddonWars2.Extractors.Interfaces;
+    using AddonWars2.Installers;
     using AddonWars2.Installers.Factories;
     using AddonWars2.Installers.Interfaces;
     using AddonWars2.Providers.Factories;
@@ -77,7 +77,7 @@ namespace AddonWars2.App.UIServices
                 builder =>
                 {
                     var settings = new ConfigurationBuilder<IApplicationConfig>()
-                        .UseJsonFile(Path.Join(IOHelper.BuildApplicationDataDirectory(), builder.GetRequiredService<IAppSharedData>().ConfigFileName))
+                        .UseJsonFile(Path.Join(AppContext.BaseDirectory, builder.GetRequiredService<IAppSharedData>().ConfigFileName))
                         .Build();
                     return settings;
                 });
@@ -129,10 +129,12 @@ namespace AddonWars2.App.UIServices
             services.AddSingleton<IAddonDownloaderFactory, AddonDownloaderFactory>();
             services.AddSingleton<IAddonExtractorFactory, AddonExtractorFactory>();
             services.AddSingleton<IAddonInstallerFactory, AddonInstallerFactory>();
+            services.AddSingleton<IInstallerCustomActionFactory, InstallerCustomActionFactory>();
             services.AddSingleton<IDependencyResolverFactory, DependencyResolverFactory>();
             services.AddSingleton<IErrorDialogViewModelFactory, ErrorDialogViewModelFactory>();
             services.AddSingleton<IInstallAddonsDialogFactory, InstallAddonsDialogFactory>();
             services.AddSingleton<IInstallProgressDialogFactory, InstallProgressDialogFactory>();
+            services.AddSingleton<IAddonUninstallerFactory,  AddonUninstallerFactory>();
 
             // Databases.
             services.AddDbContext<InstalledAddonsContext>(

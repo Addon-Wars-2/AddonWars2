@@ -167,7 +167,7 @@ namespace AddonWars2.App.ViewModels.SubViewModels
         }
 
         /// <summary>
-        /// Getsa a list of required addons for the addon represented as a single string
+        /// Gets a list of required addons for the addon represented as a single string
         /// of entries separated with commas.
         /// </summary>
         public string Required

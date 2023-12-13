@@ -34,19 +34,22 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </Window.Resources>
 
+    <Window.OpacityMask>
+        <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png" Opacity="0.0"/>
+    </Window.OpacityMask>
+
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
                 <Storyboard>
                     <DoubleAnimation
                         From="0" To="1"
-                        BeginTime="00:00:00" Duration="00:00:0.3"
+                        BeginTime="00:00:1" Duration="00:00:0.5"
                         RepeatBehavior="1x"
                         Storyboard.TargetProperty="Opacity"/>
                     <ObjectAnimationUsingKeyFrames
-                        Storyboard.TargetName="BackgroundImage"
                         Storyboard.TargetProperty="OpacityMask"
-                        RepeatBehavior="1x" Duration="00:00:0.8"
+                        RepeatBehavior="1x" BeginTime="00:00:1" Duration="00:00:0.8"
                         KeyFrames="{StaticResource BgOpacityMaskDiscreteAnimation}"/>
                 </Storyboard>
             </BeginStoryboard>
@@ -54,11 +57,7 @@
     </Window.Triggers>
 
     <Grid>
-        <Image x:Name="BackgroundImage" Source="/Assets/Images/aw2_bg_default.png">
-            <Image.OpacityMask>
-                <ImageBrush ImageSource="/Assets/Masks/bg/aw2_bg_opacity_mask_01.png" Opacity="0.0"/>
-            </Image.OpacityMask>
-        </Image>
+        <Image x:Name="BackgroundImage" Source="/Assets/Images/aw2_bg_default.png"/>
         <Border>
             <Grid x:Name="MainWindowContentGrid">
                 <Grid.RowDefinitions>
